@@ -1,0 +1,103 @@
+
+.gameboard-container{
+    display:flex;
+    justify-content: center;
+    height: 80vh;
+}
+
+.gameboard{
+    height: 100%;
+    width: 380px;
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+}
+
+.headline{
+    margin: 4px 0 0 0;
+}
+
+.instructions{
+    margin: 2px 0;
+    font-size: 2.0rem;
+    text-align: center;
+    border-bottom: 2px solid black;
+}
+
+.hint-caption{
+    margin: 2px 0;
+    text-align: right;
+    padding-right: 6%;
+    margin-bottom: -5px;
+    font-size: 1.6rem;
+}
+
+
+.row{
+    margin: 4px 0;
+}
+
+span{
+    display: flex;
+}
+
+.digit, .hint{
+    height: 90px;
+    width: 40%;
+    border: 1px solid black;
+    margin: 0 1px;
+}
+
+.hint{
+    background-color: rgb(193, 193, 193);
+    margin: 0 6px;
+}
+
+.keyboard {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.keyboard > * {
+    margin: 3px 0;
+}
+
+.number-inputs{
+    display: flex;
+    justify-content: center;
+}
+
+.number-inputs button{
+    height: 80px;
+    width: 32px;
+    margin: 0 1px;
+    border-radius: 4px;
+    border: 1px solid black;
+    font-size: 3rem;
+}
+
+.enter-guess {
+    width: 80%;
+    height: 40px;
+    border-radius: 4px;
+    border: 1px solid black;
+}
+
+
+
+/* Mid-size Styles */
+@media screen and (min-width: 580px) and (max-width: 760px) {
+
+
+}
+
+/* Desktop Styles */
+@media screen and (min-width: 761) and (max-width: 700px) {
+
+
+}
+
+
+
+
