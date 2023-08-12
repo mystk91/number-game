@@ -17,8 +17,6 @@ import { Link } from "react-router-dom";
 //import styled, { css, ThemeProvider } from 'styled-components';
 
 function NumberGame(props) {
-
-
   //Used to update the board state visually
   const [board, setBoard] = useState([]);
 
@@ -31,13 +29,13 @@ function NumberGame(props) {
   const currentRowRef = useRef(0);
   function setCurrentRowRef(point) {
     currentRowRef.current = point;
-  }  
+  }
 
   //A temporary random number used to test the game
   const correctNumberRef = useRef(0);
   function setCorrectNumberRef(point) {
     correctNumberRef.current = point;
-  }  
+  }
 
   //componentDidMount, runs when component mounts, then componentDismount
   useEffect(() => {
@@ -53,15 +51,13 @@ function NumberGame(props) {
   //useEffect(() => {}, [property]);
 
   function setupGame() {
-    setCorrectNumberRef(Math.floor(Math.random() * Math.pow(10, props.digits)))
+    setCorrectNumberRef(Math.floor(Math.random() * Math.pow(10, props.digits)));
     console.log(correctNumberRef.current);
-    if (localStorage.getItem(`game-` + props.digits)){
-
-    }
-    else{
+    if (localStorage.getItem(`game-` + props.digits)) {
+    } else {
       let board = new Array(props.attempts);
-      for (let i = 0; i < props.attempts; i++){
-        board[i] = '';
+      for (let i = 0; i < props.attempts; i++) {
+        board[i] = "";
       }
       setBoardStateRef(board);
       updateLocalStorage();
@@ -94,18 +90,16 @@ function NumberGame(props) {
 
     //Grabs the game state from local storage if user has attempted this puzzle previously
     */
-
   }
 
   //Helper function for setting the game state to the local storage
-  function updateLocalStorage(){
+  function updateLocalStorage() {
     let gameState = {
       board: boardStateRef.current,
-      currentRow: currentRowRef.current
-    }
+      currentRow: currentRowRef.current,
+    };
     localStorage.setItem(`game-` + props.digits, JSON.stringify(gameState));
   }
-
 
   //Handles pressing keys by using different functions
   function handleKeydown(e) {
@@ -122,7 +116,7 @@ function NumberGame(props) {
 
   //Handles number input, also used when pressing keys
   function inputNumber(n) {
-    if (boardStateRef.current[currentRowRef.current].length < props.digits){
+    if (boardStateRef.current[currentRowRef.current].length < props.digits) {
       let copy = boardStateRef.current;
       copy[currentRowRef.current] += n;
       setBoardStateRef(copy);
@@ -132,9 +126,12 @@ function NumberGame(props) {
 
   //Handles backpace key
   function backspace() {
-    if (boardStateRef.current[currentRowRef.current].length > 0){
+    if (boardStateRef.current[currentRowRef.current].length > 0) {
       let copy = boardStateRef.current;
-      copy[currentRowRef.current] = copy[currentRowRef.current].slice(0, copy[currentRowRef.current].length - 1);
+      copy[currentRowRef.current] = copy[currentRowRef.current].slice(
+        0,
+        copy[currentRowRef.current].length - 1
+      );
       setBoardStateRef(copy);
       updateLocalStorage();
     }
@@ -142,23 +139,22 @@ function NumberGame(props) {
 
   //Checks the users guess
   function checkGuess() {
-    if (boardStateRef.current[currentRowRef.current].length == props.digits){
-      let result = checkNumber(Number(boardStateRef.current[currentRowRef.current]));
+    if (boardStateRef.current[currentRowRef.current].length == props.digits) {
+      let result = checkNumber(
+        Number(boardStateRef.current[currentRowRef.current])
+      );
       console.log(result);
-      if (result == 'ggggg'){
+      if (result == "ggggg") {
         victory();
-      }
-      else{
-        if (currentRowRef != props.guesses - 1){
+      } else {
+        if (currentRowRef != props.guesses - 1) {
           guessAnimation(result);
           setCurrentRowRef(currentRowRef.current + 1);
-        }
-        else{
+        } else {
           defeat();
         }
       }
-    }
-    else{
+    } else {
       invalidGuess();
     }
   }
@@ -168,12 +164,12 @@ function NumberGame(props) {
   // y - yellow
   // x - dark grey
   function checkNumber(number) {
-    console.log('valid guess');
+    console.log("valid guess");
   }
 
   //Plays an animation when user has invalid length input
   function invalidGuess() {
-    console.log('invalid guess')
+    console.log("invalid guess");
   }
 
   //Plays an animation when the user has a valid input
@@ -188,10 +184,11 @@ function NumberGame(props) {
   return (
     <main className="gameboard-container">
       <div className="gameboard">
-
-        <div className='headline'>
-           <div className='instructions'>Guess from 0 - {Math.pow(10, props.digits) - 1}</div>
-           <div className="hint-caption">Hint</div>
+        <div className="headline">
+          <div className="instructions">
+            Guess from 0 - {Math.pow(10, props.digits) - 1}
+          </div>
+          <div className="hint-caption">Hint</div>
         </div>
 
         <div className="rows">{board}</div>
