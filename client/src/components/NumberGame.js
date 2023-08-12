@@ -32,9 +32,9 @@ function NumberGame(props) {
   }
 
   //A temporary random number used to test the game
-  const correctNumberRef = useRef(0);
-  function setCorrectNumberRef(point) {
-    correctNumberRef.current = point;
+  const targetNumberRef = useRef("");
+  function setTargetNumberRef(point) {
+    targetNumberRef.current = point;
   }
 
   //componentDidMount, runs when component mounts, then componentDismount
@@ -51,9 +51,19 @@ function NumberGame(props) {
   //useEffect(() => {}, [property]);
 
   function setupGame() {
-    setCorrectNumberRef(Math.floor(Math.random() * Math.pow(10, props.digits)));
-    console.log(correctNumberRef.current);
+    //Setting the target number
+    let targetNumber = Math.floor(
+      Math.random() * Math.pow(10, props.digits)
+    ).toString();
+    while (targetNumber.length < props.digits) {
+      targetNumber = "0" + targetNumber;
+    }
+    setTargetNumberRef(targetNumber);
+    console.log(targetNumberRef.current);
+
+    //Setting the localStorage for the game or loading it
     if (localStorage.getItem(`game-` + props.digits)) {
+      //This should load the previously started game from local storage
     } else {
       let board = new Array(props.attempts);
       for (let i = 0; i < props.attempts; i++) {
@@ -140,11 +150,8 @@ function NumberGame(props) {
   //Checks the users guess
   function checkGuess() {
     if (boardStateRef.current[currentRowRef.current].length == props.digits) {
-      let result = checkNumber(
-        Number(boardStateRef.current[currentRowRef.current])
-      );
-      console.log(result);
-      if (result == "ggggg") {
+      let result = checkNumber(boardStateRef.current[currentRowRef.current]);
+      if (result == "GGGGGE") {
         victory();
       } else {
         if (currentRowRef != props.guesses - 1) {
@@ -159,12 +166,45 @@ function NumberGame(props) {
     }
   }
 
-  //Checks the number against the users guess, returns a string with the colors the blocks should become
-  // g - green
-  // y - yellow
-  // x - dark grey
+  //Checks the number against the users guess, returns a string with the colors the blocks should become, ending with hint telling higher or lower
+  // ex. 5 digit number,  gyxxxl
+  // G - green
+  // Y - yellow
+  // X - dark grey
+  // L - lower, H - higher, E -equals
   function checkNumber(number) {
-    console.log("valid guess");
+    let result = "";
+    //Compares the number with target number and applies worlde rules to it
+    let target = targetNumberRef.current;
+    let tempTarget = "";
+    for (let i = 0; i < props.digits; i++) {
+      if (number[i] == target[i]) {
+        tempTarget += "G";
+      } else {
+        tempTarget += target[i];
+      }
+    }
+    for (let i = 0; i < props.digits; i++) {
+      if (tempTarget[i] == "G") {
+        result += "G";
+      } else if (tempTarget.includes(number[i])) {
+        result += "Y";
+      } else {
+        result += "X";
+      }
+    }
+    //Compares the number with target number numerically and creates a hint
+    target = Number(target);
+    number = Number(number);
+    if (number > target) {
+      result += "L";
+    } else if (number < target) {
+      result += "H";
+    } else if (number == target) {
+      result += "E";
+    }
+    console.log(result);
+    return result;
   }
 
   //Plays an animation when user has invalid length input
