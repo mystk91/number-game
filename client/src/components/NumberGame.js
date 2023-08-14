@@ -25,6 +25,13 @@ function NumberGame(props) {
   function setBoardStateRef(point) {
     boardStateRef.current = point;
   }
+
+  //Used to update the hints used in the game
+  const hintsRef = useRef([]);
+  function setHintsRef(point) {
+    hintsRef.current = point;
+  }
+
   //Used to update the row game is being played on
   const currentRowRef = useRef(0);
   function setCurrentRowRef(point) {
@@ -62,18 +69,28 @@ function NumberGame(props) {
     console.log(targetNumberRef.current);
 
     //Setting the localStorage for the game or loading it
-    if (localStorage.getItem(`game-` + props.digits)) {
-      //This should load the previously started game from local storage
+    if (localStorage.getItem(`game` + props.digits)) {
+      updateGameStateFromLocalStorage();
     } else {
+      //Sets up the board
       let board = new Array(props.attempts);
       for (let i = 0; i < props.attempts; i++) {
         board[i] = "";
       }
       setBoardStateRef(board);
+      //Sets up the hints
+      let hintsArr = new Array(props.attempts);
+      for (let i = 0; i < props.attempts; i++) {
+        hintsArr[i] = "";
+      }
+      setHintsRef(hintsArr);
       updateLocalStorage();
     }
+    updateGameBoard();
+  }
 
-    /*
+  //Creates the game board again on each render
+  function updateGameBoard() {
     //Creates the rows used during the game
     let rowsTemp = [];
     for (let i = 0; i < props.attempts; i++) {
@@ -81,25 +98,73 @@ function NumberGame(props) {
       for (let j = 0; j < props.digits; j++) {
         let digit = (
           <div
-            className={`digit digit-${j} ` + setColor()}
+            //className={`digit digit-${j}`}
+            className={getDigitClassList(i, j)}
             key={"row" + i + "digit" + j}
-          >{boardStateRef.current[i]}</div>
+          >
+            {boardStateRef.current[i].slice(j, j + 1)}
+          </div>
         );
         digits.push(digit);
       }
-      let hint = <div className={`hint hint-${i}`} key={"hint" + i}></div>;
+      let hint = <div className={getHintClassList(i)} key={"hint" + i}></div>;
       digits.push(hint);
       let row = (
-        <span className={`row row-${i}`} key={"row" + i}>
+        <span className={`row`} key={"row" + i}>
           {digits}
         </span>
       );
       rowsTemp.push(row);
     }
-    setRows(rowsTemp);
+    setBoard(rowsTemp);
+  }
 
-    //Grabs the game state from local storage if user has attempted this puzzle previously
-    */
+  //Helper function that sets the class list for the digits using the hints
+  function getDigitClassList(i, j) {
+    let classList = "";
+    let colorAbbreviation = hintsRef.current[i].slice(j, j + 1);
+    if (colorAbbreviation) {
+      switch (colorAbbreviation) {
+        case "X": {
+          classList += "grey ";
+          break;
+        }
+        case "G": {
+          classList += "green ";
+          break;
+        }
+        case "Y": {
+          classList += "yellow ";
+          break;
+        }
+      }
+    }
+    classList += "digit";
+    return classList;
+  }
+
+  //Helper function that sets the class list for the hint box to the rigght
+  function getHintClassList(i) {
+    let classList = "";
+    let hintAbbreviation = hintsRef.current[i];
+    if (hintAbbreviation) {
+      switch (hintAbbreviation[props.digits]) {
+        case "L": {
+          classList += "lower ";
+          break;
+        }
+        case "H": {
+          classList += "higher ";
+          break;
+        }
+        case "E": {
+          classList += "equals ";
+          break;
+        }
+      }
+    }
+    classList += "hint";
+    return classList;
   }
 
   //Helper function for setting the game state to the local storage
@@ -107,8 +172,20 @@ function NumberGame(props) {
     let gameState = {
       board: boardStateRef.current,
       currentRow: currentRowRef.current,
+      hints: hintsRef.current,
     };
-    localStorage.setItem(`game-` + props.digits, JSON.stringify(gameState));
+    localStorage.setItem(`game` + props.digits, JSON.stringify(gameState));
+  }
+
+  //Helper function that loads the game state from localStorage when user revists the page
+  function updateGameStateFromLocalStorage() {
+    let storage = localStorage.getItem("game" + props.digits);
+    if (storage) {
+      let storageObj = JSON.parse(storage);
+      setBoardStateRef(storageObj.board);
+      setHintsRef(storageObj.hints);
+      setCurrentRowRef(storageObj.currentRow);
+    }
   }
 
   //Handles pressing keys by using different functions
@@ -130,6 +207,7 @@ function NumberGame(props) {
       let copy = boardStateRef.current;
       copy[currentRowRef.current] += n;
       setBoardStateRef(copy);
+      updateGameBoard();
       updateLocalStorage();
     }
   }
@@ -143,6 +221,7 @@ function NumberGame(props) {
         copy[currentRowRef.current].length - 1
       );
       setBoardStateRef(copy);
+      updateGameBoard();
       updateLocalStorage();
     }
   }
@@ -151,12 +230,20 @@ function NumberGame(props) {
   function checkGuess() {
     if (boardStateRef.current[currentRowRef.current].length == props.digits) {
       let result = checkNumber(boardStateRef.current[currentRowRef.current]);
+
+      let hintsCopy = hintsRef.current;
+      hintsCopy[currentRowRef.current] = result;
+      setHintsRef(hintsCopy);
+
+      updateGameBoard();
+      updateLocalStorage();
       if (result == "GGGGGE") {
         victory();
       } else {
         if (currentRowRef != props.guesses - 1) {
           guessAnimation(result);
           setCurrentRowRef(currentRowRef.current + 1);
+          updateLocalStorage();
         } else {
           defeat();
         }
