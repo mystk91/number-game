@@ -38,6 +38,16 @@ function NumberGame(props) {
     currentRowRef.current = point;
   }
 
+  //Used to set the colors of the keys on the keyboard
+  const keyboardColorsRef = useRef({color1: '', color2: '', color3:'', color4:'',color5:'', color6:'', color7:'', color8:'', color9:'', color0:''});
+  function setKeyboardColorsRef(point) {
+    keyboardColorsRef.current = point;
+  } 
+  
+  //Used to update the board state visually
+  const [keyboardColors, setKeyboardColors] = useState({color1: '', color2: '', color3:'', color4:'',color5:'', color6:'', color7:'', color8:'', color9:'', color0:''});  
+
+
   //A temporary random number used to test the game
   const targetNumberRef = useRef("");
   function setTargetNumberRef(point) {
@@ -58,7 +68,7 @@ function NumberGame(props) {
   //useEffect(() => {}, [property]);
 
   function setupGame() {
-    //Setting the target number
+    //Setting the target number (this part will be changed later)
     let targetNumber = Math.floor(
       Math.random() * Math.pow(10, props.digits)
     ).toString();
@@ -185,7 +195,40 @@ function NumberGame(props) {
       setBoardStateRef(storageObj.board);
       setHintsRef(storageObj.hints);
       setCurrentRowRef(storageObj.currentRow);
+      changeKeyboardColors();
     }
+  }
+
+  //Used to set the colors on the keyboard at the bottom of the game
+  function changeKeyboardColors(){
+    let boardStateCopy = boardStateRef.current;
+    let hintsCopy = hintsRef.current;
+    let colorsObj = {color1: '', color2: '', color3:'', color4:'',color5:'', color6:'', color7:'', color8:'', color9:'', color0:''};
+
+    let noRows = 0;
+    while(boardStateCopy[noRows] != ''){
+      noRows++;
+    }
+
+    for (let i = 0; i < noRows; i++){
+      for (let j = 0; j < props.digits; j++){
+        let hint = hintsCopy[i];
+        let letter = hint[j];
+        let boardStateRow = boardStateCopy[i];
+        let number = boardStateRow[j];
+
+        if (letter == 'X'){
+          colorsObj['color' + number] = 'grey';
+        }
+        else if (letter == 'G'){
+          colorsObj['color' + number] = 'green';
+        }
+        else if (letter == 'Y' && colorsObj['color' + number] != 'green'){
+          colorsObj['color' + number] = 'yellow';
+        }
+      }
+    }
+    setKeyboardColors(colorsObj);
   }
 
   //Handles pressing keys by using different functions
@@ -235,6 +278,7 @@ function NumberGame(props) {
       hintsCopy[currentRowRef.current] = result;
       setHintsRef(hintsCopy);
 
+      changeKeyboardColors();
       updateGameBoard();
       updateLocalStorage();
       if (result == "GGGGGE") {
@@ -322,34 +366,34 @@ function NumberGame(props) {
 
         <div className="keyboard">
           <div className="number-inputs">
-            <button className="number-input" onClick={() => inputNumber(1)}>
+            <button className={"number-input " + keyboardColors['color1']} onClick={() => inputNumber(1)}>
               1
             </button>
-            <button className="number-input" onClick={() => inputNumber(2)}>
+            <button className={"number-input " + keyboardColors['color2']}  onClick={() => inputNumber(2)}>
               2
             </button>
-            <button className="number-input" onClick={() => inputNumber(3)}>
+            <button className={"number-input " + keyboardColors['color3']}  onClick={() => inputNumber(3)}>
               3
             </button>
-            <button className="number-input" onClick={() => inputNumber(4)}>
+            <button className={"number-input " + keyboardColors['color4']}  onClick={() => inputNumber(4)}>
               4
             </button>
-            <button className="number-input" onClick={() => inputNumber(5)}>
+            <button className={"number-input " + keyboardColors['color5']}  onClick={() => inputNumber(5)}>
               5
             </button>
-            <button className="number-input" onClick={() => inputNumber(6)}>
+            <button className={"number-input " + keyboardColors['color6']} onClick={() => inputNumber(6)}>
               6
             </button>
-            <button className="number-input" onClick={() => inputNumber(7)}>
+            <button className={"number-input " + keyboardColors['color7']}  onClick={() => inputNumber(7)}>
               7
             </button>
-            <button className="number-input" onClick={() => inputNumber(8)}>
+            <button className={"number-input " + keyboardColors['color8']}  onClick={() => inputNumber(8)}>
               8
             </button>
-            <button className="number-input" onClick={() => inputNumber(9)}>
+            <button className={"number-input " + keyboardColors['color9']} onClick={() => inputNumber(9)}>
               9
             </button>
-            <button className="number-input" onClick={() => inputNumber(0)}>
+            <button className={"number-input " + keyboardColors['color0']}  onClick={() => inputNumber(0)}>
               0
             </button>
             <button className="backspace" onClick={backspace}></button>
