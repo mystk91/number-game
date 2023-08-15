@@ -39,14 +39,35 @@ function NumberGame(props) {
   }
 
   //Used to set the colors of the keys on the keyboard
-  const keyboardColorsRef = useRef({color1: '', color2: '', color3:'', color4:'',color5:'', color6:'', color7:'', color8:'', color9:'', color0:''});
+  const keyboardColorsRef = useRef({
+    color1: "",
+    color2: "",
+    color3: "",
+    color4: "",
+    color5: "",
+    color6: "",
+    color7: "",
+    color8: "",
+    color9: "",
+    color0: "",
+  });
   function setKeyboardColorsRef(point) {
     keyboardColorsRef.current = point;
-  } 
-  
-  //Used to update the board state visually
-  const [keyboardColors, setKeyboardColors] = useState({color1: '', color2: '', color3:'', color4:'',color5:'', color6:'', color7:'', color8:'', color9:'', color0:''});  
+  }
 
+  //Used to update the board state visually
+  const [keyboardColors, setKeyboardColors] = useState({
+    color1: "",
+    color2: "",
+    color3: "",
+    color4: "",
+    color5: "",
+    color6: "",
+    color7: "",
+    color8: "",
+    color9: "",
+    color0: "",
+  });
 
   //A temporary random number used to test the game
   const targetNumberRef = useRef("");
@@ -131,7 +152,7 @@ function NumberGame(props) {
 
   //Helper function that sets the class list for the digits using the hints
   function getDigitClassList(i, j) {
-    let classList = "";
+    let classList = "digit ";
     let colorAbbreviation = hintsRef.current[i].slice(j, j + 1);
     if (colorAbbreviation) {
       switch (colorAbbreviation) {
@@ -149,13 +170,12 @@ function NumberGame(props) {
         }
       }
     }
-    classList += "digit";
     return classList;
   }
 
-  //Helper function that sets the class list for the hint box to the rigght
+  //Helper function that sets the class list for the hint box to the right
   function getHintClassList(i) {
-    let classList = "";
+    let classList = "hint ";
     let hintAbbreviation = hintsRef.current[i];
     if (hintAbbreviation) {
       switch (hintAbbreviation[props.digits]) {
@@ -173,7 +193,6 @@ function NumberGame(props) {
         }
       }
     }
-    classList += "hint";
     return classList;
   }
 
@@ -200,31 +219,54 @@ function NumberGame(props) {
   }
 
   //Used to set the colors on the keyboard at the bottom of the game
-  function changeKeyboardColors(){
+  function changeKeyboardColors() {
     let boardStateCopy = boardStateRef.current;
     let hintsCopy = hintsRef.current;
-    let colorsObj = {color1: '', color2: '', color3:'', color4:'',color5:'', color6:'', color7:'', color8:'', color9:'', color0:''};
+    let colorsObj = {
+      color1: "",
+      color2: "",
+      color3: "",
+      color4: "",
+      color5: "",
+      color6: "",
+      color7: "",
+      color8: "",
+      color9: "",
+      color0: "",
+    };
 
     let noRows = 0;
-    while(boardStateCopy[noRows] != ''){
+    while (boardStateCopy[noRows] != "" && noRows < props.attempts) {
       noRows++;
     }
 
-    for (let i = 0; i < noRows; i++){
-      for (let j = 0; j < props.digits; j++){
+    for (let i = 0; i < noRows; i++) {
+      for (let j = 0; j < props.digits; j++) {
         let hint = hintsCopy[i];
         let letter = hint[j];
         let boardStateRow = boardStateCopy[i];
         let number = boardStateRow[j];
 
-        if (letter == 'X'){
-          colorsObj['color' + number] = 'grey';
-        }
-        else if (letter == 'G'){
-          colorsObj['color' + number] = 'green';
-        }
-        else if (letter == 'Y' && colorsObj['color' + number] != 'green'){
-          colorsObj['color' + number] = 'yellow';
+        if (colorsObj["color" + number] == "green") {
+          //Do nothing
+        } else if (colorsObj["color" + number] == "yellow") {
+          if (letter == "G") {
+            colorsObj["color" + number] = "green";
+          }
+        } else if (colorsObj["color" + number] == "grey") {
+          if (letter == "G") {
+            colorsObj["color" + number] = "green";
+          } else if (letter == "Y") {
+            colorsObj["color" + number] = "yellow";
+          }
+        } else {
+          if (letter == "G") {
+            colorsObj["color" + number] = "green";
+          } else if (letter == "Y") {
+            colorsObj["color" + number] = "yellow";
+          } else if (letter == "X") {
+            colorsObj["color" + number] = "grey";
+          }
         }
       }
     }
@@ -352,6 +394,14 @@ function NumberGame(props) {
   //Occurs when user runs out of guesses
   function defeat() {}
 
+  //Resets the game. Good for testing purposes. Will eventually be removed.
+  function resetGame() {
+    localStorage.removeItem("game" + props.digits);
+    setCurrentRowRef(0);
+    setupGame();
+    changeKeyboardColors();
+  }
+
   return (
     <main className="gameboard-container">
       <div className="gameboard">
@@ -366,34 +416,64 @@ function NumberGame(props) {
 
         <div className="keyboard">
           <div className="number-inputs">
-            <button className={"number-input " + keyboardColors['color1']} onClick={() => inputNumber(1)}>
+            <button
+              className={"number-input " + keyboardColors["color1"]}
+              onClick={() => inputNumber(1)}
+            >
               1
             </button>
-            <button className={"number-input " + keyboardColors['color2']}  onClick={() => inputNumber(2)}>
+            <button
+              className={"number-input " + keyboardColors["color2"]}
+              onClick={() => inputNumber(2)}
+            >
               2
             </button>
-            <button className={"number-input " + keyboardColors['color3']}  onClick={() => inputNumber(3)}>
+            <button
+              className={"number-input " + keyboardColors["color3"]}
+              onClick={() => inputNumber(3)}
+            >
               3
             </button>
-            <button className={"number-input " + keyboardColors['color4']}  onClick={() => inputNumber(4)}>
+            <button
+              className={"number-input " + keyboardColors["color4"]}
+              onClick={() => inputNumber(4)}
+            >
               4
             </button>
-            <button className={"number-input " + keyboardColors['color5']}  onClick={() => inputNumber(5)}>
+            <button
+              className={"number-input " + keyboardColors["color5"]}
+              onClick={() => inputNumber(5)}
+            >
               5
             </button>
-            <button className={"number-input " + keyboardColors['color6']} onClick={() => inputNumber(6)}>
+            <button
+              className={"number-input " + keyboardColors["color6"]}
+              onClick={() => inputNumber(6)}
+            >
               6
             </button>
-            <button className={"number-input " + keyboardColors['color7']}  onClick={() => inputNumber(7)}>
+            <button
+              className={"number-input " + keyboardColors["color7"]}
+              onClick={() => inputNumber(7)}
+            >
               7
             </button>
-            <button className={"number-input " + keyboardColors['color8']}  onClick={() => inputNumber(8)}>
+            <button
+              className={"number-input " + keyboardColors["color8"]}
+              onClick={() => inputNumber(8)}
+            >
               8
             </button>
-            <button className={"number-input " + keyboardColors['color9']} onClick={() => inputNumber(9)}>
+            <button
+              className={"number-input " + keyboardColors["color9"]}
+              onClick={() => inputNumber(9)}
+            >
               9
             </button>
-            <button className={"number-input " + keyboardColors['color0']}  onClick={() => inputNumber(0)}>
+            <button
+              className={"number-input " + keyboardColors["color0"]}
+              onClick={() => inputNumber(0)}
+            >
               0
             </button>
             <button className="backspace" onClick={backspace}></button>
@@ -401,6 +481,10 @@ function NumberGame(props) {
 
           <button className="enter-guess" onClick={checkGuess}>
             Enter
+          </button>
+
+          <button className="reset-game" onClick={resetGame}>
+            Reset
           </button>
         </div>
       </div>

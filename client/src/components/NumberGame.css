@@ -39,11 +39,19 @@ span {
   display: flex;
 }
 
+.digit{
+  text-align: center;
+  line-height: 90px;
+  font-size: 5.0rem;
+  font-weight: bold;
+
+}
+
 .digit,
 .hint {
   height: 90px;
   width: 40%;
-  border: 1px solid black;
+  border: 2px solid rgb(45, 45, 45);
   margin: 0 1px;
 }
 
@@ -53,24 +61,39 @@ span {
 }
 
 /* Styles for the hints on the digits */
+.grey, .green, .yellow, .higher, .lower, .equals{
+  text-shadow: -.6px 0 black, 0 .6px black, .6px 0 black, 0 -.6px black;
+}
+
 .grey {
   background-color: rgb(168, 168, 168);
+  color: rgb(250, 250, 250);
 }
 
 .green {
   background-color: rgb(34, 180, 80);
+  color: rgb(250, 250, 250);
 }
 
 .yellow {
   background-color: rgb(221, 221, 89);
+  color: rgb(250, 250, 250);
 }
 
 .higher {
-  background-color: rgb(157, 68, 68);
+  background-image: url('../../public/images/game/upArrow.png');
+  background-position: center center; 
+  background-size: auto 60px;	
+  background-repeat: no-repeat;
+  background-color: rgb(155, 41, 41);
 }
 
 .lower {
-  background-color: rgb(84, 84, 122);
+  background-image: url('../../public/images/game/downArrow.png');
+  background-position: center center; 
+  background-size: auto 60px;
+  background-repeat: no-repeat;
+  background-color: rgb(67, 67, 106);
 }
 
 .equals {
