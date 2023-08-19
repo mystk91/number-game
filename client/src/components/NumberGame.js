@@ -38,6 +38,9 @@ function NumberGame(props) {
     currentRowRef.current = point;
   }
 
+  //Used to update the keyboard visually
+  const [keyboard, setKeyboard] = useState([]);
+
   //Used to set the colors of the keys on the keyboard
   const keyboardColorsRef = useRef({
     color1: "",
@@ -54,20 +57,6 @@ function NumberGame(props) {
   function setKeyboardColorsRef(point) {
     keyboardColorsRef.current = point;
   }
-
-  //Used to update the board state visually
-  const [keyboardColors, setKeyboardColors] = useState({
-    key1: "",
-    key2: "",
-    key3: "",
-    key4: "",
-    key5: "",
-    key6: "",
-    key7: "",
-    key8: "",
-    key9: "",
-    key0: "",
-  });
 
   //A temporary random number used to test the game
   const targetNumberRef = useRef("");
@@ -91,9 +80,6 @@ function NumberGame(props) {
     keyEnter: "",
   });
 
-  //Used to rerender animation again quickly
-  const [rerender, setRerender] = useState([]);
-
   //componentDidMount, runs when component mounts, then componentDismount
   useEffect(() => {
     setupGame();
@@ -108,6 +94,7 @@ function NumberGame(props) {
   //useEffect(() => {}, [property]);
 
   function setupGame() {
+
     //Setting the target number (this part will be changed later)
     let targetNumber = Math.floor(
       Math.random() * Math.pow(10, props.digits)
@@ -137,6 +124,7 @@ function NumberGame(props) {
       updateLocalStorage();
     }
     updateGameBoard();
+    updateKeyboard();
   }
 
   //Creates the game board for the app. Call it to rerender the board.
@@ -176,15 +164,15 @@ function NumberGame(props) {
     if (colorAbbreviation) {
       switch (colorAbbreviation) {
         case "X": {
-          classList += "grey ";
+          classList += "grey";
           break;
         }
         case "G": {
-          classList += "green ";
+          classList += "green";
           break;
         }
         case "Y": {
-          classList += "yellow ";
+          classList += "yellow";
           break;
         }
       }
@@ -199,15 +187,15 @@ function NumberGame(props) {
     if (hintAbbreviation) {
       switch (hintAbbreviation[props.digits]) {
         case "L": {
-          classList += "lower ";
+          classList += "lower";
           break;
         }
         case "H": {
-          classList += "higher ";
+          classList += "higher";
           break;
         }
         case "E": {
-          classList += "equals ";
+          classList += "equals";
           break;
         }
       }
@@ -235,6 +223,132 @@ function NumberGame(props) {
       setCurrentRowRef(storageObj.currentRow);
       changeKeyboardColors();
     }
+  }
+
+  //Used to set up the keyboard on each render
+  function updateKeyboard() {
+    let keyboardHTML = (
+      <div className="keyboard">
+        <div className="number-inputs">
+          <button
+            className={
+              "number-input" +
+              keyboardColorsRef.current["color1"] +
+              keyboardAnimation["key1"]
+            }
+            onClick={() => inputNumber(1)}
+          >
+            1
+          </button>
+          <button
+            className={
+              "number-input" +
+              keyboardColorsRef.current["color2"] +
+              keyboardAnimation["key2"]
+            }
+            onClick={() => inputNumber(2)}
+          >
+            2
+          </button>
+          <button
+            className={
+              "number-input" +
+              keyboardColorsRef.current["color3"] +
+              keyboardAnimation["key3"]
+            }
+            onClick={() => inputNumber(3)}
+          >
+            3
+          </button>
+          <button
+            className={
+              "number-input" +
+              keyboardColorsRef.current["color4"] +
+              keyboardAnimation["key4"]
+            }
+            onClick={() => inputNumber(4)}
+          >
+            4
+          </button>
+          <button
+            className={
+              "number-input" +
+              keyboardColorsRef.current["color5"] +
+              keyboardAnimation["key5"]
+            }
+            onClick={() => inputNumber(5)}
+          >
+            5
+          </button>
+          <button
+            className={
+              "number-input" +
+              keyboardColorsRef.current["color6"] +
+              keyboardAnimation["key6"]
+            }
+            onClick={() => inputNumber(6)}
+          >
+            6
+          </button>
+          <button
+            className={
+              "number-input" +
+              keyboardColorsRef.current["color7"] +
+              keyboardAnimation["key7"]
+            }
+            onClick={() => inputNumber(7)}
+          >
+            7
+          </button>
+          <button
+            className={
+              "number-input" +
+              keyboardColorsRef.current["color8"] +
+              keyboardAnimation["key8"]
+            }
+            onClick={() => inputNumber(8)}
+          >
+            8
+          </button>
+          <button
+            className={
+              "number-input" +
+              keyboardColorsRef.current["color9"] +
+              keyboardAnimation["key9"]
+            }
+            onClick={() => inputNumber(9)}
+          >
+            9
+          </button>
+          <button
+            className={
+              "number-input" +
+              keyboardColorsRef.current["color0"] +
+              keyboardAnimation["key0"]
+            }
+            onClick={() => inputNumber(0)}
+          >
+            0
+          </button>
+          <button
+            className={"backspace" + keyboardAnimation["keyBackspace"]}
+            onClick={backspace}
+          ></button>
+        </div>
+
+        <button
+          className={"enter-guess" + keyboardAnimation["keyEnter"]}
+          onClick={checkGuess}
+        >
+          Enter
+        </button>
+
+        <button className="reset-game" onClick={resetGame}>
+          Reset
+        </button>
+      </div>
+    );
+    setKeyboard(keyboardHTML);
   }
 
   //Used to set the colors on the keyboard at the bottom of the game
@@ -289,7 +403,8 @@ function NumberGame(props) {
         }
       }
     }
-    setKeyboardColors(colorsObj);
+    setKeyboardColorsRef(colorsObj);
+    updateKeyboard();
   }
 
   //Handles pressing keys by using different functions
@@ -311,11 +426,12 @@ function NumberGame(props) {
     let keyboardAnimationCopy = keyboardAnimation;
     keyboardAnimationCopy[keyName] = " keydown";
     setKeyboardAnimation(keyboardAnimationCopy);
+    updateKeyboard();
     let timeout = setTimeout(() => {
       let keyboardAnimationCopy = keyboardAnimation;
       keyboardAnimationCopy[keyName] = "";
       setKeyboardAnimation(keyboardAnimationCopy);
-      setRerender([]);
+      updateKeyboard();
     }, 600);
   }
 
@@ -439,8 +555,7 @@ function NumberGame(props) {
   }
 
   return (
-    <main className="gameboard-container">
-      {rerender}
+    <main className="game-container">
       <div className="gameboard">
         <div className="headline">
           <div className="instructions">
@@ -450,127 +565,7 @@ function NumberGame(props) {
         </div>
 
         <div className="rows">{board}</div>
-        {
-          <div className="keyboard">
-            <div className="number-inputs">
-              <button
-                className={
-                  "number-input" +
-                  keyboardColors["color1"] +
-                  keyboardAnimation["key1"]
-                }
-                onClick={() => inputNumber(1)}
-              >
-                1
-              </button>
-              <button
-                className={
-                  "number-input" +
-                  keyboardColors["color2"] +
-                  keyboardAnimation["key2"]
-                }
-                onClick={() => inputNumber(2)}
-              >
-                2
-              </button>
-              <button
-                className={
-                  "number-input" +
-                  keyboardColors["color3"] +
-                  keyboardAnimation["key3"]
-                }
-                onClick={() => inputNumber(3)}
-              >
-                3
-              </button>
-              <button
-                className={
-                  "number-input" +
-                  keyboardColors["color4"] +
-                  keyboardAnimation["key4"]
-                }
-                onClick={() => inputNumber(4)}
-              >
-                4
-              </button>
-              <button
-                className={
-                  "number-input" +
-                  keyboardColors["color5"] +
-                  keyboardAnimation["key5"]
-                }
-                onClick={() => inputNumber(5)}
-              >
-                5
-              </button>
-              <button
-                className={
-                  "number-input" +
-                  keyboardColors["color6"] +
-                  keyboardAnimation["key6"]
-                }
-                onClick={() => inputNumber(6)}
-              >
-                6
-              </button>
-              <button
-                className={
-                  "number-input" +
-                  keyboardColors["color7"] +
-                  keyboardAnimation["key7"]
-                }
-                onClick={() => inputNumber(7)}
-              >
-                7
-              </button>
-              <button
-                className={
-                  "number-input" +
-                  keyboardColors["color8"] +
-                  keyboardAnimation["key8"]
-                }
-                onClick={() => inputNumber(8)}
-              >
-                8
-              </button>
-              <button
-                className={
-                  "number-input" +
-                  keyboardColors["color9"] +
-                  keyboardAnimation["key9"]
-                }
-                onClick={() => inputNumber(9)}
-              >
-                9
-              </button>
-              <button
-                className={
-                  "number-input" +
-                  keyboardColors["color0"] +
-                  keyboardAnimation["key0"]
-                }
-                onClick={() => inputNumber(0)}
-              >
-                0
-              </button>
-              <button
-                className={"backspace" + keyboardAnimation["keyBackspace"]}
-                onClick={backspace}
-              ></button>
-            </div>
-
-            <button
-              className={"enter-guess" + keyboardAnimation["keyEnter"]}
-              onClick={checkGuess}
-            >
-              Enter
-            </button>
-
-            <button className="reset-game" onClick={resetGame}>
-              Reset
-            </button>
-          </div>
-        }
+        {keyboard}
       </div>
     </main>
   );
