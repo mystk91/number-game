@@ -80,6 +80,22 @@ function NumberGame(props) {
     keyEnter: "",
   });
 
+  //Used to set the transition delay on the keyboard keys
+  const [transitionDelay, setTransitionDelay] = useState({
+    key1: "",
+    key2: "",
+    key3: "",
+    key4: "",
+    key5: "",
+    key6: "",
+    key7: "",
+    key8: "",
+    key9: "",
+    key0: "",
+    keyBackspace: "",
+    keyEnter: "",
+  });
+
   //componentDidMount, runs when component mounts, then componentDismount
   useEffect(() => {
     setupGame();
@@ -137,7 +153,9 @@ function NumberGame(props) {
           <div
             //className={`digit digit-${j}`}
             className={getDigitClassList(i, j)}
-            style={{ animationDelay: .05 + .2 * props.digits - .2 * j + 's' }}
+            style={{
+              animationDelay: 0.05 + 0.2 * props.digits - 0.2 * j + "s",
+            }}
             key={"row" + i + "digit" + j}
           >
             {boardStateRef.current[i].slice(j, j + 1)}
@@ -249,70 +267,100 @@ function NumberGame(props) {
         <div className="number-inputs">
           <button
             className={"number-input" + keyboardColorsRef.current["color1"]}
-            style={{ animation: keyboardAnimation[`key1`], transitionDelay: .5 + .1 * props.digits + 's' }}
+            style={{
+              animation: keyboardAnimation[`key1`],
+              transitionDelay: transitionDelay["key1"],
+            }}
             onClick={() => inputNumber(1)}
           >
             1
           </button>
           <button
             className={"number-input" + keyboardColorsRef.current["color2"]}
-            style={{ animation: keyboardAnimation[`key2`] }}
+            style={{
+              animation: keyboardAnimation[`key2`],
+              transitionDelay: transitionDelay["key2"],
+            }}
             onClick={() => inputNumber(2)}
           >
             2
           </button>
           <button
             className={"number-input" + keyboardColorsRef.current["color3"]}
-            style={{ animation: keyboardAnimation[`key3`] }}
+            style={{
+              animation: keyboardAnimation[`key3`],
+              transitionDelay: transitionDelay["key3"],
+            }}
             onClick={() => inputNumber(3)}
           >
             3
           </button>
           <button
             className={"number-input" + keyboardColorsRef.current["color4"]}
-            style={{ animation: keyboardAnimation[`key4`] }}
+            style={{
+              animation: keyboardAnimation[`key4`],
+              transitionDelay: transitionDelay["key4"],
+            }}
             onClick={() => inputNumber(4)}
           >
             4
           </button>
           <button
             className={"number-input" + keyboardColorsRef.current["color5"]}
-            style={{ animation: keyboardAnimation[`key5`] }}
+            style={{
+              animation: keyboardAnimation[`key5`],
+              transitionDelay: transitionDelay["key5"],
+            }}
             onClick={() => inputNumber(5)}
           >
             5
           </button>
           <button
             className={"number-input" + keyboardColorsRef.current["color6"]}
-            style={{ animation: keyboardAnimation[`key6`] }}
+            style={{
+              animation: keyboardAnimation[`key6`],
+              transitionDelay: transitionDelay["key6"],
+            }}
             onClick={() => inputNumber(6)}
           >
             6
           </button>
           <button
             className={"number-input" + keyboardColorsRef.current["color7"]}
-            style={{ animation: keyboardAnimation[`key7`] }}
+            style={{
+              animation: keyboardAnimation[`key7`],
+              transitionDelay: transitionDelay["key7"],
+            }}
             onClick={() => inputNumber(7)}
           >
             7
           </button>
           <button
             className={"number-input" + keyboardColorsRef.current["color8"]}
-            style={{ animation: keyboardAnimation[`key8`] }}
+            style={{
+              animation: keyboardAnimation[`key8`],
+              transitionDelay: transitionDelay["key8"],
+            }}
             onClick={() => inputNumber(8)}
           >
             8
           </button>
           <button
             className={"number-input" + keyboardColorsRef.current["color9"]}
-            style={{ animation: keyboardAnimation[`key9`] }}
+            style={{
+              animation: keyboardAnimation[`key9`],
+              transitionDelay: transitionDelay["key9"],
+            }}
             onClick={() => inputNumber(9)}
           >
             9
           </button>
           <button
             className={"number-input" + keyboardColorsRef.current["color0"]}
-            style={{ animation: keyboardAnimation[`key0`] }}
+            style={{
+              animation: keyboardAnimation[`key0`],
+              transitionDelay: transitionDelay["key0"],
+            }}
             onClick={() => inputNumber(0)}
           >
             0
@@ -418,7 +466,9 @@ function NumberGame(props) {
     updateKeyboard();
     let timeout = setTimeout(() => {
       let keydownAnimationCopy = keyboardAnimation;
-      keydownAnimationCopy[keyName] = `keydown .6s`;
+
+      keydownAnimationCopy[keyName] = `keydown .5s`;
+
       setKeyboardAnimation(keydownAnimationCopy);
       updateKeyboard();
     }, 1);
@@ -454,16 +504,20 @@ function NumberGame(props) {
   //Checks the users guess
   function checkGuess() {
     if (boardStateRef.current[currentRowRef.current].length == props.digits) {
+      keydownAnimation("keyEnter");
       let result = checkNumber(boardStateRef.current[currentRowRef.current]);
 
       let hintsCopy = hintsRef.current;
       hintsCopy[currentRowRef.current] = result;
       setHintsRef(hintsCopy);
 
+      addTransitionDelay();
+      removeTransitionDelay();
       changeKeyboardColors();
       updateGameBoard();
       updateLocalStorage();
-      keydownAnimation("keyEnter");
+
+
       //keydownAnimation("keyEnter");
       if (result == "GGGGGE") {
         victory();
@@ -520,6 +574,34 @@ function NumberGame(props) {
     }
     console.log(result);
     return result;
+  }
+
+  //Helper function that adds a transition delay to the keys on the keyboard so they change as gameboard changes
+  function addTransitionDelay() {
+    let transitionDelayCopy = transitionDelay;
+    let number = boardStateRef.current[currentRowRef.current];
+    for (let i = 0; i < props.digits; i++) {
+      transitionDelayCopy[`key` + number[i]] =
+        0.55 + (props.digits - 1) * 0.2 - i * 0.2 + "s";
+    }
+    setTransitionDelay(transitionDelayCopy);
+  }
+
+  function removeTransitionDelay() {
+    setTransitionDelay({
+      key1: "0s",
+      key2: "0s",
+      key3: "0s",
+      key4: "0s",
+      key5: "0s",
+      key6: "0s",
+      key7: "0s",
+      key8: "0s",
+      key9: "0s",
+      key0: "0s",
+      keyBackspace: "0s",
+      keyEnter: "0s",
+    });
   }
 
   //Plays an animation when user has invalid length input
