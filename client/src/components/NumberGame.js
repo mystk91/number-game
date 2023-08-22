@@ -80,24 +80,6 @@ function NumberGame(props) {
     keyEnter: "",
   });
 
-  /*
-  //Used to update the animation visually when user types/clicks the keyboard
-  const [keydownStyle, setKeydownStyle] = useState({
-    key1: "",
-    key2: "",
-    key3: "",
-    key4: "",
-    key5: "",
-    key6: "",
-    key7: "",
-    key8: "",
-    key9: "",
-    key0: "",
-    keyBackspace: "",
-    keyEnter: "",
-  });
-  */
-
   //componentDidMount, runs when component mounts, then componentDismount
   useEffect(() => {
     setupGame();
@@ -155,6 +137,7 @@ function NumberGame(props) {
           <div
             //className={`digit digit-${j}`}
             className={getDigitClassList(i, j)}
+            style={{ animationDelay: .05 + .2 * props.digits - .2 * j + 's' }}
             key={"row" + i + "digit" + j}
           >
             {boardStateRef.current[i].slice(j, j + 1)}
@@ -176,20 +159,37 @@ function NumberGame(props) {
 
   //Helper function that sets the class list for the digits using the hints
   function getDigitClassList(i, j) {
-    let classList = "digit ";
+    let classList = "digit";
     let colorAbbreviation = hintsRef.current[i].slice(j, j + 1);
     if (colorAbbreviation) {
       switch (colorAbbreviation) {
         case "X": {
-          classList += "grey";
+          classList += " grey";
           break;
         }
         case "G": {
-          classList += "green";
+          classList += " green";
           break;
         }
         case "Y": {
-          classList += "yellow";
+          classList += " yellow";
+          break;
+        }
+      }
+    }
+    let hintAbbreviation = hintsRef.current[i];
+    if (hintAbbreviation) {
+      switch (hintAbbreviation[props.digits]) {
+        case "L": {
+          classList += " lower";
+          break;
+        }
+        case "H": {
+          classList += " higher";
+          break;
+        }
+        case "E": {
+          classList += " equals";
           break;
         }
       }
@@ -199,20 +199,20 @@ function NumberGame(props) {
 
   //Helper function that sets the class list for the hint box to the right
   function getHintClassList(i) {
-    let classList = "hint ";
+    let classList = "hint";
     let hintAbbreviation = hintsRef.current[i];
     if (hintAbbreviation) {
       switch (hintAbbreviation[props.digits]) {
         case "L": {
-          classList += "lower";
+          classList += " lower";
           break;
         }
         case "H": {
-          classList += "higher";
+          classList += " higher";
           break;
         }
         case "E": {
-          classList += "equals";
+          classList += " equals";
           break;
         }
       }
@@ -249,7 +249,7 @@ function NumberGame(props) {
         <div className="number-inputs">
           <button
             className={"number-input" + keyboardColorsRef.current["color1"]}
-            style={{ animation: keyboardAnimation[`key1`] }}
+            style={{ animation: keyboardAnimation[`key1`], transitionDelay: .5 + .1 * props.digits + 's' }}
             onClick={() => inputNumber(1)}
           >
             1
