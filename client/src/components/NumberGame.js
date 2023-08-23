@@ -466,11 +466,14 @@ function NumberGame(props) {
     updateKeyboard();
     let timeout = setTimeout(() => {
       let keydownAnimationCopy = keyboardAnimation;
-
       keydownAnimationCopy[keyName] = `keydown .5s`;
-
       setKeyboardAnimation(keydownAnimationCopy);
       updateKeyboard();
+      setTimeout(() => {
+        keydownAnimationCopy[keyName] = ``;
+        setKeyboardAnimation(keydownAnimationCopy);
+        updateKeyboard();
+      }, 500);
     }, 1);
   }
 
@@ -512,12 +515,10 @@ function NumberGame(props) {
       setHintsRef(hintsCopy);
 
       addTransitionDelay();
-      removeTransitionDelay();
       changeKeyboardColors();
+      removeTransitionDelay();
       updateGameBoard();
       updateLocalStorage();
-
-
       //keydownAnimation("keyEnter");
       if (result == "GGGGGE") {
         victory();
@@ -587,21 +588,14 @@ function NumberGame(props) {
     setTransitionDelay(transitionDelayCopy);
   }
 
+  //Removes the transition delay
   function removeTransitionDelay() {
-    setTransitionDelay({
-      key1: "0s",
-      key2: "0s",
-      key3: "0s",
-      key4: "0s",
-      key5: "0s",
-      key6: "0s",
-      key7: "0s",
-      key8: "0s",
-      key9: "0s",
-      key0: "0s",
-      keyBackspace: "0s",
-      keyEnter: "0s",
-    });
+    let transitionDelayCopy = transitionDelay;
+    let number = boardStateRef.current[currentRowRef.current];
+    for (let i = 0; i < props.digits; i++) {
+      transitionDelayCopy[`key` + number[i]] = "";
+    }
+    setTransitionDelay(transitionDelayCopy);
   }
 
   //Plays an animation when user has invalid length input

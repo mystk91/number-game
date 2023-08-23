@@ -134,8 +134,12 @@ span {
   background-color: var(--green);
 }
 
-
-.rows .grey.higher, .rows .grey.lower, .rows .yellow.higher, .rows .yellow.lower, .rows .green.higher, .row .green.lower{
+.rows .grey.higher,
+.rows .grey.lower,
+.rows .yellow.higher,
+.rows .yellow.lower,
+.rows .green.higher,
+.row .green.lower {
   animation-duration: 0.6s;
   animation-delay: 0.3s;
   animation-fill-mode: forwards;
@@ -347,7 +351,7 @@ span {
   }
 }
 
-.digit.equals{
+.digit.equals {
   animation-name: equals;
   animation-duration: 0.4s;
   animation-delay: 0.3s;
@@ -370,9 +374,9 @@ span {
     background-position: 50% 50%;
     background-size: auto 10px;
   }
-  50%{
+  50% {
     color: var(--textColorWhite);
-    text-shadow: var(--textShadowNumbers); 
+    text-shadow: var(--textShadowNumbers);
     border: none;
   }
   75% {
