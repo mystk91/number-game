@@ -1,12 +1,12 @@
 /*Variables */
 
 :root {
-  --grey: rgb(168, 168, 168);
-  --yellow: rgb(221, 221, 89);
-  --green: rgb(34, 180, 80);
+  --grey: rgb(140, 140, 140);
+  --yellow: rgb(209, 177, 1);
+  --green: rgb(35, 166, 76);
   --higherColor: rgb(150, 41, 41);
   --lowerColor: rgb(67, 67, 96);
-  --textColorWhite: rgb(250, 250, 250);
+  --textColorWhite: rgb(255, 255, 255);
   --textShadowNumbers: -0.6px 0 black, 0 0.6px black, 0.6px 0 black,
     0 -0.6px black;
   --digitsHeight: 90px;
@@ -45,13 +45,29 @@
   font-size: 1.6rem;
 }
 
-.row {
+.gameboard span {
+  display: flex;
+  justify-content: center;
   margin: 4px 0;
 }
 
-span {
-  display: flex;
-  justify-content: center;
+.current-row .digit,
+.current-row .hint {
+  border: 2px solid rgb(45, 45, 45);
+}
+
+.previous-row .digit,
+.previous-row .hint {
+  border: 2px solid rgb(45, 45, 45);
+}
+
+.new-row.next-digit,
+.new-row.hint {
+  transition: border 1s 0.4s !important;
+}
+
+.new-row.current-digit {
+  transition: border 1s 0.4s !important;
 }
 
 .digit {
@@ -63,16 +79,37 @@ span {
 
 .digit,
 .hint {
+  border: 4px solid rgb(200, 200, 200);
   height: var(--digitsHeight);
   max-width: 72px;
   width: 40%;
-  border: 2px solid rgb(45, 45, 45);
   margin: 0 1px;
 }
 
 .hint {
   background-color: rgb(225, 225, 225);
   margin: 0 6px;
+}
+
+.current-digit {
+  border: 4px solid rgb(45, 45, 45) !important;
+  transition: 0.1s;
+}
+
+.previous-digit,
+.next-digit {
+  border: 2px solid rgb(45, 45, 45) !important;
+  transition: 0.3s;
+}
+
+.previous-digit {
+  animation: 0.1s 0s animateDigit !important;
+}
+
+@keyframes animateDigit {
+  50% {
+    background-color: rgb(240, 240, 240);
+  }
 }
 
 /*Keyboard / number input */
@@ -83,7 +120,7 @@ span {
 }
 
 .keyboard > * {
-  margin: 3px 0;
+  margin: 4px 0;
 }
 
 .number-inputs {
@@ -95,21 +132,30 @@ span {
   height: 80px;
   width: 32px;
   margin: 0 1px;
-  border-radius: 4px;
-  border: 1px solid black;
-  font-size: 3rem;
+  border-radius: 6px;
+  border: 1px solid rgb(178, 178, 178);
+  font-size: 4.2rem;
   background-color: rgb(250, 250, 250);
 }
 
 .enter-guess {
   width: 80%;
   height: 40px;
-  border-radius: 4px;
-  border: 1px solid black;
+  border-radius: 12px;
+  border: 1px solid rgb(178, 178, 178);
+  font-size: 2rem;
+  background-color: rgb(250, 250, 250);
+}
+
+.keyboard .backspace {
+  background-image: url("../../public/images/game/backspace.jpg");
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: auto 32px;
+  width: 36px;
 }
 
 /* Handles the animations for when a guess is entered. */
-
 .keyboard .grey {
   transition: all 0.4s;
   transition-delay: 0.5s;
@@ -139,7 +185,7 @@ span {
 .rows .yellow.higher,
 .rows .yellow.lower,
 .rows .green.higher,
-.row .green.lower {
+.rows .green.lower {
   animation-duration: 0.6s;
   animation-delay: 0.3s;
   animation-fill-mode: forwards;

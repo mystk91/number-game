@@ -96,6 +96,12 @@ function NumberGame(props) {
     keyEnter: "",
   });
 
+  //Used so animations will only occurs when a new row is moved to
+  const newRowRef = useRef(false);
+  function setNewRowRef(point) {
+    newRowRef.current = point;
+  }
+
   //componentDidMount, runs when component mounts, then componentDismount
   useEffect(() => {
     setupGame();
@@ -151,7 +157,6 @@ function NumberGame(props) {
       for (let j = 0; j < props.digits; j++) {
         let digit = (
           <div
-            //className={`digit digit-${j}`}
             className={getDigitClassList(i, j)}
             style={{
               animationDelay: 0.05 + 0.2 * props.digits - 0.2 * j + "s",
@@ -166,13 +171,25 @@ function NumberGame(props) {
       let hint = <div className={getHintClassList(i)} key={"hint" + i}></div>;
       digits.push(hint);
       let row = (
-        <span className={`row`} key={"row" + i}>
+        <span className={getRowClassList(i)} key={"row" + i}>
           {digits}
         </span>
       );
       rowsTemp.push(row);
     }
     setBoard(rowsTemp);
+  }
+
+  //Helper function that sets the class list for the spans containing the rows.
+  //Used to designate the current row.
+  function getRowClassList(i) {
+    if (i > currentRowRef.current) {
+      return "empty-row";
+    } else if (i < currentRowRef.current) {
+      return "previous-row";
+    } else {
+      return "current-row";
+    }
   }
 
   //Helper function that sets the class list for the digits using the hints
@@ -211,7 +228,22 @@ function NumberGame(props) {
           break;
         }
       }
+    } else {
+      if (i == currentRowRef.current) {
+        if (boardStateRef.current[i].length < j) {
+          classList += " next-digit";
+        } else if (boardStateRef.current[i].length > j) {
+          classList += " previous-digit";
+        } else {
+          classList += " current-digit";
+        }
+
+        if (newRowRef.current == true) {
+          classList += " new-row";
+        }
+      }
     }
+
     return classList;
   }
 
@@ -233,6 +265,12 @@ function NumberGame(props) {
           classList += " equals";
           break;
         }
+      }
+    }
+    if (i == currentRowRef.current) {
+      if (newRowRef.current == true) {
+        classList += " new-row";
+        setNewRowRef(false);
       }
     }
     return classList;
@@ -517,15 +555,16 @@ function NumberGame(props) {
       addTransitionDelay();
       changeKeyboardColors();
       removeTransitionDelay();
-      updateGameBoard();
-      updateLocalStorage();
-      //keydownAnimation("keyEnter");
-      if (result == "GGGGGE") {
+
+      if (result == "GGGGE") {
+        updateGameBoard();
+        updateLocalStorage();
         victory();
       } else {
         if (currentRowRef != props.guesses - 1) {
-          guessAnimation(result);
           setCurrentRowRef(currentRowRef.current + 1);
+          setNewRowRef(true);
+          updateGameBoard();
           updateLocalStorage();
         } else {
           defeat();
@@ -602,9 +641,6 @@ function NumberGame(props) {
   function invalidGuess() {
     console.log("invalid guess");
   }
-
-  //Plays an animation when the user has a valid input
-  function guessAnimation(result) {}
 
   //Occurs when the user wins
   function victory() {}
