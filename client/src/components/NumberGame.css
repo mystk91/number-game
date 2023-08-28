@@ -444,7 +444,7 @@
 /*Handle the keydown animation*/
 .keydown {
   animation-name: keydown;
-  animation-duration: 0.6s;
+  animation-duration: 0.5s;
 }
 
 @keyframes keydown {
@@ -453,6 +453,83 @@
   }
   50% {
     filter: brightness(0.9);
+  }
+}
+
+/*Error Messages */
+.error-messages {
+  position: absolute;
+  inset: 250px 50% 0% 0%;
+  display: flex;
+  flex-direction: column;
+  justify-items: center;
+  align-items: center;
+  width: 100%;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.error-message {
+  opacity: 0;
+  align-items: center;
+  border-radius: 40px;
+  margin: 4px;
+  height: 40px;
+  width: max-content;
+  padding: 20px;
+  font-size: 2.2rem;
+  color: rgb(255, 255, 255);
+  text-shadow: var(--textShadowNumbers);
+  background-color: rgb(178, 60, 31);
+  border: 2px solid rgb(0, 0, 0);
+  animation: 1.5s errorMessageFade;
+}
+
+@keyframes errorMessageFade {
+  20% {
+    opacity: 1;
+  }
+  70% {
+    opacity: 1;
+  }
+}
+
+.error-animation {
+  animation: 0.6s error-animation;
+}
+
+@keyframes error-animation {
+  0% {
+    padding-right: 0px;
+    padding-left: 0px;
+  }
+  14.3% {
+    padding-right: 10px;
+    padding-left: 0px;
+  }
+  28.6% {
+    padding-right: 0px;
+    padding-left: 10px;
+  }
+  42.9% {
+    padding-right: 10px;
+    padding-left: 0px;
+  }
+  57.1% {
+    padding-right: 0px;
+    padding-left: 10px;
+  }
+  71.4% {
+    padding-right: 10px;
+    padding-left: 0px;
+  }
+  85.7% {
+    padding-right: 0px;
+    padding-left: 10px;
+  }
+  100% {
+    padding-right: 0px;
+    padding-left: 0px;
   }
 }
 

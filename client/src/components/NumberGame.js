@@ -102,6 +102,15 @@ function NumberGame(props) {
     newRowRef.current = point;
   }
 
+  //Used to display error messages when user inputs an invalid number
+  const [errorMessages, setErrorMessages] = useState([]);
+  const [errorMessagesDiv, setErrorMessagesDiv] = useState();
+  //Used to add the error-animation class in the spans indicating the rows
+  const errorAnimationRef = useRef(false);
+  function setErrorAnimationRef(point) {
+    errorAnimationRef.current = point;
+  }
+
   //componentDidMount, runs when component mounts, then componentDismount
   useEffect(() => {
     setupGame();
@@ -183,13 +192,19 @@ function NumberGame(props) {
   //Helper function that sets the class list for the spans containing the rows.
   //Used to designate the current row.
   function getRowClassList(i) {
+    let classList = "";
     if (i > currentRowRef.current) {
-      return "empty-row";
+      classList += "empty-row";
     } else if (i < currentRowRef.current) {
-      return "previous-row";
+      classList += "previous-row";
     } else {
-      return "current-row";
+      classList += "current-row";
+      if (errorAnimationRef.current == true) {
+        classList += " error-animation";
+        setErrorAnimationRef(false);
+      }
     }
+    return classList;
   }
 
   //Helper function that sets the class list for the digits using the hints
@@ -504,7 +519,11 @@ function NumberGame(props) {
     updateKeyboard();
     let timeout = setTimeout(() => {
       let keydownAnimationCopy = keyboardAnimation;
-      keydownAnimationCopy[keyName] = `keydown .5s`;
+      if (keyName != "keyEnter") {
+        keydownAnimationCopy[keyName] = `keydown .5s`;
+      } else {
+        keydownAnimationCopy[keyName] = `keydown .3s`;
+      }
       setKeyboardAnimation(keydownAnimationCopy);
       updateKeyboard();
       setTimeout(() => {
@@ -571,7 +590,13 @@ function NumberGame(props) {
         }
       }
     } else {
-      invalidGuess();
+      updateGameBoard();
+      setTimeout(() => {
+        invalidGuess();
+        setTimeout(() => {
+          updateGameBoard();
+        }, 400);
+      }, 1);
     }
   }
 
@@ -637,9 +662,50 @@ function NumberGame(props) {
     setTransitionDelay(transitionDelayCopy);
   }
 
-  //Plays an animation when user has invalid length input
+  //Displays an error message and plays an animation when user has invalid length input
   function invalidGuess() {
-    console.log("invalid guess");
+    if (errorMessages.length < 4) {
+      updateGameBoard();
+      setErrorAnimationRef(true);
+      let errorMessagesCopy = errorMessages;
+      let message = (
+        <span className="error-message" key={uniqid()}>
+          Enter a {props.digits} digit number
+        </span>
+      );
+      errorMessagesCopy.push(message);
+      let copy = [];
+      for (let i = 0; i < errorMessagesCopy.length; i++) {
+        copy.push(errorMessagesCopy[i]);
+      }
+      setErrorMessages(copy);
+      let errorMessageDivHTML = (
+        <div
+          className="error-messages"
+          style={{
+            inset: 70 + 92 * (currentRowRef.current + 1) + "px 50% 0% 0%",
+          }}
+        >
+          {errorMessages}
+        </div>
+      );
+      setErrorMessagesDiv(errorMessageDivHTML);
+      updateGameBoard();
+      setTimeout(() => {
+        let errorMessagesCopy = errorMessages;
+        errorMessagesCopy.shift();
+        let copy = [];
+        for (let i = 0; i < errorMessagesCopy.length; i++) {
+          copy.push(errorMessagesCopy[i]);
+        }
+        setErrorMessages(copy);
+        if (copy.length == 0) {
+          setErrorMessagesDiv();
+        } else {
+          setErrorMessagesDiv(errorMessageDivHTML);
+        }
+      }, 1500);
+    }
   }
 
   //Occurs when the user wins
@@ -659,6 +725,7 @@ function NumberGame(props) {
   return (
     <main className="game-container">
       <div className="gameboard">
+        {errorMessagesDiv}
         <div className="headline">
           <div className="instructions">
             Guess from 0 - {Math.pow(10, props.digits) - 1}
