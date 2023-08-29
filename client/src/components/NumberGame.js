@@ -65,7 +65,7 @@ function NumberGame(props) {
   }
 
   //Used to update the animation visually when user types/clicks the keyboard
-  const [keyboardAnimation, setKeyboardAnimation] = useState({
+  const keyboardAnimationRef = useRef({
     key1: "",
     key2: "",
     key3: "",
@@ -79,9 +79,12 @@ function NumberGame(props) {
     keyBackspace: "",
     keyEnter: "",
   });
+  function setKeyboardAnimationRef(point) {
+    keyboardAnimationRef.current = point;
+  }
 
   //Used to set the transition delay on the keyboard keys
-  const [transitionDelay, setTransitionDelay] = useState({
+  const transitionDelayRef = useRef({
     key1: "",
     key2: "",
     key3: "",
@@ -95,6 +98,9 @@ function NumberGame(props) {
     keyBackspace: "",
     keyEnter: "",
   });
+  function setTransitionDelayRef(point) {
+    transitionDelayRef.current = point;
+  }
 
   //Used so animations will only occurs when a new row is moved to
   const newRowRef = useRef(false);
@@ -104,6 +110,11 @@ function NumberGame(props) {
 
   //Used to display error messages when user inputs an invalid number
   const [errorMessages, setErrorMessages] = useState([]);
+  const errorMessagesRef = useRef([]);
+  function setErrorMessagesRef(point) {
+    errorMessagesRef.current = point;
+  }
+
   const [errorMessagesDiv, setErrorMessagesDiv] = useState();
   //Used to add the error-animation class in the spans indicating the rows
   const errorAnimationRef = useRef(false);
@@ -321,8 +332,8 @@ function NumberGame(props) {
           <button
             className={"number-input" + keyboardColorsRef.current["color1"]}
             style={{
-              animation: keyboardAnimation[`key1`],
-              transitionDelay: transitionDelay["key1"],
+              animation: keyboardAnimationRef.current[`key1`],
+              transitionDelay: transitionDelayRef.current["key1"],
             }}
             onClick={() => inputNumber(1)}
           >
@@ -331,8 +342,8 @@ function NumberGame(props) {
           <button
             className={"number-input" + keyboardColorsRef.current["color2"]}
             style={{
-              animation: keyboardAnimation[`key2`],
-              transitionDelay: transitionDelay["key2"],
+              animation: keyboardAnimationRef.current[`key2`],
+              transitionDelay: transitionDelayRef.current["key2"],
             }}
             onClick={() => inputNumber(2)}
           >
@@ -341,8 +352,8 @@ function NumberGame(props) {
           <button
             className={"number-input" + keyboardColorsRef.current["color3"]}
             style={{
-              animation: keyboardAnimation[`key3`],
-              transitionDelay: transitionDelay["key3"],
+              animation: keyboardAnimationRef.current[`key3`],
+              transitionDelay: transitionDelayRef.current["key3"],
             }}
             onClick={() => inputNumber(3)}
           >
@@ -351,8 +362,8 @@ function NumberGame(props) {
           <button
             className={"number-input" + keyboardColorsRef.current["color4"]}
             style={{
-              animation: keyboardAnimation[`key4`],
-              transitionDelay: transitionDelay["key4"],
+              animation: keyboardAnimationRef.current[`key4`],
+              transitionDelay: transitionDelayRef.current["key4"],
             }}
             onClick={() => inputNumber(4)}
           >
@@ -361,8 +372,8 @@ function NumberGame(props) {
           <button
             className={"number-input" + keyboardColorsRef.current["color5"]}
             style={{
-              animation: keyboardAnimation[`key5`],
-              transitionDelay: transitionDelay["key5"],
+              animation: keyboardAnimationRef.current[`key5`],
+              transitionDelay: transitionDelayRef.current["key5"],
             }}
             onClick={() => inputNumber(5)}
           >
@@ -371,8 +382,8 @@ function NumberGame(props) {
           <button
             className={"number-input" + keyboardColorsRef.current["color6"]}
             style={{
-              animation: keyboardAnimation[`key6`],
-              transitionDelay: transitionDelay["key6"],
+              animation: keyboardAnimationRef.current[`key6`],
+              transitionDelay: transitionDelayRef.current["key6"],
             }}
             onClick={() => inputNumber(6)}
           >
@@ -381,8 +392,8 @@ function NumberGame(props) {
           <button
             className={"number-input" + keyboardColorsRef.current["color7"]}
             style={{
-              animation: keyboardAnimation[`key7`],
-              transitionDelay: transitionDelay["key7"],
+              animation: keyboardAnimationRef.current[`key7`],
+              transitionDelay: transitionDelayRef.current["key7"],
             }}
             onClick={() => inputNumber(7)}
           >
@@ -391,8 +402,8 @@ function NumberGame(props) {
           <button
             className={"number-input" + keyboardColorsRef.current["color8"]}
             style={{
-              animation: keyboardAnimation[`key8`],
-              transitionDelay: transitionDelay["key8"],
+              animation: keyboardAnimationRef.current[`key8`],
+              transitionDelay: transitionDelayRef.current["key8"],
             }}
             onClick={() => inputNumber(8)}
           >
@@ -401,8 +412,8 @@ function NumberGame(props) {
           <button
             className={"number-input" + keyboardColorsRef.current["color9"]}
             style={{
-              animation: keyboardAnimation[`key9`],
-              transitionDelay: transitionDelay["key9"],
+              animation: keyboardAnimationRef.current[`key9`],
+              transitionDelay: transitionDelayRef.current["key9"],
             }}
             onClick={() => inputNumber(9)}
           >
@@ -411,8 +422,8 @@ function NumberGame(props) {
           <button
             className={"number-input" + keyboardColorsRef.current["color0"]}
             style={{
-              animation: keyboardAnimation[`key0`],
-              transitionDelay: transitionDelay["key0"],
+              animation: keyboardAnimationRef.current[`key0`],
+              transitionDelay: transitionDelayRef.current["key0"],
             }}
             onClick={() => inputNumber(0)}
           >
@@ -420,14 +431,14 @@ function NumberGame(props) {
           </button>
           <button
             className={"backspace"}
-            style={{ animation: keyboardAnimation[`keyBackspace`] }}
+            style={{ animation: keyboardAnimationRef.current[`keyBackspace`] }}
             onClick={backspace}
           ></button>
         </div>
 
         <button
           className={"enter-guess"}
-          style={{ animation: keyboardAnimation[`keyEnter`] }}
+          style={{ animation: keyboardAnimationRef.current[`keyEnter`] }}
           onClick={checkGuess}
         >
           Enter
@@ -443,8 +454,14 @@ function NumberGame(props) {
 
   //Used to set the colors on the keyboard at the bottom of the game
   function changeKeyboardColors() {
-    let boardStateCopy = boardStateRef.current;
-    let hintsCopy = hintsRef.current;
+    let boardStateCopy = [];
+    Object.values(boardStateRef.current).map((x) => {
+      boardStateCopy.push(x);
+    });
+    let hintsCopy = [];
+    Object.values(hintsRef.current).map((x) => {
+      hintsCopy.push(x);
+    });
     let colorsObj = {
       color1: "",
       color2: "",
@@ -513,22 +530,32 @@ function NumberGame(props) {
   //Sets the keydown animation for the given key
   function keydownAnimation(keyName) {
     //Animation
-    let keydownAnimationCopy = keyboardAnimation;
-    keydownAnimationCopy[keyName] = ``;
-    setKeyboardAnimation(keydownAnimationCopy);
+    let keyboardAnimationCopy = [];
+    Object.entries(keyboardAnimationRef.current).map((x) => {
+      keyboardAnimationCopy[x[0]] = x[1];
+    });
+    keyboardAnimationCopy[keyName] = ``;
+    setKeyboardAnimationRef(keyboardAnimationCopy);
     updateKeyboard();
     let timeout = setTimeout(() => {
-      let keydownAnimationCopy = keyboardAnimation;
+      let keyboardAnimationCopy = [];
+      Object.entries(keyboardAnimationRef.current).map((x) => {
+        keyboardAnimationCopy[x[0]] = x[1];
+      });
       if (keyName != "keyEnter") {
-        keydownAnimationCopy[keyName] = `keydown .5s`;
+        keyboardAnimationCopy[keyName] = `keydown .5s`;
       } else {
-        keydownAnimationCopy[keyName] = `keydown .3s`;
+        keyboardAnimationCopy[keyName] = `keydown .3s`;
       }
-      setKeyboardAnimation(keydownAnimationCopy);
+      setKeyboardAnimationRef(keyboardAnimationCopy);
       updateKeyboard();
       setTimeout(() => {
-        keydownAnimationCopy[keyName] = ``;
-        setKeyboardAnimation(keydownAnimationCopy);
+        let keyboardAnimationCopy = [];
+        Object.entries(keyboardAnimationRef.current).map((x) => {
+          keyboardAnimationCopy[x[0]] = x[1];
+        });
+        keyboardAnimationCopy[keyName] = ``;
+        setKeyboardAnimationRef(keyboardAnimationCopy);
         updateKeyboard();
       }, 500);
     }, 1);
@@ -537,9 +564,12 @@ function NumberGame(props) {
   //Handles number input, also used when pressing keys
   function inputNumber(n) {
     if (boardStateRef.current[currentRowRef.current].length < props.digits) {
-      let copy = boardStateRef.current;
-      copy[currentRowRef.current] += n;
-      setBoardStateRef(copy);
+      let boardStateCopy = [];
+      Object.values(boardStateRef.current).map((x) => {
+        boardStateCopy.push(x);
+      });
+      boardStateCopy[currentRowRef.current] += n;
+      setBoardStateRef(boardStateCopy);
       updateGameBoard();
       updateLocalStorage();
       keydownAnimation("key" + n);
@@ -549,12 +579,14 @@ function NumberGame(props) {
   //Handles backpace key
   function backspace() {
     if (boardStateRef.current[currentRowRef.current].length > 0) {
-      let copy = boardStateRef.current;
-      copy[currentRowRef.current] = copy[currentRowRef.current].slice(
-        0,
-        copy[currentRowRef.current].length - 1
-      );
-      setBoardStateRef(copy);
+      let boardStateCopy = [];
+      Object.values(boardStateRef.current).map((x) => {
+        boardStateCopy.push(x);
+      });
+      boardStateCopy[currentRowRef.current] = boardStateCopy[
+        currentRowRef.current
+      ].slice(0, boardStateCopy[currentRowRef.current].length - 1);
+      setBoardStateRef(boardStateCopy);
       updateGameBoard();
       updateLocalStorage();
       keydownAnimation("keyBackspace");
@@ -567,7 +599,10 @@ function NumberGame(props) {
       keydownAnimation("keyEnter");
       let result = checkNumber(boardStateRef.current[currentRowRef.current]);
 
-      let hintsCopy = hintsRef.current;
+      let hintsCopy = [];
+      Object.values(hintsRef.current).map((x) => {
+        hintsCopy.push(x);
+      });
       hintsCopy[currentRowRef.current] = result;
       setHintsRef(hintsCopy);
 
@@ -642,43 +677,50 @@ function NumberGame(props) {
   }
 
   //Helper function that adds a transition delay to the keys on the keyboard so they change as gameboard changes
+  //Occurs after a guess is entered
   function addTransitionDelay() {
-    let transitionDelayCopy = transitionDelay;
+    let transitionDelayCopy = {};
+    Object.entries(transitionDelayRef).map((x) => {
+      transitionDelayCopy[x[0]] = x[1];
+    });
     let number = boardStateRef.current[currentRowRef.current];
     for (let i = 0; i < props.digits; i++) {
       transitionDelayCopy[`key` + number[i]] =
-        0.55 + (props.digits - 1) * 0.2 - i * 0.2 + "s";
+        0.4 + (props.digits - 1) * 0.2 - i * 0.2 + "s";
     }
-    setTransitionDelay(transitionDelayCopy);
+    setTransitionDelayRef(transitionDelayCopy);
   }
 
   //Removes the transition delay
+  //Occurs after a guess is entered
   function removeTransitionDelay() {
-    let transitionDelayCopy = transitionDelay;
+    let transitionDelayCopy = {};
+    Object.entries(transitionDelayRef).map((x) => {
+      transitionDelayCopy[x[0]] = x[1];
+    });
     let number = boardStateRef.current[currentRowRef.current];
     for (let i = 0; i < props.digits; i++) {
       transitionDelayCopy[`key` + number[i]] = "";
     }
-    setTransitionDelay(transitionDelayCopy);
+    setTransitionDelayRef(transitionDelayCopy);
   }
 
   //Displays an error message and plays an animation when user has invalid length input
-  function invalidGuess() {
-    if (errorMessages.length < 4) {
+  async function invalidGuess() {
+    if (errorMessagesRef.current.length < 4) {
       updateGameBoard();
       setErrorAnimationRef(true);
-      let errorMessagesCopy = errorMessages;
+      let errorMessagesCopy = [];
+      Object.values(errorMessagesRef.current).map((x) => {
+        errorMessagesCopy.push(x);
+      });
       let message = (
         <span className="error-message" key={uniqid()}>
           Enter a {props.digits} digit number
         </span>
       );
       errorMessagesCopy.push(message);
-      let copy = [];
-      for (let i = 0; i < errorMessagesCopy.length; i++) {
-        copy.push(errorMessagesCopy[i]);
-      }
-      setErrorMessages(copy);
+      setErrorMessagesRef(errorMessagesCopy);
       let errorMessageDivHTML = (
         <div
           className="error-messages"
@@ -686,20 +728,29 @@ function NumberGame(props) {
             inset: 70 + 92 * (currentRowRef.current + 1) + "px 50% 0% 0%",
           }}
         >
-          {errorMessages}
+          {errorMessagesRef.current}
         </div>
       );
       setErrorMessagesDiv(errorMessageDivHTML);
       updateGameBoard();
       setTimeout(() => {
-        let errorMessagesCopy = errorMessages;
+        let errorMessagesCopy = [];
+        Object.values(errorMessagesRef.current).map((x) => {
+          errorMessagesCopy.push(x);
+        });
         errorMessagesCopy.shift();
-        let copy = [];
-        for (let i = 0; i < errorMessagesCopy.length; i++) {
-          copy.push(errorMessagesCopy[i]);
-        }
-        setErrorMessages(copy);
-        if (copy.length == 0) {
+        setErrorMessagesRef(errorMessagesCopy);
+        let errorMessageDivHTML = (
+          <div
+            className="error-messages"
+            style={{
+              inset: 70 + 92 * (currentRowRef.current + 1) + "px 50% 0% 0%",
+            }}
+          >
+            {errorMessagesRef.current}
+          </div>
+        );
+        if (errorMessagesCopy.length == 0) {
           setErrorMessagesDiv();
         } else {
           setErrorMessagesDiv(errorMessageDivHTML);
