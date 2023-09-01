@@ -38,6 +38,14 @@ function NumberGame(props) {
     currentRowRef.current = point;
   }
 
+  //Used to indicate if the game is still being played, ended in victory, or in defeat
+  //Called 'status' in local storage
+  //Should be either `playing`, `victory`, or `defeat`
+  const gameStatusRef = useRef(`playing`);
+  function setGameStatusRef(point) {
+    gameStatusRef.current = point;
+  }
+
   //Used to update the keyboard visually
   const [keyboard, setKeyboard] = useState([]);
 
@@ -109,7 +117,6 @@ function NumberGame(props) {
   }
 
   //Used to display error messages when user inputs an invalid number
-  const [errorMessages, setErrorMessages] = useState([]);
   const errorMessagesRef = useRef([]);
   function setErrorMessagesRef(point) {
     errorMessagesRef.current = point;
@@ -122,34 +129,41 @@ function NumberGame(props) {
     errorAnimationRef.current = point;
   }
 
+  //Used to set the class name for the keyboard.
+  //It will be set to `keyboard disabled` when the game is over so it won't take inputs
+  const keyboardClassNameRef = useRef(`keyboard`);
+  function setKeyboardClassNameRef(point) {
+    keyboardClassNameRef.current = point;
+  }
+
   //componentDidMount, runs when component mounts, then componentDismount
   useEffect(() => {
     setupGame();
-    document.addEventListener("keydown", handleKeydown);
+    if (gameStatusRef.current == `playing`) {
+      document.addEventListener("keydown", handleKeydown);
+    } else {
+      disableGame();
+    }
 
     return () => {
       document.removeEventListener("keydown", handleKeydown);
     };
   }, []);
 
-  //componentDidUpdate, runs after render
-  //useEffect(() => {}, [property]);
-
   function setupGame() {
-    //Setting the target number (this part will be changed later)
-    let targetNumber = Math.floor(
-      Math.random() * Math.pow(10, props.digits)
-    ).toString();
-    while (targetNumber.length < props.digits) {
-      targetNumber = "0" + targetNumber;
-    }
-    setTargetNumberRef(targetNumber);
-    console.log(targetNumberRef.current);
-
     //Setting the localStorage for the game or loading it
     if (localStorage.getItem(`game` + props.digits)) {
       updateGameStateFromLocalStorage();
     } else {
+      //Setting the target number (this part will be changed later)
+      let targetNumber = Math.floor(
+        Math.random() * Math.pow(10, props.digits)
+      ).toString();
+      while (targetNumber.length < props.digits) {
+        targetNumber = "0" + targetNumber;
+      }
+      setTargetNumberRef(targetNumber);
+      console.log(targetNumberRef.current);
       //Sets up the board
       let board = new Array(props.attempts);
       for (let i = 0; i < props.attempts; i++) {
@@ -308,6 +322,8 @@ function NumberGame(props) {
       board: boardStateRef.current,
       currentRow: currentRowRef.current,
       hints: hintsRef.current,
+      status: gameStatusRef.current,
+      targetNumber: targetNumberRef.current,
     };
     localStorage.setItem(`game` + props.digits, JSON.stringify(gameState));
   }
@@ -320,6 +336,8 @@ function NumberGame(props) {
       setBoardStateRef(storageObj.board);
       setHintsRef(storageObj.hints);
       setCurrentRowRef(storageObj.currentRow);
+      setGameStatusRef(storageObj.status);
+      setTargetNumberRef(storageObj.targetNumber);
       changeKeyboardColors();
     }
   }
@@ -327,7 +345,7 @@ function NumberGame(props) {
   //Used to set up the keyboard on each render
   function updateKeyboard() {
     let keyboardHTML = (
-      <div className="keyboard">
+      <div className={keyboardClassNameRef.current}>
         <div className="number-inputs">
           <button
             className={"number-input" + keyboardColorsRef.current["color1"]}
@@ -442,10 +460,6 @@ function NumberGame(props) {
           onClick={checkGuess}
         >
           Enter
-        </button>
-
-        <button className="reset-game" onClick={resetGame}>
-          Reset
         </button>
       </div>
     );
@@ -606,22 +620,37 @@ function NumberGame(props) {
       hintsCopy[currentRowRef.current] = result;
       setHintsRef(hintsCopy);
 
-      addTransitionDelay();
-      changeKeyboardColors();
-      removeTransitionDelay();
+      let correctResult = "";
+      for (let i = 0; i < props.digits; i++) {
+        correctResult += "G";
+      }
+      correctResult += "E";
 
-      if (result == "GGGGE") {
+      if (result == correctResult) {
+        setGameStatusRef(`victory`);
+        disableGame();
+        addTransitionDelay();
+        changeKeyboardColors();
+        removeTransitionDelay();
         updateGameBoard();
         updateLocalStorage();
-        victory();
       } else {
-        if (currentRowRef != props.guesses - 1) {
+        if (currentRowRef.current != props.attempts - 1) {
+          addTransitionDelay();
+          changeKeyboardColors();
+          removeTransitionDelay();
           setCurrentRowRef(currentRowRef.current + 1);
           setNewRowRef(true);
           updateGameBoard();
           updateLocalStorage();
         } else {
-          defeat();
+          setGameStatusRef(`defeat`);
+          disableGame();
+          addTransitionDelay();
+          changeKeyboardColors();
+          removeTransitionDelay();
+          updateGameBoard();
+          updateLocalStorage();
         }
       }
     } else {
@@ -765,10 +794,22 @@ function NumberGame(props) {
   //Occurs when user runs out of guesses
   function defeat() {}
 
+  //Disables the game after the player wins or loses
+  function disableGame() {
+    document.removeEventListener("keydown", handleKeydown);
+    setKeyboardClassNameRef("keyboard disabled");
+    updateKeyboard();
+  }
+
   //Resets the game. Good for testing purposes. Will eventually be removed.
   function resetGame() {
     localStorage.removeItem("game" + props.digits);
     setCurrentRowRef(0);
+    setKeyboardClassNameRef(`keyboard`);
+    if (gameStatusRef.current != `playing`) {
+      document.addEventListener("keydown", handleKeydown);
+    }
+    setGameStatusRef(`playing`);
     setupGame();
     changeKeyboardColors();
   }
@@ -791,6 +832,9 @@ function NumberGame(props) {
 
         <div className="rows">{board}</div>
         {keyboard}
+        <button className="reset-game" onClick={resetGame}>
+          Reset
+        </button>
       </div>
     </main>
   );

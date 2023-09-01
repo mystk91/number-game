@@ -123,6 +123,10 @@
   margin: 4px 0;
 }
 
+.keyboard.disabled button {
+  pointer-events: none;
+}
+
 .number-inputs {
   display: flex;
   justify-content: center;
