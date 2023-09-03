@@ -20,7 +20,7 @@
 
 .gameboard {
   height: 100%;
-  width: 360px;
+  width: 720px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -180,6 +180,7 @@
   border: 1px solid rgb(178, 178, 178);
   font-size: 2rem;
   background-color: rgb(250, 250, 250);
+  color: black;
 }
 
 .keyboard .backspace {
@@ -576,9 +577,43 @@
 }
 
 /* Mid-size Styles */
-@media screen and (min-width: 580px) and (max-width: 760px) {
+@media screen and (min-width: 410px) and (max-width: 510px) {
+  .gameboard {
+    width: 410px;
+  }
+  .number-inputs button {
+    width: 32px;
+    margin: 0 2px;
+  }
+  .keyboard .backspace {
+    width: 38.4px;
+  }
+}
+
+/* Mid-size Styles */
+@media screen and (min-width: 510px) and (max-width: 620px) {
+  .gameboard {
+    width: 510px;
+  }
+  .number-inputs button {
+    width: 40px;
+    margin: 0 2px;
+  }
+  .keyboard .backspace {
+    width: 48px;
+  }
 }
 
 /* Desktop Styles */
-@media screen and (min-width: 761) and (max-width: 700px) {
+@media screen and (min-width: 620px) {
+  .gameboard {
+    width: 620px;
+  }
+  .number-inputs button {
+    width: 40px;
+    margin: 0 2px;
+  }
+  .keyboard .backspace {
+    width: 48px;
+  }
 }
