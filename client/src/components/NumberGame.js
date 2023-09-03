@@ -194,6 +194,7 @@ function NumberGame(props) {
             className={getDigitClassList(i, j)}
             style={{
               animationDelay: 0.05 + 0.2 * props.digits - 0.2 * j + "s",
+              width: 80 / props.digits + "%",
             }}
             key={"row" + i + "digit" + j}
           >
@@ -203,10 +204,11 @@ function NumberGame(props) {
         digits.push(digit);
       }
       let hint = <div className={getHintClassList(i)} key={"hint" + i}></div>;
-      digits.push(hint);
+      //digits.push(hint);
       let row = (
         <span className={getRowClassList(i)} key={"row" + i}>
           {digits}
+          {hint}
         </span>
       );
       rowsTemp.push(row);
@@ -229,6 +231,7 @@ function NumberGame(props) {
         setErrorAnimationRef(false);
       }
     }
+    classList += " digits-" + props.digits;
     return classList;
   }
 
@@ -735,7 +738,7 @@ function NumberGame(props) {
   }
 
   //Displays an error message and plays an animation when user has invalid length input
-  async function invalidGuess() {
+  function invalidGuess() {
     if (errorMessagesRef.current.length < 4) {
       updateGameBoard();
       setErrorAnimationRef(true);
@@ -754,7 +757,7 @@ function NumberGame(props) {
         <div
           className="error-messages"
           style={{
-            inset: 70 + 92 * (currentRowRef.current + 1) + "px 50% 0% 0%",
+            inset: 52 + 80 * (currentRowRef.current + 1) + "px 50% 0% 0%",
           }}
         >
           {errorMessagesRef.current}
@@ -773,7 +776,7 @@ function NumberGame(props) {
           <div
             className="error-messages"
             style={{
-              inset: 70 + 92 * (currentRowRef.current + 1) + "px 50% 0% 0%",
+              inset: 52 + 80 * (currentRowRef.current + 1) + "px 50% 0% 0%",
             }}
           >
             {errorMessagesRef.current}
@@ -816,17 +819,11 @@ function NumberGame(props) {
 
   return (
     <main className="game-container">
-      <div className="gameboard">
+      <div className={"gameboard"}>
         {errorMessagesDiv}
         <div className="headline">
           <div className="instructions">
             Guess from 0 - {Math.pow(10, props.digits) - 1}
-          </div>
-          <div
-            className="hint-caption"
-            style={{ paddingRight: `${10 * (4 - props.digits) + 6}%` }}
-          >
-            Hint
           </div>
         </div>
 

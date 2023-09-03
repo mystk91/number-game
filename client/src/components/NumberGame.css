@@ -9,30 +9,32 @@
   --textColorWhite: rgb(255, 255, 255);
   --textShadowNumbers: -0.6px 0 black, 0 0.6px black, 0.6px 0 black,
     0 -0.6px black;
-  --digitsHeight: 90px;
+  --digitsHeight: 78px;
 }
 
 .game-container {
   display: flex;
   justify-content: center;
-  height: 80vh;
+  user-select: none;
 }
 
 .gameboard {
   height: 100%;
-  width: 380px;
+  width: 360px;
   display: flex;
   flex-direction: column;
-  align-content: center;
+  justify-content: center;
 }
 
 .headline {
-  margin: 4px 0 0 0;
+  margin: 2px 0 0 0;
+  width: 360px;
+  margin: auto;
 }
 
 .instructions {
   margin: 2px 0;
-  font-size: 2rem;
+  font-size: 1.8rem;
   text-align: center;
   border-bottom: 2px solid black;
 }
@@ -43,12 +45,6 @@
   padding-right: 2.5%;
   margin-bottom: -5px;
   font-size: 1.6rem;
-}
-
-.gameboard span {
-  display: flex;
-  justify-content: center;
-  margin: 4px 0;
 }
 
 .current-row .digit,
@@ -62,12 +58,44 @@
 }
 
 .new-row.next-digit,
-.new-row.hint {
-  transition: border 1s 0.4s !important;
+.new-row.hint,
+.new-row.current-digit {
+  transition: border 1s 0.4s;
 }
 
-.new-row.current-digit {
-  transition: border 1s 0.4s !important;
+.digits-2 .new-row {
+  transition-delay: 0.3s;
+}
+
+.digits-3 .new-row {
+  transition-delay: 0.45s;
+}
+
+.digits-4 .new-row {
+  transition-delay: 0.6s;
+}
+
+.digits-5 .new-row {
+  transition-delay: 0.75s;
+}
+
+.digits-6 .new-row {
+  transition-delay: 0.9s;
+}
+
+.digits-7 .new-row {
+  transition-delay: 1.05s;
+}
+
+.rows span {
+  display: flex;
+  justify-content: center;
+  margin: 4px 0;
+}
+
+.digits {
+  display: flex;
+  width: 100%;
 }
 
 .digit {
@@ -75,20 +103,22 @@
   line-height: var(--digitsHeight);
   font-size: 5rem;
   font-weight: bold;
+  width: 15%;
 }
 
 .digit,
 .hint {
   border: 4px solid rgb(200, 200, 200);
   height: var(--digitsHeight);
-  max-width: 72px;
-  width: 40%;
   margin: 0 1px;
+  max-width: 60px;
 }
 
 .hint {
   background-color: rgb(225, 225, 225);
-  margin: 0 6px;
+  margin: 0 0 0 6px;
+  width: 60px;
+  min-width: 52px;
 }
 
 .current-digit {
@@ -133,17 +163,18 @@
 }
 
 .number-inputs button {
-  height: 80px;
-  width: 32px;
+  height: 70px;
+  width: 30px;
   margin: 0 1px;
   border-radius: 6px;
   border: 1px solid rgb(178, 178, 178);
   font-size: 4.2rem;
   background-color: rgb(250, 250, 250);
+  color: black;
 }
 
 .enter-guess {
-  width: 80%;
+  width: 288px;
   height: 40px;
   border-radius: 12px;
   border: 1px solid rgb(178, 178, 178);
@@ -487,6 +518,8 @@
   background-color: rgb(178, 60, 31);
   border: 2px solid rgb(0, 0, 0);
   animation: 1.5s errorMessageFade;
+  display: flex;
+  align-items: center;
 }
 
 @keyframes errorMessageFade {
@@ -535,6 +568,11 @@
     padding-right: 0px;
     padding-left: 0px;
   }
+}
+
+/*Styles used on the reset game button */
+.reset-game {
+  margin: 20px 0;
 }
 
 /* Mid-size Styles */
