@@ -20,7 +20,7 @@
 
 .gameboard {
   height: 100%;
-  width: 720px;
+  width: 360px;
   display: flex;
   flex-direction: column;
   justify-content: center;

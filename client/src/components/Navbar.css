@@ -1,0 +1,86 @@
+:root {
+  --navbar-background-color: rgb(80, 90, 126);
+  --navbar-background-hover: rgb(83, 93, 132);
+  --navbar-text-color: rgb(255, 255, 255);
+}
+
+.navigation-bar {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  height: max-content;
+  width: 100%;
+  font-size: 1.6rem;
+  justify-content: space-between;
+  padding-top: 2px;
+  user-select: none;
+  background-color: var(--navbar-background-color);
+  color: var(--navbar-text-color);
+}
+
+.game-modes {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  font-size: 1.8rem;
+  margin-left: 10px;
+  border: 1px solid black;
+  border-left: none;
+  width: max-content;
+}
+
+.game-modes > * {
+  margin: 1px 0;
+}
+
+.navigation-bar .game-modes-list {
+  display: flex;
+}
+
+.navigation-bar li {
+  list-style: none;
+  border: 1px solid black;
+  text-align: center;
+}
+
+.navigation-bar li:first-child {
+  border-left: 0.5px solid black;
+}
+
+.navigation-bar li:last-child {
+  border-right: 0.5px solid black;
+}
+
+.navigation-bar a {
+  display: block;
+  padding: 2px 8px;
+  text-decoration: none;
+  height: 28px;
+  width: 64px;
+  color: var(--navbar-text-color);
+}
+
+.navigation-bar a:hover {
+  filter: brightness(0.8);
+  background-color: var(--navbar-background-hover);
+}
+
+.logo {
+  text-align: center;
+  font-size: 4.2rem;
+  text-shadow: -0.6px 0 black, 0 0.6px black, 0.6px 0 black, 0 -0.6px black;
+  font-weight: bolder;
+  margin: auto;
+  padding: 0 6px;
+}
+
+.tools{
+
+}
+
+/* Mobile Styles */
+@media screen and (max-width: 650px) {
+}
+
+/* Desktop Styles */
+@media screen and (min-width: 651px) and (max-width: 1023px) {
+}

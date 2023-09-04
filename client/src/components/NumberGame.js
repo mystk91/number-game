@@ -14,6 +14,7 @@ import "./NumberGame.css";
 import "../normalize.css";
 import "../custom.css";
 import { Link } from "react-router-dom";
+import Navbar from "./Navbar";
 //import styled, { css, ThemeProvider } from 'styled-components';
 
 function NumberGame(props) {
@@ -128,6 +129,9 @@ function NumberGame(props) {
   function setErrorAnimationRef(point) {
     errorAnimationRef.current = point;
   }
+  //This is put at the top of the rows/gameboard to measure its y position on page.
+  //This is only being used by the error message when it pops up
+  const yPosition = useRef();
 
   //Used to set the class name for the keyboard.
   //It will be set to `keyboard disabled` when the game is over so it won't take inputs
@@ -739,6 +743,7 @@ function NumberGame(props) {
 
   //Displays an error message and plays an animation when user has invalid length input
   function invalidGuess() {
+    let y = yPosition.current.offsetTop;
     if (errorMessagesRef.current.length < 4) {
       updateGameBoard();
       setErrorAnimationRef(true);
@@ -757,7 +762,7 @@ function NumberGame(props) {
         <div
           className="error-messages"
           style={{
-            inset: 52 + 80 * (currentRowRef.current + 1) + "px 50% 0% 0%",
+            inset: y + 15 + 82 * (currentRowRef.current + 1) + "px 50% 0% 0%",
           }}
         >
           {errorMessagesRef.current}
@@ -776,7 +781,7 @@ function NumberGame(props) {
           <div
             className="error-messages"
             style={{
-              inset: 52 + 80 * (currentRowRef.current + 1) + "px 50% 0% 0%",
+              inset: y + 15 + 82 * (currentRowRef.current + 1) + "px 50% 0% 0%",
             }}
           >
             {errorMessagesRef.current}
@@ -827,7 +832,7 @@ function NumberGame(props) {
           </div>
         </div>
 
-        <div className="rows">{board}</div>
+        <div className="rows" ref={yPosition}>{board}</div>
         {keyboard}
         <button className="reset-game" onClick={resetGame}>
           Reset
