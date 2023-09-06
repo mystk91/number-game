@@ -10,6 +10,7 @@
   --textShadowNumbers: -0.6px 0 black, 0 0.6px black, 0.6px 0 black,
     0 -0.6px black;
   --digitsHeight: 78px;
+  --backgroundColor-hint: rgb(225, 225, 225);
 }
 
 .game-container {
@@ -24,27 +25,6 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-}
-
-.headline {
-  margin: 2px 0 0 0;
-  width: 360px;
-  margin: auto;
-}
-
-.instructions {
-  margin: 2px 0;
-  font-size: 1.8rem;
-  text-align: center;
-  border-bottom: 2px solid black;
-}
-
-.hint-caption {
-  margin: 2px 0;
-  text-align: right;
-  padding-right: 2.5%;
-  margin-bottom: -5px;
-  font-size: 1.6rem;
 }
 
 .current-row .digit,
@@ -115,7 +95,7 @@
 }
 
 .hint {
-  background-color: rgb(225, 225, 225);
+  background-color: var(--backgroundColor-hint);
   margin: 0 0 0 6px;
   width: 60px;
   min-width: 52px;
@@ -387,10 +367,10 @@
   animation-name: higher;
   animation-duration: 0.4s;
   animation-fill-mode: forwards;
-  transition: all 0.4s;
+  transition: all 0.2s;
   background-image: url("../../public/images/game/upArrow.png");
   background-position: center center;
-  background-size: auto 60px;
+  background-size: auto 52px;
   background-repeat: no-repeat;
   background-color: var(--higherColor);
 }
@@ -399,10 +379,10 @@
   animation-name: lower;
   animation-duration: 0.4s;
   animation-fill-mode: forwards;
-  transition: all 0.4s;
+  transition: all 0.2s;
   background-image: url("../../public/images/game/downArrow.png");
   background-position: center center;
-  background-size: auto 60px;
+  background-size: auto 52px;
   background-repeat: no-repeat;
   background-color: var(--lowerColor);
 }

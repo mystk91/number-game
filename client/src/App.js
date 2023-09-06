@@ -15,6 +15,7 @@ import "./App.css";
 import NumberGame from "./components/NumberGame";
 import Navbar from "./components/Navbar";
 import GamePage from "./components/GamePage";
+import Instructions from "./components/Instructions";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 //import styled, { css } from 'styled-components';
 
@@ -40,6 +41,7 @@ function App() {
     <div className="App">
       <BrowserRouter>
         <Routes>
+          <Route path="/instructions" element={<Instructions />} />
           <Route path="/navbar" element={<Navbar />} />
           <Route path="/" element={<GamePage digits={4} attempts={6} />} />
           <Route

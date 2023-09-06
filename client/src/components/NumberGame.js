@@ -827,9 +827,6 @@ function NumberGame(props) {
       <div className={"gameboard"}>
         {errorMessagesDiv}
         <div className="headline">
-          <div className="instructions">
-            Guess from 0 - {Math.pow(10, props.digits) - 1}
-          </div>
         </div>
 
         <div className="rows" ref={yPosition}>{board}</div>
