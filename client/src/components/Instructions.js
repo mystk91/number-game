@@ -36,11 +36,15 @@ function Instructions(props) {
     return () => {};
   });
 
+  function closeInstructionsButton(){
+ 
+  }
+
   return (
     <div className="instructions-modal">
     <div className="instructions">
       <span className="instructions-top">
-        <button className="close-instructions">X</button>
+        <button className="close-instructions" onClick={closeInstructionsButton}>X</button>
       </span>
       <span className="headline">How to play</span>
       <div className="instructions-text">

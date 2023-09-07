@@ -27,12 +27,17 @@
 }
 
 .instructions > * {
-  margin: 3px;
+  margin: 2.5px;
 }
 
 .instructions-top {
   display: flex;
   justify-content: flex-end;
+  margin: 2px 0px 0px 0px;
+}
+
+.instructions-top button{
+  user-select: none;
 }
 
 .close-instructions {
@@ -42,6 +47,7 @@
   cursor: pointer;
   font-family: sans-serif;
   margin-right: 4px;
+  padding: 10px 10px 10px 16px;
 }
 
 .instructions .headline {
@@ -50,7 +56,7 @@
   font-weight: bolder;
   border-bottom: 2px solid black;
   width: max-content;
-  margin-top: -12px;
+  margin-top: -28px;
 }
 
 .instructions-text {
@@ -65,6 +71,7 @@
 .game-example {
   display: flex;
   justify-content: center;
+  user-select: none;
 }
 
 .game-example > * {
