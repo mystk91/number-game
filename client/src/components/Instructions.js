@@ -16,9 +16,8 @@ import "../custom.css";
 import { Link } from "react-router-dom";
 //import styled, { css, ThemeProvider } from 'styled-components';
 
-
 //A modal that will pop-up when a new user visits the page or hits the question mark button.
-//Gives a guide on how to play the game. 
+//Gives a guide on how to play the game.
 function Instructions(props) {
   const [property, setProperty] = useState("initialValue");
   const propRef = useRef("initialValue");
@@ -38,6 +37,7 @@ function Instructions(props) {
   });
 
   return (
+    <div className="instructions-modal">
     <div className="instructions">
       <span className="instructions-top">
         <button className="close-instructions">X</button>
@@ -57,19 +57,20 @@ function Instructions(props) {
         Arrows tell you to guess higher or lower.
       </div>
       <div className="game-example previous-row">
-        <div className="digit green higher">4</div>
-        <div className="digit yellow higher">6</div>
-        <div className="digit grey higher">1</div>
-        <div className="digit grey higher">8</div>
+        <div className="digit green higher delay-3">4</div>
+        <div className="digit yellow higher delay-2">6</div>
+        <div className="digit grey higher delay-1">1</div>
+        <div className="digit grey higher delay-0">8</div>
         <div className="hint higher"></div>
       </div>
       <div className="game-example previous-row">
-        <div className="digit green lower">4</div>
-        <div className="digit yellow lower">6</div>
-        <div className="digit grey lower">1</div>
-        <div className="digit grey lower">8</div>
+        <div className="digit green lower delay-3">4</div>
+        <div className="digit yellow lower delay-2">6</div>
+        <div className="digit grey lower delay-1">1</div>
+        <div className="digit grey lower delay-0">8</div>
         <div className="hint lower"></div>
       </div>
+      <hr></hr>
       <div className="instructions-text">
         Colors indicate the spot the digit should be in.
       </div>
@@ -84,9 +85,7 @@ function Instructions(props) {
         <div className="digit">8</div>
         <div className="hint"></div>
       </div>
-      <div className="instructions-text">
-        Yellow digits are in wrong spot.
-      </div>
+      <div className="instructions-text">Yellow digits are in wrong spot.</div>
       <div className="game-example">
         <div className="digit">4</div>
         <div className="digit yellow current-digit">6</div>
@@ -94,9 +93,7 @@ function Instructions(props) {
         <div className="digit">8</div>
         <div className="hint"></div>
       </div>
-      <div className="instructions-text">
-        Grey digits are not used again.
-      </div>
+      <div className="instructions-text">Grey digits are not used again.</div>
       <div className="game-example">
         <div className="digit">4</div>
         <div className="digit">6</div>
@@ -104,6 +101,7 @@ function Instructions(props) {
         <div className="digit grey current-digit">8</div>
         <div className="hint"></div>
       </div>
+    </div>
     </div>
   );
 }
