@@ -1,9 +1,11 @@
+
 .instructions-modal{
-  position: absolute;
+  position: fixed;
   z-index: 1;
-  background-color: rgb(93, 93, 93, .1);
+  background-color: rgb(93, 93, 93, .2);
   width: 100%;
   height: 100%;
+  overflow-x: scroll;
 }
 
 .instructions {
@@ -24,6 +26,7 @@
   background-color: rgb(250, 250, 250);
   border: 1px solid rgb(69, 69, 69);
   border-radius: 6px;
+  color: black;
 }
 
 .instructions > * {
@@ -159,12 +162,16 @@
   color: var(--textColorWhite);
 }
 
-.game-example .current-digit{
+.colors-example .current-digit{
   border: 2px solid black !important;
 }
 
 .instructions hr {
   margin: 3px 2px;
+}
+
+.hide-instructions{
+  display: none;
 }
 
 /* Mobile Styles */
