@@ -62,7 +62,7 @@ function Instructions(props) {
     digitAnimationTimingRef.current = point;
   }
 
-  const digitAnimationIndexRef = useRef(1);
+  const digitAnimationIndexRef = useRef(0);
   function setDigitAnimationIndexRef(point) {
     digitAnimationIndexRef.current = point;
   }
@@ -145,12 +145,12 @@ function Instructions(props) {
   ]);
 
   function tickFlipAnimation() {
-    if (flipKeyframe.current === 3) {
+    if (flipKeyframe.current === 4) {
       setCurrentClassList(flipClassList);
       setFlipKeyframe(flipKeyframe.current + 1);
-    } else if (flipKeyframe.current === 20) {
+    } else if (flipKeyframe.current === 21) {
       setCurrentClassList(["", "", "", "", "", ""]);
-      setFlipKeyframe(0);
+      setFlipKeyframe(1);
     } else {
       setFlipKeyframe(flipKeyframe.current + 1);
     }

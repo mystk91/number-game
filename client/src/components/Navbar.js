@@ -38,14 +38,14 @@ function Navbar(props) {
     return () => {};
   });
 
-  function addInstructions(){
-    if (!localStorage.getItem('previouslyVisited')){
+  function addInstructions() {
+    if (!localStorage.getItem("previouslyVisited")) {
       setInstructions(<Instructions />);
-      localStorage.setItem('previouslyVisited', 'true');
+      localStorage.setItem("previouslyVisited", "true");
     }
   }
 
-  function instructionsButton(){
+  function instructionsButton() {
     setInstructions(<Instructions key={new Date()} />);
   }
 
@@ -79,8 +79,12 @@ function Navbar(props) {
       <div className="logo">Numblr</div>
 
       <ul className="tools">
-        <li><button className="instructions-btn" onClick={instructionsButton}>?</button></li>
-
+        <li>
+          <button
+            className="instructions-btn"
+            onClick={instructionsButton}
+          ><img src="/images/game/whiteQuestionMark.png" /></button>
+        </li>
       </ul>
     </nav>
   );
