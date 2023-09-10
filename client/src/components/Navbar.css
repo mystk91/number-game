@@ -16,7 +16,7 @@
   color: var(--navbar-text-color);
 }
 
-.navigation-bar li{
+.navigation-bar li {
   list-style: none;
 }
 
@@ -75,14 +75,14 @@
   padding: 0 6px;
 }
 
-.tools{
+.tools {
   display: flex;
   justify-content: space-between;
   align-items: center;
   border: none;
 }
 
-.instructions-btn{
+.instructions-btn {
   width: 40px;
   height: 44px;
   background-color: transparent;
@@ -92,7 +92,6 @@
   border: none;
   cursor: pointer;
 }
-
 
 /* Mobile Styles */
 @media screen and (max-width: 650px) {
