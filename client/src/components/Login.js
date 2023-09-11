@@ -19,10 +19,26 @@ function Login(props) {
     return () => {};
   }, []);
 
+  // Used to set the class and hide the modal
+  const [displayModal, setDisplayModal] = useState("");
+
+  /* Hides the modal when you click outside the main box */
+  function hideLoginModal(e) {
+    if (e.target.classList[0] === "login-modal") {
+      setDisplayModal(" hide-modal");
+    }
+  }
+
+  /* Hides the modal when you click on the X */
+  function hideLoginButton(e) {
+    setDisplayModal(" hide-modal");
+  }
+
   //Used to set the errors that can occur on login.
   const [errUsername, setErrUsername] = useState();
   const [errPassword, setErrPassword] = useState();
 
+  //Handles to lhe login logic 
   async function login(e) {
     e.preventDefault();
     const url = "http://localhost:5000/api/validate";
@@ -50,8 +66,16 @@ function Login(props) {
   }
 
   return (
-    <div className="login-modal">
+    <div className={"login-modal" + displayModal} onClick={hideLoginModal}>
       <div className="login-box">
+        <span className="login-top">
+          <button
+            className="close-login"
+            onClick={(e) => hideLoginButton(e)}
+          >
+            X
+          </button>
+        </span>
         <img src="./images/site/siteLogo.png" className="site-logo" />
         <form
           action="http://localhost:5000/api/login"
