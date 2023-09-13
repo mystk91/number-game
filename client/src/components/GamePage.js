@@ -10,7 +10,6 @@ import "../custom.css";
 import Navbar from "./Navbar";
 import NumberGame from "./NumberGame";
 import { Link } from "react-router-dom";
-//import styled, { css, ThemeProvider } from 'styled-components';
 
 function Boilerplate(props) {
   const [property, setProperty] = useState('initialValue');

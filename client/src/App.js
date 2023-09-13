@@ -18,6 +18,7 @@ import GamePage from "./components/GamePage";
 import Instructions from "./components/Instructions";
 import Login from "./components/Login";
 import Signup from "./components/Signup";
+import ForgotPassword from "./components/ForgotPassword";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 //import styled, { css } from 'styled-components';
 
@@ -46,7 +47,8 @@ function App() {
           <Route path="/instructions" element={<Instructions />} />
           <Route path="/navbar" element={<Navbar />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/sign-up" element={<Signup />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/forgot" element={<ForgotPassword />} />
           <Route path="/" element={<GamePage digits={4} attempts={6} />} />
           <Route
             path="/2digits"

@@ -7,9 +7,6 @@ import React, {
 } from "react";
 import update from "immutability-helper";
 import uniqid from "uniqid";
-//import logo from './logo.svg';
-//import { SomeContext } from "../App";
-//Rename all Boilerplate as your new Component
 import "./Instructions.css";
 import "../normalize.css";
 import "../custom.css";
@@ -46,13 +43,17 @@ function Instructions(props) {
   /* Hides the modal when you click outside the main box */
   function hideInstructionsModal(e) {
     if (e.target.classList[0] === "instructions-modal") {
-      setDisplayInstructions(" hide-instructions");
+      setDisplayInstructions(" hide-modal");
+      clearInterval(digitAnimationTimingRef.current);
+      clearInterval(flipAnimationTimingRef.current);
     }
   }
 
   /* Hides the modal when you click on the X */
   function hideInstructionsButton(e) {
-    setDisplayInstructions(" hide-instructions");
+    setDisplayInstructions(" hide-modal");
+    clearInterval(digitAnimationTimingRef.current);
+    clearInterval(flipAnimationTimingRef.current);
   }
 
   /* The following functions are used to animate the first digit box on the page
