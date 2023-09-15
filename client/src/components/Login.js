@@ -128,24 +128,26 @@ function Login(props) {
             </div>
           </form>
 
-          <LoginButton
-            href="/login/google"
-            className="google"
-            imageURL="./images/login-logos/google-logo.jpg"
-            buttonText="Sign in with Google"
-          />
-          <LoginButton
-            href="/login/apple"
-            className="apple"
-            imageURL="./images/login-logos/apple-logo.png"
-            buttonText="Sign in with Apple"
-          />
-          <LoginButton
-            href="/login/facebook"
-            className="facebook"
-            imageURL="./images/login-logos/facebook-logo.jpg"
-            buttonText="Sign in with Facebook"
-          />
+          <div className="login-options">
+            <LoginButton
+              href="/login/google"
+              className="google"
+              imageURL="./images/login-logos/google-logo.jpg"
+              buttonText="Sign in with Google"
+            />
+            <LoginButton
+              href="/login/apple"
+              className="apple"
+              imageURL="./images/login-logos/apple-logo.png"
+              buttonText="Sign in with Apple"
+            />
+            <LoginButton
+              href="/login/facebook"
+              className="facebook"
+              imageURL="./images/login-logos/facebook-logo.jpg"
+              buttonText="Sign in with Facebook"
+            />
+          </div>
 
           <div className="signup-cont">
             Not a member?{" "}

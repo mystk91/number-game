@@ -4,7 +4,7 @@
     height: 50px;
     margin: 4px 0;
     display: flex;
-    justify-content: start;
+    justify-content: flex-start;
     align-items: center;
     font-family: Roboto-Medium;
     border: .5px solid black;
@@ -20,7 +20,7 @@
 }
 
 .login-button span{
-    margin-left: 6px;
+    margin: auto 0 auto 6px;
 }
 
 .login-button.google{

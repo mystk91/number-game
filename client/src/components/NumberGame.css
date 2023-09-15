@@ -9,7 +9,7 @@
   --textColorWhite: rgb(255, 255, 255);
   --textShadowNumbers: -0.6px 0 black, 0 0.6px black, 0.6px 0 black,
     0 -0.6px black;
-  --digitsHeight: 78px;
+  --digitsHeight: 75px;
   --backgroundColor-hint: rgb(225, 225, 225);
 }
 
@@ -20,7 +20,6 @@
 }
 
 .gameboard {
-  height: 100%;
   width: 360px;
   display: flex;
   flex-direction: column;
@@ -37,40 +36,34 @@
   border: 2px solid rgb(45, 45, 45);
 }
 
-.new-row.next-digit,
-.new-row.hint,
-.new-row.current-digit {
-  transition: border 1s 0.4s;
-}
-
 .digits-2 .new-row {
-  transition-delay: 0.3s;
+  transition: border 1.3s 0.4s;
 }
 
 .digits-3 .new-row {
-  transition-delay: 0.45s;
+  transition: border 1.45s 0.4s;
 }
 
 .digits-4 .new-row {
-  transition-delay: 0.6s;
+  transition: border 1.6s 0.4s;
 }
 
 .digits-5 .new-row {
-  transition-delay: 0.75s;
+  transition: border 1.75s 0.4s;
 }
 
 .digits-6 .new-row {
-  transition-delay: 0.9s;
+  transition: border 1.9s 0.4s;
 }
 
 .digits-7 .new-row {
-  transition-delay: 1.05s;
+  transition: border 2.05s 0.4s;
 }
 
 .rows span {
   display: flex;
   justify-content: center;
-  margin: 4px 0;
+  margin: 3px 0;
 }
 
 .digits {
@@ -79,8 +72,11 @@
 }
 
 .digit {
-  text-align: center;
-  line-height: var(--digitsHeight);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  line-height: max-content;
   font-size: 5rem;
   font-weight: bold;
   width: 15%;
@@ -88,8 +84,10 @@
 
 .digit,
 .hint {
+  height: calc(((100dvh - 210px) / 6));
   border: 4px solid rgb(200, 200, 200);
-  height: var(--digitsHeight);
+  min-height: 60px;
+  max-height: var(--digitsHeight);
   margin: 0 1px;
   max-width: 60px;
 }
@@ -106,13 +104,13 @@
 
 .current-digit {
   border: 4px solid rgb(45, 45, 45) !important;
-  transition: 0.1s;
+  transition: border 0.1s;
 }
 
 .previous-digit,
 .next-digit {
   border: 2px solid rgb(45, 45, 45) !important;
-  transition: 0.3s;
+  transition: border 0.3s;
 }
 
 .previous-digit {
@@ -146,7 +144,7 @@
 }
 
 .number-inputs button {
-  height: 70px;
+  height: 64px;
   width: 30px;
   margin: 0 1px;
   border-radius: 6px;
@@ -158,7 +156,7 @@
 
 .enter-guess {
   width: 288px;
-  height: 40px;
+  height: 44px;
   border-radius: 12px;
   border: 1px solid rgb(178, 178, 178);
   font-size: 2rem;
@@ -176,7 +174,7 @@
 
 /* Handles the animations for when a guess is entered. */
 .keyboard .grey {
-  transition: all 0.4s;
+  transition: color, text-shadow, background-color 0.4s;
   transition-delay: 0.5s;
   color: var(--textColorWhite);
   text-shadow: var(--textShadowNumbers);
@@ -184,7 +182,7 @@
 }
 
 .keyboard .yellow {
-  transition: all 0.4s;
+  transition: color, text-shadow, background-color 0.4s;
   transition-delay: 0.5s;
   color: var(--textColorWhite);
   text-shadow: var(--textShadowNumbers);
@@ -192,7 +190,7 @@
 }
 
 .keyboard .green {
-  transition: all 0.4s;
+  transition: color, text-shadow, background-color 0.4s;
   transition-delay: 0.5s;
   color: var(--textColorWhite);
   text-shadow: var(--textShadowNumbers);
@@ -370,7 +368,7 @@
   animation-name: higher;
   animation-duration: 0.4s;
   animation-fill-mode: forwards;
-  transition: all 0.2s;
+  transition: background-color, border 0.2s;
   background-image: url("../../public/images/game/upArrow.png");
   background-position: center center;
   background-size: auto 52px;
@@ -382,7 +380,7 @@
   animation-name: lower;
   animation-duration: 0.4s;
   animation-fill-mode: forwards;
-  transition: all 0.2s;
+  transition: background-color, border 0.2s;
   background-image: url("../../public/images/game/downArrow.png");
   background-position: center center;
   background-size: auto 52px;
@@ -392,7 +390,7 @@
 
 @keyframes lower {
   0% {
-    background-position: 50% -50%;
+    background-position: 50% -100%;
   }
   75% {
     background-position: 50% 75%;
@@ -405,7 +403,7 @@
 
 @keyframes higher {
   0% {
-    background-position: 50% 150%;
+    background-position: 50% 200%;
   }
   75% {
     background-position: 50% 25%;
@@ -428,7 +426,7 @@
   animation-duration: 0.4s;
   animation-fill-mode: forwards;
   background-image: url("../../public/images/game/equals.png");
-  transition: all 0.4s;
+  transition: background-color, border 0.4s;
   background-position: center center;
   background-size: auto 60px;
   background-repeat: no-repeat;
@@ -560,16 +558,19 @@
 }
 
 /* Mid-size Styles */
-@media screen and (min-width: 410px) and (max-width: 510px) {
+@media screen and (min-width: 420px) and (max-width: 510px) {
   .gameboard {
     width: 410px;
+    transition: 0.2s width;
   }
   .number-inputs button {
     width: 32px;
     margin: 0 2px;
+    transition: 0.2s width;
   }
   .keyboard .backspace {
     width: 38.4px;
+    transition: 0.2s width;
   }
 }
 
@@ -577,13 +578,16 @@
 @media screen and (min-width: 510px) and (max-width: 620px) {
   .gameboard {
     width: 510px;
+    transition: 0.2s width;
   }
   .number-inputs button {
     width: 40px;
     margin: 0 2px;
+    transition: 0.2s width;
   }
   .keyboard .backspace {
     width: 48px;
+    transition: 0.2s width;
   }
 }
 
@@ -591,12 +595,19 @@
 @media screen and (min-width: 620px) {
   .gameboard {
     width: 620px;
+    transition: 0.2s width;
   }
   .number-inputs button {
     width: 40px;
     margin: 0 2px;
+    transition: 0.2s width;
   }
   .keyboard .backspace {
     width: 48px;
+    transition: 0.2s width;
   }
+}
+
+/* For Smaller height screens */
+@media screen and (max-height: 630px) {
 }

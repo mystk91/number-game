@@ -198,7 +198,7 @@ function NumberGame(props) {
             className={getDigitClassList(i, j)}
             style={{
               animationDelay: 0.05 + 0.2 * props.digits - 0.2 * j + "s",
-              width: 80 / props.digits + "%",
+              width: 76 / props.digits + "%",
             }}
             key={"row" + i + "digit" + j}
           >

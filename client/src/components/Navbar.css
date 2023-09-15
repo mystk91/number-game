@@ -7,7 +7,7 @@
 .navigation-bar {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
-  height: max-content;
+  height: 56px;
   width: 100%;
   font-size: 1.6rem;
   justify-content: space-between;
@@ -32,6 +32,14 @@
   width: max-content;
 }
 
+.game-modes-label{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+
+}
+
 .navigation-bar .game-modes-list {
   display: flex;
 }
@@ -50,10 +58,10 @@
   border-right: 0.5px solid black;
 }
 
-.navigation-bar a {
+.game-modes-list a {
   display: block;
   text-decoration: none;
-  line-height: 30px;
+  line-height: 28px;
   height: max-content;
   width: 64px;
   color: var(--navbar-text-color);
@@ -77,12 +85,13 @@
 
 .tools {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: center;
   border: none;
+  grid-gap: 10%;
 }
 
-.instructions-btn {
+.instructions-btn, .login-btn, .premium-btn {
   width: 40px;
   height: 44px;
   background-color: transparent;
@@ -91,6 +100,18 @@
   align-items: center;
   border: none;
   cursor: pointer;
+}
+
+.instructions-btn{
+  padding: 1px;
+}
+
+.login-btn{
+  padding: 2px;
+}
+
+.premium-btn{
+  padding: 6px;
 }
 
 /* Mobile Styles */

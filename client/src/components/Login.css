@@ -109,15 +109,10 @@
   background-color: var(--navbar-background-color);
 }
 
-.google-login {
-  width: 280px !important;
-  margin: 5px 0;
-}
-
-.facebook-login {
-  width: 280px !important;
-  background-color: darkblue !important;
-  margin: 5px 0;
+.login-options{
+  display: flex;
+  flex-direction: column;
+  height: max-content;
 }
 
 .recover-password-link {
