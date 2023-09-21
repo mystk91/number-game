@@ -473,6 +473,29 @@ function NumberGame(props) {
     setKeyboard(keyboardHTML);
   }
 
+  //Used to set the Enter Guess / Reset button. 
+  //The enter guess is shown until the game ends, then its replaced with the reset button.
+  let inputButton = useRef();
+  function setInputButton(point) {
+    inputButton.current = point;
+  }
+
+  let enterGuessButton = (
+    <button
+      className={"enter-guess"}
+      style={{ animation: keyboardAnimationRef.current[`keyEnter`] }}
+      onClick={checkGuess}
+    >
+      Enter
+    </button>
+  );
+
+  let resetButton = (
+    <button className="reset-game" onClick={resetGame}>
+      Reset
+    </button>
+  );
+
   //Used to set the colors on the keyboard at the bottom of the game
   function changeKeyboardColors() {
     let boardStateCopy = [];
@@ -826,10 +849,9 @@ function NumberGame(props) {
     <main className="game-container">
       <div className={"gameboard"}>
         {errorMessagesDiv}
-        <div className="headline">
+        <div className="rows" ref={yPosition}>
+          {board}
         </div>
-
-        <div className="rows" ref={yPosition}>{board}</div>
         {keyboard}
         <button className="reset-game" onClick={resetGame}>
           Reset

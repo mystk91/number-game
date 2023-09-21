@@ -154,7 +154,7 @@
   color: black;
 }
 
-.enter-guess {
+.enter-guess, .reset-game {
   width: 288px;
   height: 44px;
   border-radius: 12px;
@@ -608,6 +608,3 @@
   }
 }
 
-/* For Smaller height screens */
-@media screen and (max-height: 630px) {
-}
