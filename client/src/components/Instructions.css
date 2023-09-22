@@ -13,7 +13,6 @@
   height: 100%;
   overflow-y: scroll;
   display: flex;
-  padding-bottom: 8%;
 }
 
 .instructions {
@@ -36,7 +35,7 @@
 }
 
 .instructions > * {
-  margin: 2.5px;
+  margin: 2px;
 }
 
 .instructions-top {

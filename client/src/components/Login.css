@@ -6,7 +6,7 @@
   height: 100%;
   overflow-y: scroll;
   display: flex;
-  padding-bottom: 10%;
+  padding-bottom: 5%;
 }
 
 .hide-modal{

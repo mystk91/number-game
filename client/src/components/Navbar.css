@@ -127,7 +127,7 @@
 }
 
 /* Mobile Styles */
-@media screen and (min-width: 421px) and (max-width: 880px) {
+@media screen and (min-width: 451px) and (max-width: 880px) {
   .game-modes {
     display: none;
   }
@@ -180,6 +180,8 @@
     background-color: var(--navbar-background-color);
     border: 1px solid black;
     animation: 0.3s showGameModes forwards;
+    position: relative;
+    z-index: 1;
   }
 
   @keyframes showGameModes {
@@ -214,6 +216,8 @@
     border: 0px solid black;
     transition: height 0.3s, border 0.2s, font-size 0.4s;
     animation: 0.3s hideGameModes forwards;
+    position: relative;
+    z-index: 1;
   }
 
   @keyframes hideGameModes {
@@ -239,10 +243,14 @@
     justify-content: center;
     margin-right: 15%;
   }
+
+  .tools button {
+    width: 45px;
+  }
 }
 
 /* Phone sizes */
-@media screen and (max-width: 420px) {
+@media screen and (max-width: 450px) {
   .game-modes {
     display: none;
   }
@@ -295,6 +303,8 @@
     background-color: var(--navbar-background-color);
     border: 1px solid black;
     animation: 0.3s showGameModes forwards;
+    position: relative;
+    z-index: 1;
   }
 
   @keyframes showGameModes {
@@ -329,6 +339,8 @@
     border: 0px solid black;
     transition: height 0.3s, border 0.2s, font-size 0.4s;
     animation: 0.3s hideGameModes forwards;
+    position: relative;
+    z-index: 1;
   }
 
   @keyframes hideGameModes {
@@ -353,6 +365,9 @@
   .tools {
     column-gap: 1px;
     justify-content: center;
-    transition: column-gap 0.4s;
+  }
+
+  .tools button {
+    width: 40px;
   }
 }
