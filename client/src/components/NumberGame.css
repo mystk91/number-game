@@ -134,7 +134,7 @@
   margin: 4px 0;
 }
 
-.keyboard.disabled button {
+.number-inputs.disabled button {
   pointer-events: none;
 }
 
@@ -154,7 +154,8 @@
   color: black;
 }
 
-.enter-guess, .reset-game {
+.enter-guess,
+.reset-game {
   width: 288px;
   height: 44px;
   border-radius: 12px;
@@ -162,6 +163,24 @@
   font-size: 2rem;
   background-color: rgb(250, 250, 250);
   color: black;
+}
+
+.reset-game {
+  animation: resetGameFlash 1s forwards;
+}
+
+@keyframes resetGameFlash {
+  0% {
+    filter: brightness(1);
+    color: black;
+  }
+  10% {
+    filter: brightness(.7);
+  }
+  100% {
+    filter: brightness(1);
+    border: 3px solid black(178, 178, 178);
+  }
 }
 
 .keyboard .backspace {
@@ -552,11 +571,6 @@
   }
 }
 
-/*Styles used on the reset game button */
-.reset-game {
-  margin: 20px 0;
-}
-
 /* Mid-size Styles */
 @media screen and (min-width: 420px) and (max-width: 510px) {
   .gameboard {
@@ -607,4 +621,3 @@
     transition: 0.2s width;
   }
 }
-

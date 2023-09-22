@@ -135,7 +135,7 @@ function NumberGame(props) {
 
   //Used to set the class name for the keyboard.
   //It will be set to `keyboard disabled` when the game is over so it won't take inputs
-  const keyboardClassNameRef = useRef(`keyboard`);
+  const keyboardClassNameRef = useRef(`number-inputs`);
   function setKeyboardClassNameRef(point) {
     keyboardClassNameRef.current = point;
   }
@@ -183,6 +183,7 @@ function NumberGame(props) {
       updateLocalStorage();
     }
     updateGameBoard();
+    changeCurrentInputButton();
     updateKeyboard();
   }
 
@@ -352,8 +353,8 @@ function NumberGame(props) {
   //Used to set up the keyboard on each render
   function updateKeyboard() {
     let keyboardHTML = (
-      <div className={keyboardClassNameRef.current}>
-        <div className="number-inputs">
+      <div className="keyboard">
+        <div className={keyboardClassNameRef.current}>
           <button
             className={"number-input" + keyboardColorsRef.current["color1"]}
             style={{
@@ -460,24 +461,17 @@ function NumberGame(props) {
             onClick={backspace}
           ></button>
         </div>
-
-        <button
-          className={"enter-guess"}
-          style={{ animation: keyboardAnimationRef.current[`keyEnter`] }}
-          onClick={checkGuess}
-        >
-          Enter
-        </button>
+        {currentInputButton.current}
       </div>
     );
     setKeyboard(keyboardHTML);
   }
 
-  //Used to set the Enter Guess / Reset button. 
+  //These functions are used to set the Enter Guess / Reset button.
   //The enter guess is shown until the game ends, then its replaced with the reset button.
-  let inputButton = useRef();
+  let currentInputButton = useRef();
   function setInputButton(point) {
-    inputButton.current = point;
+    currentInputButton.current = point;
   }
 
   let enterGuessButton = (
@@ -495,6 +489,15 @@ function NumberGame(props) {
       Reset
     </button>
   );
+
+  //Used to change guess button to reset button
+  function changeCurrentInputButton() {
+    if (gameStatusRef.current == "playing") {
+      setInputButton(enterGuessButton);
+    } else {
+      setInputButton(resetButton);
+    }
+  }
 
   //Used to set the colors on the keyboard at the bottom of the game
   function changeKeyboardColors() {
@@ -828,15 +831,19 @@ function NumberGame(props) {
   //Disables the game after the player wins or loses
   function disableGame() {
     document.removeEventListener("keydown", handleKeydown);
-    setKeyboardClassNameRef("keyboard disabled");
+    setKeyboardClassNameRef("number-inputs disabled");
     updateKeyboard();
+    setTimeout(() => {
+      changeCurrentInputButton();
+      updateKeyboard();
+    }, 1000 * (0.85 + 0.2 * (props.digits - 1)));
   }
 
   //Resets the game. Good for testing purposes. Will eventually be removed.
   function resetGame() {
     localStorage.removeItem("game" + props.digits);
     setCurrentRowRef(0);
-    setKeyboardClassNameRef(`keyboard`);
+    setKeyboardClassNameRef(`number-inputs`);
     if (gameStatusRef.current != `playing`) {
       document.addEventListener("keydown", handleKeydown);
     }
@@ -844,6 +851,12 @@ function NumberGame(props) {
     setupGame();
     changeKeyboardColors();
   }
+
+  /*
+          <button className="reset-game" onClick={resetGame}>
+          Reset
+        </button>
+  */
 
   return (
     <main className="game-container">
@@ -853,9 +866,6 @@ function NumberGame(props) {
           {board}
         </div>
         {keyboard}
-        <button className="reset-game" onClick={resetGame}>
-          Reset
-        </button>
       </div>
     </main>
   );

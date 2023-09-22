@@ -24,7 +24,7 @@ function Navbar(props) {
   //componentDidMount, runs when component mounts, then componentDismount
   useEffect(() => {
     setGameModesButton(gameModesButtonHTML);
-    setGameModesList(listHidden)
+    setGameModesList();
     addInstructions();
     return () => {};
   }, []);
@@ -46,7 +46,7 @@ function Navbar(props) {
   );
 
   let gameModesButtonHTMLClicked = (
-    <button className="game-modes-button clicked" onClick={displayGameModes}>
+    <button className="game-modes-button clicked" onClick={hideGameModesButton}>
       Game Modes
     </button>
   );
@@ -101,7 +101,7 @@ function Navbar(props) {
   function displayGameModes() {
     setGameModesList(listVisible);
     setGameModesButton(gameModesButtonHTMLClicked);
-    document.addEventListener("click", (e) => hideGameModes(e));
+    document.addEventListener("click",  hideGameModes);
   }
 
   //Hides the game list
@@ -109,8 +109,21 @@ function Navbar(props) {
     if (e.target.classList != "game-modes-button clicked") {
       setGameModesList(listHidden);
       setGameModesButton(gameModesButtonHTML);
-      document.removeEventListener("click", (e) => hideGameModes(e));
+      document.removeEventListener("click", hideGameModes);
+      setTimeout(() => {
+        setGameModesList();
+      }, 300);
     }
+  }
+
+  //Hides the game list when using the button
+  function hideGameModesButton(e) {
+    setGameModesList(listHidden);
+    setGameModesButton(gameModesButtonHTML);
+    document.removeEventListener("click", hideGameModes);
+    setTimeout(() => {
+      setGameModesList();
+    }, 300);
   }
 
   //Used to display the modals from the buttons on the tool-bar
