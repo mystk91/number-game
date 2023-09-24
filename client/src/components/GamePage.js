@@ -20,6 +20,7 @@ function Boilerplate(props) {
 
   //componentDidMount, runs when component mounts, then componentDismount
   useEffect(() => {
+    document.title = "Numblr - " + props.digits + ' Digits';
     
     return() => {};
   }, []);

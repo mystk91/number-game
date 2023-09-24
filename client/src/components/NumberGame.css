@@ -252,37 +252,40 @@
 }
 
 @keyframes digits-grey-bounceUp {
-  0% {
+  10% {
+    transform: translate3d(0, 0%, 0) scaleY(1);
   }
   50% {
     border: 2px solid rgb(45, 45, 45);
     background-color: white;
     color: black;
-    transform: rotateX(90deg) translateY(-50%);
+    transform: translate3d(0, -30%, 0) scaleY(0);
   }
   51% {
     border: none;
     background-color: var(--grey);
     color: var(--textColorWhite);
     text-shadow: var(--textShadowNumbers);
+    transform: translate3d(0, 20%, 0) scaleY(0);
   }
   100% {
     border: none;
     background-color: var(--grey);
     color: var(--textColorWhite);
     text-shadow: var(--textShadowNumbers);
-    transform: rotateX(0deg);
+    transform: translate3d(0, 0, 0) scaleY(1);
   }
 }
 
 @keyframes digits-grey-bounceDown {
-  0% {
+  10% {
+    transform: translate3d(0, 0%, 0) scaleY(1);
   }
   50% {
     border: 2px solid rgb(45, 45, 45);
     background-color: white;
     color: black;
-    transform: rotateX(90deg) translateY(50%);
+    transform: translate3d(0, 30%, 0) scaleY(0);
   }
   51% {
     border: none;
@@ -295,42 +298,45 @@
     background-color: var(--grey);
     color: var(--textColorWhite);
     text-shadow: var(--textShadowNumbers);
-    transform: rotateX(0deg);
+    transform: translate3d(0, 0, 0) scaleY(1);
   }
 }
 
 @keyframes digits-yellow-bounceUp {
-  0% {
+  10% {
+    transform: translate3d(0, 0%, 0) scaleY(1);
   }
   50% {
     border: 2px solid rgb(45, 45, 45);
     background-color: white;
     color: black;
-    transform: rotateX(90deg) translateY(-50%);
+    transform: translate3d(0, -30%, 0) scaleY(0);
   }
   51% {
     border: none;
     background-color: var(--yellow);
     color: var(--textColorWhite);
     text-shadow: var(--textShadowNumbers);
+    transform: translate3d(0, 20%, 0) scaleY(0);
   }
   100% {
     border: none;
     background-color: var(--yellow);
     color: var(--textColorWhite);
     text-shadow: var(--textShadowNumbers);
-    transform: rotateX(0deg);
+    transform: translate3d(0, 0, 0) scaleY(1);
   }
 }
 
 @keyframes digits-yellow-bounceDown {
-  0% {
+  10% {
+    transform: translate3d(0, 0%, 0) scaleY(1);
   }
   50% {
     border: 2px solid rgb(45, 45, 45);
     background-color: white;
     color: black;
-    transform: rotateX(90deg) translateY(50%);
+    transform: translate3d(0, 30%, 0) scaleY(0);
   }
   51% {
     border: none;
@@ -343,42 +349,45 @@
     background-color: var(--yellow);
     color: var(--textColorWhite);
     text-shadow: var(--textShadowNumbers);
-    transform: rotateX(0deg);
+    transform: translate3d(0, 0, 0) scaleY(1);
   }
 }
 
 @keyframes digits-green-bounceUp {
-  0% {
+  10% {
+    transform: translate3d(0, 0%, 0) scaleY(1);
   }
   50% {
     border: 2px solid rgb(45, 45, 45);
     background-color: white;
     color: black;
-    transform: rotateX(90deg) translateY(-50%);
+    transform: translate3d(0, -30%, 0) scaleY(0);
   }
   51% {
     border: none;
     background-color: var(--green);
     color: var(--textColorWhite);
     text-shadow: var(--textShadowNumbers);
+    transform: translate3d(0, 20%, 0) scaleY(0);
   }
   100% {
     border: none;
     background-color: var(--green);
     color: var(--textColorWhite);
     text-shadow: var(--textShadowNumbers);
-    transform: rotateX(0deg);
+    transform: translate3d(0, 0, 0) scaleY(1);
   }
 }
 
 @keyframes digits-green-bounceDown {
-  0% {
+  10% {
+    transform: translate3d(0, 0%, 0) scaleY(1);
   }
   50% {
     border: 2px solid rgb(45, 45, 45);
     background-color: white;
     color: black;
-    transform: rotateX(90deg) translateY(50%);
+    transform: translate3d(0, 30%, 0) scaleY(0);
   }
   51% {
     border: none;
@@ -391,7 +400,7 @@
     background-color: var(--green);
     color: var(--textColorWhite);
     text-shadow: var(--textShadowNumbers);
-    transform: rotateX(0deg);
+    transform: translate3d(0, 0, 0) scaleY(1);
   }
 }
 
