@@ -1,0 +1,88 @@
+.profile-dropdown {
+  position: absolute;
+  top: 55px;
+}
+
+.profile-dropdown a:hover {
+  filter: brightness(0.8);
+  background-color: var(--navbar-background-hover);
+}
+
+.profile-dropdown.visible a {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-decoration: none;
+  font-size: 2rem;
+  line-height: 28px;
+  height: max-content;
+  width: 140px;
+  height: 56px;
+  color: var(--navbar-text-color);
+  background-color: var(--navbar-background-color);
+  border: 1px solid black;
+  animation: 0.3s showGameModes forwards;
+  position: relative;
+  z-index: 1;
+  right: 45px;
+}
+
+@keyframes showGameModes {
+  0% {
+    height: 0px;
+    border: 0;
+  }
+  66.6% {
+    border: 1px solid black;
+  }
+  80% {
+    height: 64px;
+  }
+  100% {
+    border: 0.5px solid black;
+    height: 56px;
+  }
+}
+
+.profile-dropdown.hidden a {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-decoration: none;
+  font-size: 0rem;
+  line-height: 28px;
+  height: max-content;
+  width: 140px;
+  height: 0px;
+  color: var(--navbar-text-color);
+  background-color: var(--navbar-background-color);
+  border: 0px solid black;
+  transition: height 0.3s, border 0.2s, font-size 0.4s;
+  animation: 0.3s hideGameModes forwards;
+  position: relative;
+  z-index: 1;
+  right: 45px;
+}
+
+@keyframes hideGameModes {
+  0% {
+    border: 0.5px solid black;
+    height: 56px;
+    font-size: 2rem;
+  }
+  20% {
+    height: 64px;
+  }
+  66.6% {
+    border: 0px;
+  }
+  100% {
+    border: 0;
+    height: 0px;
+    font-size: 0rem;
+  }
+}
+
+.logout-link {
+  cursor: pointer;
+}

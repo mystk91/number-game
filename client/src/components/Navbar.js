@@ -12,6 +12,7 @@ import "../normalize.css";
 import "../custom.css";
 import { Link } from "react-router-dom";
 import Instructions from "./Instructions";
+import ProfileDropdown from "./ProfileDropdown";
 import Login from "./Login";
 
 function Navbar(props) {
@@ -26,6 +27,7 @@ function Navbar(props) {
     setGameModesButton(gameModesButtonHTML);
     setGameModesList();
     addInstructions();
+    addProfileButton();
     return () => {};
   }, []);
   //componentDidUpdate, runs after render
@@ -37,6 +39,7 @@ function Navbar(props) {
 
   const [gameModesButton, setGameModesButton] = useState();
   const [gameModesList, setGameModesList] = useState();
+  const [profileButton, setProfileButton] = useState();
 
   //
   let gameModesButtonHTML = (
@@ -101,7 +104,7 @@ function Navbar(props) {
   function displayGameModes() {
     setGameModesList(listVisible);
     setGameModesButton(gameModesButtonHTMLClicked);
-    document.addEventListener("click",  hideGameModes);
+    document.addEventListener("click", hideGameModes);
   }
 
   //Hides the game list
@@ -140,6 +143,63 @@ function Navbar(props) {
   //Displays the instruction modal
   function instructionsButton() {
     setModal(<Instructions key={new Date()} />);
+  }
+
+  //Adds either the login form or the profile dropdown options the webpage
+  function addProfileButton() {
+    let user = 1;
+    //Code that checks if user is logged in
+    if (user == 1) {
+      setProfileButton(profileDropdownInitialHTML);
+    } else {
+      let buttonHTML = (
+        <li>
+          <button className="login-btn" onClick={loginButton}>
+            <img src="/images/site/account2.png" />
+          </button>
+        </li>
+      );
+      setProfileButton(buttonHTML);
+    }
+  }
+
+  let profileDropdownInitialHTML = (
+    <li>
+      <button className="profile-btn" onClick={showProfileDropdown}>
+        <img src="/images/site/account2.png" />
+      </button>
+    </li>
+  );
+
+  let profileDropdownHiddenHTML = (
+    <li>
+      <button className="profile-btn" onClick={showProfileDropdown}>
+        <img src="/images/site/account2.png" />
+      </button>
+      <ProfileDropdown hidden="true" key="profileDropdownHidden" />
+    </li>
+  );
+
+  let profileDropdownVisibleHTML = (
+    <li>
+      <button className="profile-btn clicked">
+        <img src="/images/site/account2.png" />
+      </button>
+      <ProfileDropdown key="profileDropdownVisisble" />
+    </li>
+  );
+
+  //Shows the profile Dropdown
+  function showProfileDropdown(e) {
+    setProfileButton(profileDropdownVisibleHTML);
+    e.stopPropagation();
+    document.addEventListener("click", hideProfileDropdown);
+  }
+
+  //Hides the profile dropdown on click
+  function hideProfileDropdown(e) {
+    setProfileButton(profileDropdownHiddenHTML);
+    document.removeEventListener("click", hideProfileDropdown);
   }
 
   //Displays the login modal
@@ -190,11 +250,7 @@ function Navbar(props) {
               <img src="/images/site/whiteQuestionMark.png" />
             </button>
           </li>
-          <li>
-            <button className="login-btn" onClick={loginButton}>
-              <img src="/images/site/account2.png" />
-            </button>
-          </li>
+          {profileButton}
           <li>
             <button className="premium-btn" onClick={premiumButton}>
               <img src="/images/site/dollarSign.png" />
