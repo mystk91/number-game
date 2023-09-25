@@ -158,6 +158,9 @@ function NumberGame(props) {
     //Setting the localStorage for the game or loading it
     if (localStorage.getItem(`game` + props.digits)) {
       updateGameStateFromLocalStorage();
+      if (gameStatusRef.current == "defeat") {
+        defeat();
+      }
     } else {
       //Setting the target number (this part will be changed later)
       let targetNumber = Math.floor(
@@ -209,7 +212,6 @@ function NumberGame(props) {
         digits.push(digit);
       }
       let hint = <div className={getHintClassList(i)} key={"hint" + i}></div>;
-      //digits.push(hint);
       let row = (
         <span className={getRowClassList(i)} key={"row" + i}>
           {digits}
@@ -826,7 +828,61 @@ function NumberGame(props) {
   function victory() {}
 
   //Occurs when user runs out of guesses
-  function defeat() {}
+  function defeat() {
+    let rowsTemp = [];
+    let digits = [];
+    for (let j = 0; j < props.digits; j++) {
+      let digit = (
+        <div
+          className="digit next-digit"
+          style={{
+            width: 76 / props.digits + "%",
+          }}
+          key={"defeat-digit" + j}
+        >
+          {targetNumberRef.current.slice(j, j + 1)}
+        </div>
+      );
+      digits.push(digit);
+    }
+    let row = (
+      <div className="gameboard" key="defeat-gameboard">
+        <div className="rows">
+          <span className="current-row">{digits}</span>
+        </div>
+      </div>
+    );
+    rowsTemp.push(row);
+
+    let defeatHTML = (
+      <div className="defeat-modal">
+        <span className="defeat-modal-top">
+          <button
+            className="close-defeat-modal"
+            onClick={(e) => closeGameOverModal(e)}
+          >
+            X
+          </button>
+        </span>
+        <div className="defeat-label">Defeat</div>
+        <div className="correct-number-label">Correct Number</div>
+        <div className="correct-number">{rowsTemp}</div>
+      </div>
+    );
+    setGameOverModalRef(defeatHTML);
+  }
+
+  //Closes the modal that pops up at the end of the game
+  function closeGameOverModal(e) {
+    setGameOverModalRef();
+    updateGameBoard();
+  }
+
+  //Used to display a modal
+  const gameOverModalRef = useRef();
+  function setGameOverModalRef(point) {
+    gameOverModalRef.current = point;
+  }
 
   //Disables the game after the player wins or loses
   function disableGame() {
@@ -836,6 +892,9 @@ function NumberGame(props) {
     setTimeout(() => {
       changeCurrentInputButton();
       updateKeyboard();
+      if (gameStatusRef.current == "defeat") {
+        defeat();
+      }
     }, 1000 * (0.85 + 0.2 * (props.digits - 1)));
   }
 
@@ -848,6 +907,7 @@ function NumberGame(props) {
       document.addEventListener("keydown", handleKeydown);
     }
     setGameStatusRef(`playing`);
+    setGameOverModalRef();
     setupGame();
     changeKeyboardColors();
   }
@@ -862,6 +922,7 @@ function NumberGame(props) {
     <main className="game-container">
       <div className={"gameboard"}>
         {errorMessagesDiv}
+        {gameOverModalRef.current}
         <div className="rows" ref={yPosition}>
           {board}
         </div>

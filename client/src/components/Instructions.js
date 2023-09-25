@@ -128,10 +128,10 @@ function Instructions(props) {
   }
 
   const flipClassList = [
-    " green higher delay-3",
-    " yellow higher delay-2",
-    " grey higher delay-1",
-    " grey higher delay-0",
+    " green delay-3",
+    " yellow delay-2",
+    " grey delay-1",
+    " grey delay-0",
     " higher",
     " lower",
   ];
@@ -194,17 +194,17 @@ function Instructions(props) {
           Arrows tell you to guess higher or lower.
         </div>
         <div className="game-example previous-row">
-          <div className={"digit" + currentClassList[0]}>4</div>
-          <div className={"digit" + currentClassList[1]}>6</div>
-          <div className={"digit" + currentClassList[2]}>1</div>
-          <div className={"digit" + currentClassList[3]}>8</div>
+          <div className={"digit" + currentClassList[0] + currentClassList[4]}>4</div>
+          <div className={"digit" + currentClassList[1] + currentClassList[4]}>6</div>
+          <div className={"digit" + currentClassList[2] + currentClassList[4]}>1</div>
+          <div className={"digit" + currentClassList[3] + currentClassList[4]}>8</div>
           <div className={"hint" + currentClassList[4]}></div>
         </div>
         <div className="game-example previous-row">
-          <div className={"digit" + currentClassList[0]}>4</div>
-          <div className={"digit" + currentClassList[1]}>6</div>
-          <div className={"digit" + currentClassList[2]}>1</div>
-          <div className={"digit" + currentClassList[3]}>8</div>
+          <div className={"digit" + currentClassList[0] + currentClassList[5]}>4</div>
+          <div className={"digit" + currentClassList[1] + currentClassList[5]}>6</div>
+          <div className={"digit" + currentClassList[2] + currentClassList[5]}>1</div>
+          <div className={"digit" + currentClassList[3] + currentClassList[5]}>8</div>
           <div className={"hint" + currentClassList[5]}></div>
         </div>
         <hr></hr>

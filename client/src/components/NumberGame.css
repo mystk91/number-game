@@ -592,6 +592,72 @@
   }
 }
 
+.victory-modal{
+
+}
+
+.defeat-modal{
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: max-content;
+  top: 125px;
+  left: calc(50% - 170px);
+  background-color: rgb(245, 245, 245);
+  border: 1px solid black;
+  padding: 10px 0 15px 0;
+  z-index: 1;
+}
+
+.defeat-modal > *{
+  margin: 1px 0;
+  font-size: 1.8rem;
+}
+
+.defeat-modal-top {
+  display: flex;
+  justify-content: flex-end;
+  margin: 1px 0px 0px 0px;
+  width: 100%;
+}
+
+.defeat-modal-top button {
+  user-select: none;
+}
+
+.close-defeat-modal {
+  all: unset;
+  height: max-content;
+  font-size: 2rem;
+  cursor: pointer;
+  font-family: sans-serif;
+  margin-right: 4px;
+  padding: 2px 6px 4px 8px;
+}
+
+.defeat-label{
+  font-size: 2.4rem;
+  font-weight: bolder;
+  padding: 0 6px;
+  border-bottom: 2px solid black;
+  height: 30px;
+  margin: -24px 0 8px 0;
+}
+
+.correct-number{
+  font-size: 2.4rem;
+}
+
+.correct-number .gameboard{
+  width: 340px;
+}
+
+.correct-number .digit{
+  height: var(--digitsHeight);
+}
+
 /* Mid-size Styles */
 @media screen and (min-width: 420px) and (max-width: 510px) {
   .gameboard {
