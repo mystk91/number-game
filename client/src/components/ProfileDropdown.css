@@ -86,3 +86,15 @@
 .logout-link {
   cursor: pointer;
 }
+
+@media screen and (max-width: 481px){
+    .profile-dropdown.visible a{
+        right: 50px;
+
+    }
+
+    .profile-dropdown.hidden a{
+        right: 50px;
+    }
+
+}

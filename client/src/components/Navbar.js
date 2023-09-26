@@ -49,7 +49,7 @@ function Navbar(props) {
   );
 
   let gameModesButtonHTMLClicked = (
-    <button className="game-modes-button clicked" onClick={hideGameModesButton}>
+    <button className="game-modes-button clicked" >
       Game Modes
     </button>
   );
@@ -101,26 +101,15 @@ function Navbar(props) {
   );
 
   //Shows the game modes list
-  function displayGameModes() {
+  function displayGameModes(e) {
     setGameModesList(listVisible);
     setGameModesButton(gameModesButtonHTMLClicked);
+    e.stopPropagation();
     document.addEventListener("click", hideGameModes);
   }
 
   //Hides the game list
   function hideGameModes(e) {
-    if (e.target.classList != "game-modes-button clicked") {
-      setGameModesList(listHidden);
-      setGameModesButton(gameModesButtonHTML);
-      document.removeEventListener("click", hideGameModes);
-      setTimeout(() => {
-        setGameModesList();
-      }, 300);
-    }
-  }
-
-  //Hides the game list when using the button
-  function hideGameModesButton(e) {
     setGameModesList(listHidden);
     setGameModesButton(gameModesButtonHTML);
     document.removeEventListener("click", hideGameModes);
@@ -128,6 +117,7 @@ function Navbar(props) {
       setGameModesList();
     }, 300);
   }
+
 
   //Used to display the modals from the buttons on the tool-bar
   const [modal, setModal] = useState();
