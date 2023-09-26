@@ -18,6 +18,23 @@ function ForgotPassword(props) {
     return () => {};
   }, []);
 
+  //Used to keep track of the inputed values
+  const [emailValue, setEmailValue] = useState();
+
+  //Used to display Email input errors
+  function displayEmailErrors() {
+    let emailRegExp = new RegExp(
+      "^([a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,})$"
+    );
+    if (!emailRegExp.test(emailValue)) {
+      setErrEmail(<div className="error">Invalid email address</div>);
+      return false;
+    } else {
+      setErrEmail();
+      return true;
+    }
+  }
+
   // Used to set the class and hide the modal and box
   const [hideModal, setHideModal] = useState("");
   const [hideComponent, setHideComponent] = useState("");
@@ -38,7 +55,7 @@ function ForgotPassword(props) {
   const [currentScreen, setCurrentScreen] = useState();
 
   //Used to set the errors that occur if email address doesn't exist.
-  const [errUsername, setErrUsername] = useState();
+  const [errEmail, setErrEmail] = useState();
 
   //Checks if the email address exists and sends a password reset it if does
   async function forgotPasswordSubmit(e) {
@@ -63,7 +80,7 @@ function ForgotPassword(props) {
       setHideModal(" .hide-modal");
     } else {
       let errors = await res.json();
-      setErrUsername(<div className="error">{errors.username}</div>);
+      setErrEmail(<div className="error">{errors.email}</div>);
     }
   }
 
@@ -105,9 +122,16 @@ function ForgotPassword(props) {
             onSubmit={(e) => forgotPasswordSubmit(e)}
           >
             <div>
-              <label htmlFor="username">Email</label>
-              <input id="username" name="username" type="text" />
-              {errUsername}
+              <label htmlFor="email">Email</label>
+              <input
+                id="email"
+                name="email"
+                type="text"
+                value={emailValue}
+                onChange={(e) => setEmailValue(e.target.value)}
+                onBlur={displayEmailErrors}
+              />
+              {errEmail}
             </div>
             <div>
               <button type="submit" className="submit-btn">

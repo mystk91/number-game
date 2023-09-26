@@ -12,9 +12,9 @@ const nodemailer = require('nodemailer');
 //Starting mongo
 const { MongoClient, Timestamp } = require('mongodb');
 let ObjectId = require('mongodb').ObjectId; 
-const mongoClient = new MongoClient(process.env.mongoDB);
-async function connectMongo(){await mongoClient.connect();}
-connectMongo();
+//const mongoClient = new MongoClient(process.env.mongoDB);
+//async function connectMongo(){await mongoClient.connect();}
+//connectMongo();
 
 //Cookies
 var cookieParser = require('cookie-parser');
@@ -73,7 +73,7 @@ app.use(limiter);
 const passport = require("passport");
 const session = require('express-session');
 app.use(
-  session({name:"session0", secret: 'superSecretTech', maxAge: 24 * 60 * 60 * 100,})
+  session({name:"session0", secret: process.env.sessionSecret, maxAge: 24 * 60 * 60 * 100,})
 );
 app.use(passport.initialize());
 app.use(passport.session());
@@ -103,12 +103,16 @@ server.listen(port);
 //////////////////////////////////////////////////////////////////////////////////
 //Requests and Socket Handling
 
-//Server will update the message board when a user sends a message to it
+/*Server will update the message board when a user sends a message to it
 io.on('connection', socket=>{
   socket.on('sent', ()=>{
     io.emit('New Message');
   })
 });
+*/
+
+let accountRequests = require('./accountRequests.js');
+accountRequests.accountRequests(app);
 
 
 

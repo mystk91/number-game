@@ -137,7 +137,7 @@ function Navbar(props) {
 
   //Adds either the login form or the profile dropdown options the webpage
   function addProfileButton() {
-    let user = 1;
+    let user = 0;
     //Code that checks if user is logged in
     if (user == 1) {
       setProfileButton(profileDropdownInitialHTML);

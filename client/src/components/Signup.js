@@ -44,14 +44,51 @@ function Signup(props) {
     setHideModal(" hide-modal");
   }
 
+  //Used to keep track of the inputed values
+  const [emailValue, setEmailValue] = useState();
+  const [passwordValue, setPasswordValue] = useState();
+
   //Used to display errors on the form
   const [errEmail, setErrEmail] = useState();
   const [errPassword, setErrPassword] = useState();
 
+  //Used to display Email input errors
+  function displayEmailErrors() {
+    let emailRegExp = new RegExp(
+      "^([a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,})$"
+    );
+    if (!emailRegExp.test(emailValue)) {
+      setErrEmail(<div className="error">Invalid email address</div>);
+      return false;
+    } else {
+      setErrEmail();
+      return true;
+    }
+  }
+
+  //Used to display Password input errors
+  function displayPasswordErrors() {
+    let passwordRegExp = new RegExp(
+      "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,32}$"
+    );
+    if (!passwordRegExp.test(passwordValue)) {
+      setErrPassword(
+        <div className="error">
+          Passwords require an uppercase and lowercase letter, a number, and a
+          special character.
+        </div>
+      );
+      return false;
+    } else {
+      setErrPassword();
+      return true;
+    }
+  }
+
   //Attempts to create an account
   async function createAccount(e) {
     e.preventDefault();
-    const url = e.target.action;
+    const url = "/api/create-account"
     const formData = new FormData(e.target);
     const formDataObj = Object.fromEntries(formData.entries());
     const formDataString = JSON.stringify(formDataObj);
@@ -64,7 +101,7 @@ function Signup(props) {
       },
     };
     const res = await fetch(url, options);
-    if (res.status == 302) {
+    if (res.status == 200) {
       setHideModal(" .hide-modal");
       setCurrentScreen(successScreen);
     } else {
@@ -108,14 +145,21 @@ function Signup(props) {
           </span>
           <div className="signup-label">Create an account</div>
           <form
-            action="/api/create-account"
             method="post"
             className="signup-form"
             onSubmit={(e) => createAccount(e)}
           >
             <div className="form-input">
               <label htmlFor="email">Email</label>
-              <input id="email" name="email" type="text" maxLength={32} />
+              <input
+                id="email"
+                name="email"
+                type="text"
+                maxLength={32}
+                value={emailValue}
+                onChange={(e) => setEmailValue(e.target.value)}
+                onBlur={displayEmailErrors}
+              />
               {errEmail}
             </div>
             <div className="form-input">
@@ -124,7 +168,11 @@ function Signup(props) {
                 id="current-password"
                 name="password"
                 type="password"
-                maxLength={16}
+                minLength={8}
+                maxLength={32}
+                value={passwordValue}
+                onInput={(e) => setPasswordValue(e.target.value)}
+                onBlur={displayPasswordErrors}
               />
               {errPassword}
             </div>
