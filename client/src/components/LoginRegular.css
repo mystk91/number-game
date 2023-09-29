@@ -12,7 +12,7 @@
   display: none;
 }
 
-.login-box {
+.login-box-regular {
   width: 360px;
   background-color: var(--modal-panel-background-color);
   border: var(--modal-border);
@@ -46,7 +46,7 @@
   padding: 2px 6px 4px 8px;
 }
 
-.login-box > .site-logo {
+.login-box-regular > .site-logo {
   height: 100px;
   margin: -10px 0 10px 0;
   user-select: none;

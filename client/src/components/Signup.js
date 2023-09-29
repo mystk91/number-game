@@ -89,7 +89,6 @@ function Signup(props) {
     let noPasswordErrors = displayPasswordErrors();
     let noEmailErrors = displayEmailErrors();
     if (noPasswordErrors && noEmailErrors) {
-      alert("success");
       const url = "/api/create-account";
       const formData = new FormData(e.target);
       const formDataObj = Object.fromEntries(formData.entries());

@@ -107,7 +107,7 @@ function ForgotPassword(props) {
     <div className={hideComponent}>
       <div className="sub-modals">{currentScreen}</div>
       <div className={"forgot-regular" + hideModal}>
-        <div className={"forgot-box"}>
+        <div className={"forgot-box-regular"}>
           <span className="forgot-top-regular"></span>
           <div className="reset-label">Reset your password</div>
           <form

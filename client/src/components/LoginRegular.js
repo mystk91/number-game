@@ -50,7 +50,7 @@ function LoginRegular(props) {
 
   return (
     <div className={"login-regular"}>
-      <div className={"login-box"}>
+      <div className={"login-box-regular"}>
         <span className="login-top-regular"></span>
         <img src="./images/site/siteLogo.png" className="site-logo" />
         <form

@@ -11,8 +11,8 @@
   background-color: var(--modal-background-color);
   width: 100%;
   height: 100%;
-  overflow-y: scroll;
   display: flex;
+  overflow-y: scroll;
   padding-bottom: 60px;
 }
 
@@ -32,7 +32,8 @@
   border: var(--modal-border);
   border-radius: var(--modal-border-radius);
   color: black;
-  top: 4px;
+  top: 10px;
+  margin: auto;
 }
 
 .instructions > * {

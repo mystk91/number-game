@@ -1,11 +1,46 @@
 //Requests that involve account creation, password resets and logins
 function accountRequests(app) {
+  const bcrypt = require("bcryptjs");
+  const uniqid = require("uniqid");
+  const crypto = require("crypto");
+  const nodemailer = require("nodemailer");
+  //Starting mongo
+  const { MongoClient, Timestamp } = require("mongodb");
+  let ObjectId = require("mongodb").ObjectId;
+  const mongoClient = new MongoClient(process.env.mongoDB);
+  async function connectMongo() {
+    await mongoClient.connect();
+  }
+  connectMongo();
+
+  //Authentication Constants
+  const passport = require("passport");
+  const session = require("express-session");
+  app.use(
+    session({
+      name: "session0",
+      secret: process.env.sessionSecret,
+      maxAge: 24 * 60 * 60 * 100,
+    })
+  );
+  app.use(passport.initialize());
+  app.use(passport.session());
+
+  //Local Strategy
+  const LocalStrategy = require("passport-local").Strategy;
+
+  //Google Authentication
+  const GoogleStrategy = require("passport-google-oauth20");
+  const Google_Client_Id = process.env.googleClientId;
+  const Google_Client_Secret = process.env.googleClientSecret;
+
   /////////////////////
+  /* Account Creation
   /* Creates a new unverified account and sends a verification email. */
   app.post("/api/create-account", async (req, res, next) => {
     const db = mongoClient.db("Accounts");
-    let accounts = db.collection("accounts");
-    let unverifieds = db.collection("unverified-accounts");
+    let accounts = db.collection("Accounts");
+    let unverifieds = db.collection("Unverified-Accounts");
 
     //Error checking
     let errors = {
@@ -28,12 +63,11 @@ function accountRequests(app) {
       errors.email = "That email is already associated with an account";
       errorFound = true;
     }
-
     //Checks if password is valid
     let passwordRegExp = new RegExp(
       "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,32}$"
     );
-    if (!passwordRegExp.test(passwordValue)) {
+    if (!passwordRegExp.test(req.body.password)) {
       errors.password = `Passwords must be at least 8 characters and have an uppercase and lowercase letter, a number, and a special character.`;
     }
     if (errorFound) {
@@ -67,9 +101,21 @@ function accountRequests(app) {
             password: hashedPassword,
             active: false,
             verificationCode: verificationCode,
-            createdAt: new Timestamp(),
+            createdAt: new Date(),
           };
-          await unverifieds.insertOne(user);
+          if (unverifieds.findOne({ email: email })) {
+            await unverifieds.insertOne(user);
+          } else {
+            unverifieds.updateOne(
+              { email: needsResetUser.email },
+              {
+                $set: {
+                  password: hashedPassword,
+                  verificationCode: verificationCode,
+                },
+              }
+            );
+          }
           res.send(302);
         } catch (err) {}
       });
@@ -86,8 +132,10 @@ function accountRequests(app) {
         from: `"Numblr" <${process.env.nodemailerUser}>`,
         to: req.body.email,
         subject: "Numblr Email Verification",
-        html: `<p>If you didn't just sign up to Numblr, please ignore this. Otherwise, click here to verify your email address. </p>
-        <a href='${process.env.protocol}${process.env.domain}/verify-email/${verificationCode}'>${process.env.protocol}${process.env.domain}/verify-email/${verificationCode}</a>`,
+        html: `</p> Click below to verify your email address. </p> <br>
+        <a href='${process.env.protocol}${process.env.domain}/verify-email/${verificationCode}'>${process.env.protocol}${process.env.domain}/verify-email/${verificationCode}</a>
+        <p>If you did not just sign up to Numblr, please ignore this.</p>
+        `,
       };
 
       transporter.sendMail(mailOptions, function (error, info) {
@@ -105,8 +153,8 @@ function accountRequests(app) {
   /* Verifies the email if user goes to verification URL */
   app.get("/verify-email/:verificationCode", async (req, res, next) => {
     const db = mongoClient.db("Accounts");
-    let accounts = db.collection("accounts");
-    let unverifieds = db.collection("unverifieds");
+    let accounts = db.collection("Accounts");
+    let unverifieds = db.collection("Unverified-Accounts");
 
     let vCode = req.params["verificationCode"];
 
@@ -114,21 +162,23 @@ function accountRequests(app) {
 
     if (user) {
       const verifiedUser = {
+        id: user.email,
         email: user.email,
         password: user.password,
         active: true,
       };
       await accounts.insertOne(verifiedUser);
-      await unverifieds.deleteOne({ verificationCode: vCode });
+      console.log("sucess");
       res.status(200);
       res.end();
     } else {
+      console.log("failure");
       res.status(400);
     }
   });
 
   /////////////////////
-  /* Forgot Password
+  /* Reset Password / Forgot Password
   /* Sends a password reset link to to a verified email */
   app.post("/api/forgot-password", async (req, res, next) => {
     const db = mongoClient.db("Accounts");
@@ -183,7 +233,7 @@ function accountRequests(app) {
       const user = {
         email: req.body.email,
         verificationCode: verificationCode,
-        createdAt: new Timestamp(),
+        createdAt: new Date(),
       };
       await needsReset.insertOne(user);
 
@@ -214,7 +264,7 @@ function accountRequests(app) {
   });
 
   /////////////////////
-  /* Changing Password
+  /* Changing Password / New Password
   /* Handles the form that inputs the changed password */
   app.get("/api/change-password", async (req, res, next) => {
     let newPassword = req.body.password;
@@ -229,7 +279,7 @@ function accountRequests(app) {
     let passwordRegExp = new RegExp(
       "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,32}$"
     );
-    if (!passwordRegExp.test(passwordValue)) {
+    if (!passwordRegExp.test(req.body.password)) {
       errors.password = `Passwords must be at least 8 characters and have an uppercase and lowercase letter, a number, and a special character.`;
     }
 

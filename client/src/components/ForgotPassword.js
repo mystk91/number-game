@@ -18,6 +18,7 @@ function ForgotPassword(props) {
     inputReference.current.focus();
     return () => {};
   }, []);
+  
 
   //Used to give focus to the form input on load
   const inputReference = useRef(null);
@@ -127,6 +128,7 @@ function ForgotPassword(props) {
             method="POST"
             className="forgot-form"
             onSubmit={(e) => forgotPasswordSubmit(e)}
+            onKeyDown={(e) => {e.stopPropagation()}}
           >
             <div>
               <label htmlFor="email">Email</label>
