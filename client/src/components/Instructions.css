@@ -13,6 +13,7 @@
   height: 100%;
   overflow-y: scroll;
   display: flex;
+  padding-bottom: 60px;
 }
 
 .instructions {
@@ -31,6 +32,7 @@
   border: var(--modal-border);
   border-radius: var(--modal-border-radius);
   color: black;
+  top: 4px;
 }
 
 .instructions > * {

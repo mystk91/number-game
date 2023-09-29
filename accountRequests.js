@@ -34,8 +34,7 @@ function accountRequests(app) {
       "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,32}$"
     );
     if (!passwordRegExp.test(passwordValue)) {
-      errors.password =
-        "Needs an uppercase and lowercase letter, a number, and a special character";
+      errors.password = `Passwords must be at least 8 characters and have an uppercase and lowercase letter, a number, and a special character.`;
     }
     if (errorFound) {
       res.send(errors);
@@ -87,7 +86,7 @@ function accountRequests(app) {
         from: `"Numblr" <${process.env.nodemailerUser}>`,
         to: req.body.email,
         subject: "Numblr Email Verification",
-        html: `<p>If you didn't sign up to this website, please ignore this. Otherwise, click here to verify your email address. </p>
+        html: `<p>If you didn't just sign up to Numblr, please ignore this. Otherwise, click here to verify your email address. </p>
         <a href='${process.env.protocol}${process.env.domain}/verify-email/${verificationCode}'>${process.env.protocol}${process.env.domain}/verify-email/${verificationCode}</a>`,
       };
 
@@ -129,7 +128,7 @@ function accountRequests(app) {
   });
 
   /////////////////////
-  /* Password Reset
+  /* Forgot Password
   /* Sends a password reset link to to a verified email */
   app.post("/api/forgot-password", async (req, res, next) => {
     const db = mongoClient.db("Accounts");
@@ -181,17 +180,12 @@ function accountRequests(app) {
       }
       let verificationCode = generateString(32);
 
-      bcrypt.hash(req.body.password, 10, async (err, hashedPassword) => {
-        try {
-          const user = {
-            email: req.body.email,
-            verificationCode: verificationCode,
-            createdAt: new Timestamp(),
-          };
-          await needsReset.insertOne(user);
-          res.send(302);
-        } catch (err) {}
-      });
+      const user = {
+        email: req.body.email,
+        verificationCode: verificationCode,
+        createdAt: new Timestamp(),
+      };
+      await needsReset.insertOne(user);
 
       const transporter = nodemailer.createTransport({
         service: "gmail",
@@ -206,7 +200,7 @@ function accountRequests(app) {
         to: req.body.email,
         subject: "Numblr Password Reset",
         html: `<p>Click here to reset your password. If you didn't request a password reset, you can ignore this. </p>
-        <a href='${process.env.protocol}${process.env.domain}/reset-password/${verificationCode}'>${process.env.protocol}${process.env.domain}/reset-password/${verificationCode}</a>`,
+        <a href='${process.env.protocol}${process.env.domain}/change-password/${verificationCode}'>${process.env.protocol}${process.env.domain}/reset-password/${verificationCode}</a>`,
       };
 
       transporter.sendMail(mailOptions, function (error, info) {
@@ -217,6 +211,124 @@ function accountRequests(app) {
         }
       });
     }
+  });
+
+  /////////////////////
+  /* Changing Password
+  /* Handles the form that inputs the changed password */
+  app.get("/api/change-password", async (req, res, next) => {
+    let newPassword = req.body.password;
+
+    //Error checking
+    let errors = {
+      password: "",
+    };
+    let errorFound = false;
+
+    //Checks if password is valid
+    let passwordRegExp = new RegExp(
+      "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,32}$"
+    );
+    if (!passwordRegExp.test(passwordValue)) {
+      errors.password = `Passwords must be at least 8 characters and have an uppercase and lowercase letter, a number, and a special character.`;
+    }
+
+    if (errorFound) {
+      res.send(errors);
+    } else {
+      const db = mongoClient.db("Accounts");
+      let accounts = db.collection("accounts");
+      let needsReset = db.collection("needs-password-reset");
+
+      const needsResetUser = await needsReset.findOne({
+        verificationCode: verificationCode,
+      });
+
+      if (needsResetUser) {
+        const user = await accounts.findOne({ email: needsResetUser.email });
+        if (user) {
+          bcrypt.hash(newPassword, 10, async (err, hashedPassword) => {
+            try {
+              await accounts.updateOne(
+                { email: needsResetUser.email },
+                { $set: { password: hashedPassword } }
+              );
+              res.send(302);
+            } catch (err) {}
+          });
+        } else {
+          res.status(400);
+        }
+      } else {
+        res.status(400);
+      }
+    }
+  });
+
+  //Google Authentication
+  app.get(
+    "/login/google",
+    passport.authenticate("google", { scope: ["profile", "email"] })
+  );
+  passport.use(
+    new GoogleStrategy(
+      {
+        clientID: Google_Client_Id,
+        clientSecret: Google_Client_Secret,
+        callbackURL: `${process.env.protocol}${process.env.domain}/login/google/callback`,
+      },
+      async function (accessToken, refreshToken, profile, done) {
+        const db = mongoClient.db("Website");
+        let accounts = db.collection("accounts");
+        let account = await accounts.findOne({ email: profile.email });
+        if (!account) {
+          let password = await bcrypt.hash(uniqid(), 10);
+          let newAccount = {
+            username: profile.name.givenName,
+            id: profile.email,
+            email: profile.email,
+            password: password,
+            googleId: profile.id,
+          };
+          await accounts.insertOne(newAccount);
+          newAccount = await accounts.findOne({ googleId: profile.id });
+          done(null, newAccount);
+        } else {
+          if (!account.googleId) {
+            await accounts.updateOne(
+              { email: profile.email },
+              {
+                $set: {
+                  googleId: account.googleId,
+                  username: profile.name.givenName,
+                },
+              }
+            );
+          }
+          done(null, account);
+        }
+      }
+    )
+  );
+
+  app.get(
+    "/login/google/callback",
+    passport.authenticate("google", { failureRedirect: "/signup" }),
+    async function (req, res) {
+      res.redirect(`${process.env.protocol}${process.env.domain}`);
+    }
+  );
+
+  passport.serializeUser((user, done) => {
+    done(null, user);
+  });
+
+  passport.deserializeUser((user, done) => {
+    done(null, user);
+  });
+
+  app.get("/api/current_user", async (req, res) => {
+    res.json(req.user);
   });
 }
 

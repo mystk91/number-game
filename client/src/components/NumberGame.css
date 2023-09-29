@@ -16,7 +16,9 @@
 .game-container {
   display: flex;
   justify-content: center;
+  align-items: flex-start;
   user-select: none;
+  height: 100vh;
 }
 
 .gameboard {

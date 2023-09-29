@@ -6,7 +6,6 @@
   height: 100%;
   overflow-y: scroll;
   display: flex;
-  padding-bottom: 5%;
 }
 
 .hide-modal{
@@ -30,7 +29,6 @@
   color: black;
   margin: auto;
   position: relative;
-  top: 4px;
 }
 
 .login-top {
@@ -77,6 +75,7 @@
 .login-form label {
   margin-left: 3px;
   margin-bottom: 3px;
+  width: max-content;
 }
 
 .login-form input {
@@ -95,6 +94,7 @@
   color: rgb(180, 0, 0);
   font-size: 1.6rem;
   margin-top: 3px;
+  font-family: OpenSansCondensed, sans-serf;
 }
 
 .login-form .submit-btn {

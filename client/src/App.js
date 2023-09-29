@@ -5,10 +5,6 @@ import React, {
   createContext,
   useContext,
 } from "react";
-import update from "immutability-helper";
-import uniqid from "uniqid";
-//import logo from './logo.svg';
-//export const SomeContext = createContext('defaultValue');
 import "./normalize.css";
 import "./custom.css";
 import "./App.css";
@@ -17,10 +13,13 @@ import Navbar from "./components/Navbar";
 import GamePage from "./components/GamePage";
 import Instructions from "./components/Instructions";
 import Login from "./components/Login";
+import LoginRegular from "./components/LoginRegular";
 import Signup from "./components/Signup";
+import SignupRegular from "./components/SignupRegular";
 import ForgotPassword from "./components/ForgotPassword";
+import ForgotPasswordRegular from "./components/ForgotPasswordRegular";
+import NewPasswordPage from "./components/ResetPassword-Page";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-//import styled, { css } from 'styled-components';
 
 function App() {
   const [property, setProperty] = useState("initialValue");
@@ -44,11 +43,15 @@ function App() {
     <div className="App">
       <BrowserRouter>
         <Routes>
+          <Route
+            path="/new-password/:verificationCode"
+            element={<NewPasswordPage />}
+          />
           <Route path="/instructions" element={<Instructions />} />
           <Route path="/navbar" element={<Navbar />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/forgot" element={<ForgotPassword />} />
+          <Route path="/login" element={<LoginRegular />} />
+          <Route path="/signup" element={<SignupRegular />} />
+          <Route path="/reset-password" element={<ForgotPasswordRegular />} />
           <Route path="/" element={<GamePage digits={4} attempts={6} />} />
           <Route
             path="/2digits"

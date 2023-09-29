@@ -22,6 +22,7 @@ function Instructions(props) {
     propRef.current = point;
   }
 
+  //Used to hide the modal after its done being used
   const [displayInstructions, setDisplayInstructions] = useState("");
 
   //componentDidMount, runs when component mounts, then componentDismount

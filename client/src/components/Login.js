@@ -103,6 +103,7 @@ function Login(props) {
             method="POST"
             className="login-form"
             onSubmit={(e) => login(e)}
+            onKeyDown={(e) =>{e.stopPropagation()}}
           >
             <div>
               <label htmlFor="username">Email</label>

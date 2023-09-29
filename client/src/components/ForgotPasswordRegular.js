@@ -7,11 +7,12 @@ import React, {
 } from "react";
 import update from "immutability-helper";
 import uniqid from "uniqid";
-import "./ForgotPassword.css";
+import "./ForgotPasswordRegular.css";
 import "../normalize.css";
 import "../custom.css";
 import { Link } from "react-router-dom";
 
+//A non-modal version of the forgot password screen.
 function ForgotPassword(props) {
   //componentDidMount, runs when component mounts, then componentDismount
   useEffect(() => {
@@ -93,18 +94,11 @@ function ForgotPassword(props) {
 
   //Creates a screen that pops up after a valid email is submitted
   let successScreen = (
-    <div className="forgot-modal">
+    <div className="forgot-regular">
       <div className="forgot-box">
         <div className="forgot-success-message">
           A password reset link has been sent to your email.
         </div>
-        <button
-          type="submit"
-          className="submit-btn"
-          onClick={() => setHideComponent(" hide-component")}
-        >
-          Okay!
-        </button>
       </div>
     </div>
   );
@@ -112,16 +106,9 @@ function ForgotPassword(props) {
   return (
     <div className={hideComponent}>
       <div className="sub-modals">{currentScreen}</div>
-      <div className={"forgot-modal" + hideModal}>
+      <div className={"forgot-regular" + hideModal}>
         <div className={"forgot-box"}>
-          <span className="forgot-top">
-            <button
-              className="close-login"
-              onClick={(e) => hideForgotButton(e)}
-            >
-              X
-            </button>
-          </span>
+          <span className="forgot-top-regular"></span>
           <div className="reset-label">Reset your password</div>
           <form
             method="POST"

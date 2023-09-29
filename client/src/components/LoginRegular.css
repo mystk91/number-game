@@ -1,12 +1,7 @@
-.forgot-modal {
-  position: fixed;
-  z-index: 2;
-  background-color: var(--modal-background-color);
+.login-regular {
   width: 100%;
   height: 100%;
-  overflow-y: scroll;
   display: flex;
-  padding-bottom: 20%;
 }
 
 .hide-modal{
@@ -17,9 +12,8 @@
   display: none;
 }
 
-.forgot-box {
+.login-box {
   width: 360px;
-  padding: 6px 0 20px 0;
   background-color: var(--modal-panel-background-color);
   border: var(--modal-border);
   border-radius: var(--modal-border-radius);
@@ -28,19 +22,17 @@
   align-items: center;
   height: max-content;
   color: black;
-  margin: auto;
   position: relative;
-  top: 1%;
+  margin-top: 4vh;
+  position: relative;
 }
 
-.forgot-top {
-  display: flex;
-  justify-content: flex-end;
-  margin: 1px 0px 0px 0px;
-  width: 100%;
+.login-top-regular {
+  min-height: 31px;
+  height: 31px;
 }
 
-.forgot-top button {
+.login-top button {
   user-select: none;
 }
 
@@ -54,65 +46,54 @@
   padding: 2px 6px 4px 8px;
 }
 
-.forgot-box > .site-logo {
+.login-box > .site-logo {
   height: 100px;
   margin: -10px 0 10px 0;
   user-select: none;
   pointer-events: none;
 }
 
-.forgot-box > .reset-label{
-  font-family: sans-serif;
-  font-size: 2.4rem;
-  font-weight: bold;
-  padding: 0 10% 12px 10%;
-  margin-top: -12px;
-  width: 100%;
-}
-
-.forgot-form {
+.login-form {
   width: 280px;
   display: flex;
   flex-direction: column;
   margin: 0 0 20px 0;
 }
 
-.forgot-form > * {
+.login-form > * {
   display: flex;
   flex-direction: column;
   margin: 6px 0;
 }
 
-.forgot-form label {
+.login-form label {
   margin-left: 3px;
   margin-bottom: 3px;
   width: max-content;
 }
 
-.forgot-form input {
+.login-form input {
   padding-left: 4px;
   height: 34px;
   border: 1px solid black;
   border-radius: 3px;
 }
 
-.forgot-form input:focus {
+.login-form input:focus {
   border-radius: 6px;
   border: 3px solid black;
 }
 
-.forgot-form .error {
+.login-form .error {
   color: rgb(180, 0, 0);
   font-size: 1.6rem;
   margin-top: 3px;
-  margin-left: 6px;
-  margin-bottom: -12px;
   font-family: OpenSansCondensed, sans-serf;
 }
 
-.forgot-box .submit-btn {
+.login-form .submit-btn {
   height: 40px;
-  margin-top: 12px;
+  margin-top: 4px;
   width: 280px;
   border-radius: 20px;
   border: none;
@@ -122,6 +103,18 @@
   background-color: var(--navbar-background-color);
 }
 
+.login-options{
+  display: flex;
+  flex-direction: column;
+  height: max-content;
+}
+
+.recover-password-link {
+  margin-top: 8px;
+  text-decoration: none;
+  color: blue;
+  font-size: 1.6rem;
+}
 
 .signup-cont {
   margin: 8px 0;
@@ -130,13 +123,6 @@
 .signup-link {
   text-decoration: none;
   color: blue;
-}
-
-.forgot-success-message{
-  font-size: 2.0rem;
-  width: 90%;
-  margin: 20px 0;
-  text-align: center;
 }
 
 /* Mobile Styles */
