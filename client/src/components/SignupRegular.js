@@ -3,6 +3,7 @@ import "./SignupRegular.css";
 import "../normalize.css";
 import "../custom.css";
 import { Link } from "react-router-dom";
+import LoadingIcon from "./LoadingIcon";
 
 //A non-modal version of the signup screen.
 function Signup(props) {
@@ -69,7 +70,8 @@ function Signup(props) {
     let noPasswordErrors = displayPasswordErrors();
     let noEmailErrors = displayEmailErrors();
     if (noPasswordErrors && noEmailErrors) {
-
+      setHideModal(" hide-modal");
+      setCurrentScreen(loadingScreen);
       const url = "/api/create-account";
       const formData = new FormData(e.target);
       const formDataObj = Object.fromEntries(formData.entries());
@@ -84,13 +86,31 @@ function Signup(props) {
       };
       const res = await fetch(url, options);
       if (res.status == 200) {
-        setHideModal(" .hide-modal");
         setCurrentScreen(successScreen);
+        document.addEventListener("keydown", closeSuccessScreen, true);
       } else {
         const errors = await res.json();
+        setCurrentScreen();
+        setHideModal("");
         setErrEmail(<div className="error">{errors.email}</div>);
         setErrPassword(<div className="error">{errors.password}</div>);
       }
+    }
+  }
+
+  let loadingScreen = (
+    <div className="signup-regular">
+      <LoadingIcon />
+    </div>
+  );
+
+  //An event function that will allow you to close the window by pressing "Enter"
+  function closeSuccessScreen(e) {
+    e.stopPropagation();
+    if (e.key == "Enter") {
+      setCurrentScreen();
+      document.removeEventListener("keydown", closeSuccessScreen, true);
+      window.location = "/login";
     }
   }
 

@@ -1,18 +1,10 @@
-import React, {
-  useState,
-  useEffect,
-  useRef,
-  createContext,
-  useContext,
-  Component,
-} from "react";
-import update from "immutability-helper";
-import uniqid from "uniqid";
+import React, { useState, useEffect, useRef } from "react";
 import "./Signup.css";
 import "../normalize.css";
 import "../custom.css";
-import { Link } from "react-router-dom";
+import LoadingIcon from "./LoadingIcon";
 
+//A modal version of the signup screen.
 function Signup(props) {
   //componentDidMount, runs when component mounts, then componentDismount
   useEffect(() => {
@@ -89,6 +81,8 @@ function Signup(props) {
     let noPasswordErrors = displayPasswordErrors();
     let noEmailErrors = displayEmailErrors();
     if (noPasswordErrors && noEmailErrors) {
+      setHideModal(" hide-modal");
+      setCurrentScreen(loadingScreen);
       const url = "/api/create-account";
       const formData = new FormData(e.target);
       const formDataObj = Object.fromEntries(formData.entries());
@@ -103,15 +97,23 @@ function Signup(props) {
       };
       const res = await fetch(url, options);
       if (res.status == 200) {
-        setHideModal(" .hide-modal");
         setCurrentScreen(successScreen);
+        document.addEventListener("keydown", closeSuccessScreen, true);
       } else {
         const errors = await res.json();
+        setCurrentScreen();
+        setHideModal("");
         setErrEmail(<div className="error">{errors.email}</div>);
         setErrPassword(<div className="error">{errors.password}</div>);
       }
     }
   }
+
+  let loadingScreen = (
+    <div className="signup-modal">
+      <LoadingIcon />
+    </div>
+  );
 
   let successScreen = (
     <div className="signup-modal">
@@ -121,9 +123,9 @@ function Signup(props) {
         </div>
         <button
           type="submit"
-          className="submit-btn"
+          className="submit-btn success-btn"
           onClick={() => {
-            setHideComponent(" hide-component");
+            setCurrentScreen();
           }}
         >
           Okay!
@@ -131,6 +133,15 @@ function Signup(props) {
       </div>
     </div>
   );
+
+  //An event function that will allow you to close the window by pressing "Enter"
+  function closeSuccessScreen(e) {
+    e.stopPropagation();
+    if (e.key == "Enter") {
+      setCurrentScreen();
+      document.removeEventListener("keydown", closeSuccessScreen, true);
+    }
+  }
 
   return (
     <div className={hideComponent}>

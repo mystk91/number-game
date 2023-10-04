@@ -1,6 +1,6 @@
 :root {
-  --navbar-background-color: rgb(80, 90, 126);
-  --navbar-background-hover: rgb(83, 93, 132);
+  --navbar-background-color: rgb(65, 68, 87);
+  --navbar-background-hover:  rgb(66, 67, 85);
   --navbar-text-color: rgb(255, 255, 255);
 }
 
@@ -372,7 +372,7 @@
 }
 
 /* Phone sizes */
-@media screen and (max-width: 481px) {
+@media screen and (max-width: 480px) {
   .game-modes {
     display: none;
   }

@@ -96,27 +96,14 @@ function accountRequests(app) {
       bcrypt.hash(req.body.password, 10, async (err, hashedPassword) => {
         try {
           const user = {
-            id: req.body.email,
             email: req.body.email,
             password: hashedPassword,
             active: false,
             verificationCode: verificationCode,
             createdAt: new Date(),
           };
-          if (unverifieds.findOne({ email: email })) {
-            await unverifieds.insertOne(user);
-          } else {
-            unverifieds.updateOne(
-              { email: needsResetUser.email },
-              {
-                $set: {
-                  password: hashedPassword,
-                  verificationCode: verificationCode,
-                },
-              }
-            );
-          }
-          res.send(302);
+          await unverifieds.insertOne(user);
+          //res.send(302);
         } catch (err) {}
       });
 
@@ -143,6 +130,7 @@ function accountRequests(app) {
           console.log(error);
         } else {
           console.log("Email sent: " + info.response);
+          res.sendStatus(200);
         }
       });
     }
@@ -151,7 +139,7 @@ function accountRequests(app) {
   /////////////////////
   /* Email Verification 
   /* Verifies the email if user goes to verification URL */
-  app.get("/verify-email/:verificationCode", async (req, res, next) => {
+  app.post("/api/verify-email/:verificationCode", async (req, res, next) => {
     const db = mongoClient.db("Accounts");
     let accounts = db.collection("Accounts");
     let unverifieds = db.collection("Unverified-Accounts");
@@ -160,9 +148,10 @@ function accountRequests(app) {
 
     const user = await unverifieds.findOne({ verificationCode: vCode });
 
-    if (user) {
+    const newestVerificationCode = await unverifieds.find({email: user.email}).sort({createdAt: 1}).limit(1);
+
+    if (user === newestVerificationCode) {
       const verifiedUser = {
-        id: user.email,
         email: user.email,
         password: user.password,
         active: true,
@@ -335,7 +324,6 @@ function accountRequests(app) {
           let password = await bcrypt.hash(uniqid(), 10);
           let newAccount = {
             username: profile.name.givenName,
-            id: profile.email,
             email: profile.email,
             password: password,
             googleId: profile.id,

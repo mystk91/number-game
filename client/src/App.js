@@ -19,6 +19,8 @@ import SignupRegular from "./components/SignupRegular";
 import ForgotPassword from "./components/ForgotPassword";
 import ForgotPasswordRegular from "./components/ForgotPasswordRegular";
 import NewPasswordPage from "./components/ResetPassword-Page";
+import EmailVerification from "./components/EmailVerification";
+import LoadingIcon from "./components/LoadingIcon";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 function App() {
@@ -48,10 +50,12 @@ function App() {
             path="/new-password/:verificationCode"
             element={<NewPasswordPage />}
           />
+          <Route path="/icon" element={<LoadingIcon />} />
           <Route path="/instructions" element={<Instructions />} />
           <Route path="/navbar" element={<Navbar />} />
           <Route path="/login" element={<LoginRegular />} />
           <Route path="/signup" element={<SignupRegular />} />
+          <Route path="/verify-email/:verificationCode" element={<EmailVerification />} />
           <Route path="/reset-password" element={<ForgotPasswordRegular />} />
           <Route path="/" element={<GamePage digits={4} attempts={6} />} />
           <Route

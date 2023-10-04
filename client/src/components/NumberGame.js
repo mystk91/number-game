@@ -565,7 +565,7 @@ function NumberGame(props) {
 
   //Handles pressing keys by using different functions
   function handleKeydown(e) {
-    if (isFinite(e.key)) {
+    if (isFinite(parseInt(e.key))) {
       inputNumber(e.key);
     }
     if (e.key == "Backspace") {
