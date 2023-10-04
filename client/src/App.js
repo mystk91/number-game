@@ -18,7 +18,7 @@ import Signup from "./components/Signup";
 import SignupRegular from "./components/SignupRegular";
 import ForgotPassword from "./components/ForgotPassword";
 import ForgotPasswordRegular from "./components/ForgotPasswordRegular";
-import NewPasswordPage from "./components/ResetPassword-Page";
+import NewPasswordPage from "./components/NewPasswordPage";
 import EmailVerification from "./components/EmailVerification";
 import LoadingIcon from "./components/LoadingIcon";
 import { BrowserRouter, Routes, Route } from "react-router-dom";

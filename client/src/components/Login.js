@@ -97,7 +97,7 @@ function Login(props) {
               X
             </button>
           </span>
-          <img src="./images/site/siteLogo.png" className="site-logo" />
+          <img src="/images/site/siteLogo.png" className="site-logo" />
           <form
             action="/api/validate"
             method="POST"
@@ -133,19 +133,19 @@ function Login(props) {
             <LoginButton
               href="/login/google"
               className="google"
-              imageURL="./images/login-logos/google-logo.jpg"
+              imageURL="/images/login-logos/google-logo.jpg"
               buttonText="Sign in with Google"
             />
             <LoginButton
               href="/login/apple"
               className="apple"
-              imageURL="./images/login-logos/apple-logo.png"
+              imageURL="/images/login-logos/apple-logo.png"
               buttonText="Sign in with Apple"
             />
             <LoginButton
               href="/login/facebook"
               className="facebook"
-              imageURL="./images/login-logos/facebook-logo.jpg"
+              imageURL="/images/login-logos/facebook-logo.jpg"
               buttonText="Sign in with Facebook"
             />
           </div>

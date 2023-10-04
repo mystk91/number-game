@@ -71,7 +71,7 @@ function accountRequests(app) {
       errors.password = `Passwords must be at least 8 characters and have an uppercase and lowercase letter, a number, and a special character.`;
     }
     if (errorFound) {
-      res.send(errors);
+      res.status(400).send(errors);
     } else {
       //Creates the account if parameters are correct
       let random = Math.floor(Math.random() * 6) + 4;
@@ -146,23 +146,44 @@ function accountRequests(app) {
 
     let vCode = req.params["verificationCode"];
 
-    const user = await unverifieds.findOne({ verificationCode: vCode });
+    const unverifiedUser = await unverifieds.findOne({
+      verificationCode: vCode,
+    });
 
-    const newestVerificationCode = await unverifieds.find({email: user.email}).sort({createdAt: 1}).limit(1);
+    if (unverifiedUser) {
+      const newestUnverifiedAccount = unverifieds
+        .find({ email: unverifiedUser.email })
+        .sort({ createdAt: -1 })
+        .limit(1);
 
-    if (user === newestVerificationCode) {
-      const verifiedUser = {
-        email: user.email,
-        password: user.password,
-        active: true,
-      };
-      await accounts.insertOne(verifiedUser);
-      console.log("sucess");
-      res.status(200);
-      res.end();
+      const arr = await newestUnverifiedAccount.toArray();
+      let newestVerificationCode = arr[0].verificationCode;
+      console.log(newestVerificationCode);
+
+      const previouslyCreatedAccount = await accounts.findOne({
+        email: unverifiedUser.email,
+      });
+
+      if (
+        unverifiedUser.verificationCode === newestVerificationCode &&
+        !previouslyCreatedAccount
+      ) {
+        const verifiedUser = {
+          email: unverifiedUser.email,
+          password: unverifiedUser.password,
+          createdAt: new Date(),
+          active: true,
+        };
+        await accounts.insertOne(verifiedUser);
+        console.log("success");
+        res.sendStatus(200);
+        res.end();
+      } else {
+        console.log("failure");
+        res.sendStatus(400);
+      }
     } else {
-      console.log("failure");
-      res.status(400);
+      res.sendStatus(400);
     }
   });
 
@@ -171,8 +192,8 @@ function accountRequests(app) {
   /* Sends a password reset link to to a verified email */
   app.post("/api/forgot-password", async (req, res, next) => {
     const db = mongoClient.db("Accounts");
-    let accounts = db.collection("accounts");
-    let needsReset = db.collection("needs-password-reset");
+    let accounts = db.collection("Accounts");
+    let needsReset = db.collection("Needs-Password-Reset");
 
     //Error checking
     let errors = {
@@ -197,7 +218,7 @@ function accountRequests(app) {
     }
 
     if (errorFound) {
-      res.send(errors);
+      res.status(400).send(errors);
     } else {
       //Sends a password reset if the email address exists
       let random = Math.floor(Math.random() * 6) + 4;
@@ -239,13 +260,14 @@ function accountRequests(app) {
         to: req.body.email,
         subject: "Numblr Password Reset",
         html: `<p>Click here to reset your password. If you didn't request a password reset, you can ignore this. </p>
-        <a href='${process.env.protocol}${process.env.domain}/change-password/${verificationCode}'>${process.env.protocol}${process.env.domain}/reset-password/${verificationCode}</a>`,
+        <a href='${process.env.protocol}${process.env.domain}/new-password/${verificationCode}'>${process.env.protocol}${process.env.domain}/reset-password/${verificationCode}</a>`,
       };
 
       transporter.sendMail(mailOptions, function (error, info) {
         if (error) {
           console.log(error);
         } else {
+          res.sendStatus(200);
           console.log("Email sent: " + info.response);
         }
       });

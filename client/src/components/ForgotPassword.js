@@ -10,7 +10,7 @@ import uniqid from "uniqid";
 import "./ForgotPassword.css";
 import "../normalize.css";
 import "../custom.css";
-import { Link } from "react-router-dom";
+import LoadingIcon from "./LoadingIcon";
 
 function ForgotPassword(props) {
   //componentDidMount, runs when component mounts, then componentDismount
@@ -18,7 +18,6 @@ function ForgotPassword(props) {
     inputReference.current.focus();
     return () => {};
   }, []);
-  
 
   //Used to give focus to the form input on load
   const inputReference = useRef(null);
@@ -65,6 +64,8 @@ function ForgotPassword(props) {
   //Checks if the email address exists and sends a password reset it if does
   async function forgotPasswordSubmit(e) {
     e.preventDefault();
+    setHideModal(" hide-modal");
+    setCurrentScreen(loadingScreen);
     let noEmailErrors = displayEmailErrors();
     if (noEmailErrors) {
       const url = "/api/forgot-password";
@@ -82,12 +83,14 @@ function ForgotPassword(props) {
         },
       };
       let res = await fetch(url, options);
-      if (res.status == 302) {
+      if (res.status == 200) {
         setCurrentScreen(successScreen);
-        setHideModal(" .hide-modal");
+        document.addEventListener("keydown", closeSuccessScreen, true);
       } else {
+        setCurrentScreen();
         let errors = await res.json();
         setErrEmail(<div className="error">{errors.email}</div>);
+        setHideModal("");
       }
     }
   }
@@ -102,13 +105,35 @@ function ForgotPassword(props) {
         <button
           type="submit"
           className="submit-btn"
-          onClick={() => setHideComponent(" hide-component")}
+          onClick={closeSuccessScreenButton}
         >
           Okay!
         </button>
       </div>
     </div>
   );
+
+  //Appears when the password reset is processsing
+  let loadingScreen = (
+    <div className="forgot-modal">
+      <LoadingIcon />
+    </div>
+  );
+
+  //Closes the window when you hit Enter
+  function closeSuccessScreen(e) {
+    e.stopPropagation();
+    if (e.key == "Enter") {
+      setCurrentScreen();
+      document.removeEventListener("keydown", closeSuccessScreen, true);
+    }
+  }
+
+  //Closes the window when you hit the button
+  function closeSuccessScreenButton() {
+    setCurrentScreen();
+    document.removeEventListener("keydown", closeSuccessScreen, true);
+  }
 
   return (
     <div className={hideComponent}>
@@ -128,7 +153,9 @@ function ForgotPassword(props) {
             method="POST"
             className="forgot-form"
             onSubmit={(e) => forgotPasswordSubmit(e)}
-            onKeyDown={(e) => {e.stopPropagation()}}
+            onKeyDown={(e) => {
+              e.stopPropagation();
+            }}
           >
             <div>
               <label htmlFor="email">Email</label>

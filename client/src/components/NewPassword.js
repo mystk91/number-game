@@ -2,13 +2,11 @@ import React, {
   useState,
   useEffect,
   useRef,
-  createContext,
-  useContext,
 } from "react";
 import "./NewPassword.css";
 import "../normalize.css";
 import "../custom.css";
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 //Used for the page that DOES the password reset.
 function NewPassword(props) {

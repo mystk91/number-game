@@ -11,6 +11,7 @@ import "./ForgotPasswordRegular.css";
 import "../normalize.css";
 import "../custom.css";
 import { Link } from "react-router-dom";
+import LoadingIcon from "./LoadingIcon";
 
 //A non-modal version of the forgot password screen.
 function ForgotPassword(props) {
@@ -65,6 +66,8 @@ function ForgotPassword(props) {
   //Checks if the email address exists and sends a password reset it if does
   async function forgotPasswordSubmit(e) {
     e.preventDefault();
+    setHideModal(" hide-modal");
+    setCurrentScreen(loadingScreen);
     let noEmailErrors = displayEmailErrors();
     if (noEmailErrors) {
       const url = "/api/forgot-password";
@@ -82,12 +85,13 @@ function ForgotPassword(props) {
         },
       };
       let res = await fetch(url, options);
-      if (res.status == 302) {
+      if (res.status == 200) {
         setCurrentScreen(successScreen);
-        setHideModal(" .hide-modal");
       } else {
+        setCurrentScreen();
         let errors = await res.json();
         setErrEmail(<div className="error">{errors.email}</div>);
+        setHideModal("");
       }
     }
   }
@@ -102,6 +106,14 @@ function ForgotPassword(props) {
       </div>
     </div>
   );
+
+  //Appears when the password reset is processsing
+  let loadingScreen = (
+    <div className="loading-reset-password">
+      <LoadingIcon />
+    </div>
+  );
+  
 
   return (
     <div className={hideComponent}>

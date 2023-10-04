@@ -7,7 +7,6 @@ import React, {
 } from "react";
 import "../normalize.css";
 import "../custom.css";
-import "./Navbar";
 import Navbar from "./Navbar";
 import NewPassword from "./NewPassword";
 
