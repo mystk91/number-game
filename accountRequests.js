@@ -220,6 +220,14 @@ function accountRequests(app) {
     if (errorFound) {
       res.status(400).send(errors);
     } else {
+      try {
+        await accounts.updateOne(
+          { email: req.body.email },
+          { $set: { needsPasswordReset: true } }
+        );
+      } catch {
+        res.send(400);
+      }
       //Sends a password reset if the email address exists
       let random = Math.floor(Math.random() * 6) + 4;
 
@@ -277,12 +285,14 @@ function accountRequests(app) {
   /////////////////////
   /* Changing Password / New Password
   /* Handles the form that inputs the changed password */
-  app.get("/api/change-password", async (req, res, next) => {
+  app.post("/api/change-password", async (req, res, next) => {
     let newPassword = req.body.password;
+    let vCode = req.body.verificationCode;
 
     //Error checking
     let errors = {
       password: "",
+      errorFound: false
     };
     let errorFound = false;
 
@@ -290,38 +300,46 @@ function accountRequests(app) {
     let passwordRegExp = new RegExp(
       "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,32}$"
     );
-    if (!passwordRegExp.test(req.body.password)) {
+    if (!passwordRegExp.test(newPassword)) {
       errors.password = `Passwords must be at least 8 characters and have an uppercase and lowercase letter, a number, and a special character.`;
+      errors.errorFound = true;
     }
-
-    if (errorFound) {
-      res.send(errors);
+    
+    if (errors.errorFound) {
+      res.status(400).send(errors);
     } else {
       const db = mongoClient.db("Accounts");
-      let accounts = db.collection("accounts");
-      let needsReset = db.collection("needs-password-reset");
+      let accounts = db.collection("Accounts");
+      let needsReset = db.collection("Needs-Password-Reset");
 
       const needsResetUser = await needsReset.findOne({
-        verificationCode: verificationCode,
+        verificationCode: vCode,
       });
 
       if (needsResetUser) {
-        const user = await accounts.findOne({ email: needsResetUser.email });
-        if (user) {
-          bcrypt.hash(newPassword, 10, async (err, hashedPassword) => {
-            try {
+        try {
+          const user = await accounts.findOne({ email: needsResetUser.email });
+          if (user.needsPasswordReset) {
+            bcrypt.hash(newPassword, 10, async (err, hashedPassword) => {
               await accounts.updateOne(
                 { email: needsResetUser.email },
-                { $set: { password: hashedPassword } }
+                {
+                  $set: {
+                    password: hashedPassword,
+                    needsPasswordReset: false,
+                  },
+                }
               );
-              res.send(302);
-            } catch (err) {}
-          });
-        } else {
-          res.status(400);
+              res.sendStatus(200);
+            });
+          } else {
+            res.status(400).send(errors);
+          }
+        } catch {
+          res.status(400).send(errors);
         }
       } else {
-        res.status(400);
+        res.status(400).send(errors);
       }
     }
   });

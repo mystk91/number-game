@@ -1,15 +1,16 @@
-import React, {
-  useState,
-  useEffect,
-  useRef,
-} from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./NewPassword.css";
 import "../normalize.css";
 import "../custom.css";
 import { useParams } from "react-router-dom";
+import LoadingIcon from "./LoadingIcon";
 
 //Used for the page that DOES the password reset.
 function NewPassword(props) {
+  //Used to switch screens after the user inputs
+  const [currentScreen, setCurrentScreen] = useState();
+  const [hideForm, setHideForm] = useState("");
+
   //Sets the verification code so it can be passed in while changing password
   const verficationCodeRef = useRef();
   function setVerificationCodeRef(point) {
@@ -17,8 +18,12 @@ function NewPassword(props) {
   }
   setVerificationCodeRef(useParams().verificationCode);
 
+  //Used to give focus to the form input on load
+  const inputReference = useRef(null);
+
   //componentDidMount, runs when component mounts, then componentDismount
   useEffect(() => {
+    inputReference.current.focus();
     return () => {};
   }, []);
 
@@ -51,6 +56,8 @@ function NewPassword(props) {
     e.preventDefault();
     let noPasswordErrors = displayPasswordErrors();
     if (noPasswordErrors) {
+      setHideForm(" hide");
+      setCurrentScreen(loadingScreen);
       const url = "/api/change-password";
       const formData = new FormData(e.target);
       const formDataObj = Object.fromEntries(formData.entries());
@@ -67,18 +74,58 @@ function NewPassword(props) {
         },
       };
       let res = await fetch(url, options);
-      if (res.status == 302) {
-        window.location = "/login";
+      if (res.status == 200) {
+        setCurrentScreen(successScreen);
+        document.addEventListener("keydown", closeSuccessScreen, true);
       } else {
         let errors = await res.json();
-        setErrPassword(<div className="error">{errors.password}</div>);
+        if (errors.errorFound) {
+          setCurrentScreen();
+          setHideForm("");
+          setErrPassword(<div className="error">{errors.password}</div>);
+        } else {
+          setCurrentScreen(failureScreen);
+        }
       }
+    }
+  }
+
+  //A spinning wheel that indicates loading
+  let loadingScreen = <LoadingIcon />;
+
+  //The screen that appears if the password change failed
+  let failureScreen = (
+    <div className="reset-password-failure-container">
+      <div className="reset-failure-message">
+        This password reset link has expired or does not exist.
+      </div>
+    </div>
+  );
+
+  //The screen that appears if the password change was successfull
+  let successScreen = (
+    <div className="reset-password-success-container">
+      <div className="reset-success-message">Your password has been reset.</div>
+      <a href="/login">
+        <button className="submit-btn">Go to Login</button>
+      </a>
+    </div>
+  );
+
+  //An event function that will redirect you to the login page by pressing "Enter"
+  function closeSuccessScreen(e) {
+    e.stopPropagation();
+    if (e.key == "Enter") {
+      setCurrentScreen();
+      document.removeEventListener("keydown", closeSuccessScreen, true);
+      window.location = "/login";
     }
   }
 
   return (
     <div className="new-password">
-      <div className="reset-password-form-container">
+      {currentScreen}
+      <div className={"reset-password-form-container" + hideForm}>
         <form
           method="POST"
           className="reset-password-form"
@@ -95,6 +142,7 @@ function NewPassword(props) {
               value={passwordValue}
               onChange={(e) => setPasswordValue(e.target.value)}
               onBlur={displayPasswordErrors}
+              ref={inputReference}
             />
             {errPassword}
           </div>
