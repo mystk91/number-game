@@ -18,9 +18,9 @@ function accountRequests(app) {
   const session = require("express-session");
   app.use(
     session({
-      name: "session0",
+      name: "session",
       secret: process.env.sessionSecret,
-      maxAge: 24 * 60 * 60 * 100,
+      maxAge: 365 * 24 * 60 * 60 * 1000,
     })
   );
   app.use(passport.initialize());
@@ -158,7 +158,6 @@ function accountRequests(app) {
 
       const arr = await newestUnverifiedAccount.toArray();
       let newestVerificationCode = arr[0].verificationCode;
-      console.log(newestVerificationCode);
 
       const previouslyCreatedAccount = await accounts.findOne({
         email: unverifiedUser.email,
@@ -175,11 +174,9 @@ function accountRequests(app) {
           active: true,
         };
         await accounts.insertOne(verifiedUser);
-        console.log("success");
         res.sendStatus(200);
         res.end();
       } else {
-        console.log("failure");
         res.sendStatus(400);
       }
     } else {
@@ -292,7 +289,7 @@ function accountRequests(app) {
     //Error checking
     let errors = {
       password: "",
-      errorFound: false
+      errorFound: false,
     };
     let errorFound = false;
 
@@ -304,7 +301,7 @@ function accountRequests(app) {
       errors.password = `Passwords must be at least 8 characters and have an uppercase and lowercase letter, a number, and a special character.`;
       errors.errorFound = true;
     }
-    
+
     if (errors.errorFound) {
       res.status(400).send(errors);
     } else {
@@ -342,6 +339,105 @@ function accountRequests(app) {
         res.status(400).send(errors);
       }
     }
+  });
+
+  //Local Strategy Authentication
+  //Logs a user in
+  app.post(
+    "/api/login",
+    passport.authenticate("local", {
+      successRedirect: "/7digits",
+      failureRedirect: "/2digits",
+    })
+  );
+
+  //Validates form and then sends to /api/login if successful
+  app.post("/api/validate", async (req, res, next) => {
+    const db = mongoClient.db("Accounts");
+    let accounts = db.collection("Accounts");
+    let errors = {
+      email: "",
+      password: "",
+      errorFound: false,
+    };
+    //Error Checking
+    let errorExists = false;
+    const user = await accounts.findOne({ email: req.body.email });
+    if (!user) {
+      errors.email = "No account exists with that email";
+      errors.errorFound = true;
+    } else {
+      if (await bcrypt.compare(req.body.password, user.password)) {
+        res.send(302);
+      } else {
+        errors.password = "Incorrect password";
+        errors.errorFound = true;
+      }
+    }
+    if (errors.errorFound) {
+      res.send(errors);
+    }
+  });
+
+  //Local strategy to log user in at /api/login
+  passport.use(
+    new LocalStrategy(
+      {
+        usernameField: "email",
+        passwordField: "password",
+      },
+      async (email, password, done) => {
+        const db = mongoClient.db("Accounts");
+        let accounts = db.collection("Accounts");
+        let errors = {
+          email: "",
+          password: "",
+        };
+        //Error Checking
+        let errorExists = false;
+        const user = await accounts.findOne({ email: email });
+        let newUser = {};
+        if (!user) {
+          errors.email = "No account exists with that email.";
+          errorExists = true;
+        } else {
+          if (await bcrypt.compare(password, user.password)) {
+            (newUser._id = user._id), (newUser.email = user.email);
+          } else {
+            errors.password = "Wrong password. Try again.";
+            errorExists = true;
+          }
+        }
+
+        if (errorExists) {
+          return done(null, false, errors);
+        } else {
+          accounts.updateOne({ _id: user._id }, { $set: { loggedIn: true } });
+          return done(null, newUser);
+        }
+      }
+    )
+  );
+
+  //Logs the user out
+  app.post("/logout", async (req, res, next) => {
+    res.redirect("/api/logout");
+  });
+
+  //Logs the user out
+  app.get("/api/logout", (req, res, next) => {
+    req.logout(function (err) {
+      //if (err) { return next(err); }
+      if (req.user) {
+        const db = mongoClient.db("Accounts");
+        let accounts = db.collection("Accounts");
+        accounts.updateOne(
+          { _id: req.user._id },
+          { $set: { loggedIn: false } }
+        );
+      }
+      res.redirect("/login");
+    });
   });
 
   //Google Authentication
@@ -405,8 +501,20 @@ function accountRequests(app) {
     done(null, user);
   });
 
+  //Returns the current users ID and email address if they are logged in at the database level
   app.get("/api/current_user", async (req, res) => {
-    res.json(req.user);
+    try {
+      const db = mongoClient.db("Accounts");
+      let accounts = db.collection("Accounts");
+      let user = await accounts.findOne({ _id: new ObjectId("652039c4ad799787ba230eae")});
+      let responseObj = {
+        email: user.email
+      }
+      res.send(responseObj);
+    } catch {
+      console.log(req.user);
+      res.sendStatus(400);
+    }
   });
 }
 

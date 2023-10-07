@@ -18,7 +18,7 @@ function LoginRegular(props) {
   }, []);
 
   //Used to set the errors that can occur on login.
-  const [errUsername, setErrUsername] = useState();
+  const [errEmail, setErrEmail] = useState();
   const [errPassword, setErrPassword] = useState();
 
   //Handles to lhe login logic
@@ -43,7 +43,7 @@ function LoginRegular(props) {
       e.target.submit();
     } else {
       let errors = await res.json();
-      setErrUsername(<div className="error">{errors.username}</div>);
+      setErrEmail(<div className="error">{errors.email}</div>);
       setErrPassword(<div className="error">{errors.password}</div>);
     }
   }
@@ -54,15 +54,15 @@ function LoginRegular(props) {
         <span className="login-top-regular"></span>
         <img src="./images/site/siteLogo.png" className="site-logo" />
         <form
-          action="/api/validate"
+          action="/api/login"
           method="POST"
           className="login-form"
           onSubmit={(e) => login(e)}
         >
           <div>
-            <label htmlFor="username">Email</label>
-            <input id="username" name="username" type="text" />
-            {errUsername}
+            <label htmlFor="email">Email</label>
+            <input id="email" name="email" type="text" />
+            {errEmail}
           </div>
           <div>
             <label htmlFor="current-password">Password</label>
