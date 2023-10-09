@@ -32,8 +32,24 @@ function ProfileDropdown(props) {
   }, []);
 
   //Logs the user out
-  function logout(){
-
+  async function logout(){
+    const url = "/api/logout";
+    const options = {
+      method: "PUT",
+      body: null,
+      withCredentials: true,
+      credentials: "include",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+    };
+    let res = await fetch(url, options);
+    if (res.status == 302){
+      localStorage.clear();
+      localStorage.setItem("previouslyVisited", "true");
+      window.location.reload();
+    }
   }
 
   let dropdownVisible = (
@@ -53,7 +69,7 @@ function ProfileDropdown(props) {
         <a href="/profile">My Profile</a>
       </li>
       <li>
-        <a href="/api/logout" className="logout-link">Logout</a>
+        <a href={logout} className="logout-link">Logout</a>
       </li>
     </ul>
   );

@@ -117,6 +117,10 @@
   cursor: pointer;
 }
 
+.profile-btn-container{
+  min-width: 50px;
+}
+
 .instructions-btn > img {
   padding: 5px;
 }
@@ -369,6 +373,10 @@
   .tools button {
     width: 45px;
   }
+
+  .profile-btn-container{
+    min-width: 45px;
+  }
 }
 
 /* Phone sizes */
@@ -491,5 +499,9 @@
 
   .tools button {
     width: 40px;
+  }
+
+  .profile-btn-container{
+    min-width: 40px;
   }
 }

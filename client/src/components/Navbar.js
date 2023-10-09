@@ -27,6 +27,7 @@ function Navbar(props) {
     setGameModesButton(gameModesButtonHTML);
     setGameModesList();
     addInstructions();
+    //addLoadingProfileButton();
     addProfileButton();
     return () => {};
   }, []);
@@ -41,7 +42,6 @@ function Navbar(props) {
   const [gameModesList, setGameModesList] = useState();
   const [profileButton, setProfileButton] = useState();
 
-  //
   let gameModesButtonHTML = (
     <button className="game-modes-button" onClick={displayGameModes}>
       Game Modes
@@ -49,9 +49,7 @@ function Navbar(props) {
   );
 
   let gameModesButtonHTMLClicked = (
-    <button className="game-modes-button clicked" >
-      Game Modes
-    </button>
+    <button className="game-modes-button clicked">Game Modes</button>
   );
 
   let listVisible = (
@@ -118,7 +116,6 @@ function Navbar(props) {
     }, 300);
   }
 
-
   //Used to display the modals from the buttons on the tool-bar
   const [modal, setModal] = useState();
 
@@ -135,49 +132,69 @@ function Navbar(props) {
     setModal(<Instructions key={new Date()} />);
   }
 
+  //Adds a temp profile button icon
+  function addLoadingProfileButton() {
+    let buttonHTML = (
+        <button className="login-btn">
+          <img src="/images/site/account2.png" />
+        </button>
+    );
+    setProfileButton(buttonHTML);
+  }
+
   //Adds either the login form or the profile dropdown options the webpage
-  function addProfileButton() {
-    let user = 0;
-    //Code that checks if user is logged in
-    if (user == 1) {
+  async function addProfileButton() {
+    const url = "/api/isAuthenticated";
+    const options = {
+      method: "GET",
+      body: null,
+      withCredentials: true,
+      credentials: "include",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+    };
+    let res = await fetch("/api/isAuthenticated");
+    if (res.status == 200) {
       setProfileButton(profileDropdownInitialHTML);
     } else {
       let buttonHTML = (
-        <li>
           <button className="login-btn" onClick={loginButton}>
             <img src="/images/site/account2.png" />
           </button>
-        </li>
       );
       setProfileButton(buttonHTML);
     }
   }
 
   let profileDropdownInitialHTML = (
-    <li>
       <button className="profile-btn" onClick={showProfileDropdown}>
-        <img src="/images/site/account2.png" />
+        <img src={getProfileImage()} />
       </button>
-    </li>
   );
 
   let profileDropdownHiddenHTML = (
-    <li>
+    <div>
       <button className="profile-btn" onClick={showProfileDropdown}>
-        <img src="/images/site/account2.png" />
+        <img src={getProfileImage()} />
       </button>
       <ProfileDropdown hidden="true" key="profileDropdownHidden" />
-    </li>
+    </div>
   );
 
   let profileDropdownVisibleHTML = (
-    <li>
+    <div>
       <button className="profile-btn clicked">
-        <img src="/images/site/account2.png" />
+        <img src={getProfileImage()} />
       </button>
       <ProfileDropdown key="profileDropdownVisisble" />
-    </li>
+    </div>
   );
+
+  function getProfileImage() {
+    return "./images/account/profile-images/logged-in.png";
+  }
 
   //Shows the profile Dropdown
   function showProfileDropdown(e) {
@@ -240,7 +257,7 @@ function Navbar(props) {
               <img src="/images/site/whiteQuestionMark.png" />
             </button>
           </li>
-          {profileButton}
+          <li className="profile-btn-container">{profileButton}</li>
           <li>
             <button className="premium-btn" onClick={premiumButton}>
               <img src="/images/site/dollarSign.png" />

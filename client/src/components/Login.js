@@ -41,7 +41,7 @@ function Login(props) {
   }
 
   //Used to set the errors that can occur on login.
-  const [errUsername, setErrUsername] = useState();
+  const [errEmail, setErrEmail] = useState();
   const [errPassword, setErrPassword] = useState();
 
   //Changes the modal to the signup screen
@@ -66,6 +66,7 @@ function Login(props) {
     const url = "/api/validate";
     const formData = new FormData(e.target);
     const formDataObj = Object.fromEntries(formData.entries());
+    formDataObj.location = window.location;
     const formDataString = JSON.stringify(formDataObj);
     const options = {
       method: "POST",
@@ -79,10 +80,17 @@ function Login(props) {
     };
     let res = await fetch(url, options);
     if (res.status == 302) {
-      e.target.submit();
+      let loginURL = "/api/login";
+      let resLogin = await fetch(loginURL, options);
+      if (resLogin.status == 302) {
+        window.location.reload();
+      }
+      else{
+        window.location = "/login";
+      }
     } else {
       let errors = await res.json();
-      setErrUsername(<div className="error">{errors.username}</div>);
+      setErrEmail(<div className="error">{errors.email}</div>);
       setErrPassword(<div className="error">{errors.password}</div>);
     }
   }
@@ -99,16 +107,18 @@ function Login(props) {
           </span>
           <img src="/images/site/siteLogo.png" className="site-logo" />
           <form
-            action="/api/validate"
+            action="/api/login"
             method="POST"
             className="login-form"
             onSubmit={(e) => login(e)}
-            onKeyDown={(e) =>{e.stopPropagation()}}
+            onKeyDown={(e) => {
+              e.stopPropagation();
+            }}
           >
             <div>
-              <label htmlFor="username">Email</label>
-              <input id="username" name="username" type="text" />
-              {errUsername}
+              <label htmlFor="email">Email</label>
+              <input id="email" name="email" type="text" />
+              {errEmail}
             </div>
             <div>
               <label htmlFor="current-password">Password</label>

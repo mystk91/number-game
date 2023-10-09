@@ -346,9 +346,11 @@ function accountRequests(app) {
   app.post(
     "/api/login",
     passport.authenticate("local", {
-      successRedirect: "/7digits",
-      failureRedirect: "/2digits",
-    })
+      failureRedirect: "/login",
+    }),
+    (req, res) => {
+      res.sendStatus(302);
+    }
   );
 
   //Validates form and then sends to /api/login if successful
@@ -420,12 +422,12 @@ function accountRequests(app) {
   );
 
   //Logs the user out
-  app.post("/logout", async (req, res, next) => {
+  app.put("/logout", async (req, res, next) => {
     res.redirect("/api/logout");
   });
 
   //Logs the user out
-  app.get("/api/logout", (req, res, next) => {
+  app.put("/api/logout", (req, res, next) => {
     req.logout(function (err) {
       //if (err) { return next(err); }
       if (req.user) {
@@ -436,7 +438,7 @@ function accountRequests(app) {
           { $set: { loggedIn: false } }
         );
       }
-      res.redirect("/login");
+      res.sendStatus(302);
     });
   });
 
@@ -501,19 +503,25 @@ function accountRequests(app) {
     done(null, user);
   });
 
-  //Returns the current users ID and email address if they are logged in at the database level
-  app.get("/api/current_user", async (req, res) => {
+  //Takes the users ID and checks if they are logged in at the database level
+  //Returns a response of 200 if user is logged in, return 400 if not
+  app.get("/api/isAuthenticated", async (req, res) => {
     try {
       const db = mongoClient.db("Accounts");
       let accounts = db.collection("Accounts");
-      let user = await accounts.findOne({ _id: new ObjectId("652039c4ad799787ba230eae")});
-      let responseObj = {
-        email: user.email
+      let user = await accounts.findOne({
+        _id: new ObjectId(req.user._id),
+      });
+      if (user.loggedIn) {
+        console.log("user is logged in");
+        res.sendStatus(200);
+      } else {
+        console.log("user is not logged in");
+        res.sendStatus(401);
       }
-      res.send(responseObj);
     } catch {
       console.log(req.user);
-      res.sendStatus(400);
+      res.sendStatus(401);
     }
   });
 }

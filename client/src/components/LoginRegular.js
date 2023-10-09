@@ -27,6 +27,7 @@ function LoginRegular(props) {
     const url = "/api/validate";
     const formData = new FormData(e.target);
     const formDataObj = Object.fromEntries(formData.entries());
+    formDataObj.location = "/";
     const formDataString = JSON.stringify(formDataObj);
     const options = {
       method: "POST",
@@ -40,7 +41,14 @@ function LoginRegular(props) {
     };
     let res = await fetch(url, options);
     if (res.status == 302) {
-      e.target.submit();
+      let loginURL = "/api/login";
+      let resLogin = await fetch(loginURL, options);
+      if (resLogin.status == 302) {
+        window.location = "/";
+      }
+      else{
+        window.location.refresh();
+      }
     } else {
       let errors = await res.json();
       setErrEmail(<div className="error">{errors.email}</div>);
