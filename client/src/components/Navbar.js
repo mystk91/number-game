@@ -2,6 +2,7 @@ import React, {
   useState,
   useEffect,
   useRef,
+  useCallback,
   createContext,
   useContext,
 } from "react";
@@ -16,10 +17,11 @@ import ProfileDropdown from "./ProfileDropdown";
 import Login from "./Login";
 
 function Navbar(props) {
-  const [property, setProperty] = useState("initialValue");
-  const propRef = useRef("initialValue");
-  function setPropRef(point) {
-    propRef.current = point;
+  //Used to set the profile button / image
+  const [profileButton, setProfileButton] = useState();
+  const profileImageRef = useRef();
+  function setProfileImageRef(point) {
+    profileImageRef.current = point;
   }
 
   //componentDidMount, runs when component mounts, then componentDismount
@@ -27,20 +29,13 @@ function Navbar(props) {
     setGameModesButton(gameModesButtonHTML);
     setGameModesList();
     addInstructions();
-    //addLoadingProfileButton();
     addProfileButton();
     return () => {};
-  }, []);
-  //componentDidUpdate, runs after render
-  useEffect(() => {}, [property]);
-  //componentDismount
-  useEffect(() => {
-    return () => {};
-  });
+  }, [profileImageRef.current]);
 
+  //Used to display and reveal the game modes
   const [gameModesButton, setGameModesButton] = useState();
   const [gameModesList, setGameModesList] = useState();
-  const [profileButton, setProfileButton] = useState();
 
   let gameModesButtonHTML = (
     <button className="game-modes-button" onClick={displayGameModes}>
@@ -132,52 +127,33 @@ function Navbar(props) {
     setModal(<Instructions key={new Date()} />);
   }
 
-  //Adds a temp profile button icon
-  function addLoadingProfileButton() {
-    let buttonHTML = (
-        <button className="login-btn">
-          <img src="/images/site/account2.png" />
-        </button>
-    );
-    setProfileButton(buttonHTML);
-  }
-
   //Adds either the login form or the profile dropdown options the webpage
   async function addProfileButton() {
-    const url = "/api/isAuthenticated";
-    const options = {
-      method: "GET",
-      body: null,
-      withCredentials: true,
-      credentials: "include",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-    };
-    let res = await fetch("/api/isAuthenticated");
-    if (res.status == 200) {
+    let res = await fetch("/api/profile_picture");
+    let resObj = await res.json();
+    if (resObj.loggedIn) {
+      setProfileImageRef(resObj.imageURL);
       setProfileButton(profileDropdownInitialHTML);
     } else {
       let buttonHTML = (
-          <button className="login-btn" onClick={loginButton}>
-            <img src="/images/site/account2.png" />
-          </button>
+        <button className="login-btn" onClick={loginButton}>
+          <img src="/images/site/account2.png" />
+        </button>
       );
       setProfileButton(buttonHTML);
     }
   }
 
   let profileDropdownInitialHTML = (
-      <button className="profile-btn" onClick={showProfileDropdown}>
-        <img src={getProfileImage()} />
-      </button>
+    <button className="profile-btn" onClick={showProfileDropdown}>
+      <img src={profileImageRef.current} />
+    </button>
   );
 
   let profileDropdownHiddenHTML = (
     <div>
       <button className="profile-btn" onClick={showProfileDropdown}>
-        <img src={getProfileImage()} />
+        <img src={profileImageRef.current} />
       </button>
       <ProfileDropdown hidden="true" key="profileDropdownHidden" />
     </div>
@@ -186,15 +162,11 @@ function Navbar(props) {
   let profileDropdownVisibleHTML = (
     <div>
       <button className="profile-btn clicked">
-        <img src={getProfileImage()} />
+        <img src={profileImageRef.current} />
       </button>
       <ProfileDropdown key="profileDropdownVisisble" />
     </div>
   );
-
-  function getProfileImage() {
-    return "./images/account/profile-images/logged-in.png";
-  }
 
   //Shows the profile Dropdown
   function showProfileDropdown(e) {

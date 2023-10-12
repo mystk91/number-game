@@ -98,7 +98,6 @@ function accountRequests(app) {
           const user = {
             email: req.body.email,
             password: hashedPassword,
-            active: false,
             verificationCode: verificationCode,
             createdAt: new Date(),
           };
@@ -171,7 +170,6 @@ function accountRequests(app) {
           email: unverifiedUser.email,
           password: unverifiedUser.password,
           createdAt: new Date(),
-          active: true,
         };
         await accounts.insertOne(verifiedUser);
         res.sendStatus(200);
@@ -223,7 +221,7 @@ function accountRequests(app) {
           { $set: { needsPasswordReset: true } }
         );
       } catch {
-        res.send(400);
+        res.sendStatus(400);
       }
       //Sends a password reset if the email address exists
       let random = Math.floor(Math.random() * 6) + 4;
@@ -370,7 +368,7 @@ function accountRequests(app) {
       errors.errorFound = true;
     } else {
       if (await bcrypt.compare(req.body.password, user.password)) {
-        res.send(302);
+        res.sendStatus(302);
       } else {
         errors.password = "Incorrect password";
         errors.errorFound = true;
@@ -404,7 +402,25 @@ function accountRequests(app) {
           errorExists = true;
         } else {
           if (await bcrypt.compare(password, user.password)) {
-            (newUser._id = user._id), (newUser.email = user.email);
+            const characters =
+              "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%^&";
+            function generateString(length) {
+              let result = "";
+              const charactersLength = characters.length;
+              for (let i = 0; i < length; i++) {
+                result += characters.charAt(
+                  Math.floor(
+                    (characters.length *
+                      crypto.getRandomValues(new Uint32Array(1))) /
+                      Math.pow(2, 32)
+                  )
+                );
+              }
+              return result;
+            }
+            let session = generateString(48);
+            newUser.session = session;
+            newUser.loginType = "email";
           } else {
             errors.password = "Wrong password. Try again.";
             errorExists = true;
@@ -414,7 +430,10 @@ function accountRequests(app) {
         if (errorExists) {
           return done(null, false, errors);
         } else {
-          accounts.updateOne({ _id: user._id }, { $set: { loggedIn: true } });
+          accounts.updateOne(
+            { _id: user._id },
+            { $set: { session: newUser.session } }
+          );
           return done(null, newUser);
         }
       }
@@ -422,22 +441,9 @@ function accountRequests(app) {
   );
 
   //Logs the user out
-  app.put("/logout", async (req, res, next) => {
-    res.redirect("/api/logout");
-  });
-
-  //Logs the user out
-  app.put("/api/logout", (req, res, next) => {
+  app.post("/api/logout", (req, res, next) => {
     req.logout(function (err) {
       //if (err) { return next(err); }
-      if (req.user) {
-        const db = mongoClient.db("Accounts");
-        let accounts = db.collection("Accounts");
-        accounts.updateOne(
-          { _id: req.user._id },
-          { $set: { loggedIn: false } }
-        );
-      }
       res.sendStatus(302);
     });
   });
@@ -455,33 +461,68 @@ function accountRequests(app) {
         callbackURL: `${process.env.protocol}${process.env.domain}/login/google/callback`,
       },
       async function (accessToken, refreshToken, profile, done) {
-        const db = mongoClient.db("Website");
-        let accounts = db.collection("accounts");
-        let account = await accounts.findOne({ email: profile.email });
+        const characters =
+          "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%^&";
+        function generateString(length) {
+          let result = "";
+          const charactersLength = characters.length;
+          for (let i = 0; i < length; i++) {
+            result += characters.charAt(
+              Math.floor(
+                (characters.length *
+                  crypto.getRandomValues(new Uint32Array(1))) /
+                  Math.pow(2, 32)
+              )
+            );
+          }
+          return result;
+        }
+        let session = generateString(48);
+        let returnedAccount = {
+          googleProfilePicture: profile.photos[0].value,
+          googleUsername: profile.name.givenName,
+          loginType: "google",
+          session: session,
+        };
+        const db = mongoClient.db("Accounts");
+        let accounts = db.collection("Accounts");
+        let account = await accounts.findOne({ googleId: profile.id });
+        console.log(profile.email);
+        if (!account) {
+          account = await accounts.findOne({ email: profile.emails[0].value });
+        }
         if (!account) {
           let password = await bcrypt.hash(uniqid(), 10);
           let newAccount = {
-            username: profile.name.givenName,
-            email: profile.email,
-            password: password,
+            email: profile.emails[0].value,
             googleId: profile.id,
+            password: password,
+            session: session,
           };
           await accounts.insertOne(newAccount);
-          newAccount = await accounts.findOne({ googleId: profile.id });
-          done(null, newAccount);
+          done(null, returnedAccount);
         } else {
           if (!account.googleId) {
             await accounts.updateOne(
-              { email: profile.email },
+              { email: profile.emails[0].value },
               {
                 $set: {
-                  googleId: account.googleId,
-                  username: profile.name.givenName,
+                  googleId: profile.id,
+                  session: session,
+                },
+              }
+            );
+          } else {
+            await accounts.updateOne(
+              { googleId: profile.id },
+              {
+                $set: {
+                  session: session,
                 },
               }
             );
           }
-          done(null, account);
+          done(null, returnedAccount);
         }
       }
     )
@@ -489,7 +530,7 @@ function accountRequests(app) {
 
   app.get(
     "/login/google/callback",
-    passport.authenticate("google", { failureRedirect: "/signup" }),
+    passport.authenticate("google", { failureRedirect: "/login" }),
     async function (req, res) {
       res.redirect(`${process.env.protocol}${process.env.domain}`);
     }
@@ -499,29 +540,49 @@ function accountRequests(app) {
     done(null, user);
   });
 
-  passport.deserializeUser((user, done) => {
-    done(null, user);
-  });
-
-  //Takes the users ID and checks if they are logged in at the database level
-  //Returns a response of 200 if user is logged in, return 400 if not
-  app.get("/api/isAuthenticated", async (req, res) => {
-    try {
+  passport.deserializeUser(async (user, done) => {
+    console.log(user.session);
+    if (user.session) {
       const db = mongoClient.db("Accounts");
       let accounts = db.collection("Accounts");
-      let user = await accounts.findOne({
-        _id: new ObjectId(req.user._id),
-      });
-      if (user.loggedIn) {
-        console.log("user is logged in");
-        res.sendStatus(200);
+      let sessionUser = await accounts.findOne({ session: user.session });
+      if (sessionUser) {
+        console.log("the user was found");
+        done(null, user);
       } else {
-        console.log("user is not logged in");
-        res.sendStatus(401);
+        console.log("Session is not valid");
+        done(null, null);
+      }
+    } else {
+      console.log("ther was no user to be found");
+      done(null, null);
+    }
+  });
+
+  //Returns the info of the current user
+  app.get("/api/current_user", async (req, res) => {
+    res.json(req.user);
+  });
+
+
+  //Retuns the profile image link of the user, returns a default picture otherwise
+  app.get("/api/profile_picture", async (req, res) => {
+    try {
+      if (req.user.loginType == "email") {
+        res.send({
+          loggedIn: true,
+          imageURL: "./images/account/profile-images/logged-in.png",
+        });
+      } else if (req.user.loginType == "google") {
+        res.send({
+          loggedIn: true,
+          imageURL: req.user.googleProfilePicture,
+        });
+      } else {
+        res.send({ loggedIn: false, imageURL: "" });
       }
     } catch {
-      console.log(req.user);
-      res.sendStatus(401);
+      res.send({ loggedIn: false, imageURL: "" });
     }
   });
 }

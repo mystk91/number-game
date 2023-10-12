@@ -1,13 +1,13 @@
-const express = require('express');
-const cors = require('cors');
+const express = require("express");
+const cors = require("cors");
 const path = require("path");
-const bodyParser = require('body-parser');  //Converts forms to JSON
-require('dotenv').config({path: '.env'});   //Imports .env file
+const bodyParser = require("body-parser"); //Converts forms to JSON
+require("dotenv").config({ path: ".env" }); //Imports .env file
 const app = express();
-const bcrypt = require('bcryptjs');
-const uniqid = require('uniqid');
-const crypto = require('crypto');
-const nodemailer = require('nodemailer');
+const bcrypt = require("bcryptjs");
+const uniqid = require("uniqid");
+const crypto = require("crypto");
+const nodemailer = require("nodemailer");
 
 /*Starting mongo    (Now in accountRequests)
 const { MongoClient, Timestamp } = require('mongodb');
@@ -18,34 +18,34 @@ connectMongo();
 */
 
 //Cookies
-var cookieParser = require('cookie-parser');
+var cookieParser = require("cookie-parser");
 app.use(cookieParser());
 
 //Body Parser
 //app.use(bodyParser.json());
 app.use((req, res, next) => {
-  if (req.originalUrl === '/webhook') {
+  if (req.originalUrl === "/webhook") {
     next(); // Do nothing with the body because I need it in a raw state.
   } else {
-    bodyParser.json()(req, res, next);  // ONLY do express.json() if the received request is NOT a WebHook from Stripe.
+    bodyParser.json()(req, res, next); // ONLY do express.json() if the received request is NOT a WebHook from Stripe.
   }
 });
-app.use(bodyParser.urlencoded({extended:false}));
+app.use(bodyParser.urlencoded({ extended: false }));
 
 //Cors Options
 const corsOptions = {
-  option: '*',
+  option: "*",
   //origin: true,
   credentials: true,
-  optionSuccessStatus: 200
-}
+  optionSuccessStatus: 200,
+};
 app.use(cors(corsOptions));
 
 //Error Handler
-let errorhandler = require('errorhandler');
-if (process.env.NODE_ENV === 'development') {
+let errorhandler = require("errorhandler");
+if (process.env.NODE_ENV === "development") {
   // only use in development
-  app.use(errorhandler())
+  app.use(errorhandler());
 }
 
 //Compression
@@ -58,6 +58,7 @@ app.use(
   helmet.contentSecurityPolicy({
     directives: {
       "script-src": ["'self'", "code.jquery.com", "cdn.jsdelivr.net"],
+      "img-src": ["'self'", "https: data: blob:"],
     },
   })
 );
@@ -93,54 +94,43 @@ let Google_Client_Secret = process.env.googleClientSecret;
 const port = process.env.PORT || 5000;
 
 //Socket.IO
-const server = require('http').createServer(app);
-const {Server} = require ('socket.io');
+const server = require("http").createServer(app);
+const { Server } = require("socket.io");
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:3000"
-  }
+    origin: "http://localhost:3000",
+  },
 });
 
 server.listen(port);
 
 //////////////////////////////////////////////////////////////////////////////////
-//Requests and Socket Handling
+//Requests 
 
-/*Server will update the message board when a user sends a message to it
-io.on('connection', socket=>{
-  socket.on('sent', ()=>{
-    io.emit('New Message');
-  })
-});
-*/
-
-let accountRequests = require('./accountRequests.js');
+let accountRequests = require("./requests/accountRequests.js");
 accountRequests.accountRequests(app);
 
+let profileRequests = require("./requests/profileRequests.js");
+profileRequests.profileRequests(app);
 
+let gameRequests = require("./requests/gameRequests.js");
+gameRequests.gameRequests(app);
 
-
-
-
-
-
-
-
-
-
+let leaderboardRequests = require("./requests/leaderboardRequests.js");
+leaderboardRequests.leaderboardRequests(app);
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // Serve the static files from the React app
-app.use(express.static(path.join(__dirname, 'client/build')));
+app.use(express.static(path.join(__dirname, "client/build")));
 
 // Handles any requests that don't match the ones above
-app.get('*', (req,res) =>{
-  res.sendFile(path.join(__dirname+'/client/build/index.html'));
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname + "/client/build/index.html"));
 });
 
 // handles % errors
 app.use((err, req, res, next) => {
   if (!err) return next();
-  res.redirect('/');
+  res.redirect("/");
 });

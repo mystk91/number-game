@@ -35,7 +35,7 @@ function ProfileDropdown(props) {
   async function logout(){
     const url = "/api/logout";
     const options = {
-      method: "PUT",
+      method: "POST",
       body: null,
       withCredentials: true,
       credentials: "include",

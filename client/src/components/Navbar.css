@@ -127,6 +127,7 @@
 
 .login-btn > img, .profile-btn > img  {
   padding: 5px;
+  border-radius: 50px;
 }
 
 .premium-btn > img {

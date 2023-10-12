@@ -898,7 +898,7 @@ function NumberGame(props) {
     }, 1000 * (0.85 + 0.2 * (props.digits - 1)));
   }
 
-  //Resets the game. 
+  //Resets the game. Good for testing purposes. Will eventually be removed.
   function resetGame() {
     localStorage.removeItem("game" + props.digits);
     setCurrentRowRef(0);
