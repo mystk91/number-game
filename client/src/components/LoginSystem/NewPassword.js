@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
 import "./NewPassword.css";
-import "../normalize.css";
-import "../custom.css";
+import "../../normalize.css"
+import "../../custom.css";
 import { useParams } from "react-router-dom";
-import LoadingIcon from "./LoadingIcon";
+import LoadingIcon from "../Parts/LoadingIcon";
 
 //Used for the page that DOES the password reset.
 function NewPassword(props) {

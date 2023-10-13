@@ -5,17 +5,10 @@ import React, {
   createContext,
   useContext,
 } from "react";
-import update from "immutability-helper";
 import uniqid from "uniqid";
-//import logo from './logo.svg';
-//import { SomeContext } from "../App";
-//Rename all NumberGame as your new Component
 import "./NumberGame.css";
-import "../normalize.css";
-import "../custom.css";
-import { Link } from "react-router-dom";
-import Navbar from "./Navbar";
-//import styled, { css, ThemeProvider } from 'styled-components';
+import "../../normalize.css"
+import "../../custom.css";
 
 function NumberGame(props) {
   //Used to update the board state visually

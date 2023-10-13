@@ -5,20 +5,13 @@ import React, {
   createContext,
   useContext,
 } from "react";
-import uniqid from "uniqid";
 import "./ProfileDropdown.css";
-import "../normalize.css";
-import "../custom.css";
+import "../../normalize.css"
+import "../../custom.css";
 
 //A dropdown menu that will only appear if the user is logged in
 // Props: (hidden = true) - the menu will be hidden. this is used for animating the dropdown
 function ProfileDropdown(props) {
-  const [property, setProperty] = useState("initialValue");
-  const propRef = useRef("initialValue");
-  function setPropRef(point) {
-    propRef.current = point;
-  }
-
   const [profileDropdown, setProfileDropdown] = useState();
 
   //componentDidMount, runs when component mounts, then componentDismount
@@ -32,7 +25,7 @@ function ProfileDropdown(props) {
   }, []);
 
   //Logs the user out
-  async function logout(){
+  async function logout() {
     const url = "/api/logout";
     const options = {
       method: "POST",
@@ -45,7 +38,7 @@ function ProfileDropdown(props) {
       },
     };
     let res = await fetch(url, options);
-    if (res.status == 302){
+    if (res.status == 302) {
       localStorage.clear();
       localStorage.setItem("previouslyVisited", "true");
       window.location.reload();
@@ -58,7 +51,9 @@ function ProfileDropdown(props) {
         <a href="/profile">My Profile</a>
       </li>
       <li>
-        <a onClick={logout} className="logout-link">Logout</a>
+        <a onClick={logout} className="logout-link">
+          Logout
+        </a>
       </li>
     </ul>
   );
@@ -69,7 +64,9 @@ function ProfileDropdown(props) {
         <a href="/profile">My Profile</a>
       </li>
       <li>
-        <a href={logout} className="logout-link">Logout</a>
+        <a href={logout} className="logout-link">
+          Logout
+        </a>
       </li>
     </ul>
   );

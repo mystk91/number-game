@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import "./LoadingIcon.css";
-import "../normalize.css";
-import "../custom.css";
+import "../../normalize.css";
+import "../../custom.css";
 
 //Creates an unposition box with a loading icon inside it
 //Takes box-width, box-height, icon-height. (in pixels)

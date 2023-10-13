@@ -6,16 +6,17 @@ import React, {
   createContext,
   useContext,
 } from "react";
-import update from "immutability-helper";
 import uniqid from "uniqid";
 import "./Navbar.css";
-import "../normalize.css";
-import "../custom.css";
-import { Link } from "react-router-dom";
+import "../../normalize.css";
+import "../../custom.css";
 import Instructions from "./Instructions";
 import ProfileDropdown from "./ProfileDropdown";
-import Login from "./Login";
+import Login from "../LoginSystem/Login";
 
+//Creates the Navbar at the top of the page.
+//Contains links for other game modes, the instructions, the login system
+//Will add leaderboard links / premium options soon
 function Navbar(props) {
   //Used to set the profile button / image
   const [profileButton, setProfileButton] = useState();

@@ -1,15 +1,10 @@
 import React, { useState, useEffect, useRef, createContext, useContext } from "react";
-import update from 'immutability-helper';
-import uniqid from "uniqid";
-//import logo from './logo.svg';
-//import { SomeContext } from "../App";
-//Rename all Loginbutton as your new Component
-import './LoginButton.css';
-import "../normalize.css";
-import "../custom.css";
+import './LoginOption.css';
+import "../../normalize.css"
+import "../../custom.css";
 import { Link } from "react-router-dom";
 
-function Loginbutton(props) {
+function LoginOption(props) {
   const [property, setProperty] = useState('initialValue');
   const propRef = useRef('initialValue');
   function setPropRef(point) {
@@ -39,4 +34,4 @@ function Loginbutton(props) {
   );
 }
 
-export default Loginbutton;
+export default LoginOption;

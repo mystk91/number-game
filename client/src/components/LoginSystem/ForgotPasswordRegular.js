@@ -5,13 +5,12 @@ import React, {
   createContext,
   useContext,
 } from "react";
-import update from "immutability-helper";
-import uniqid from "uniqid";
-import "./ForgotPassword.css";
-import "../normalize.css";
-import "../custom.css";
-import LoadingIcon from "./LoadingIcon";
+import "./ForgotPasswordRegular.css";
+import "../../normalize.css";
+import "../../custom.css";
+import LoadingIcon from "../Parts/LoadingIcon";
 
+//A non-modal version of the forgot password screen.
 function ForgotPassword(props) {
   //componentDidMount, runs when component mounts, then componentDismount
   useEffect(() => {
@@ -85,7 +84,6 @@ function ForgotPassword(props) {
       let res = await fetch(url, options);
       if (res.status == 200) {
         setCurrentScreen(successScreen);
-        document.addEventListener("keydown", closeSuccessScreen, true);
       } else {
         setCurrentScreen();
         let errors = await res.json();
@@ -97,65 +95,34 @@ function ForgotPassword(props) {
 
   //Creates a screen that pops up after a valid email is submitted
   let successScreen = (
-    <div className="forgot-modal">
+    <div className="forgot-regular">
       <div className="forgot-box">
         <div className="forgot-success-message">
           A password reset link has been sent to your email.
         </div>
-        <button
-          type="submit"
-          className="submit-btn"
-          onClick={closeSuccessScreenButton}
-        >
-          Okay!
-        </button>
       </div>
     </div>
   );
 
   //Appears when the password reset is processsing
   let loadingScreen = (
-    <div className="forgot-modal">
+    <div className="loading-reset-password">
       <LoadingIcon />
     </div>
   );
-
-  //Closes the window when you hit Enter
-  function closeSuccessScreen(e) {
-    e.stopPropagation();
-    if (e.key == "Enter") {
-      setCurrentScreen();
-      document.removeEventListener("keydown", closeSuccessScreen, true);
-    }
-  }
-
-  //Closes the window when you hit the button
-  function closeSuccessScreenButton() {
-    setCurrentScreen();
-    document.removeEventListener("keydown", closeSuccessScreen, true);
-  }
+  
 
   return (
     <div className={hideComponent}>
       <div className="sub-modals">{currentScreen}</div>
-      <div className={"forgot-modal" + hideModal}>
-        <div className={"forgot-box"}>
-          <span className="forgot-top">
-            <button
-              className="close-login"
-              onClick={(e) => hideForgotButton(e)}
-            >
-              X
-            </button>
-          </span>
+      <div className={"forgot-regular" + hideModal}>
+        <div className={"forgot-box-regular"}>
+          <span className="forgot-top-regular"></span>
           <div className="reset-label">Reset your password</div>
           <form
             method="POST"
             className="forgot-form"
             onSubmit={(e) => forgotPasswordSubmit(e)}
-            onKeyDown={(e) => {
-              e.stopPropagation();
-            }}
           >
             <div>
               <label htmlFor="email">Email</label>

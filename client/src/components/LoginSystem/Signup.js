@@ -1,11 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
-import "./SignupRegular.css";
-import "../normalize.css";
-import "../custom.css";
-import { Link } from "react-router-dom";
-import LoadingIcon from "./LoadingIcon";
+import "./Signup.css";
+import "../../normalize.css"
+import "../../custom.css";
+import LoadingIcon from "../Parts/LoadingIcon";
 
-//A non-modal version of the signup screen.
+//A modal version of the signup screen.
 function Signup(props) {
   //componentDidMount, runs when component mounts, then componentDismount
   useEffect(() => {
@@ -22,6 +21,18 @@ function Signup(props) {
 
   //Used to change the screen when an account is created, display a message.
   const [currentScreen, setCurrentScreen] = useState();
+
+  /* Hides the modal when you click outside the main box */
+  function hideSignupModal(e) {
+    if (e.target.classList[0] === "signup-modal") {
+      setHideModal(" hide-modal");
+    }
+  }
+
+  /* Hides the modal when you click on the X */
+  function hideModalButton(e) {
+    setHideModal(" hide-modal");
+  }
 
   //Used to keep track of the inputed values
   const [emailValue, setEmailValue] = useState("");
@@ -99,8 +110,27 @@ function Signup(props) {
   }
 
   let loadingScreen = (
-    <div className="signup-regular">
+    <div className="signup-modal">
       <LoadingIcon />
+    </div>
+  );
+
+  let successScreen = (
+    <div className="signup-modal">
+      <div className="signup-box">
+        <div className="signup-success-message">
+          An account verification link has been sent to your email.
+        </div>
+        <button
+          type="submit"
+          className="submit-btn success-btn"
+          onClick={() => {
+            setCurrentScreen();
+          }}
+        >
+          Okay!
+        </button>
+      </div>
     </div>
   );
 
@@ -110,36 +140,30 @@ function Signup(props) {
     if (e.key == "Enter") {
       setCurrentScreen();
       document.removeEventListener("keydown", closeSuccessScreen, true);
-      window.location = "/login";
     }
   }
-
-  let successScreen = (
-    <div className="signup-regular">
-      <div className="signup-box">
-        <div className="signup-success-message">
-          An account verification link has been sent to your email.
-        </div>
-        <a href="/login">
-          <button type="submit" className="submit-btn">
-            Okay!
-          </button>
-        </a>
-      </div>
-    </div>
-  );
 
   return (
     <div className={hideComponent}>
       <div className="sub-modals">{currentScreen}</div>
-      <div className={"signup-regular" + hideModal}>
+      <div className={"signup-modal" + hideModal}>
         <div className={"signup-box"}>
-          <span className="signup-top-regular"></span>
+          <span className="signup-top">
+            <button
+              className="close-signup"
+              onClick={(e) => hideModalButton(e)}
+            >
+              X
+            </button>
+          </span>
           <div className="signup-label">Create an account</div>
           <form
             method="post"
             className="signup-form"
             onSubmit={(e) => createAccount(e)}
+            onKeyDown={(e) => {
+              e.stopPropagation();
+            }}
           >
             <div className="form-input">
               <label htmlFor="email">Email</label>

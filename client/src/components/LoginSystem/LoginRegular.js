@@ -6,9 +6,9 @@ import React, {
   useContext,
 } from "react";
 import "./LoginRegular.css";
-import "../normalize.css";
-import "../custom.css";
-import LoginButton from "./LoginButton";
+import "../../normalize.css"
+import "../../custom.css";
+import LoginOption from "./LoginOption";
 
 //A non-modal version of the login screen. It links to the other screens instead of creating multiple modals
 function LoginRegular(props) {
@@ -45,8 +45,7 @@ function LoginRegular(props) {
       let resLogin = await fetch(loginURL, options);
       if (resLogin.status == 302) {
         window.location = "/";
-      }
-      else{
+      } else {
         window.location.refresh();
       }
     } else {
@@ -88,19 +87,19 @@ function LoginRegular(props) {
         </form>
 
         <div className="login-options">
-          <LoginButton
+          <LoginOption
             href="/login/google"
             className="google"
             imageURL="./images/login-logos/google-logo.jpg"
             buttonText="Sign in with Google"
           />
-          <LoginButton
+          <LoginOption
             href="/login/apple"
             className="apple"
             imageURL="./images/login-logos/apple-logo.png"
             buttonText="Sign in with Apple"
           />
-          <LoginButton
+          <LoginOption
             href="/login/facebook"
             className="facebook"
             imageURL="./images/login-logos/facebook-logo.jpg"

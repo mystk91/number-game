@@ -1,20 +1,13 @@
 import React, { useState, useEffect, useRef } from "react";
-import update from "immutability-helper";
 import uniqid from "uniqid";
 import "./EmailVerification.css";
-import "../normalize.css";
-import "../custom.css";
+import "../../normalize.css"
+import "../../custom.css";
 import { useParams } from "react-router-dom";
-import LoadingIcon from "./LoadingIcon";
+import LoadingIcon from "../Parts/LoadingIcon";
 
 //The component that appears when you click on a email verification link.
 function EmailVerification(props) {
-  const [property, setProperty] = useState("initialValue");
-  const propRef = useRef("initialValue");
-  function setPropRef(point) {
-    propRef.current = point;
-  }
-
   //Used to set the currently displayed screen
   const [currentScreen, setCurrentScreen] = useState();
 

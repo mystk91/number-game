@@ -184,7 +184,7 @@
 }
 
 .keyboard .backspace {
-  background-image: url("../../public/images/game/backspace.jpg");
+  background-image: url("../../../public/images/game/backspace.jpg");
   background-position: center center;
   background-repeat: no-repeat;
   background-size: auto 32px;
@@ -409,7 +409,7 @@
   animation-duration: 0.4s;
   animation-fill-mode: forwards;
   transition: background-color, border 0.2s;
-  background-image: url("../../public/images/game/upArrow.png");
+  background-image: url("../../../public/images/game/upArrow.png");
   background-position: center center;
   background-size: auto 52px;
   background-repeat: no-repeat;
@@ -421,7 +421,7 @@
   animation-duration: 0.4s;
   animation-fill-mode: forwards;
   transition: background-color, border 0.2s;
-  background-image: url("../../public/images/game/downArrow.png");
+  background-image: url("../../../public/images/game/downArrow.png");
   background-position: center center;
   background-size: auto 52px;
   background-repeat: no-repeat;
@@ -465,7 +465,7 @@
   animation-name: equals;
   animation-duration: 0.4s;
   animation-fill-mode: forwards;
-  background-image: url("../../public/images/game/equals.png");
+  background-image: url("../../../public/images/game/equals.png");
   transition: background-color, border 0.4s;
   background-position: center center;
   background-size: auto 60px;

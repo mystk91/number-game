@@ -5,16 +5,14 @@ import React, {
   createContext,
   useContext,
 } from "react";
-import update from "immutability-helper";
-import uniqid from "uniqid";
 import "./Login.css";
-import "../normalize.css";
-import "../custom.css";
-import { Link } from "react-router-dom";
-import LoginButton from "./LoginButton";
+import "../../normalize.css"
+import "../../custom.css";
+import LoginOption from "./LoginOption";
 import ForgotPassword from "./ForgotPassword";
 import Signup from "./Signup";
 
+//Creates a Login Modal
 function Login(props) {
   //componentDidMount, runs when component mounts, then componentDismount
   useEffect(() => {
@@ -140,19 +138,19 @@ function Login(props) {
           </form>
 
           <div className="login-options">
-            <LoginButton
+            <LoginOption
               href="/login/google"
               className="google"
               imageURL="/images/login-logos/google-logo.jpg"
               buttonText="Sign in with Google"
             />
-            <LoginButton
+            <LoginOption
               href="/login/apple"
               className="apple"
               imageURL="/images/login-logos/apple-logo.png"
               buttonText="Sign in with Apple"
             />
-            <LoginButton
+            <LoginOption
               href="/login/facebook"
               className="facebook"
               imageURL="/images/login-logos/facebook-logo.jpg"

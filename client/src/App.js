@@ -8,40 +8,22 @@ import React, {
 import "./normalize.css";
 import "./custom.css";
 import "./App.css";
-import NumberGame from "./components/NumberGame";
-import Navbar from "./components/Navbar";
-import GamePage from "./components/GamePage";
-import Instructions from "./components/Instructions";
-import Login from "./components/Login";
-import LoginRegular from "./components/LoginRegular";
-import Signup from "./components/Signup";
-import SignupRegular from "./components/SignupRegular";
-import ForgotPassword from "./components/ForgotPassword";
-import ForgotPasswordRegular from "./components/ForgotPasswordRegular";
-import NewPasswordPage from "./components/NewPasswordPage";
-import EmailVerification from "./components/EmailVerification";
-import LoadingIcon from "./components/LoadingIcon";
+import NumberGame from "./components/Game/NumberGame";
+import Navbar from "./components/Navbar/Navbar";
+import GamePage from "./components/Pages/GamePage";
+import Instructions from "./components/Navbar/Instructions";
+import Login from "./components/LoginSystem/Login";
+import LoginRegular from "./components/LoginSystem/LoginRegular";
+import Signup from "./components/LoginSystem/Signup";
+import SignupRegular from "./components/LoginSystem/SignupRegular";
+import ForgotPassword from "./components/LoginSystem/ForgotPassword";
+import ForgotPasswordRegular from "./components/LoginSystem/ForgotPasswordRegular";
+import NewPasswordPage from "./components/Pages/NewPasswordPage";
+import EmailVerification from "./components/LoginSystem/EmailVerification";
+import LoadingIcon from "./components/Parts/LoadingIcon";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 function App() {
-  const [property, setProperty] = useState("initialValue");
-  const propRef = useRef("initialValue");
-  function setPropRef(point) {
-    propRef.current = point;
-  }
-
-  //componentDidMount, runs when component mounts, then componentDismount
-  useEffect(() => {
-    return () => {};
-  }, []);
-  //componentDidUpdate, runs after render
-  useEffect(() => {}, [property]);
-  //componentDismount
-  useEffect(() => {
-    return () => {};
-  });
-
-
   return (
     <div className="App">
       <BrowserRouter>
@@ -55,7 +37,10 @@ function App() {
           <Route path="/navbar" element={<Navbar />} />
           <Route path="/login" element={<LoginRegular />} />
           <Route path="/signup" element={<SignupRegular />} />
-          <Route path="/verify-email/:verificationCode" element={<EmailVerification />} />
+          <Route
+            path="/verify-email/:verificationCode"
+            element={<EmailVerification />}
+          />
           <Route path="/reset-password" element={<ForgotPasswordRegular />} />
           <Route path="/" element={<GamePage digits={4} attempts={6} />} />
           <Route

@@ -5,13 +5,10 @@ import React, {
   createContext,
   useContext,
 } from "react";
-import update from "immutability-helper";
 import uniqid from "uniqid";
 import "./Instructions.css";
-import "../normalize.css";
-import "../custom.css";
-import { Link } from "react-router-dom";
-//import styled, { css, ThemeProvider } from 'styled-components';
+import "../../normalize.css"
+import "../../custom.css";
 
 //A modal that will pop-up when a new user visits the page or hits the question mark button.
 //Gives a guide on how to play the game.
