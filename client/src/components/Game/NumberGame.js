@@ -1,13 +1,7 @@
-import React, {
-  useState,
-  useEffect,
-  useRef,
-  createContext,
-  useContext,
-} from "react";
+import React, { useState, useEffect, useRef } from "react";
 import uniqid from "uniqid";
 import "./NumberGame.css";
-import "../../normalize.css"
+import "../../normalize.css";
 import "../../custom.css";
 
 function NumberGame(props) {
@@ -136,7 +130,7 @@ function NumberGame(props) {
   //componentDidMount, runs when component mounts, then componentDismount
   useEffect(() => {
     setupGame();
-    if (gameStatusRef.current == `playing`) {
+    if (gameStatusRef.current === `playing`) {
       document.addEventListener("keydown", handleKeydown);
     } else {
       disableGame();
@@ -151,7 +145,7 @@ function NumberGame(props) {
     //Setting the localStorage for the game or loading it
     if (localStorage.getItem(`game` + props.digits)) {
       updateGameStateFromLocalStorage();
-      if (gameStatusRef.current == "defeat") {
+      if (gameStatusRef.current === "defeat") {
         defeat();
       }
     } else {
@@ -226,7 +220,7 @@ function NumberGame(props) {
       classList += "previous-row";
     } else {
       classList += "current-row";
-      if (errorAnimationRef.current == true) {
+      if (errorAnimationRef.current === true) {
         classList += " error-animation";
         setErrorAnimationRef(false);
       }
@@ -253,6 +247,8 @@ function NumberGame(props) {
           classList += " yellow";
           break;
         }
+        default: {
+        }
       }
     }
     let hintAbbreviation = hintsRef.current[i];
@@ -270,9 +266,11 @@ function NumberGame(props) {
           classList += " equals";
           break;
         }
+        default: {
+        }
       }
     } else {
-      if (i == currentRowRef.current) {
+      if (i === currentRowRef.current) {
         if (boardStateRef.current[i].length < j) {
           classList += " next-digit";
         } else if (boardStateRef.current[i].length > j) {
@@ -281,7 +279,7 @@ function NumberGame(props) {
           classList += " current-digit";
         }
 
-        if (newRowRef.current == true) {
+        if (newRowRef.current === true) {
           classList += " new-row";
         }
       }
@@ -308,10 +306,12 @@ function NumberGame(props) {
           classList += " equals";
           break;
         }
+        default: {
+        }
       }
     }
-    if (i == currentRowRef.current) {
-      if (newRowRef.current == true) {
+    if (i === currentRowRef.current) {
+      if (newRowRef.current === true) {
         classList += " new-row";
         setNewRowRef(false);
       }
@@ -487,7 +487,7 @@ function NumberGame(props) {
 
   //Used to change guess button to reset button
   function changeCurrentInputButton() {
-    if (gameStatusRef.current == "playing") {
+    if (gameStatusRef.current === "playing") {
       setInputButton(enterGuessButton);
     } else {
       setInputButton(resetButton);
@@ -497,11 +497,11 @@ function NumberGame(props) {
   //Used to set the colors on the keyboard at the bottom of the game
   function changeKeyboardColors() {
     let boardStateCopy = [];
-    Object.values(boardStateRef.current).map((x) => {
+    Object.values(boardStateRef.current).forEach((x) => {
       boardStateCopy.push(x);
     });
     let hintsCopy = [];
-    Object.values(hintsRef.current).map((x) => {
+    Object.values(hintsRef.current).forEach((x) => {
       hintsCopy.push(x);
     });
     let colorsObj = {
@@ -518,7 +518,7 @@ function NumberGame(props) {
     };
 
     let noRows = 0;
-    while (boardStateCopy[noRows] != "" && noRows < props.attempts) {
+    while (boardStateCopy[noRows] !== "" && noRows < props.attempts) {
       noRows++;
     }
 
@@ -529,24 +529,24 @@ function NumberGame(props) {
         let boardStateRow = boardStateCopy[i];
         let number = boardStateRow[j];
 
-        if (colorsObj["color" + number] == " green") {
+        if (colorsObj["color" + number] === " green") {
           //Do nothing
-        } else if (colorsObj["color" + number] == " yellow") {
-          if (letter == "G") {
+        } else if (colorsObj["color" + number] === " yellow") {
+          if (letter === "G") {
             colorsObj["color" + number] = " green";
           }
-        } else if (colorsObj["color" + number] == " grey") {
-          if (letter == "G") {
+        } else if (colorsObj["color" + number] === " grey") {
+          if (letter === "G") {
             colorsObj["color" + number] = " green";
-          } else if (letter == "Y") {
+          } else if (letter === "Y") {
             colorsObj["color" + number] = " yellow";
           }
         } else {
-          if (letter == "G") {
+          if (letter === "G") {
             colorsObj["color" + number] = " green";
-          } else if (letter == "Y") {
+          } else if (letter === "Y") {
             colorsObj["color" + number] = " yellow";
-          } else if (letter == "X") {
+          } else if (letter === "X") {
             colorsObj["color" + number] = " grey";
           }
         }
@@ -561,10 +561,10 @@ function NumberGame(props) {
     if (isFinite(parseInt(e.key))) {
       inputNumber(e.key);
     }
-    if (e.key == "Backspace") {
+    if (e.key === "Backspace") {
       backspace();
     }
-    if (e.key == "Enter") {
+    if (e.key === "Enter") {
       checkGuess();
     }
   }
@@ -573,18 +573,18 @@ function NumberGame(props) {
   function keydownAnimation(keyName) {
     //Animation
     let keyboardAnimationCopy = [];
-    Object.entries(keyboardAnimationRef.current).map((x) => {
+    Object.entries(keyboardAnimationRef.current).forEach((x) => {
       keyboardAnimationCopy[x[0]] = x[1];
     });
-    keyboardAnimationCopy[keyName] = ``;
+    keyboardAnimationCopy[keyName] = `mars`;
     setKeyboardAnimationRef(keyboardAnimationCopy);
     updateKeyboard();
-    let timeout = setTimeout(() => {
+    setTimeout(() => {
       let keyboardAnimationCopy = [];
-      Object.entries(keyboardAnimationRef.current).map((x) => {
+      Object.entries(keyboardAnimationRef.current).forEach((x) => {
         keyboardAnimationCopy[x[0]] = x[1];
       });
-      if (keyName != "keyEnter") {
+      if (keyName !== "keyEnter") {
         keyboardAnimationCopy[keyName] = `keydown .5s`;
       } else {
         keyboardAnimationCopy[keyName] = `keydown .3s`;
@@ -593,7 +593,7 @@ function NumberGame(props) {
       updateKeyboard();
       setTimeout(() => {
         let keyboardAnimationCopy = [];
-        Object.entries(keyboardAnimationRef.current).map((x) => {
+        Object.entries(keyboardAnimationRef.current).forEach((x) => {
           keyboardAnimationCopy[x[0]] = x[1];
         });
         keyboardAnimationCopy[keyName] = ``;
@@ -607,7 +607,7 @@ function NumberGame(props) {
   function inputNumber(n) {
     if (boardStateRef.current[currentRowRef.current].length < props.digits) {
       let boardStateCopy = [];
-      Object.values(boardStateRef.current).map((x) => {
+      Object.values(boardStateRef.current).forEach((x) => {
         boardStateCopy.push(x);
       });
       boardStateCopy[currentRowRef.current] += n;
@@ -622,7 +622,7 @@ function NumberGame(props) {
   function backspace() {
     if (boardStateRef.current[currentRowRef.current].length > 0) {
       let boardStateCopy = [];
-      Object.values(boardStateRef.current).map((x) => {
+      Object.values(boardStateRef.current).forEach((x) => {
         boardStateCopy.push(x);
       });
       boardStateCopy[currentRowRef.current] = boardStateCopy[
@@ -637,12 +637,12 @@ function NumberGame(props) {
 
   //Checks the users guess
   function checkGuess() {
-    if (boardStateRef.current[currentRowRef.current].length == props.digits) {
+    if (boardStateRef.current[currentRowRef.current].length === props.digits) {
       keydownAnimation("keyEnter");
       let result = checkNumber(boardStateRef.current[currentRowRef.current]);
 
       let hintsCopy = [];
-      Object.values(hintsRef.current).map((x) => {
+      Object.values(hintsRef.current).forEach((x) => {
         hintsCopy.push(x);
       });
       hintsCopy[currentRowRef.current] = result;
@@ -654,7 +654,7 @@ function NumberGame(props) {
       }
       correctResult += "E";
 
-      if (result == correctResult) {
+      if (result === correctResult) {
         setGameStatusRef(`victory`);
         disableGame();
         addTransitionDelay();
@@ -663,7 +663,7 @@ function NumberGame(props) {
         updateGameBoard();
         updateLocalStorage();
       } else {
-        if (currentRowRef.current != props.attempts - 1) {
+        if (currentRowRef.current !== props.attempts - 1) {
           addTransitionDelay();
           changeKeyboardColors();
           removeTransitionDelay();
@@ -704,14 +704,14 @@ function NumberGame(props) {
     let target = targetNumberRef.current;
     let tempTarget = "";
     for (let i = 0; i < props.digits; i++) {
-      if (number[i] == target[i]) {
+      if (number[i] === target[i]) {
         tempTarget += "G";
       } else {
         tempTarget += target[i];
       }
     }
     for (let i = 0; i < props.digits; i++) {
-      if (tempTarget[i] == "G") {
+      if (tempTarget[i] === "G") {
         result += "G";
       } else if (tempTarget.includes(number[i])) {
         result += "Y";
@@ -726,7 +726,7 @@ function NumberGame(props) {
       result += "L";
     } else if (number < target) {
       result += "H";
-    } else if (number == target) {
+    } else if (number === target) {
       result += "E";
     }
     console.log(result);
@@ -737,7 +737,7 @@ function NumberGame(props) {
   //Occurs after a guess is entered
   function addTransitionDelay() {
     let transitionDelayCopy = {};
-    Object.entries(transitionDelayRef).map((x) => {
+    Object.entries(transitionDelayRef).forEach((x) => {
       transitionDelayCopy[x[0]] = x[1];
     });
     let number = boardStateRef.current[currentRowRef.current];
@@ -752,7 +752,7 @@ function NumberGame(props) {
   //Occurs after a guess is entered
   function removeTransitionDelay() {
     let transitionDelayCopy = {};
-    Object.entries(transitionDelayRef).map((x) => {
+    Object.entries(transitionDelayRef).forEach((x) => {
       transitionDelayCopy[x[0]] = x[1];
     });
     let number = boardStateRef.current[currentRowRef.current];
@@ -769,7 +769,7 @@ function NumberGame(props) {
       updateGameBoard();
       setErrorAnimationRef(true);
       let errorMessagesCopy = [];
-      Object.values(errorMessagesRef.current).map((x) => {
+      Object.values(errorMessagesRef.current).forEach((x) => {
         errorMessagesCopy.push(x);
       });
       let message = (
@@ -793,7 +793,7 @@ function NumberGame(props) {
       updateGameBoard();
       setTimeout(() => {
         let errorMessagesCopy = [];
-        Object.values(errorMessagesRef.current).map((x) => {
+        Object.values(errorMessagesRef.current).forEach((x) => {
           errorMessagesCopy.push(x);
         });
         errorMessagesCopy.shift();
@@ -808,7 +808,7 @@ function NumberGame(props) {
             {errorMessagesRef.current}
           </div>
         );
-        if (errorMessagesCopy.length == 0) {
+        if (errorMessagesCopy.length === 0) {
           setErrorMessagesDiv();
         } else {
           setErrorMessagesDiv(errorMessageDivHTML);
@@ -882,21 +882,57 @@ function NumberGame(props) {
     document.removeEventListener("keydown", handleKeydown);
     setKeyboardClassNameRef("number-inputs disabled");
     updateKeyboard();
+    updateScores();
     setTimeout(() => {
       changeCurrentInputButton();
       updateKeyboard();
-      if (gameStatusRef.current == "defeat") {
+      if (gameStatusRef.current === "defeat") {
         defeat();
       }
+      document.addEventListener("keydown", resetEnter);
     }, 1000 * (0.85 + 0.2 * (props.digits - 1)));
+  }
+
+  //Sets the score for this game next to any previous games and updates the average score among all games
+  function updateScores() {
+    let score;
+    if (gameStatusRef.current === "victory") {
+      score = currentRowRef.current + 1;
+    } else {
+      score = currentRowRef.current + 2;
+    }
+    let scoresObj;
+    let scoresStorage = localStorage.getItem("scores" + props.digits);
+    if (!scoresStorage) {
+      scoresObj = {
+        scores: [],
+        average: 0,
+      };
+    } else {
+      scoresObj = JSON.parse(scoresStorage);
+    }
+    scoresObj.scores.unshift(score);
+    scoresObj.average =
+      scoresObj.scores.reduce((total, x) => {
+        return total + x;
+      }, 0) / scoresObj.scores.length;
+    localStorage.setItem("scores" + props.digits, JSON.stringify(scoresObj));
+  }
+
+  //Event function that makes it so hitting enter will reset the game
+  function resetEnter(e) {
+    if (e.key === "Enter") {
+      resetGame();
+    }
   }
 
   //Resets the game. Good for testing purposes. Will eventually be removed.
   function resetGame() {
+    document.removeEventListener("keydown", resetEnter);
     localStorage.removeItem("game" + props.digits);
     setCurrentRowRef(0);
     setKeyboardClassNameRef(`number-inputs`);
-    if (gameStatusRef.current != `playing`) {
+    if (gameStatusRef.current !== `playing`) {
       document.addEventListener("keydown", handleKeydown);
     }
     setGameStatusRef(`playing`);
@@ -904,12 +940,6 @@ function NumberGame(props) {
     setupGame();
     changeKeyboardColors();
   }
-
-  /*
-          <button className="reset-game" onClick={resetGame}>
-          Reset
-        </button>
-  */
 
   return (
     <main className="game-container">
