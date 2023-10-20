@@ -127,6 +127,28 @@ function NumberGame(props) {
     keyboardClassNameRef.current = point;
   }
 
+  //Used to display / hide the button at the bottom of the game
+  let hideGuessButtonRef = useRef("");
+  function setHideGuessButtonRef(point) {
+    hideGuessButtonRef.current = point;
+  }
+  let hideResetButtonRef = useRef("");
+  function setHideResetButtonRef(point) {
+    hideResetButtonRef.current = point;
+  }
+
+  //These functions are used to display / hide the Enter Guess / Reset button.
+  //The enter guess is shown until the game ends, then its replaced with the reset button.
+  function changeCurrentInputButton() {
+    if (gameStatusRef.current === "playing") {
+      setHideGuessButtonRef("");
+      setHideResetButtonRef(" hide");
+    } else {
+      setHideGuessButtonRef(" hide");
+      setHideResetButtonRef("");
+    }
+  }
+
   //componentDidMount, runs when component mounts, then componentDismount
   useEffect(() => {
     setupGame();
@@ -456,42 +478,22 @@ function NumberGame(props) {
             onClick={backspace}
           ></button>
         </div>
-        {currentInputButton.current}
+        <button
+          className={"enter-guess" + hideGuessButtonRef.current}
+          style={{ animation: keyboardAnimationRef.current[`keyEnter`] }}
+          onClick={checkGuess}
+        >
+          Enter
+        </button>
+        <button
+          className={"reset-game" + hideResetButtonRef.current}
+          onClick={resetGame}
+        >
+          Reset
+        </button>
       </div>
     );
     setKeyboard(keyboardHTML);
-  }
-
-  //These functions are used to set the Enter Guess / Reset button.
-  //The enter guess is shown until the game ends, then its replaced with the reset button.
-  let currentInputButton = useRef();
-  function setInputButton(point) {
-    currentInputButton.current = point;
-  }
-
-  let enterGuessButton = (
-    <button
-      className={"enter-guess"}
-      style={{ animation: keyboardAnimationRef.current[`keyEnter`] }}
-      onClick={checkGuess}
-    >
-      Enter
-    </button>
-  );
-
-  let resetButton = (
-    <button className="reset-game" onClick={resetGame}>
-      Reset
-    </button>
-  );
-
-  //Used to change guess button to reset button
-  function changeCurrentInputButton() {
-    if (gameStatusRef.current === "playing") {
-      setInputButton(enterGuessButton);
-    } else {
-      setInputButton(resetButton);
-    }
   }
 
   //Used to set the colors on the keyboard at the bottom of the game
@@ -659,14 +661,14 @@ function NumberGame(props) {
         disableGame();
         addTransitionDelay();
         changeKeyboardColors();
-        removeTransitionDelay();
+        //removeTransitionDelay();
         updateGameBoard();
         updateLocalStorage();
       } else {
         if (currentRowRef.current !== props.attempts - 1) {
           addTransitionDelay();
           changeKeyboardColors();
-          removeTransitionDelay();
+          //removeTransitionDelay();
           setCurrentRowRef(currentRowRef.current + 1);
           setNewRowRef(true);
           updateGameBoard();
@@ -676,7 +678,7 @@ function NumberGame(props) {
           disableGame();
           addTransitionDelay();
           changeKeyboardColors();
-          removeTransitionDelay();
+          //removeTransitionDelay();
           updateGameBoard();
           updateLocalStorage();
         }
@@ -736,6 +738,7 @@ function NumberGame(props) {
   //Helper function that adds a transition delay to the keys on the keyboard so they change as gameboard changes
   //Occurs after a guess is entered
   function addTransitionDelay() {
+    setTransitionDelayRef();
     let transitionDelayCopy = {};
     Object.entries(transitionDelayRef).forEach((x) => {
       transitionDelayCopy[x[0]] = x[1];
@@ -750,6 +753,7 @@ function NumberGame(props) {
 
   //Removes the transition delay
   //Occurs after a guess is entered
+  /*
   function removeTransitionDelay() {
     let transitionDelayCopy = {};
     Object.entries(transitionDelayRef).forEach((x) => {
@@ -761,6 +765,7 @@ function NumberGame(props) {
     }
     setTransitionDelayRef(transitionDelayCopy);
   }
+  */
 
   //Displays an error message and plays an animation when user has invalid length input
   function invalidGuess() {

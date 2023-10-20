@@ -11,6 +11,16 @@ function gameRequests(app) {
     await mongoClient.connect();
   }
   connectMongo();
+
+
+  
+
+
+
+
+
+
+
 }
 
 module.exports = { gameRequests };

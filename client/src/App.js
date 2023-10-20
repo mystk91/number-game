@@ -21,6 +21,7 @@ import ForgotPasswordRegular from "./components/LoginSystem/ForgotPasswordRegula
 import NewPasswordPage from "./components/Pages/NewPasswordPage";
 import EmailVerification from "./components/LoginSystem/EmailVerification";
 import LoadingIcon from "./components/Parts/LoadingIcon";
+import Histogram from "./components/Game/Histogram";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 function App() {
@@ -28,6 +29,7 @@ function App() {
     <div className="App">
       <BrowserRouter>
         <Routes>
+          <Route path="/hist" element={<Histogram digits={4} attempts={6} />} />
           <Route
             path="/new-password/:verificationCode"
             element={<NewPasswordPage />}

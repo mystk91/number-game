@@ -658,6 +658,10 @@
   height: var(--digitsHeight);
 }
 
+.hide{
+  display: none;
+}
+
 /* Mid-size Styles */
 @media screen and (min-width: 420px) and (max-width: 510px) {
   .gameboard {
