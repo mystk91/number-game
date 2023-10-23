@@ -105,7 +105,7 @@ function Histogram(props) {
   return (
     <div className="histogram-container">
       <div className="average-score">
-        Average Score: {averageScoreRef.current}{" "}
+        30 Game Average: {averageScoreRef.current}{" "}
       </div>
       {histogram}
     </div>
