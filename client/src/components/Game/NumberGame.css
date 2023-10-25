@@ -592,42 +592,39 @@
   }
 }
 
-.victory-modal{
-
-}
-
-.defeat-modal{
+.defeat-modal, .victory-modal{
   position: absolute;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   width: max-content;
-  top: 125px;
+  top: 56px;
   left: calc(50% - 170px);
   background-color: rgb(245, 245, 245);
   border: 1px solid black;
-  padding: 10px 0 15px 0;
+  border-top: none;
+  padding: 10px 0 0 0;
   z-index: 1;
 }
 
-.defeat-modal > *{
+.defeat-modal > *, .victory-modal > *{
   margin: 1px 0;
   font-size: 1.8rem;
 }
 
-.defeat-modal-top {
+.defeat-modal-top, .victory-modal-top {
   display: flex;
   justify-content: flex-end;
   margin: 1px 0px 0px 0px;
   width: 100%;
 }
 
-.defeat-modal-top button {
+.defeat-modal-top button, .victory-modal-top button {
   user-select: none;
 }
 
-.close-defeat-modal {
+.close-defeat-modal, .close-victory-modal  {
   all: unset;
   height: max-content;
   font-size: 2rem;
@@ -637,14 +634,21 @@
   padding: 2px 6px 4px 8px;
 }
 
-.defeat-label{
-  font-size: 2.4rem;
+.defeat-label, .victory-label{
+  font-size: 2.8rem;
   font-weight: bolder;
   padding: 0 6px;
-  border-bottom: 2px solid black;
   height: 30px;
   margin: -24px 0 8px 0;
 }
+
+.game-over-hr{
+  height: 2px;
+  width: 90%;
+  background-color: black;
+  margin: 10px 0 0 2px;
+}
+
 
 .correct-number{
   font-size: 2.4rem;
@@ -656,6 +660,13 @@
 
 .correct-number .digit{
   height: var(--digitsHeight);
+}
+
+.victory-row > div{
+  border: none;
+  background-color: var(--green);
+  color: var(--textColorWhite);
+  text-shadow: var(--textShadowNumbers);
 }
 
 .hide{

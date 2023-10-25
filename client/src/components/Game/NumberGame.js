@@ -3,6 +3,7 @@ import uniqid from "uniqid";
 import "./NumberGame.css";
 import "../../normalize.css";
 import "../../custom.css";
+import Histogram from "./Histogram";
 
 function NumberGame(props) {
   //Used to update the board state visually
@@ -169,6 +170,9 @@ function NumberGame(props) {
       updateGameStateFromLocalStorage();
       if (gameStatusRef.current === "defeat") {
         defeat();
+      }
+      else if(gameStatusRef.current === "victory"){
+        victory();
       }
     } else {
       //Setting the target number (this part will be changed later)
@@ -658,6 +662,7 @@ function NumberGame(props) {
 
       if (result === correctResult) {
         setGameStatusRef(`victory`);
+        updateScores();
         disableGame();
         addTransitionDelay();
         changeKeyboardColors();
@@ -675,6 +680,7 @@ function NumberGame(props) {
           updateLocalStorage();
         } else {
           setGameStatusRef(`defeat`);
+          updateScores();
           disableGame();
           addTransitionDelay();
           changeKeyboardColors();
@@ -823,7 +829,51 @@ function NumberGame(props) {
   }
 
   //Occurs when the user wins
-  function victory() {}
+  function victory() {
+    let rowsTemp = [];
+    let digits = [];
+    for (let j = 0; j < props.digits; j++) {
+      let digit = (
+        <div
+          className="digit green"
+          style={{
+            width: 76 / props.digits + "%",
+          }}
+          key={"defeat-digit" + j}
+        >
+          {targetNumberRef.current.slice(j, j + 1)}
+        </div>
+      );
+      digits.push(digit);
+    }
+    let row = (
+      <div className="gameboard" key="victory-gameboard">
+        <div className="rows">
+          <span className="victory-row">{digits}</span>
+        </div>
+      </div>
+    );
+    rowsTemp.push(row);
+
+    let victoryHTML = (
+      <div className="victory-modal">
+        <span className="victory-modal-top">
+          <button
+            className="close-victory-modal"
+            onClick={(e) => closeGameOverModal(e)}
+          >
+            X
+          </button>
+        </span>
+        <div className="victory-label">Victory!</div>
+        <div className="correct-number">{rowsTemp}</div>
+        <Histogram digits={props.digits} attempts={props.attempts} />
+      </div>
+    );
+    setGameOverModalRef(victoryHTML);
+  }
+  //<hr className="game-over-hr"></hr>
+  //<div className="correct-number-label">Correct Number</div>
 
   //Occurs when user runs out of guesses
   function defeat() {
@@ -863,8 +913,8 @@ function NumberGame(props) {
           </button>
         </span>
         <div className="defeat-label">Defeat</div>
-        <div className="correct-number-label">Correct Number</div>
         <div className="correct-number">{rowsTemp}</div>
+        <Histogram digits={props.digits} attempts={props.attempts} />
       </div>
     );
     setGameOverModalRef(defeatHTML);
@@ -887,12 +937,14 @@ function NumberGame(props) {
     document.removeEventListener("keydown", handleKeydown);
     setKeyboardClassNameRef("number-inputs disabled");
     updateKeyboard();
-    updateScores();
     setTimeout(() => {
       changeCurrentInputButton();
       updateKeyboard();
       if (gameStatusRef.current === "defeat") {
         defeat();
+      }
+      else if(gameStatusRef.current === "victory"){
+        victory();
       }
       document.addEventListener("keydown", resetEnter);
     }, 1000 * (0.85 + 0.2 * (props.digits - 1)));

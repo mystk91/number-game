@@ -19,10 +19,6 @@ function Histogram(props) {
 
   //componentDidMount, runs when component mounts, then componentDismount
   useEffect(() => {
-    localStorage.setItem(
-      "scores4",
-      `{"scores":[5,3,3,5,5,4,4,7,5,7, 6, 4, 2, 3, 3, 4, 4, 7, 5, 6, 5, 3, 3, 4, 4, 4, 4],"average":4.142857142857143}`
-    );
     updateHistogram();
 
     return () => {};

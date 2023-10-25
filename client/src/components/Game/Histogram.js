@@ -19,10 +19,6 @@ function Histogram(props) {
 
   //componentDidMount, runs when component mounts, then componentDismount
   useEffect(() => {
-    localStorage.setItem(
-      "scores4",
-      `{"scores":[5,3,3,5,5,4,4,7,5,7, 6, 4, 2, 3, 3, 4, 4, 7, 5, 6, 5, 3, 3, 4, 4, 4, 4],"average":4.142857142857143}`
-    );
     updateHistogram();
 
     return () => {};
@@ -71,19 +67,19 @@ function Histogram(props) {
       let barStyle = new Array(props.attempts + 1);
       for (let i = 0; i < barStyle.length; i++) {
         if (histogramData[i] == 0) {
-          barStyle[i] = ".5px solid black";
+          barStyle[i] = "";
         } else {
-          barStyle[i] = "1px solid black";
+          barStyle[i] = ".5px solid black";
         }
       }
 
       for (let i = 0; i < props.attempts + 1; i++) {
         let row = (
           <div className="histogram-row" key={"histogram-row-" + i}>
-            <div className="histogram-guesses">{i + 1}</div>
+            <div className="histogram-score">{i + 1}</div>
             <div
-              className={"histogram-bar" + " guess-" + (i + 1)}
-              style={{ width: pixelData[i] + "px", border: barStyle[i] }}
+              className={"histogram-bar" + " score-" + (i + 1)}
+              style={{ width: pixelData[i] + "px", borderRight: barStyle[i] }}
             ></div>
             <div className="histogram-frequency">{displayedFrequency[i]}</div>
           </div>
