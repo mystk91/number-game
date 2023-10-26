@@ -669,6 +669,10 @@
   text-shadow: var(--textShadowNumbers);
 }
 
+.share-score-container{
+  margin-top: 12px;
+}
+
 .hide{
   display: none;
 }

@@ -4,6 +4,7 @@ import "./NumberGame.css";
 import "../../normalize.css";
 import "../../custom.css";
 import Histogram from "./Histogram";
+import ShareScore from "./ShareScore";
 
 function NumberGame(props) {
   //Used to update the board state visually
@@ -170,8 +171,7 @@ function NumberGame(props) {
       updateGameStateFromLocalStorage();
       if (gameStatusRef.current === "defeat") {
         defeat();
-      }
-      else if(gameStatusRef.current === "victory"){
+      } else if (gameStatusRef.current === "victory") {
         victory();
       }
     } else {
@@ -867,6 +867,9 @@ function NumberGame(props) {
         </span>
         <div className="victory-label">Victory!</div>
         <div className="correct-number">{rowsTemp}</div>
+        <div className="share-score-container">
+          <ShareScore hints={hintsRef.current} />
+        </div>
         <Histogram digits={props.digits} attempts={props.attempts} />
       </div>
     );
@@ -914,6 +917,9 @@ function NumberGame(props) {
         </span>
         <div className="defeat-label">Defeat</div>
         <div className="correct-number">{rowsTemp}</div>
+        <div className="share-score-container">
+          <ShareScore hints={hintsRef.current} />
+        </div>
         <Histogram digits={props.digits} attempts={props.attempts} />
       </div>
     );
@@ -942,8 +948,7 @@ function NumberGame(props) {
       updateKeyboard();
       if (gameStatusRef.current === "defeat") {
         defeat();
-      }
-      else if(gameStatusRef.current === "victory"){
+      } else if (gameStatusRef.current === "victory") {
         victory();
       }
       document.addEventListener("keydown", resetEnter);

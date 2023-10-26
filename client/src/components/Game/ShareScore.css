@@ -5,25 +5,21 @@ button.share{
     justify-content: center;
     align-items: center;
     text-align: center;
-    border: 1.5px solid rgb(0, 0, 0);
-    background-color: rgb(245, 245, 245);
+    border: 1px solid rgb(0, 0, 0);
+    background-color: rgb(250, 250, 250);
     font-weight: bolder;
     font-size: 1.6rem;
-    width: 140px;
-    height: 60px;
+    width: 220px;
+    height: 44px;
     color: black;
     user-select: none;
     cursor: copy;
-    border-radius: 6px;
-    transition: width .4s, height .4s;
+    border-radius: 20px;
+    transition: all .2s;
 }
 
 button.clicked{
-    background-color: rgb(255, 255, 255);
-    width: 150px;
-    height: 65px;
-    transition: width .4s, height .4s;
+    background-color: rgb(230, 230, 230);
+    width: 230px;
+    transition: all .2s;
 }
-
-
-

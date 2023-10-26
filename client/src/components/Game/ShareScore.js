@@ -23,15 +23,14 @@ function ShareScore(props) {
 
   //Copys the user's board for that game
   async function shareMyScore(e) {
-    let copiedText = "Numblr\n";
-
-    const upArrow = `\u{2B06}`;
-    const downArrow = `\u{2B07}`;
-    let equals = `\u{2705}`
-
     const grey = `\u{2B1C}`;
     const green = `\u{1F7E9}`;
     const yellow = `\u{1F7E8}`;
+    const equals = `\u{2705}`;
+    const upArrow = `\u{2B06}`;
+    const downArrow = `\u{2B07}`;
+
+    let copiedText = "      Numblr\n";
 
     let attempts = 1;
     props.hints.forEach((x) => {
@@ -78,10 +77,11 @@ function ShareScore(props) {
         copiedText += equals + "\n";
       }
     });
-    if(attempts === 7){
+    if (attempts === 7) {
       attempts = "x";
     }
-    copiedText += attempts + "/" + props.hints.length + " - " + getDate();
+    copiedText +=
+      "  " + attempts + "/" + props.hints.length + " - " + getDate();
     await navigator.clipboard.writeText(copiedText);
     e.target.style.cursor = "default";
     e.target.style.pointerEvents = "none";
@@ -96,12 +96,15 @@ function ShareScore(props) {
   }
 
   //Gets the date in EST
-  function getDate(){
-    let date = new Date();
-    let easternTime = new Date(date.getTime() - 5 * 60 * 60 * 1000);
+  function getDate() {
+    const easternTime = new Date(
+      new Date().toLocaleString("default", { timeZone: "America/New_York" })
+    );
+    const date = easternTime.toLocaleString("default", {
+      month: "short",
+      day: "numeric",
+    });
     return date;
-
-
   }
 
   return (
