@@ -167,6 +167,26 @@ function NumberGame(props) {
 
   async function setupGame() {
 
+    let userObj = await fetch("/api/current_user");
+    let user = await res.json();
+    let reqObj = {
+      session: user.session,
+      digits: props.digits,
+      url: window.location.pathname,
+    }
+    const url = "/api/getCurrentGameRandom";
+    const options = {
+      method: "PUT",
+      body: JSON.stringify(reqObj),
+      withCredentials: true,
+      credentials: "include",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+    };
+    let res = await fetch(url, options);
+    let gameObj = await res.json();
 
 
     //Setting the localStorage for the game or loading it
@@ -669,14 +689,14 @@ function NumberGame(props) {
         disableGame();
         addTransitionDelay();
         changeKeyboardColors();
-        //removeTransitionDelay();
+        removeTransitionDelay();
         updateGameBoard();
         updateLocalStorage();
       } else {
         if (currentRowRef.current !== props.attempts - 1) {
           addTransitionDelay();
           changeKeyboardColors();
-          //removeTransitionDelay();
+          removeTransitionDelay();
           setCurrentRowRef(currentRowRef.current + 1);
           setNewRowRef(true);
           updateGameBoard();
@@ -687,7 +707,7 @@ function NumberGame(props) {
           disableGame();
           addTransitionDelay();
           changeKeyboardColors();
-          //removeTransitionDelay();
+          removeTransitionDelay();
           updateGameBoard();
           updateLocalStorage();
         }
@@ -762,7 +782,6 @@ function NumberGame(props) {
 
   //Removes the transition delay
   //Occurs after a guess is entered
-  /*
   function removeTransitionDelay() {
     let transitionDelayCopy = {};
     Object.entries(transitionDelayRef).forEach((x) => {
@@ -774,7 +793,6 @@ function NumberGame(props) {
     }
     setTransitionDelayRef(transitionDelayCopy);
   }
-  */
 
   //Displays an error message and plays an animation when user has invalid length input
   function invalidGuess() {

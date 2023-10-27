@@ -666,14 +666,14 @@ function NumberGame(props) {
         disableGame();
         addTransitionDelay();
         changeKeyboardColors();
-        //removeTransitionDelay();
+        removeTransitionDelay();
         updateGameBoard();
         updateLocalStorage();
       } else {
         if (currentRowRef.current !== props.attempts - 1) {
           addTransitionDelay();
           changeKeyboardColors();
-          //removeTransitionDelay();
+          removeTransitionDelay();
           setCurrentRowRef(currentRowRef.current + 1);
           setNewRowRef(true);
           updateGameBoard();
@@ -684,7 +684,7 @@ function NumberGame(props) {
           disableGame();
           addTransitionDelay();
           changeKeyboardColors();
-          //removeTransitionDelay();
+          removeTransitionDelay();
           updateGameBoard();
           updateLocalStorage();
         }
@@ -759,7 +759,6 @@ function NumberGame(props) {
 
   //Removes the transition delay
   //Occurs after a guess is entered
-  /*
   function removeTransitionDelay() {
     let transitionDelayCopy = {};
     Object.entries(transitionDelayRef).forEach((x) => {
@@ -771,7 +770,6 @@ function NumberGame(props) {
     }
     setTransitionDelayRef(transitionDelayCopy);
   }
-  */
 
   //Displays an error message and plays an animation when user has invalid length input
   function invalidGuess() {
