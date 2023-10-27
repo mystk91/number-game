@@ -77,9 +77,6 @@ function ShareScore(props) {
         copiedText += equals + "\n";
       }
     });
-    if (attempts === 7) {
-      attempts = "x";
-    }
     copiedText +=
       "  " + attempts + "/" + props.hints.length + " - " + getDate();
     await navigator.clipboard.writeText(copiedText);

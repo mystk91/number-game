@@ -8,14 +8,14 @@ import React, {
 import "../../normalize.css";
 import "../../custom.css";
 import Navbar from "../Navbar/Navbar";
-import NumberGame from "../Game/NumberGame";
+import NumberGameRandom from "../Game/NumberGameRandom";
 
 //Creates a standard page for the website that displays the navbar and the game
 function GamePage(props) {
   return (
     <div className="game-page">
       <Navbar digits={props.digits} />
-      <NumberGame digits={props.digits} attempts={props.attempts} />
+      <NumberGameRandom digits={props.digits} attempts={props.attempts} />
     </div>
   );
 }

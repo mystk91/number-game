@@ -1,22 +1,16 @@
-import React, {
-  useState,
-  useEffect,
-  useRef,
-  useCallback,
-  createContext,
-  useContext,
-} from "react";
+import React, { useState, useEffect, useRef } from "react";
 import uniqid from "uniqid";
 import "./Navbar.css";
 import "../../normalize.css";
 import "../../custom.css";
 import Instructions from "./Instructions";
+import InstructionsFive from "./InstructionsFive";
 import ProfileDropdown from "./ProfileDropdown";
 import Login from "../LoginSystem/Login";
 
 //Creates the Navbar at the top of the page.
 //Contains links for other game modes, the instructions, the login system
-//Will add leaderboard links / premium options soon
+// props.digits - used to display either instructions either with 4 digits or 5 digits
 function Navbar(props) {
   //Used to set the profile button / image
   const [profileButton, setProfileButton] = useState();
@@ -118,14 +112,22 @@ function Navbar(props) {
   //Adds the instructions the first time user visits the page
   function addInstructions() {
     if (!localStorage.getItem("previouslyVisited")) {
-      setModal(<Instructions />);
+      if (props.digits <= 4) {
+        setModal(<Instructions key={new Date()} />);
+      } else {
+        setModal(<InstructionsFive key={new Date()} />);
+      }
       localStorage.setItem("previouslyVisited", "true");
     }
   }
 
   //Displays the instruction modal
   function instructionsButton() {
-    setModal(<Instructions key={new Date()} />);
+    if (props.digits <= 4) {
+      setModal(<Instructions key={new Date()} />);
+    } else {
+      setModal(<InstructionsFive key={new Date()} />);
+    }
   }
 
   //Adds either the login form or the profile dropdown options the webpage

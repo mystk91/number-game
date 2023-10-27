@@ -11,7 +11,9 @@ import "./App.css";
 import NumberGame from "./components/Game/NumberGame";
 import Navbar from "./components/Navbar/Navbar";
 import GamePage from "./components/Pages/GamePage";
+import GamePageRandom from "./components/Pages/GamePageRandom";
 import Instructions from "./components/Navbar/Instructions";
+import InstructionsFive from "./components/Navbar/InstructionsFive";
 import Login from "./components/LoginSystem/Login";
 import LoginRegular from "./components/LoginSystem/LoginRegular";
 import Signup from "./components/LoginSystem/Signup";
@@ -35,7 +37,6 @@ function App() {
             element={
               <ShareScore
                 hints={["XXYXH", "GXYXH", "GYYXL", "GGGGE", "", ""]}
-                status="victory"
               />
             }
           />
@@ -46,6 +47,7 @@ function App() {
           />
           <Route path="/icon" element={<LoadingIcon />} />
           <Route path="/instructions" element={<Instructions />} />
+          <Route path="/five" element={<InstructionsFive />} />
           <Route path="/navbar" element={<Navbar />} />
           <Route path="/login" element={<LoginRegular />} />
           <Route path="/signup" element={<SignupRegular />} />
@@ -79,6 +81,32 @@ function App() {
             path="/7digits"
             element={<GamePage digits={7} attempts={6} />}
           />
+
+          <Route
+            path="/2random"
+            element={<GamePageRandom digits={2} attempts={6} />}
+          />
+          <Route
+            path="/3random"
+            element={<GamePageRandom digits={3} attempts={6} />}
+          />
+          <Route
+            path="/4random"
+            element={<GamePageRandom digits={4} attempts={6} />}
+          />
+          <Route
+            path="/5random"
+            element={<GamePageRandom digits={5} attempts={6} />}
+          />
+          <Route
+            path="/6random"
+            element={<GamePageRandom digits={6} attempts={6} />}
+          />
+          <Route
+            path="/7random"
+            element={<GamePageRandom digits={7} attempts={6} />}
+          />
+
         </Routes>
       </BrowserRouter>
     </div>
