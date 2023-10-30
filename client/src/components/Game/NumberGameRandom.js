@@ -165,65 +165,18 @@ function NumberGame(props) {
     };
   }, []);
 
+  //Sets up the the game
   async function setupGame() {
-
-    let userObj = await fetch("/api/current_user");
-    let user = await res.json();
-    let reqObj = {
-      session: user.session,
-      digits: props.digits,
-      url: window.location.pathname,
-    }
-    const url = "/api/getCurrentGameRandom";
-    const options = {
-      method: "PUT",
-      body: JSON.stringify(reqObj),
-      withCredentials: true,
-      credentials: "include",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-    };
-    let res = await fetch(url, options);
-    let gameObj = await res.json();
-
-
-    //Setting the localStorage for the game or loading it
-    if (localStorage.getItem(`game` + props.digits)) {
-      updateGameStateFromLocalStorage();
-      if (gameStatusRef.current === "defeat") {
-        defeat();
-      } else if (gameStatusRef.current === "victory") {
-        victory();
-      }
+    await updateGameStateFromBackend();
+    if (gameStatusRef.current === "defeat") {
+      defeat();
+    } else if (gameStatusRef.current === "victory") {
+      victory();
     } else {
-      //Setting the target number (this part will be changed later)
-      let targetNumber = Math.floor(
-        Math.random() * Math.pow(10, props.digits)
-      ).toString();
-      while (targetNumber.length < props.digits) {
-        targetNumber = "0" + targetNumber;
-      }
-      setTargetNumberRef(targetNumber);
-      console.log(targetNumberRef.current);
-      //Sets up the board
-      let board = new Array(props.attempts);
-      for (let i = 0; i < props.attempts; i++) {
-        board[i] = "";
-      }
-      setBoardStateRef(board);
-      //Sets up the hints
-      let hintsArr = new Array(props.attempts);
-      for (let i = 0; i < props.attempts; i++) {
-        hintsArr[i] = "";
-      }
-      setHintsRef(hintsArr);
-      updateLocalStorage();
+      updateGameBoard();
+      changeCurrentInputButton();
+      updateKeyboard();
     }
-    updateGameBoard();
-    changeCurrentInputButton();
-    updateKeyboard();
   }
 
   //Creates the game board for the app. Call it to rerender the board.
@@ -381,6 +334,7 @@ function NumberGame(props) {
   }
 
   //Helper function that loads the game state from localStorage when user revists the page
+  /*
   function updateGameStateFromLocalStorage() {
     let storage = localStorage.getItem("game" + props.digits);
     if (storage) {
@@ -390,6 +344,39 @@ function NumberGame(props) {
       setCurrentRowRef(storageObj.currentRow);
       setGameStatusRef(storageObj.status);
       setTargetNumberRef(storageObj.targetNumber);
+      changeKeyboardColors();
+    }
+  }
+  */
+
+  //Retrieves the users game from backend so it game be displayed visually
+  async function updateGameStateFromBackend() {
+    let userObj = await fetch("/api/current_user");
+    let user = await res.json();
+    let reqObj = {
+      session: user.session,
+      digits: props.digits,
+      url: window.location.pathname,
+    };
+    const url = "/api/getCurrentGameRandom";
+    const options = {
+      method: "PUT",
+      body: JSON.stringify(reqObj),
+      withCredentials: true,
+      credentials: "include",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+    };
+    let res = await fetch(url, options);
+    let gameObj = await res.json();
+    if (gameObj) {
+      setBoardStateRef(gameObj.board);
+      setHintsRef(gameObj.hints);
+      setCurrentRowRef(gameObj.currentRow);
+      setGameStatusRef(gameObj.status);
+      setTargetNumberRef(gameObj.targetNumber);
       changeKeyboardColors();
     }
   }
