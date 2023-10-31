@@ -4,6 +4,7 @@ import "./NumberGame.css";
 import "../../normalize.css";
 import "../../custom.css";
 import Histogram from "./Histogram";
+import Histogram30Random from "./Histogram30Random";
 import ShareScore from "./ShareScore";
 
 function NumberGame(props) {
@@ -149,6 +150,12 @@ function NumberGame(props) {
       setHideGuessButtonRef(" hide");
       setHideResetButtonRef("");
     }
+  }
+
+  //Holds the scores displayed once the game ends
+  const scoresObjRef = useRef();
+  function setScoresObjRef(point) {
+    scoresObjRef.current = point;
   }
 
   //componentDidMount, runs when component mounts, then componentDismount
@@ -322,6 +329,7 @@ function NumberGame(props) {
   }
 
   //Helper function for setting the game state to the local storage
+  /*
   function updateLocalStorage() {
     let gameState = {
       board: boardStateRef.current,
@@ -332,6 +340,7 @@ function NumberGame(props) {
     };
     localStorage.setItem(`game` + props.digits, JSON.stringify(gameState));
   }
+  */
 
   //Helper function that loads the game state from localStorage when user revists the page
   /*
@@ -350,33 +359,39 @@ function NumberGame(props) {
   */
 
   //Retrieves the users game from backend so it game be displayed visually
-  async function updateGameStateFromBackend() {
-    let userObj = await fetch("/api/current_user");
-    let user = await res.json();
-    let reqObj = {
-      session: user.session,
-      digits: props.digits,
-      url: window.location.pathname,
-    };
-    const url = "/api/getCurrentGameRandom";
-    const options = {
-      method: "PUT",
-      body: JSON.stringify(reqObj),
-      withCredentials: true,
-      credentials: "include",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-    };
-    let res = await fetch(url, options);
-    let gameObj = await res.json();
+  //You can set shouldFetch to false & use a gameObj as a parameter to skip server call
+  async function updateGameStateFromBackend(
+    shouldFetch = true,
+    gameObj = null
+  ) {
+    if (shouldFetch) {
+      let userRes = await fetch("/api/current_user");
+      let user = await userRes.json();
+      console.log(user.session);
+      let reqObj = {
+        session: user.session,
+        digits: props.digits,
+        url: window.location.pathname,
+      };
+      const url = "/api/getCurrentGameRandom";
+      const options = {
+        method: "PUT",
+        body: JSON.stringify(reqObj),
+        withCredentials: true,
+        credentials: "include",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+      };
+      let res = await fetch(url, options);
+      gameObj = await res.json();
+    }
     if (gameObj) {
       setBoardStateRef(gameObj.board);
       setHintsRef(gameObj.hints);
       setCurrentRowRef(gameObj.currentRow);
       setGameStatusRef(gameObj.status);
-      setTargetNumberRef(gameObj.targetNumber);
       changeKeyboardColors();
     }
   }
@@ -629,7 +644,7 @@ function NumberGame(props) {
       boardStateCopy[currentRowRef.current] += n;
       setBoardStateRef(boardStateCopy);
       updateGameBoard();
-      updateLocalStorage();
+      //updateLocalStorage();
       keydownAnimation("key" + n);
     }
   }
@@ -646,57 +661,90 @@ function NumberGame(props) {
       ].slice(0, boardStateCopy[currentRowRef.current].length - 1);
       setBoardStateRef(boardStateCopy);
       updateGameBoard();
-      updateLocalStorage();
+      //updateLocalStorage();
       keydownAnimation("keyBackspace");
     }
   }
 
   //Checks the users guess
-  function checkGuess() {
+  async function checkGuess() {
     if (boardStateRef.current[currentRowRef.current].length === props.digits) {
-      keydownAnimation("keyEnter");
-      let result = checkNumber(boardStateRef.current[currentRowRef.current]);
+      let userRes = await fetch("/api/current_user");
+      let user = await userRes.json();
+      let reqObj = {
+        session: user.session,
+        digits: props.digits,
+        number: boardStateRef.current[currentRowRef.current],
+        url: window.location.pathname,
+      };
+      const url = "/api/checkGuessRandom";
+      const options = {
+        method: "PUT",
+        body: JSON.stringify(reqObj),
+        withCredentials: true,
+        credentials: "include",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+      };
+      let res = await fetch(url, options);
+      let resObj = await res.json();
+      resObj.gameObj.currentRow -= 1;
 
+      keydownAnimation("keyEnter");
+
+      /*
+      let result = checkNumber(boardStateRef.current[currentRowRef.current]);
       let hintsCopy = [];
       Object.values(hintsRef.current).forEach((x) => {
         hintsCopy.push(x);
       });
       hintsCopy[currentRowRef.current] = result;
-      setHintsRef(hintsCopy);
+      */
 
+      //setHintsRef(resObj.hints);
+
+      updateGameStateFromBackend(false, resObj.gameObj);
+
+      /*
       let correctResult = "";
       for (let i = 0; i < props.digits; i++) {
         correctResult += "G";
       }
       correctResult += "E";
+      */
 
-      if (result === correctResult) {
+      if (resObj.gameObj.status === `victory`) {
         setGameStatusRef(`victory`);
-        updateScores();
+        //updateScores();
+        setTargetNumberRef(resObj.gameObj.targetNumber);
         disableGame();
         addTransitionDelay();
         changeKeyboardColors();
         removeTransitionDelay();
         updateGameBoard();
-        updateLocalStorage();
+        //updateLocalStorage();
       } else {
-        if (currentRowRef.current !== props.attempts - 1) {
+        if (resObj.gameObj.status === `playing`) {
+          //if (currentRowRef.current !== props.attempts - 1) {
           addTransitionDelay();
           changeKeyboardColors();
           removeTransitionDelay();
           setCurrentRowRef(currentRowRef.current + 1);
           setNewRowRef(true);
           updateGameBoard();
-          updateLocalStorage();
+          //updateLocalStorage();
         } else {
           setGameStatusRef(`defeat`);
-          updateScores();
+          //updateScores();
+          setTargetNumberRef(resObj.gameObj.targetNumber);
           disableGame();
           addTransitionDelay();
           changeKeyboardColors();
           removeTransitionDelay();
           updateGameBoard();
-          updateLocalStorage();
+          //updateLocalStorage();
         }
       }
     } else {
@@ -878,7 +926,7 @@ function NumberGame(props) {
         <div className="share-score-container">
           <ShareScore hints={hintsRef.current} />
         </div>
-        <Histogram digits={props.digits} attempts={props.attempts} />
+        <Histogram30Random digits={props.digits} attempts={props.attempts} />
       </div>
     );
     setGameOverModalRef(victoryHTML);
@@ -928,7 +976,7 @@ function NumberGame(props) {
         <div className="share-score-container">
           <ShareScore hints={hintsRef.current} />
         </div>
-        <Histogram digits={props.digits} attempts={props.attempts} />
+        <Histogram30Random digits={props.digits} attempts={props.attempts} />
       </div>
     );
     setGameOverModalRef(defeatHTML);
@@ -964,6 +1012,7 @@ function NumberGame(props) {
   }
 
   //Sets the score for this game next to any previous games and updates the average score among all games
+  /*
   function updateScores() {
     let score;
     if (gameStatusRef.current === "victory") {
@@ -988,6 +1037,7 @@ function NumberGame(props) {
       }, 0) / scoresObj.scores.length;
     localStorage.setItem("scores" + props.digits, JSON.stringify(scoresObj));
   }
+  */
 
   //Event function that makes it so hitting enter will reset the game
   function resetEnter(e) {
@@ -996,18 +1046,40 @@ function NumberGame(props) {
     }
   }
 
-  //Resets the game. Good for testing purposes. Will eventually be removed.
-  function resetGame() {
+  //Resets the game.
+  async function resetGame() {
+    let userRes = await fetch("/api/current_user");
+    let user = await userRes.json();
+    let reqObj = {
+      session: user.session,
+      digits: props.digits,
+      url: window.location.pathname,
+    };
+    const url = "/api/resetGameRandom";
+    const options = {
+      method: "PUT",
+      body: JSON.stringify(reqObj),
+      withCredentials: true,
+      credentials: "include",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+    };
+    let res = await fetch(url, options);
+    let gameObj = await res.json();
+
     document.removeEventListener("keydown", resetEnter);
-    localStorage.removeItem("game" + props.digits);
-    setCurrentRowRef(0);
+    //localStorage.removeItem("game" + props.digits);
+    //setCurrentRowRef(0);
     setKeyboardClassNameRef(`number-inputs`);
     if (gameStatusRef.current !== `playing`) {
       document.addEventListener("keydown", handleKeydown);
     }
-    setGameStatusRef(`playing`);
+    //setGameStatusRef(`playing`);
     setGameOverModalRef();
-    setupGame();
+    //setupGame();
+    updateGameStateFromBackend(false, gameObj);
     changeKeyboardColors();
   }
 

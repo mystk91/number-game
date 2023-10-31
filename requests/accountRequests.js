@@ -541,13 +541,12 @@ function accountRequests(app) {
   });
 
   passport.deserializeUser(async (user, done) => {
-    console.log(user.session);
     if (user.session) {
       const db = mongoClient.db("Accounts");
       let accounts = db.collection("Accounts");
       let sessionUser = await accounts.findOne({ session: user.session });
       if (sessionUser) {
-        console.log("the user was found");
+        //console.log("the user was found");
         done(null, user);
       } else {
         console.log("Session is not valid");

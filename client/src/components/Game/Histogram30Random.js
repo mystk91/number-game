@@ -3,9 +3,17 @@ import "./Histogram.css";
 import "../../normalize.css";
 import "../../custom.css";
 
-//Creates a histogram of the users guesses among all their games
-//Takes props.digits and props.attempts
-function Histogram(props) {
+/*
+    Used to create a histogram for a game with different digits / different no. of attempts
+    props.digits - number of digit on the game
+    props.attempts - number of attempts allowed on the game, usually 6
+    props.scoresObj - an object containing scores used in the histogram
+      scoresObj.average30
+      scoresObj.average1000
+      scoresObj.scores30
+      scoresObj.scores1000
+  */
+function Histogram30Random(props) {
   const [histogram, setHistogram] = useState();
   const histogramDataRef = useRef();
   function setHistogramDataRef(point) {
@@ -24,16 +32,15 @@ function Histogram(props) {
     return () => {};
   }, []);
 
-  //Used to set the histogram for a game with different digits / different no. of attempts
   function updateHistogram() {
-    let storageObj = JSON.parse(localStorage.getItem("scores" + props.digits));
-    if (storageObj) {
+    let scoresObj = props.scoresObj;
+    if (scoresObj) {
       let histogramArr = [];
       let histogramData = new Array(props.attempts + 1);
       for (let i = 0; i < histogramData.length; i++) {
         histogramData[i] = 0;
       }
-      storageObj.scores.forEach((x) => {
+      scoresObj.scores30.forEach((x) => {
         histogramData[x - 1] += 1;
       });
 
@@ -88,12 +95,7 @@ function Histogram(props) {
       }
       setHistogram(histogramArr);
       //Calculate the average score
-      let average =
-        storageObj.scores.reduce((total, x) => {
-          return total + x;
-        }, 0) / storageObj.scores.length;
-
-      average = average.toFixed(3);
+      average = scoresObj.average30.toFixed(3);
       setAverageScoreRef(average);
     }
   }
@@ -101,11 +103,11 @@ function Histogram(props) {
   return (
     <div className="histogram-container">
       <div className="average-score">
-        Average Score: {averageScoreRef.current}{" "}
+        30 Game Average: {averageScoreRef.current}{" "}
       </div>
       {histogram}
     </div>
   );
 }
 
-export default Histogram;
+export default Histogram30Random;
