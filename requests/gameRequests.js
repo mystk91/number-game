@@ -68,10 +68,17 @@ function gameRequests(app) {
                 targetNumber: account[randomGameString].targetNumber,
               },
               scoresObj: {
+                /*
                 average: account[randomGameString + `-average`],
                 average30: account[randomGameString + `-average30`],
                 scores: account[randomGameString + `-scores`],
                 scores30: account[randomGameString + `-scores30`],
+                */
+
+                average: account[randomGameString + `-scores`].average,
+                average30: account[randomGameString + `-scores`].average30,
+                scores: account[randomGameString + `-scores`].scores,
+                scores30: account[randomGameString + `-scores`].scores30,
               },
             });
           }
@@ -150,8 +157,8 @@ function gameRequests(app) {
             status: "playing",
           };
           let resObj = {
-            gameObj: gameObj
-          }
+            gameObj: gameObj,
+          };
           console.log("reseting the game");
 
           res.send(resObj);
@@ -221,7 +228,6 @@ function gameRequests(app) {
           return result;
         }
 
-
         let boardCopy = [];
         Object.values(account[randomGameString].board).forEach((x) => {
           boardCopy.push(x);
@@ -235,7 +241,7 @@ function gameRequests(app) {
         });
         hintsCopy[account[randomGameString].currentRow] = result;
 
-        let currentRow = account[randomGameString].currentRow + 1;       
+        let currentRow = account[randomGameString].currentRow + 1;
 
         let randomGameObj = {
           board: boardCopy,
@@ -259,10 +265,14 @@ function gameRequests(app) {
         // score - the score player recieved for that game
         // account - the users account that was retrieved from the DB
         function updateScores(score, account) {
-          let scores30 = account[randomGameString + `-scores30`];
-
           let currentDate = new Date();
-          if (scores30) {
+
+          let scoresObjDb = account[randomGameString + `-scores`];
+          //let scoresObjDb = account[randomGameString + `-scores30`];
+          //let scores30 = account[randomGameString + `-scores`].scores30;
+          let scores30;
+          if (scoresObjDb) {
+            scores30 = scoresObjDb.scores30;
             while (
               currentDate.getTime() - scores30[0].date.getTime() >
               2592000000
@@ -293,7 +303,12 @@ function gameRequests(app) {
             date: scores30[0].date,
           };
 
-          let scores = account[randomGameString + `-scores`];
+          //let scores = account[randomGameString + `-scores`];
+          //let scores = account[randomGameString + `-scores`].scores;
+          let scores;
+          if (scoresObjDb){
+            scores = scoresObjDb.scores;
+          }
           if (!scores) {
             scores = [];
           }
@@ -329,20 +344,33 @@ function gameRequests(app) {
             account
           );
           console.log(scoresObj);
+          /*
           let averageString = randomGameString + "-average";
           let average30String = randomGameString + "-average30";
           let scoresString = randomGameString + "-scores";
           let scores30String = randomGameString + "-scores30";
+          */
 
           await accounts.updateOne(
             { session: req.body.session },
             {
+              /*
               $set: {
                 [randomGameString]: randomGameTargetObj,
                 [averageString]: scoresObj.average,
                 [average30String]: scoresObj.average30,
                 [scoresString]: scoresObj.scores,
                 [scores30String]: scoresObj.scores30,
+              },
+              */
+              $set: {
+                [randomGameString]: randomGameTargetObj,
+                [randomGameString + `-scores`]: {
+                  average: scoresObj.average,
+                  average30: scoresObj.average30,
+                  scores: scoresObj.scores,
+                  scores30: scoresObj.scores30,
+                },
               },
             }
           );
@@ -355,20 +383,33 @@ function gameRequests(app) {
           randomGameTargetObj.status = "defeat";
           let scoresObj = updateScores(7, account);
           console.log(scoresObj);
+          /*
           let averageString = randomGameString + "-average";
           let average30String = randomGameString + "-average30";
           let scoresString = randomGameString + "-scores";
           let scores30String = randomGameString + "-scores30";
+          */
 
           await accounts.updateOne(
             { session: req.body.session },
             {
+              /*
               $set: {
                 [randomGameString]: randomGameTargetObj,
                 [averageString]: scoresObj.average,
                 [average30String]: scoresObj.average30,
                 [scoresString]: scoresObj.scores,
                 [scores30String]: scoresObj.scores30,
+              },
+              */
+              $set: {
+                [randomGameString]: randomGameTargetObj,
+                [randomGameString + `-scores`]: {
+                  average: scoresObj.average,
+                  average30: scoresObj.average30,
+                  scores: scoresObj.scores,
+                  scores30: scoresObj.scores30,
+                },
               },
             }
           );
