@@ -13,7 +13,7 @@ import "../../custom.css";
       scoresObj.scores30
       scoresObj.scores1000
   */
-function Histogram30Random(props) {
+function HistogramRegular(props) {
   const [histogram, setHistogram] = useState();
   const histogramDataRef = useRef();
   function setHistogramDataRef(point) {
@@ -103,11 +103,11 @@ function Histogram30Random(props) {
   return (
     <div className="histogram-container">
       <div className="average-score">
-        30 Average: {averageScoreRef.current}
+        Average: {averageScoreRef.current}
       </div>
       {histogram}
     </div>
   );
 }
 
-export default Histogram30Random;
+export default HistogramRegular;

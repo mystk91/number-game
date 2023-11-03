@@ -26,7 +26,7 @@ function gameRequests(app) {
         res.redirect("/premium");
       }
     } catch {
-      res.redirect("/premium");
+      res.redirect("/login");
     }
   }
 
@@ -39,7 +39,7 @@ function gameRequests(app) {
   app.get("/7random", redirectNonPremium);
 
   //Returns the gameboard saved to the user in the database
-  async function getCurrentGameBoard(req, res, next) {
+  async function getCurrentGameRandom(req, res, next) {
     try {
       const db = mongoClient.db("Accounts");
       let accounts = db.collection("Accounts");
@@ -295,7 +295,7 @@ function gameRequests(app) {
           };
 
           let scores;
-          if (scoresObjDb){
+          if (scoresObjDb) {
             scores = scoresObjDb.scores;
           }
           if (!scores) {
@@ -396,7 +396,7 @@ function gameRequests(app) {
 
   //Returns the random game the user has going if it exists, setting up the board
   app.put("/api/getCurrentGameRandom", async (req, res, next) => {
-    getCurrentGameBoard(req, res, next);
+    getCurrentGameRandom(req, res, next);
   });
 
   //Checks the users guess, updates the game on the database, returns graphics update

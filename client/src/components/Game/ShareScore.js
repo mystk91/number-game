@@ -30,7 +30,14 @@ function ShareScore(props) {
     const upArrow = `\u{2B06}`;
     const downArrow = `\u{2B07}`;
 
-    let copiedText = "      Numblr\n";
+    let headerSpacesLeft = [1, 3, 6, 8, 10, 13];
+    let labelSpacesLeft = [0, 0, 2, 5, 7, 10];
+
+    let copiedText = "";
+    for (let i = 0; i < headerSpacesLeft[props.hints[0].length - 3]; i++) {
+      copiedText += " ";
+    }
+    copiedText += "Numblr\n";
 
     let attempts = 1;
     props.hints.forEach((x) => {
@@ -77,8 +84,10 @@ function ShareScore(props) {
         copiedText += equals + "\n";
       }
     });
-    copiedText +=
-      "  " + attempts + "/" + props.hints.length + " - " + getDate();
+    for (let i = 0; i < labelSpacesLeft[props.hints[0].length - 3]; i++) {
+      copiedText += " ";
+    }
+    copiedText += attempts + "/" + props.hints.length + " - " + getDate();
     await navigator.clipboard.writeText(copiedText);
     e.target.style.cursor = "default";
     e.target.style.pointerEvents = "none";

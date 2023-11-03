@@ -3,10 +3,10 @@ import uniqid from "uniqid";
 import "./NumberGame.css";
 import "../../normalize.css";
 import "../../custom.css";
-import Histogram30Random from "./Histogram30Random";
+import HistogramRegular from "./HistogramRegular";
 import ShareScore from "./ShareScore";
 
-function NumberGame(props) {
+function NumberGameRegular(props) {
   //Used to update the board state visually
   const [board, setBoard] = useState([]);
 
@@ -134,20 +134,20 @@ function NumberGame(props) {
   function setHideGuessButtonRef(point) {
     hideGuessButtonRef.current = point;
   }
-  let hideResetButtonRef = useRef("");
+  let hideMessageButtonRef = useRef("");
   function setHideResetButtonRef(point) {
-    hideResetButtonRef.current = point;
+    hideMessageButtonRef.current = point;
   }
 
-  //These functions are used to display / hide the Enter Guess / Reset button.
+  //These functions are used to display / hide the Enter Guess / Message buttons
   //The enter guess is shown until the game ends, then its replaced with the reset button.
   function changeCurrentInputButton() {
     if (gameStatusRef.current === "playing") {
       setHideGuessButtonRef("");
-      setHideResetButtonRef(" hide");
+      setHideMessageButtonRef(" hide");
     } else {
       setHideGuessButtonRef(" hide");
-      setHideResetButtonRef("");
+      setHideMessageButtonRef("");
     }
   }
 
@@ -482,7 +482,7 @@ function NumberGame(props) {
           Enter
         </button>
         <button
-          className={"reset-game" + hideResetButtonRef.current}
+          className={"bottom-message" + hideMessageButtonRef.current}
           onClick={resetGame}
         >
           Reset
@@ -884,7 +884,7 @@ function NumberGame(props) {
         <div className="share-score-container">
           <ShareScore hints={hintsRef.current} />
         </div>
-        <Histogram30Random
+        <HistogramRegular
           digits={props.digits}
           attempts={props.attempts}
           scoresObj={scoresObjRef.current}
@@ -936,7 +936,7 @@ function NumberGame(props) {
         <div className="share-score-container">
           <ShareScore hints={hintsRef.current} />
         </div>
-        <Histogram30Random
+        <HistogramRegular
           digits={props.digits}
           attempts={props.attempts}
           scoresObj={scoresObjRef.current}
@@ -1038,4 +1038,4 @@ function NumberGame(props) {
   );
 }
 
-export default NumberGame;
+export default NumberGameRegular;

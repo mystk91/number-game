@@ -12,6 +12,7 @@ import NumberGame from "./components/Game/NumberGame";
 import Navbar from "./components/Navbar/Navbar";
 import GamePage from "./components/Pages/GamePage";
 import GamePageRandom from "./components/Pages/GamePageRandom";
+import GamePageRegular from "./components/Pages/GamePageRegular";
 import Instructions from "./components/Navbar/Instructions";
 import InstructionsFive from "./components/Navbar/InstructionsFive";
 import Login from "./components/LoginSystem/Login";
@@ -56,7 +57,8 @@ function App() {
             element={<EmailVerification />}
           />
           <Route path="/reset-password" element={<ForgotPasswordRegular />} />
-          <Route path="/" element={<GamePage digits={4} attempts={6} />} />
+          <Route path="/" element={<GamePage digits={5} attempts={6} />} />
+          <Route path="/regular" element={<GamePageRegular digits={6} attempts={6} />} />
           <Route
             path="/2digits"
             element={<GamePage digits={2} attempts={6} />}
