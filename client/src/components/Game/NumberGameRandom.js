@@ -3,7 +3,6 @@ import uniqid from "uniqid";
 import "./NumberGame.css";
 import "../../normalize.css";
 import "../../custom.css";
-import Histogram from "./Histogram";
 import Histogram30Random from "./Histogram30Random";
 import ShareScore from "./ShareScore";
 
@@ -175,15 +174,13 @@ function NumberGame(props) {
   //Sets up the the game
   async function setupGame() {
     await updateGameStateFromBackend();
-    if (gameStatusRef.current === "defeat") {
-      defeat();
-    } else if (gameStatusRef.current === "victory") {
-      victory();
-    } else {
-      updateGameBoard();
-      changeCurrentInputButton();
-      updateKeyboard();
+    if(gameStatusRef.current !== "playing"){
+      setCurrentRowRef(currentRowRef.current - 1);
+      disableGame(false);
     }
+    changeCurrentInputButton();
+    updateGameBoard();
+    updateKeyboard();
   }
 
   //Creates the game board for the app. Call it to rerender the board.
@@ -328,46 +325,12 @@ function NumberGame(props) {
     return classList;
   }
 
-  //Helper function for setting the game state to the local storage
-  /*
-  function updateLocalStorage() {
-    let gameState = {
-      board: boardStateRef.current,
-      currentRow: currentRowRef.current,
-      hints: hintsRef.current,
-      status: gameStatusRef.current,
-      targetNumber: targetNumberRef.current,
-    };
-    localStorage.setItem(`game` + props.digits, JSON.stringify(gameState));
-  }
-  */
-
-  //Helper function that loads the game state from localStorage when user revists the page
-  /*
-  function updateGameStateFromLocalStorage() {
-    let storage = localStorage.getItem("game" + props.digits);
-    if (storage) {
-      let storageObj = JSON.parse(storage);
-      setBoardStateRef(storageObj.board);
-      setHintsRef(storageObj.hints);
-      setCurrentRowRef(storageObj.currentRow);
-      setGameStatusRef(storageObj.status);
-      setTargetNumberRef(storageObj.targetNumber);
-      changeKeyboardColors();
-    }
-  }
-  */
-
   //Retrieves the users game from backend so it game be displayed visually
   //You can set shouldFetch to false & use a gameObj as a parameter to skip server call
-  async function updateGameStateFromBackend(
-    shouldFetch = true,
-    gameObj = null
-  ) {
+  async function updateGameStateFromBackend(shouldFetch = true, resObj = null) {
     if (shouldFetch) {
       let userRes = await fetch("/api/current_user");
       let user = await userRes.json();
-      console.log(user.session);
       let reqObj = {
         session: user.session,
         digits: props.digits,
@@ -385,13 +348,17 @@ function NumberGame(props) {
         },
       };
       let res = await fetch(url, options);
-      gameObj = await res.json();
+      resObj = await res.json();
     }
-    if (gameObj) {
-      setBoardStateRef(gameObj.board);
-      setHintsRef(gameObj.hints);
-      setCurrentRowRef(gameObj.currentRow);
-      setGameStatusRef(gameObj.status);
+    if (resObj) {
+      setBoardStateRef(resObj.gameObj.board);
+      setHintsRef(resObj.gameObj.hints);
+      setCurrentRowRef(resObj.gameObj.currentRow);
+      setGameStatusRef(resObj.gameObj.status);
+      if (resObj.gameObj.status !== "playing") {
+        setTargetNumberRef(resObj.gameObj.targetNumber);
+        setScoresObjRef(resObj.scoresObj);
+      }
       changeKeyboardColors();
     }
   }
@@ -669,12 +636,14 @@ function NumberGame(props) {
   //Checks the users guess
   async function checkGuess() {
     if (boardStateRef.current[currentRowRef.current].length === props.digits) {
+      disableInputs();
+      setCurrentRowRef(currentRowRef.current + 1);
       let userRes = await fetch("/api/current_user");
       let user = await userRes.json();
       let reqObj = {
         session: user.session,
         digits: props.digits,
-        number: boardStateRef.current[currentRowRef.current],
+        number: boardStateRef.current[currentRowRef.current - 1],
         url: window.location.pathname,
       };
       const url = "/api/checkGuessRandom";
@@ -691,60 +660,36 @@ function NumberGame(props) {
       let res = await fetch(url, options);
       let resObj = await res.json();
       resObj.gameObj.currentRow -= 1;
-
       keydownAnimation("keyEnter");
 
-      /*
-      let result = checkNumber(boardStateRef.current[currentRowRef.current]);
-      let hintsCopy = [];
-      Object.values(hintsRef.current).forEach((x) => {
-        hintsCopy.push(x);
-      });
-      hintsCopy[currentRowRef.current] = result;
-      */
-
-      //setHintsRef(resObj.hints);
-
-      updateGameStateFromBackend(false, resObj.gameObj);
-
-      /*
-      let correctResult = "";
-      for (let i = 0; i < props.digits; i++) {
-        correctResult += "G";
-      }
-      correctResult += "E";
-      */
+      await updateGameStateFromBackend(false, resObj);
+      enableInputs();
 
       if (resObj.gameObj.status === `victory`) {
         setGameStatusRef(`victory`);
+        //setScoresObjRef(resObj.scoresObj);
         //updateScores();
-        setTargetNumberRef(resObj.gameObj.targetNumber);
+        //setTargetNumberRef(resObj.gameObj.targetNumber);
         disableGame();
         addTransitionDelay();
         changeKeyboardColors();
-        removeTransitionDelay();
+        //removeTransitionDelay();
         updateGameBoard();
         //updateLocalStorage();
       } else {
         if (resObj.gameObj.status === `playing`) {
-          //if (currentRowRef.current !== props.attempts - 1) {
           addTransitionDelay();
           changeKeyboardColors();
-          removeTransitionDelay();
           setCurrentRowRef(currentRowRef.current + 1);
           setNewRowRef(true);
           updateGameBoard();
-          //updateLocalStorage();
         } else {
           setGameStatusRef(`defeat`);
-          //updateScores();
-          setTargetNumberRef(resObj.gameObj.targetNumber);
           disableGame();
           addTransitionDelay();
           changeKeyboardColors();
           removeTransitionDelay();
           updateGameBoard();
-          //updateLocalStorage();
         }
       }
     } else {
@@ -757,6 +702,18 @@ function NumberGame(props) {
       }, 1);
     }
   }
+
+    //Turns off keyboard interactions
+    function disableInputs(){
+      document.removeEventListener("keydown", handleKeydown);
+      setKeyboardClassNameRef("number-inputs disabled");
+    }
+  
+    //Turns on keyboard interactions
+    function enableInputs(){
+      document.addEventListener("keydown", handleKeydown);
+      setKeyboardClassNameRef("number-inputs");
+    }
 
   //Checks the number against the users guess, returns a string with the colors the blocks should become, ending with hint telling higher or lower
   // ex. 5 digit number,  gyxxxl
@@ -795,7 +752,6 @@ function NumberGame(props) {
     } else if (number === target) {
       result += "E";
     }
-    console.log(result);
     return result;
   }
 
@@ -813,6 +769,7 @@ function NumberGame(props) {
         0.4 + (props.digits - 1) * 0.2 - i * 0.2 + "s";
     }
     setTransitionDelayRef(transitionDelayCopy);
+    setTimeout(removeTransitionDelay, 5000);
   }
 
   //Removes the transition delay
@@ -827,6 +784,7 @@ function NumberGame(props) {
       transitionDelayCopy[`key` + number[i]] = "";
     }
     setTransitionDelayRef(transitionDelayCopy);
+    updateKeyboard();
   }
 
   //Displays an error message and plays an animation when user has invalid length input
@@ -926,7 +884,11 @@ function NumberGame(props) {
         <div className="share-score-container">
           <ShareScore hints={hintsRef.current} />
         </div>
-        <Histogram30Random digits={props.digits} attempts={props.attempts} />
+        <Histogram30Random
+          digits={props.digits}
+          attempts={props.attempts}
+          scoresObj={scoresObjRef.current}
+        />
       </div>
     );
     setGameOverModalRef(victoryHTML);
@@ -976,7 +938,11 @@ function NumberGame(props) {
         <div className="share-score-container">
           <ShareScore hints={hintsRef.current} />
         </div>
-        <Histogram30Random digits={props.digits} attempts={props.attempts} />
+        <Histogram30Random
+          digits={props.digits}
+          attempts={props.attempts}
+          scoresObj={scoresObjRef.current}
+        />
       </div>
     );
     setGameOverModalRef(defeatHTML);
@@ -995,7 +961,12 @@ function NumberGame(props) {
   }
 
   //Disables the game after the player wins or loses
-  function disableGame() {
+
+  function disableGame(delay = true) {
+    let delayTime = 1000 * (0.85 + 0.2 * (props.digits - 1));
+    if (!delay){
+      delayTime = 0;
+    }
     document.removeEventListener("keydown", handleKeydown);
     setKeyboardClassNameRef("number-inputs disabled");
     updateKeyboard();
@@ -1008,7 +979,7 @@ function NumberGame(props) {
         victory();
       }
       document.addEventListener("keydown", resetEnter);
-    }, 1000 * (0.85 + 0.2 * (props.digits - 1)));
+    }, delayTime);
   }
 
   //Sets the score for this game next to any previous games and updates the average score among all games
@@ -1067,20 +1038,20 @@ function NumberGame(props) {
       },
     };
     let res = await fetch(url, options);
-    let gameObj = await res.json();
+    let resObj = await res.json();
 
     document.removeEventListener("keydown", resetEnter);
-    //localStorage.removeItem("game" + props.digits);
-    //setCurrentRowRef(0);
     setKeyboardClassNameRef(`number-inputs`);
     if (gameStatusRef.current !== `playing`) {
       document.addEventListener("keydown", handleKeydown);
     }
-    //setGameStatusRef(`playing`);
     setGameOverModalRef();
-    //setupGame();
-    updateGameStateFromBackend(false, gameObj);
+    await updateGameStateFromBackend(false, resObj);
+
     changeKeyboardColors();
+    changeCurrentInputButton();
+    updateKeyboard();
+    updateGameBoard();
   }
 
   return (

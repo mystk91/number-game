@@ -41,7 +41,7 @@ function Histogram30Random(props) {
         histogramData[i] = 0;
       }
       scoresObj.scores30.forEach((x) => {
-        histogramData[x - 1] += 1;
+        histogramData[x.score - 1] += 1;
       });
 
       let highestHist = 0;
@@ -65,7 +65,7 @@ function Histogram30Random(props) {
       }
       let displayedFrequency = new Array(props.attempts + 1);
       for (let i = 0; i < displayedFrequency.length; i++) {
-        if (histogramData[i] == 0) {
+        if (histogramData[i] === 0) {
           displayedFrequency[i] = "";
         } else {
           displayedFrequency[i] = histogramData[i];
@@ -73,20 +73,20 @@ function Histogram30Random(props) {
       }
       let barStyle = new Array(props.attempts + 1);
       for (let i = 0; i < barStyle.length; i++) {
-        if (histogramData[i] == 0) {
-          barStyle[i] = ".5px solid black";
+        if (histogramData[i] === 0) {
+          barStyle[i] = "";
         } else {
-          barStyle[i] = "1px solid black";
+          barStyle[i] = ".5px solid black";
         }
       }
 
       for (let i = 0; i < props.attempts + 1; i++) {
         let row = (
           <div className="histogram-row" key={"histogram-row-" + i}>
-            <div className="histogram-guesses">{i + 1}</div>
+            <div className="histogram-score">{i + 1}</div>
             <div
-              className={"histogram-bar" + " guess-" + (i + 1)}
-              style={{ width: pixelData[i] + "px", border: barStyle[i] }}
+              className={"histogram-bar" + " score-" + (i + 1)}
+              style={{ width: pixelData[i] + "px", borderRight: barStyle[i] }}
             ></div>
             <div className="histogram-frequency">{displayedFrequency[i]}</div>
           </div>
@@ -95,7 +95,7 @@ function Histogram30Random(props) {
       }
       setHistogram(histogramArr);
       //Calculate the average score
-      average = scoresObj.average30.toFixed(3);
+      let average = scoresObj.average30.average.toFixed(3);
       setAverageScoreRef(average);
     }
   }
@@ -103,7 +103,7 @@ function Histogram30Random(props) {
   return (
     <div className="histogram-container">
       <div className="average-score">
-        30 Game Average: {averageScoreRef.current}{" "}
+        30 Average: {averageScoreRef.current}{" "}
       </div>
       {histogram}
     </div>

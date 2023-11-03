@@ -46,18 +46,35 @@ function gameRequests(app) {
       let account = await accounts.findOne({ session: req.user.session });
       let randomGameString = req.body.digits + "random";
       if (req.body.url == "/" + randomGameString) {
-        console.log("beginning process");
         if (!account[randomGameString]) {
-          console.log("there is no game of the type already");
           resetGameRandom(req, res, next);
         } else {
-          console.log("sending your game!");
-          res.send({
-            board: account[randomGameString].board,
-            currentRow: account[randomGameString].currentRow,
-            hints: account[randomGameString].hints,
-            status: account[randomGameString].status,
-          });
+          if (account[randomGameString].status == "playing") {
+            res.send({
+              gameObj: {
+                board: account[randomGameString].board,
+                currentRow: account[randomGameString].currentRow,
+                hints: account[randomGameString].hints,
+                status: account[randomGameString].status,
+              },
+            });
+          } else {
+            res.send({
+              gameObj: {
+                board: account[randomGameString].board,
+                currentRow: account[randomGameString].currentRow,
+                hints: account[randomGameString].hints,
+                status: account[randomGameString].status,
+                targetNumber: account[randomGameString].targetNumber,
+              },
+              scoresObj: {
+                average: account[randomGameString + `-average`],
+                average30: account[randomGameString + `-average30`],
+                scores: account[randomGameString + `-scores`],
+                scores30: account[randomGameString + `-scores30`],
+              },
+            });
+          }
         }
       } else {
         throw new Error();
@@ -75,7 +92,6 @@ function gameRequests(app) {
       let accounts = db.collection("Accounts");
       let account = await accounts.findOne({ session: req.user.session });
       let randomGameString = req.body.digits + "random";
-      console.log(req.body.url);
       if (req.body.url == "/" + randomGameString) {
         let condition = false;
         if (account[randomGameString]) {
@@ -87,7 +103,6 @@ function gameRequests(app) {
         }
 
         if (condition) {
-          console.log("does it get here");
           let targetNumber = Math.floor(
             Math.random() * Math.pow(10, req.body.digits)
           ).toString();
@@ -119,8 +134,6 @@ function gameRequests(app) {
           console.log(randomGameObj);
 
           let randomGameString = req.body.digits + "random";
-          console.log(randomGameString);
-          console.log(req.user.session);
           await accounts.updateOne(
             { session: req.user.session },
             {
@@ -130,16 +143,18 @@ function gameRequests(app) {
             }
           );
 
-          console.log("game updated");
-
-          let randomGameResObj = {
+          let gameObj = {
             board: board,
             currentRow: 0,
             hints: hintsArr,
             status: "playing",
           };
+          let resObj = {
+            gameObj: gameObj
+          }
+          console.log("reseting the game");
 
-          res.send(randomGameResObj);
+          res.send(resObj);
         } else {
           getCurrentGameBoard(req, res, next);
         }
@@ -157,11 +172,9 @@ function gameRequests(app) {
   //Checks a guess for the random vesion of the game
   async function checkGuessRandom(req, res, next) {
     try {
-      console.log("it begins");
       const db = mongoClient.db("Accounts");
       let accounts = db.collection("Accounts");
       let account = await accounts.findOne({ session: req.user.session });
-      console.log("finds account");
       let validateNumber = false;
       if (
         isFinite(req.body.number) &&
@@ -178,7 +191,6 @@ function gameRequests(app) {
           let result = "";
           //Compares the number with target number and applies wordle rules to it
           let target = account[randomGameString].targetNumber;
-          console.log(target);
           let tempTarget = "";
           for (let i = 0; i < req.body.digits; i++) {
             if (number[i] === target[i]) {
@@ -206,9 +218,9 @@ function gameRequests(app) {
           } else if (number === target) {
             result += "E";
           }
-          console.log(result);
           return result;
         }
+
 
         let boardCopy = [];
         Object.values(account[randomGameString].board).forEach((x) => {
@@ -216,22 +228,23 @@ function gameRequests(app) {
         });
         boardCopy[account[randomGameString].currentRow] = req.body.number;
 
-        console.log("creates board");
-        console.log(req.body.number);
-
         let result = checkNumber(req.body.number);
-        console.log("the result is " + result);
         let hintsCopy = [];
         Object.values(account[randomGameString].hints).forEach((x) => {
           hintsCopy.push(x);
         });
         hintsCopy[account[randomGameString].currentRow] = result;
 
-        console.log("creates hints");
-
-        let currentRow = account[randomGameString].currentRow + 1;
+        let currentRow = account[randomGameString].currentRow + 1;       
 
         let randomGameObj = {
+          board: boardCopy,
+          currentRow: currentRow,
+          hints: hintsCopy,
+          status: "playing",
+        };
+
+        let randomGameTargetObj = {
           board: boardCopy,
           currentRow: currentRow,
           hints: hintsCopy,
@@ -239,7 +252,7 @@ function gameRequests(app) {
           targetNumber: account[randomGameString].targetNumber,
         };
 
-        console.log(randomGameObj);
+        console.log(randomGameTargetObj);
 
         //Adds a score to the users database entry. Keeps track past 30 scores and 1k scores
         //Returns an object containing the scores/averages that need to be updated in the DB
@@ -248,9 +261,10 @@ function gameRequests(app) {
         function updateScores(score, account) {
           let scores30 = account[randomGameString + `-scores30`];
 
+          let currentDate = new Date();
           if (scores30) {
             while (
-              currentDate.getTime() - scores30[0].date.getTime() <
+              currentDate.getTime() - scores30[0].date.getTime() >
               2592000000
             ) {
               scores30.shift();
@@ -262,7 +276,6 @@ function gameRequests(app) {
             scores30 = [];
           }
 
-          let currentDate = new Date();
           let scores30entry = {
             score: score,
             date: currentDate,
@@ -293,14 +306,14 @@ function gameRequests(app) {
               return total + x;
             }, 0) / scores.length;
 
-          let returnObj = {
+          let scoresObj = {
             average: average,
             average30: average30obj,
             scores: scores,
             scores30: scores30,
           };
 
-          return returnObj;
+          return scoresObj;
         }
 
         let correctResult = "";
@@ -309,12 +322,8 @@ function gameRequests(app) {
         }
         correctResult += "E";
 
-        console.log("the correct result is " + correctResult);
-        console.log("and your result is " + result);
-
         if (result == correctResult) {
-          randomGameObj.status = "victory";
-          randomGameObj.targetNumber = account[randomGameString].targetNumber;
+          randomGameTargetObj.status = "victory";
           let scoresObj = updateScores(
             account[randomGameString].currentRow + 1,
             account
@@ -329,7 +338,7 @@ function gameRequests(app) {
             { session: req.body.session },
             {
               $set: {
-                [randomGameString]: randomGameObj,
+                [randomGameString]: randomGameTargetObj,
                 [averageString]: scoresObj.average,
                 [average30String]: scoresObj.average30,
                 [scoresString]: scoresObj.scores,
@@ -339,15 +348,11 @@ function gameRequests(app) {
           );
 
           res.send({
-            gameObj: randomGameObj,
-            average: scoresObj.average,
-            average30: scoresObj.average30,
-            scores: scoresObj.scores,
-            scores30: scoresObj.scores30,
+            gameObj: randomGameTargetObj,
+            scoresObj: scoresObj,
           });
         } else if (currentRow == 6) {
-          randomGameObj.status = "defeat";
-          randomGameObj.targetNumber = account[randomGameString].targetNumber;
+          randomGameTargetObj.status = "defeat";
           let scoresObj = updateScores(7, account);
           console.log(scoresObj);
           let averageString = randomGameString + "-average";
@@ -359,7 +364,7 @@ function gameRequests(app) {
             { session: req.body.session },
             {
               $set: {
-                [randomGameString]: randomGameObj,
+                [randomGameString]: randomGameTargetObj,
                 [averageString]: scoresObj.average,
                 [average30String]: scoresObj.average30,
                 [scoresString]: scoresObj.scores,
@@ -369,16 +374,13 @@ function gameRequests(app) {
           );
 
           res.send({
-            gameObj: randomGameObj,
-            average30: scoresObj.average30,
-            average: scoresObj.average,
-            scores30: scoresObj.scores30,
-            scores: scoresObj.scores,
+            gameObj: randomGameTargetObj,
+            scoresObj: scoresObj,
           });
         } else {
           await accounts.updateOne(
             { session: req.body.session },
-            { $set: { [randomGameString]: randomGameObj } }
+            { $set: { [randomGameString]: randomGameTargetObj } }
           );
 
           res.send({
@@ -400,7 +402,6 @@ function gameRequests(app) {
 
   //Checks the users guess, updates the game on the database, returns graphics update
   app.put("/api/checkGuessRandom", async (req, res, next) => {
-    console.log("put");
     checkGuessRandom(req, res, next);
   });
 

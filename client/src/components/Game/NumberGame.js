@@ -183,7 +183,6 @@ function NumberGame(props) {
         targetNumber = "0" + targetNumber;
       }
       setTargetNumberRef(targetNumber);
-      console.log(targetNumberRef.current);
       //Sets up the board
       let board = new Array(props.attempts);
       for (let i = 0; i < props.attempts; i++) {
