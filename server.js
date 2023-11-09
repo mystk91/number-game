@@ -104,8 +104,12 @@ const io = new Server(server, {
 
 server.listen(port);
 
+//Scheduled Tasks
+let scheduledTasks = require("./scheduledTasks.js");
+scheduledTasks.scheduledTasks(app);
+
 //////////////////////////////////////////////////////////////////////////////////
-//Requests 
+//Requests
 
 let accountRequests = require("./requests/accountRequests.js");
 accountRequests.accountRequests(app);

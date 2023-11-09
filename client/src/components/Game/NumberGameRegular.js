@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import uniqid from "uniqid";
-import "./NumberGameRegular.css";
+import "./NumberGame.css";
 import "../../normalize.css";
 import "../../custom.css";
 import HistogramRegular from "./HistogramRegular";
@@ -384,8 +384,11 @@ function NumberGameRegular(props) {
       if (resObj.gameObj.status !== "playing") {
         setTargetNumberRef(resObj.gameObj.targetNumber);
         setScoresObjRef(resObj.scoresObj);
+        console.log(resObj.gameObj.nextGameAvailable);
         if (resObj.gameObj.nextGameAvailable) {
           setNextGameAvailableRef(true);
+        } else {
+          setNextGameAvailableRef(false);
         }
       }
       changeKeyboardColors();
@@ -517,7 +520,7 @@ function NumberGameRegular(props) {
           className={"reset-game" + hideResetButtonRef.current}
           onClick={resetGame}
         >
-          Play Today's Game
+          Play Todays Game
         </button>
       </div>
     );
@@ -701,6 +704,8 @@ function NumberGameRegular(props) {
         setGameStatusRef(`victory`);
         if (resObj.gameObj.nextGameAvailable) {
           setNextGameAvailableRef(true);
+        } else {
+          setNextGameAvailableRef(false);
         }
         //setScoresObjRef(resObj.scoresObj);
         //updateScores();
@@ -720,8 +725,11 @@ function NumberGameRegular(props) {
           updateGameBoard();
         } else {
           setGameStatusRef(`defeat`);
+          console.log(resObj.gameObj.nextGameAvailable);
           if (resObj.gameObj.nextGameAvailable) {
             setNextGameAvailableRef(true);
+          } else {
+            setNextGameAvailableRef(false);
           }
           disableGame();
           addTransitionDelay();
@@ -1013,7 +1021,7 @@ function NumberGameRegular(props) {
       } else if (gameStatusRef.current === "victory") {
         victory();
       }
-      if (nextGameAvailableRef.current){
+      if (nextGameAvailableRef.current) {
         document.addEventListener("keydown", resetEnter);
       }
     }, delayTime);
@@ -1062,6 +1070,9 @@ function NumberGameRegular(props) {
     updateKeyboard();
     updateGameBoard();
   }
+
+  //Displays the button that links to the premium page
+  function showPremiumButton() {}
 
   return (
     <main className="game-container">

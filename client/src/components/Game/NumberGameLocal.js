@@ -3,10 +3,11 @@ import uniqid from "uniqid";
 import "./NumberGame.css";
 import "../../normalize.css";
 import "../../custom.css";
-import Histogram30Random from "./Histogram30Random";
+import HistogramRegular from "./HistogramRegular";
 import ShareScore from "./ShareScore";
 
-function NumberGameRandom(props) {
+//Creates a game that stores data using local storage rather than the database
+function NumberGameLocal(props) {
   //Used to update the board state visually
   const [board, setBoard] = useState([]);
 
@@ -134,20 +135,39 @@ function NumberGameRandom(props) {
   function setHideGuessButtonRef(point) {
     hideGuessButtonRef.current = point;
   }
+
   let hideResetButtonRef = useRef("");
   function setHideResetButtonRef(point) {
     hideResetButtonRef.current = point;
   }
 
-  //These functions are used to display / hide the Enter Guess / Reset button.
+  let hideMessageButtonRef = useRef("");
+  function setHideMessageButtonRef(point) {
+    hideMessageButtonRef.current = point;
+  }
+
+  let nextGameAvailableRef = useRef(false);
+  function setNextGameAvailableRef(point) {
+    nextGameAvailableRef.current = point;
+  }
+
+  //These functions are used to display / hide the Enter Guess / Message buttons
   //The enter guess is shown until the game ends, then its replaced with the reset button.
   function changeCurrentInputButton() {
     if (gameStatusRef.current === "playing") {
       setHideGuessButtonRef("");
       setHideResetButtonRef(" hide");
+      setHideMessageButtonRef(" hide");
     } else {
-      setHideGuessButtonRef(" hide");
-      setHideResetButtonRef("");
+      if (nextGameAvailableRef.current) {
+        setHideGuessButtonRef(" hide");
+        setHideResetButtonRef("");
+        setHideMessageButtonRef(" hide");
+      } else {
+        setHideGuessButtonRef(" hide");
+        setHideResetButtonRef(" hide");
+        setHideMessageButtonRef("");
+      }
     }
   }
 
@@ -173,8 +193,10 @@ function NumberGameRandom(props) {
 
   //Sets up the the game
   async function setupGame() {
-    await updateGameStateFromBackend();
-    if(gameStatusRef.current !== "playing"){
+    console.log("it starts going");
+    await updateGameStateFromBackend(true, null, true);
+    console.log("it arrives");
+    if (gameStatusRef.current !== "playing") {
       setCurrentRowRef(currentRowRef.current - 1);
       disableGame(false);
     }
@@ -327,7 +349,11 @@ function NumberGameRandom(props) {
 
   //Retrieves the users game from backend so it game be displayed visually
   //You can set shouldFetch to false & use a gameObj as a parameter to skip server call
-  async function updateGameStateFromBackend(shouldFetch = true, resObj = null) {
+  async function updateGameStateFromBackend(
+    shouldFetch = true,
+    resObj = null,
+    firstCall = false
+  ) {
     if (shouldFetch) {
       let userRes = await fetch("/api/current_user");
       let user = await userRes.json();
@@ -335,8 +361,9 @@ function NumberGameRandom(props) {
         session: user.session,
         digits: props.digits,
         url: window.location.pathname,
+        firstCall: firstCall,
       };
-      const url = "/api/getCurrentGameRandom";
+      const url = "/api/getCurrentGameRegular";
       const options = {
         method: "PUT",
         body: JSON.stringify(reqObj),
@@ -358,6 +385,12 @@ function NumberGameRandom(props) {
       if (resObj.gameObj.status !== "playing") {
         setTargetNumberRef(resObj.gameObj.targetNumber);
         setScoresObjRef(resObj.scoresObj);
+        console.log(resObj.gameObj.nextGameAvailable);
+        if (resObj.gameObj.nextGameAvailable) {
+          setNextGameAvailableRef(true);
+        } else {
+          setNextGameAvailableRef(false);
+        }
       }
       changeKeyboardColors();
     }
@@ -481,11 +514,14 @@ function NumberGameRandom(props) {
         >
           Enter
         </button>
+        <button className={"bottom-message" + hideMessageButtonRef.current}>
+          New Game in 3 Hours
+        </button>
         <button
           className={"reset-game" + hideResetButtonRef.current}
           onClick={resetGame}
         >
-          Reset
+          Play Todays Game
         </button>
       </div>
     );
@@ -646,7 +682,7 @@ function NumberGameRandom(props) {
         number: boardStateRef.current[currentRowRef.current - 1],
         url: window.location.pathname,
       };
-      const url = "/api/checkGuessRandom";
+      const url = "/api/checkGuessRegular";
       const options = {
         method: "PUT",
         body: JSON.stringify(reqObj),
@@ -667,6 +703,11 @@ function NumberGameRandom(props) {
 
       if (resObj.gameObj.status === `victory`) {
         setGameStatusRef(`victory`);
+        if (resObj.gameObj.nextGameAvailable) {
+          setNextGameAvailableRef(true);
+        } else {
+          setNextGameAvailableRef(false);
+        }
         //setScoresObjRef(resObj.scoresObj);
         //updateScores();
         //setTargetNumberRef(resObj.gameObj.targetNumber);
@@ -685,6 +726,12 @@ function NumberGameRandom(props) {
           updateGameBoard();
         } else {
           setGameStatusRef(`defeat`);
+          console.log(resObj.gameObj.nextGameAvailable);
+          if (resObj.gameObj.nextGameAvailable) {
+            setNextGameAvailableRef(true);
+          } else {
+            setNextGameAvailableRef(false);
+          }
           disableGame();
           addTransitionDelay();
           changeKeyboardColors();
@@ -703,17 +750,17 @@ function NumberGameRandom(props) {
     }
   }
 
-    //Turns off keyboard interactions
-    function disableInputs(){
-      document.removeEventListener("keydown", handleKeydown);
-      setKeyboardClassNameRef("number-inputs disabled");
-    }
-  
-    //Turns on keyboard interactions
-    function enableInputs(){
-      document.addEventListener("keydown", handleKeydown);
-      setKeyboardClassNameRef("number-inputs");
-    }
+  //Turns off keyboard interactions
+  function disableInputs() {
+    document.removeEventListener("keydown", handleKeydown);
+    setKeyboardClassNameRef("number-inputs disabled");
+  }
+
+  //Turns on keyboard interactions
+  function enableInputs() {
+    document.addEventListener("keydown", handleKeydown);
+    setKeyboardClassNameRef("number-inputs");
+  }
 
   //Checks the number against the users guess, returns a string with the colors the blocks should become, ending with hint telling higher or lower
   // ex. 5 digit number,  gyxxxl
@@ -884,7 +931,7 @@ function NumberGameRandom(props) {
         <div className="share-score-container">
           <ShareScore hints={hintsRef.current} />
         </div>
-        <Histogram30Random
+        <HistogramRegular
           digits={props.digits}
           attempts={props.attempts}
           scoresObj={scoresObjRef.current}
@@ -936,7 +983,7 @@ function NumberGameRandom(props) {
         <div className="share-score-container">
           <ShareScore hints={hintsRef.current} />
         </div>
-        <Histogram30Random
+        <HistogramRegular
           digits={props.digits}
           attempts={props.attempts}
           scoresObj={scoresObjRef.current}
@@ -959,10 +1006,9 @@ function NumberGameRandom(props) {
   }
 
   //Disables the game after the player wins or loses
-
   function disableGame(delay = true) {
     let delayTime = 1000 * (0.85 + 0.2 * (props.digits - 1));
-    if (!delay){
+    if (!delay) {
       delayTime = 0;
     }
     document.removeEventListener("keydown", handleKeydown);
@@ -976,7 +1022,9 @@ function NumberGameRandom(props) {
       } else if (gameStatusRef.current === "victory") {
         victory();
       }
-      document.addEventListener("keydown", resetEnter);
+      if (nextGameAvailableRef.current) {
+        document.addEventListener("keydown", resetEnter);
+      }
     }, delayTime);
   }
 
@@ -996,7 +1044,7 @@ function NumberGameRandom(props) {
       digits: props.digits,
       url: window.location.pathname,
     };
-    const url = "/api/resetGameRandom";
+    const url = "/api/resetGameRegular";
     const options = {
       method: "PUT",
       body: JSON.stringify(reqObj),
@@ -1024,6 +1072,9 @@ function NumberGameRandom(props) {
     updateGameBoard();
   }
 
+  //Displays the button that links to the premium page
+  function showPremiumButton() {}
+
   return (
     <main className="game-container">
       <div className={"gameboard"}>
@@ -1038,4 +1089,4 @@ function NumberGameRandom(props) {
   );
 }
 
-export default NumberGameRandom;
+export default NumberGameRegular;
