@@ -4,6 +4,7 @@ import "../../normalize.css";
 import "../../custom.css";
 
 //Creates a histogram of the users guesses among all their games
+//Uses Local Storage
 //Takes props.digits and props.attempts
 function Histogram(props) {
   const [histogram, setHistogram] = useState();

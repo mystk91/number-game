@@ -9,9 +9,9 @@ import "../../custom.css";
     props.attempts - number of attempts allowed on the game, usually 6
     props.scoresObj - an object containing scores used in the histogram
       scoresObj.average30
-      scoresObj.average1000
+      scoresObj.average
       scoresObj.scores30
-      scoresObj.scores1000
+      scoresObj.scores
   */
 function HistogramRegular(props) {
   const [histogram, setHistogram] = useState();
@@ -40,7 +40,7 @@ function HistogramRegular(props) {
       for (let i = 0; i < histogramData.length; i++) {
         histogramData[i] = 0;
       }
-      scoresObj.scores30.forEach((x) => {
+      scoresObj.scores.forEach((x) => {
         histogramData[x.score - 1] += 1;
       });
 
@@ -95,7 +95,7 @@ function HistogramRegular(props) {
       }
       setHistogram(histogramArr);
       //Calculate the average score
-      let average = scoresObj.average30.average.toFixed(3);
+      let average = scoresObj.average.average.toFixed(3);
       setAverageScoreRef(average);
     }
   }

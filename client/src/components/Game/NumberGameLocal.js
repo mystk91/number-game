@@ -3,7 +3,7 @@ import uniqid from "uniqid";
 import "./NumberGame.css";
 import "../../normalize.css";
 import "../../custom.css";
-import HistogramRegular from "./HistogramRegular";
+import Histogram from "./Histogram";
 import ShareScore from "./ShareScore";
 
 //Creates a game that stores data using local storage rather than the database
@@ -37,6 +37,12 @@ function NumberGameLocal(props) {
     gameStatusRef.current = point;
   }
 
+  //Stores the gameId, used to retrieve the correct number from the database
+  const gameIdRef = useRef("");
+  function setGameIdRef(point) {
+    gameIdRef.current = point;
+  }
+
   //Used to update the keyboard visually
   const [keyboard, setKeyboard] = useState([]);
 
@@ -55,12 +61,6 @@ function NumberGameLocal(props) {
   });
   function setKeyboardColorsRef(point) {
     keyboardColorsRef.current = point;
-  }
-
-  //A temporary random number used to test the game
-  const targetNumberRef = useRef("");
-  function setTargetNumberRef(point) {
-    targetNumberRef.current = point;
   }
 
   //Used to update the animation visually when user types/clicks the keyboard
@@ -151,6 +151,12 @@ function NumberGameLocal(props) {
     nextGameAvailableRef.current = point;
   }
 
+  //A temporary random number used to test the game
+  const targetNumberRef = useRef("");
+  function setTargetNumberRef(point) {
+    targetNumberRef.current = point;
+  }
+
   //These functions are used to display / hide the Enter Guess / Message buttons
   //The enter guess is shown until the game ends, then its replaced with the reset button.
   function changeCurrentInputButton() {
@@ -193,16 +199,102 @@ function NumberGameLocal(props) {
 
   //Sets up the the game
   async function setupGame() {
-    console.log("it starts going");
+    let storage = localStorage.getItem("game" + props.digits);
+    //Setting the localStorage for the game or loading it
+    if (storage) {
+      let storageObj = JSON.parse(storage);
+
+      const url = "/api/gameId";
+      const options = {
+        method: "PUT",
+        body: JSON.stringify({ digits: props.digits }),
+        withCredentials: true,
+        credentials: "include",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+      };
+      let res = await fetch(url, options);
+      let resObj = await res.json();
+
+      if (
+        !storageObj.board[0] ||
+        (resObj.gameId !== storageObj.gameId && storageObj.status != `playing`)
+      ) {
+        resetGame();
+      } else {
+        updateGameStateFromLocalStorage();
+      }
+    } else {
+      //Sets up the board
+      let board = new Array(props.attempts);
+      for (let i = 0; i < props.attempts; i++) {
+        board[i] = "";
+      }
+      setBoardStateRef(board);
+      //Sets up the hints
+      let hintsArr = new Array(props.attempts);
+      for (let i = 0; i < props.attempts; i++) {
+        hintsArr[i] = "";
+      }
+      setHintsRef(hintsArr);
+      console.log(hintsRef.current);
+      const url = "/api/gameId";
+      const options = {
+        method: "PUT",
+        body: JSON.stringify({ digits: props.digits }),
+        withCredentials: true,
+        credentials: "include",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+      };
+      let res = await fetch(url, options);
+      let resObj = await res.json();
+      setGameIdRef(resObj.gameId);
+      updateLocalStorage();
+    }
+
+    /*
     await updateGameStateFromBackend(true, null, true);
-    console.log("it arrives");
     if (gameStatusRef.current !== "playing") {
       setCurrentRowRef(currentRowRef.current - 1);
       disableGame(false);
     }
+    */
+
     changeCurrentInputButton();
     updateGameBoard();
     updateKeyboard();
+  }
+
+  //Helper function for setting the game state to the local storage
+  function updateLocalStorage() {
+    let gameState = {
+      board: boardStateRef.current,
+      currentRow: currentRowRef.current,
+      hints: hintsRef.current,
+      status: gameStatusRef.current,
+      gameId: gameIdRef.current,
+    };
+    localStorage.setItem(`game` + props.digits, JSON.stringify(gameState));
+  }
+
+  //Helper function that loads the game state from localStorage when user revists the page
+  async function updateGameStateFromLocalStorage() {
+    let storage = localStorage.getItem("game" + props.digits);
+    if (storage) {
+      let storageObj = JSON.parse(storage);
+      setBoardStateRef(storageObj.board);
+      setHintsRef(storageObj.hints);
+      setCurrentRowRef(storageObj.currentRow);
+      setGameStatusRef(storageObj.status);
+      setTargetNumberRef(storageObj.targetNumber);
+      setGameIdRef(storageObj.gameId);
+      changeKeyboardColors();
+    }
   }
 
   //Creates the game board for the app. Call it to rerender the board.
@@ -349,21 +441,18 @@ function NumberGameLocal(props) {
 
   //Retrieves the users game from backend so it game be displayed visually
   //You can set shouldFetch to false & use a gameObj as a parameter to skip server call
+  /*
   async function updateGameStateFromBackend(
     shouldFetch = true,
     resObj = null,
     firstCall = false
   ) {
     if (shouldFetch) {
-      let userRes = await fetch("/api/current_user");
-      let user = await userRes.json();
       let reqObj = {
-        session: user.session,
         digits: props.digits,
-        url: window.location.pathname,
         firstCall: firstCall,
       };
-      const url = "/api/getCurrentGameRegular";
+      const url = "/api/getCurrentGameLocal";
       const options = {
         method: "PUT",
         body: JSON.stringify(reqObj),
@@ -395,6 +484,7 @@ function NumberGameLocal(props) {
       changeKeyboardColors();
     }
   }
+  */
 
   //Used to set up the keyboard on each render
   function updateKeyboard() {
@@ -674,15 +764,14 @@ function NumberGameLocal(props) {
     if (boardStateRef.current[currentRowRef.current].length === props.digits) {
       disableInputs();
       setCurrentRowRef(currentRowRef.current + 1);
-      let userRes = await fetch("/api/current_user");
-      let user = await userRes.json();
       let reqObj = {
-        session: user.session,
         digits: props.digits,
         number: boardStateRef.current[currentRowRef.current - 1],
-        url: window.location.pathname,
+        hints: hintsRef.current,
+        currentRow: currentRowRef.current - 1,
+        gameId: gameIdRef.current,
       };
-      const url = "/api/checkGuessRegular";
+      const url = "/api/checkGuessLocal";
       const options = {
         method: "PUT",
         body: JSON.stringify(reqObj),
@@ -695,10 +784,10 @@ function NumberGameLocal(props) {
       };
       let res = await fetch(url, options);
       let resObj = await res.json();
-      resObj.gameObj.currentRow -= 1;
+      //resObj.gameObj.currentRow -= 1;
+      setCurrentRowRef(currentRowRef.current - 1);
       keydownAnimation("keyEnter");
 
-      await updateGameStateFromBackend(false, resObj);
       enableInputs();
 
       if (resObj.gameObj.status === `victory`) {
@@ -709,14 +798,14 @@ function NumberGameLocal(props) {
           setNextGameAvailableRef(false);
         }
         //setScoresObjRef(resObj.scoresObj);
-        //updateScores();
-        //setTargetNumberRef(resObj.gameObj.targetNumber);
         disableGame();
+        updateScores();
+        setTargetNumberRef(resObj.gameObj.targetNumber);
         addTransitionDelay();
         changeKeyboardColors();
         //removeTransitionDelay();
         updateGameBoard();
-        //updateLocalStorage();
+        updateLocalStorage();
       } else {
         if (resObj.gameObj.status === `playing`) {
           addTransitionDelay();
@@ -724,6 +813,7 @@ function NumberGameLocal(props) {
           setCurrentRowRef(currentRowRef.current + 1);
           setNewRowRef(true);
           updateGameBoard();
+          updateLocalStorage();
         } else {
           setGameStatusRef(`defeat`);
           console.log(resObj.gameObj.nextGameAvailable);
@@ -733,10 +823,13 @@ function NumberGameLocal(props) {
             setNextGameAvailableRef(false);
           }
           disableGame();
+          updateScores();
+          setTargetNumberRef(resObj.gameObj.targetNumber);
           addTransitionDelay();
           changeKeyboardColors();
           removeTransitionDelay();
           updateGameBoard();
+          updateLocalStorage();
         }
       }
     } else {
@@ -762,44 +855,30 @@ function NumberGameLocal(props) {
     setKeyboardClassNameRef("number-inputs");
   }
 
-  //Checks the number against the users guess, returns a string with the colors the blocks should become, ending with hint telling higher or lower
-  // ex. 5 digit number,  gyxxxl
-  // G - green
-  // Y - yellow
-  // X - dark grey
-  // L - lower, H - higher, E -equals
-  function checkNumber(number) {
-    let result = "";
-    //Compares the number with target number and applies worlde rules to it
-    let target = targetNumberRef.current;
-    let tempTarget = "";
-    for (let i = 0; i < props.digits; i++) {
-      if (number[i] === target[i]) {
-        tempTarget += "G";
-      } else {
-        tempTarget += target[i];
-      }
+  //Sets the score for this game next to any previous games and updates the average score among all games
+  function updateScores() {
+    let score;
+    if (gameStatusRef.current === "victory") {
+      score = currentRowRef.current + 1;
+    } else {
+      score = currentRowRef.current + 2;
     }
-    for (let i = 0; i < props.digits; i++) {
-      if (tempTarget[i] === "G") {
-        result += "G";
-      } else if (tempTarget.includes(number[i])) {
-        result += "Y";
-      } else {
-        result += "X";
-      }
+    let scoresObj;
+    let scoresStorage = localStorage.getItem("scores" + props.digits);
+    if (!scoresStorage) {
+      scoresObj = {
+        scores: [],
+        average: 0,
+      };
+    } else {
+      scoresObj = JSON.parse(scoresStorage);
     }
-    //Compares the number with target number numerically and creates a hint
-    target = Number(target);
-    number = Number(number);
-    if (number > target) {
-      result += "L";
-    } else if (number < target) {
-      result += "H";
-    } else if (number === target) {
-      result += "E";
-    }
-    return result;
+    scoresObj.scores.unshift(score);
+    scoresObj.average =
+      scoresObj.scores.reduce((total, x) => {
+        return total + x;
+      }, 0) / scoresObj.scores.length;
+    localStorage.setItem("scores" + props.digits, JSON.stringify(scoresObj));
   }
 
   //Helper function that adds a transition delay to the keys on the keyboard so they change as gameboard changes
@@ -931,11 +1010,7 @@ function NumberGameLocal(props) {
         <div className="share-score-container">
           <ShareScore hints={hintsRef.current} />
         </div>
-        <HistogramRegular
-          digits={props.digits}
-          attempts={props.attempts}
-          scoresObj={scoresObjRef.current}
-        />
+        <Histogram digits={props.digits} attempts={props.attempts} />
       </div>
     );
     setGameOverModalRef(victoryHTML);
@@ -983,11 +1058,7 @@ function NumberGameLocal(props) {
         <div className="share-score-container">
           <ShareScore hints={hintsRef.current} />
         </div>
-        <HistogramRegular
-          digits={props.digits}
-          attempts={props.attempts}
-          scoresObj={scoresObjRef.current}
-        />
+        <Histogram digits={props.digits} attempts={props.attempts} />
       </div>
     );
     setGameOverModalRef(defeatHTML);
@@ -1037,35 +1108,15 @@ function NumberGameLocal(props) {
 
   //Resets the game.
   async function resetGame() {
-    let userRes = await fetch("/api/current_user");
-    let user = await userRes.json();
-    let reqObj = {
-      session: user.session,
-      digits: props.digits,
-      url: window.location.pathname,
-    };
-    const url = "/api/resetGameRegular";
-    const options = {
-      method: "PUT",
-      body: JSON.stringify(reqObj),
-      withCredentials: true,
-      credentials: "include",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-    };
-    let res = await fetch(url, options);
-    let resObj = await res.json();
-
     document.removeEventListener("keydown", resetEnter);
+    localStorage.removeItem("game" + props.digits);
+    setCurrentRowRef(0);
     setKeyboardClassNameRef(`number-inputs`);
     if (gameStatusRef.current !== `playing`) {
       document.addEventListener("keydown", handleKeydown);
     }
+    setGameStatusRef(`playing`);
     setGameOverModalRef();
-    await updateGameStateFromBackend(false, resObj);
-
     changeKeyboardColors();
     changeCurrentInputButton();
     updateKeyboard();
@@ -1089,4 +1140,4 @@ function NumberGameLocal(props) {
   );
 }
 
-export default NumberGameRegular;
+export default NumberGameLocal;

@@ -61,7 +61,7 @@ function App() {
           <Route path="/reset-password" element={<ForgotPasswordRegular />} />
           <Route path="/" element={<GamePage digits={5} attempts={6} />} />
           <Route path="/regular" element={<GamePageRegular digits={6} attempts={6} />} />
-          <Route path="/local" element ={<NumberGameRegular digits={5} attempts={6} />} />
+          <Route path="/local" element ={<NumberGameLocal digits={5} attempts={6} />} />
           <Route
             path="/2digits"
             element={<GamePage digits={2} attempts={6} />}

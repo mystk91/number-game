@@ -9,9 +9,9 @@ import "../../custom.css";
     props.attempts - number of attempts allowed on the game, usually 6
     props.scoresObj - an object containing scores used in the histogram
       scoresObj.average30
-      scoresObj.average1000
+      scoresObj.average
       scoresObj.scores30
-      scoresObj.scores1000
+      scoresObj.scores
   */
 function Histogram30Random(props) {
   const [histogram, setHistogram] = useState();
