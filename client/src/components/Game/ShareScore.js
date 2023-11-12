@@ -5,6 +5,7 @@ import "../../custom.css";
 
 //Copies the gameboard as unicode emojis so it can be pasted elsewhere
 //props.hints - for the game that was just completed
+//props.date - the date the game
 function ShareScore(props) {
   const hintsRef = useRef();
   function setHintsRef(point) {
@@ -103,10 +104,18 @@ function ShareScore(props) {
 
   //Gets the date in EST
   function getDate() {
+    let date;
+    if (props.date) {
+      date = easternTime.toLocaleString("default", {
+        month: "short",
+        day: "numeric",
+      });
+      return date;
+    }
     const easternTime = new Date(
       new Date().toLocaleString("default", { timeZone: "America/New_York" })
     );
-    const date = easternTime.toLocaleString("default", {
+    date = easternTime.toLocaleString("default", {
       month: "short",
       day: "numeric",
     });

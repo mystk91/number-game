@@ -8,10 +8,6 @@ function accountRequests(app) {
   const { MongoClient, Timestamp } = require("mongodb");
   let ObjectId = require("mongodb").ObjectId;
   const mongoClient = new MongoClient(process.env.mongoDB);
-  async function connectMongo() {
-    await mongoClient.connect();
-  }
-  connectMongo();
 
   //Authentication Constants
   const passport = require("passport");

@@ -152,7 +152,7 @@ function NumberGameLocal(props) {
   }
 
   //A temporary random number used to test the game
-  const targetNumberRef = useRef("");
+  const targetNumberRef = useRef("hidden");
   function setTargetNumberRef(point) {
     targetNumberRef.current = point;
   }
@@ -186,11 +186,7 @@ function NumberGameLocal(props) {
   //componentDidMount, runs when component mounts, then componentDismount
   useEffect(() => {
     setupGame();
-    if (gameStatusRef.current === `playing`) {
-      document.addEventListener("keydown", handleKeydown);
-    } else {
-      disableGame();
-    }
+    document.addEventListener("keydown", handleKeydown);
 
     return () => {
       document.removeEventListener("keydown", handleKeydown);
@@ -199,9 +195,11 @@ function NumberGameLocal(props) {
 
   //Sets up the the game
   async function setupGame() {
+    console.log("hello");
     let storage = localStorage.getItem("game" + props.digits);
     //Setting the localStorage for the game or loading it
     if (storage) {
+      console.log("there is storage");
       let storageObj = JSON.parse(storage);
 
       const url = "/api/gameId";
@@ -217,22 +215,30 @@ function NumberGameLocal(props) {
       };
       let res = await fetch(url, options);
       let resObj = await res.json();
+      console.log("got the object");
 
       if (
         !storageObj.board[0] ||
         (resObj.gameId !== storageObj.gameId && storageObj.status != `playing`)
       ) {
+        console.log("resetting");
         resetGame();
       } else {
+        console.log("updating game state");
         updateGameStateFromLocalStorage();
+        if (gameStatusRef.current !== "playing") {
+          disableGame();
+        }
       }
     } else {
+      console.log("there is no storage");
       //Sets up the board
       let board = new Array(props.attempts);
       for (let i = 0; i < props.attempts; i++) {
         board[i] = "";
       }
       setBoardStateRef(board);
+      console.log("trying to make things");
       //Sets up the hints
       let hintsArr = new Array(props.attempts);
       for (let i = 0; i < props.attempts; i++) {
@@ -278,6 +284,7 @@ function NumberGameLocal(props) {
       hints: hintsRef.current,
       status: gameStatusRef.current,
       gameId: gameIdRef.current,
+      targetNumber: targetNumberRef.current,
     };
     localStorage.setItem(`game` + props.digits, JSON.stringify(gameState));
   }
@@ -288,11 +295,11 @@ function NumberGameLocal(props) {
     if (storage) {
       let storageObj = JSON.parse(storage);
       setBoardStateRef(storageObj.board);
-      setHintsRef(storageObj.hints);
       setCurrentRowRef(storageObj.currentRow);
+      setHintsRef(storageObj.hints);
       setGameStatusRef(storageObj.status);
-      setTargetNumberRef(storageObj.targetNumber);
       setGameIdRef(storageObj.gameId);
+      setTargetNumberRef(storageObj.targetNumber);
       changeKeyboardColors();
     }
   }
@@ -605,7 +612,7 @@ function NumberGameLocal(props) {
           Enter
         </button>
         <button className={"bottom-message" + hideMessageButtonRef.current}>
-          New Game in 3 Hours
+          {timeToNextGame()}
         </button>
         <button
           className={"reset-game" + hideResetButtonRef.current}
@@ -767,6 +774,7 @@ function NumberGameLocal(props) {
       let reqObj = {
         digits: props.digits,
         number: boardStateRef.current[currentRowRef.current - 1],
+        //number: boardStateRef.current[currentRowRef.current],
         hints: hintsRef.current,
         currentRow: currentRowRef.current - 1,
         gameId: gameIdRef.current,
@@ -786,6 +794,7 @@ function NumberGameLocal(props) {
       let resObj = await res.json();
       //resObj.gameObj.currentRow -= 1;
       setCurrentRowRef(currentRowRef.current - 1);
+      setHintsRef(resObj.gameObj.hints);
       keydownAnimation("keyEnter");
 
       enableInputs();
@@ -1085,6 +1094,7 @@ function NumberGameLocal(props) {
     document.removeEventListener("keydown", handleKeydown);
     setKeyboardClassNameRef("number-inputs disabled");
     updateKeyboard();
+    //console.log(gameStatusRef.current);
     setTimeout(() => {
       changeCurrentInputButton();
       updateKeyboard();
@@ -1097,6 +1107,23 @@ function NumberGameLocal(props) {
         document.addEventListener("keydown", resetEnter);
       }
     }, delayTime);
+  }
+
+  //Returns a message telling how much time until the next game will be available
+  //This appears on the button at the bottom once game ends
+  function timeToNextGame() {
+    let date = new Date().toLocaleString("en-US", {timeZone: "America/New_York"});
+    let easternTime = new Date(date).getTime();
+    let easternMidnight = new Date(date).setHours(24, 0 , 0, 0);
+    let timeToNextGame = Math.ceil((easternMidnight - easternTime) / (1000 * 60 * 60));
+    let message;
+    if (timeToNextGame <= 1){
+      message = "New Game Available Soon";
+    }
+    else{
+      message = "New Game in " + timeToNextGame + " Hours";
+    }
+    return message;
   }
 
   //Event function that makes it so hitting enter will reset the game
@@ -1117,6 +1144,7 @@ function NumberGameLocal(props) {
     }
     setGameStatusRef(`playing`);
     setGameOverModalRef();
+    setupGame();
     changeKeyboardColors();
     changeCurrentInputButton();
     updateKeyboard();

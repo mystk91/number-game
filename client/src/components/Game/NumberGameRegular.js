@@ -179,11 +179,7 @@ function NumberGameRegular(props) {
   //componentDidMount, runs when component mounts, then componentDismount
   useEffect(() => {
     setupGame();
-    if (gameStatusRef.current === `playing`) {
-      document.addEventListener("keydown", handleKeydown);
-    } else {
-      disableGame();
-    }
+    document.addEventListener("keydown", handleKeydown);
 
     return () => {
       document.removeEventListener("keydown", handleKeydown);
@@ -514,7 +510,7 @@ function NumberGameRegular(props) {
           Enter
         </button>
         <button className={"bottom-message" + hideMessageButtonRef.current}>
-          New Game in 3 Hours
+          {timeToNextGame()}
         </button>
         <button
           className={"reset-game" + hideResetButtonRef.current}
@@ -1025,6 +1021,26 @@ function NumberGameRegular(props) {
         document.addEventListener("keydown", resetEnter);
       }
     }, delayTime);
+  }
+
+  //Returns a message telling how much time until the next game will be available
+  //This appears on the button at the bottom once game ends
+  function timeToNextGame() {
+    let date = new Date().toLocaleString("en-US", {
+      timeZone: "America/New_York",
+    });
+    let easternTime = new Date(date).getTime();
+    let easternMidnight = new Date(date).setHours(24, 0, 0, 0);
+    let timeToNextGame = Math.ceil(
+      (easternMidnight - easternTime) / (1000 * 60 * 60)
+    );
+    let message;
+    if (timeToNextGame <= 1) {
+      message = "New Game Available Soon";
+    } else {
+      message = "New Game in " + timeToNextGame + " Hours";
+    }
+    return message;
   }
 
   //Event function that makes it so hitting enter will reset the game

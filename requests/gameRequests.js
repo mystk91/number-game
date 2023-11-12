@@ -10,10 +10,6 @@ function gameRequests(app) {
   const { MongoClient, Timestamp } = require("mongodb");
   let ObjectId = require("mongodb").ObjectId;
   const mongoClient = new MongoClient(process.env.mongoDB);
-  async function connectMongo() {
-    await mongoClient.connect();
-  }
-  connectMongo();
 
   //Used to redirect user to buy premium page if they haven't bought it
   async function redirectNonPremium(req, res, next) {
@@ -427,8 +423,6 @@ function gameRequests(app) {
               .collection("DailyGames")
               .findOne({ digits: req.body.digits });
             let nextGameAvailable = false;
-            console.log(todaysGame.gameId);
-            console.log(account[regularGameString].gameId);
             if (todaysGame.gameId != account[regularGameString].gameId) {
               nextGameAvailable = true;
             }
@@ -438,7 +432,6 @@ function gameRequests(app) {
             if (req.body.firstCall && nextGameAvailable) {
               resetGameRegular(req, res, next);
             } else {
-              console.log("success! sending!");
               console.log(account[regularGameString].board);
               res.send({
                 gameObj: {
@@ -465,12 +458,12 @@ function gameRequests(app) {
         throw new Error();
       }
     } catch {
+      console.log("error");
       res.redirect("/login");
     }
   }
 
   //Resets the gameboard and starts a new one save to the user in the database. REGULAR
-  /*
   async function resetGameRegular(req, res, next) {
     try {
       console.log("starting to reset your game");
@@ -558,7 +551,6 @@ function gameRequests(app) {
       res.redirect("/login");
     }
   }
-  */
 
   //Checks a guess for the random vesion of the game. REGULAR
   async function checkGuessRegular(req, res, next) {
@@ -1035,19 +1027,19 @@ function gameRequests(app) {
             }
           }
           //Compares the number with target number numerically and creates a hint
-          target = Number(target);
+          let targetNum = Number(target);
           number = Number(number);
-          if (number > target) {
+          if (number > targetNum) {
             result += "L";
-          } else if (number < target) {
+          } else if (number < targetNum) {
             result += "H";
-          } else if (number === target) {
+          } else if (number === targetNum) {
             result += "E";
           }
-          console.log(result + " " + target + " " + nextGameAvailable);
+          console.log(result + " " + targetNum + " " + nextGameAvailable);
           return {
             result: result,
-            target: target,
+            targetNumber: target,
             nextGameAvailable: nextGameAvailable,
           };
         }
@@ -1060,9 +1052,12 @@ function gameRequests(app) {
         boardCopy[account[regularGameString].currentRow] = req.body.number;
         */
 
-        let { result, targetNumber, nextGameAvailable } = checkNumber(
+        let { result, targetNumber, nextGameAvailable } = await checkNumber(
           req.body.number
         );
+
+        console.log(req.body.hints);
+        console.log(req.body.currentRow);
         console.log("one");
         let hintsCopy = [];
         Object.values(req.body.hints).forEach((x) => {
@@ -1172,6 +1167,8 @@ function gameRequests(app) {
         }
         correctResult += "E";
 
+        console.log(correctResult);
+        console.log(result);
         if (result == correctResult) {
           localGameOverObj.status = "victory";
           console.log("victory");
@@ -1198,7 +1195,7 @@ function gameRequests(app) {
           res.send({
             gameObj: localGameOverObj,
           });
-        } else if (currentRow == 6) {
+        } else if (req.body.currentRow == 5) {
           localGameOverObj.status = "defeat";
           console.log("defeat");
           //let scoresObj = updateScores(7, account);

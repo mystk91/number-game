@@ -9,13 +9,12 @@ const uniqid = require("uniqid");
 const crypto = require("crypto");
 const nodemailer = require("nodemailer");
 
-/*Starting mongo    (Now in accountRequests)
+//Starting mongo    
 const { MongoClient, Timestamp } = require('mongodb');
 let ObjectId = require('mongodb').ObjectId; 
 const mongoClient = new MongoClient(process.env.mongoDB);
 async function connectMongo(){await mongoClient.connect();}
 connectMongo();
-*/
 
 //Cookies
 var cookieParser = require("cookie-parser");
