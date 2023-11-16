@@ -40,9 +40,15 @@ function HistogramRegular(props) {
       for (let i = 0; i < histogramData.length; i++) {
         histogramData[i] = 0;
       }
-      scoresObj.scores.forEach((x) => {
+      /*
+      scoresObj.scores30.forEach((x) => {
         histogramData[x.score - 1] += 1;
       });
+      */
+
+      for (let i = 0; i < scoresObj.scores.length; i++){
+        histogramData[scoresObj.scores[i]] += 1;
+      }
 
       let highestHist = 0;
       histogramData.forEach((x) => {
@@ -95,7 +101,8 @@ function HistogramRegular(props) {
       }
       setHistogram(histogramArr);
       //Calculate the average score
-      let average = scoresObj.average.average.toFixed(3);
+      console.log(scoresObj);
+      let average = scoresObj.average.toFixed(3);
       setAverageScoreRef(average);
     }
   }

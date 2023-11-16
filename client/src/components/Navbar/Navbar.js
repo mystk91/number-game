@@ -112,21 +112,27 @@ function Navbar(props) {
   //Adds the instructions the first time user visits the page
   function addInstructions() {
     if (!localStorage.getItem("previouslyVisited")) {
-      if (props.digits <= 4) {
-        setModal(<Instructions key={new Date()} />);
-      } else {
+      if (props.digits >= 5) {
         setModal(<InstructionsFive key={new Date()} />);
+        localStorage.setItem("previouslyVisited", 1);
+      } else if (props.digits >= 2) {
+        setModal(<Instructions key={new Date()} />);
+        localStorage.setItem("previouslyVisited", 1);
       }
-      localStorage.setItem("previouslyVisited", "true");
     }
   }
 
   //Displays the instruction modal
   function instructionsButton() {
-    if (props.digits <= 4) {
-      setModal(<Instructions key={new Date()} />);
-    } else {
-      setModal(<InstructionsFive key={new Date()} />);
+    if (!localStorage.getItem("previouslyVisited")) {
+      if (props.digits >= 5) {
+        setModal(<InstructionsFive key={new Date()} />);
+      } else if (props.digits >= 2) {
+        setModal(<Instructions key={new Date()} />);
+      }
+      else {
+        //Sets Leaderboard Info Modal
+      }
     }
   }
 

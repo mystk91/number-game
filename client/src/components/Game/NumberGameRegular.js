@@ -150,6 +150,12 @@ function NumberGameRegular(props) {
     nextGameAvailableRef.current = point;
   }
 
+  //The date for the game
+  const dateRef = useRef();
+  function setDateRef(point) {
+    setDateRef.current = point;
+  }
+
   //These functions are used to display / hide the Enter Guess / Message buttons
   //The enter guess is shown until the game ends, then its replaced with the reset button.
   function changeCurrentInputButton() {
@@ -380,6 +386,7 @@ function NumberGameRegular(props) {
       if (resObj.gameObj.status !== "playing") {
         setTargetNumberRef(resObj.gameObj.targetNumber);
         setScoresObjRef(resObj.scoresObj);
+        setDateRef(resObj.date);
         console.log(resObj.gameObj.nextGameAvailable);
         if (resObj.gameObj.nextGameAvailable) {
           setNextGameAvailableRef(true);
@@ -698,6 +705,7 @@ function NumberGameRegular(props) {
 
       if (resObj.gameObj.status === `victory`) {
         setGameStatusRef(`victory`);
+        setDateRef(resObj.gameObj.date);
         if (resObj.gameObj.nextGameAvailable) {
           setNextGameAvailableRef(true);
         } else {
@@ -721,6 +729,7 @@ function NumberGameRegular(props) {
           updateGameBoard();
         } else {
           setGameStatusRef(`defeat`);
+          setDateRef(resObj.gameObj.date);
           console.log(resObj.gameObj.nextGameAvailable);
           if (resObj.gameObj.nextGameAvailable) {
             setNextGameAvailableRef(true);
@@ -924,7 +933,7 @@ function NumberGameRegular(props) {
         <div className="victory-label">Victory!</div>
         <div className="correct-number">{rowsTemp}</div>
         <div className="share-score-container">
-          <ShareScore hints={hintsRef.current} />
+          <ShareScore hints={hintsRef.current} date={dateRef.current} />
         </div>
         <HistogramRegular
           digits={props.digits}

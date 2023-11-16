@@ -27,6 +27,7 @@ import EmailVerification from "./components/LoginSystem/EmailVerification";
 import LoadingIcon from "./components/Parts/LoadingIcon";
 import Histogram from "./components/Game/Histogram";
 import ShareScore from "./components/Game/ShareScore";
+import LeaderboardsPage from "./components/Pages/LeaderboardsPage";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import NumberGameRegular from "./components/Game/NumberGameRegular";
 
@@ -48,6 +49,7 @@ function App() {
             path="/new-password/:verificationCode"
             element={<NewPasswordPage />}
           />
+          <Route path="/leaderboards" element={<LeaderboardsPage />} />
           <Route path="/icon" element={<LoadingIcon />} />
           <Route path="/instructions" element={<Instructions />} />
           <Route path="/five" element={<InstructionsFive />} />
@@ -60,8 +62,14 @@ function App() {
           />
           <Route path="/reset-password" element={<ForgotPasswordRegular />} />
           <Route path="/" element={<GamePage digits={5} attempts={6} />} />
-          <Route path="/regular" element={<GamePageRegular digits={6} attempts={6} />} />
-          <Route path="/local" element ={<NumberGameLocal digits={5} attempts={6} />} />
+          <Route
+            path="/regular"
+            element={<GamePageRegular digits={6} attempts={6} />}
+          />
+          <Route
+            path="/local"
+            element={<NumberGameLocal digits={5} attempts={6} />}
+          />
           <Route
             path="/2digits"
             element={<GamePage digits={2} attempts={6} />}
@@ -111,7 +119,6 @@ function App() {
             path="/7random"
             element={<GamePageRandom digits={7} attempts={6} />}
           />
-
         </Routes>
       </BrowserRouter>
     </div>

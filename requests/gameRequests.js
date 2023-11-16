@@ -287,7 +287,7 @@ function gameRequests(app) {
 
           let average30obj = {
             average: average30,
-            length: scores30.length,
+            numberOfGames: scores30.length,
             date: scores30[0].date,
           };
 
@@ -512,6 +512,7 @@ function gameRequests(app) {
             status: "playing",
             targetNumber: todaysGame.targetNumber,
             gameId: todaysGame.gameId,
+            date: todaysGame.date,
           };
 
           console.log(regularGameObj);
@@ -531,6 +532,7 @@ function gameRequests(app) {
             currentRow: 0,
             hints: hintsArr,
             status: "playing",
+            date: regularGameObj.date,
           };
           let resObj = {
             gameObj: gameObj,
@@ -627,7 +629,7 @@ function gameRequests(app) {
           status: "playing",
         };
 
-        let regularGameTargetObj = {
+        let regularGameOverObj = {
           board: boardCopy,
           currentRow: currentRow,
           hints: hintsCopy,
@@ -635,9 +637,10 @@ function gameRequests(app) {
           targetNumber: account[regularGameString].targetNumber,
           nextGameAvailable: false,
           gameId: account[regularGameString].gameId,
+          date: account[regularGameString].date,
         };
 
-        console.log(regularGameTargetObj);
+        console.log(regularGameOverObj);
 
         //Adds a score to the users database entry. Keeps track past 30 scores and 1k scores
         //Returns an object containing the scores/averages that need to be updated in the DB
@@ -705,7 +708,7 @@ function gameRequests(app) {
         correctResult += "E";
 
         if (result == correctResult) {
-          regularGameTargetObj.status = "victory";
+          regularGameOverObj.status = "victory";
           let scoresObj = updateScores(
             account[regularGameString].currentRow + 1,
             account
@@ -716,7 +719,7 @@ function gameRequests(app) {
             { session: req.body.session },
             {
               $set: {
-                [regularGameString]: regularGameTargetObj,
+                [regularGameString]: regularGameOverObj,
                 [regularGameString + `-scores`]: {
                   average: scoresObj.average,
                   average30: scoresObj.average30,
@@ -732,28 +735,28 @@ function gameRequests(app) {
             .collection("DailyGames")
             .findOne({ digits: req.body.digits });
           if (todaysGame.gameId != account[regularGameString].gameId) {
-            regularGameTargetObj.nextGameAvailable = true;
+            regularGameOverObj.nextGameAvailable = true;
           }
 
           console.log(
             "it is " +
-              regularGameTargetObj.nextGameAvailable +
+              regularGameOverObj.nextGameAvailable +
               " that the next game is available"
           );
 
           res.send({
-            gameObj: regularGameTargetObj,
+            gameObj: regularGameOverObj,
             scoresObj: scoresObj,
           });
         } else if (currentRow == 6) {
-          regularGameTargetObj.status = "defeat";
+          regularGameOverObj.status = "defeat";
           let scoresObj = updateScores(7, account);
           //console.log(scoresObj);
           await accounts.updateOne(
             { session: req.body.session },
             {
               $set: {
-                [regularGameString]: regularGameTargetObj,
+                [regularGameString]: regularGameOverObj,
                 [regularGameString + `-scores`]: {
                   average: scoresObj.average,
                   average30: scoresObj.average30,
@@ -769,17 +772,17 @@ function gameRequests(app) {
             .collection("DailyGames")
             .findOne({ digits: req.body.digits });
           if (todaysGame.gameId != account[regularGameString].gameId) {
-            regularGameTargetObj.nextGameAvailable = true;
+            regularGameOverObj.nextGameAvailable = true;
           }
 
           res.send({
-            gameObj: regularGameTargetObj,
+            gameObj: regularGameOverObj,
             scoresObj: scoresObj,
           });
         } else {
           await accounts.updateOne(
             { session: req.body.session },
-            { $set: { [regularGameString]: regularGameTargetObj } }
+            { $set: { [regularGameString]: regularGameOverObj } }
           );
 
           res.send({
@@ -1041,6 +1044,7 @@ function gameRequests(app) {
             result: result,
             targetNumber: target,
             nextGameAvailable: nextGameAvailable,
+            date: todaysGame.date,
           };
         }
 
@@ -1052,9 +1056,8 @@ function gameRequests(app) {
         boardCopy[account[regularGameString].currentRow] = req.body.number;
         */
 
-        let { result, targetNumber, nextGameAvailable } = await checkNumber(
-          req.body.number
-        );
+        let { result, targetNumber, nextGameAvailable, date } =
+          await checkNumber(req.body.number);
 
         console.log(req.body.hints);
         console.log(req.body.currentRow);
@@ -1070,6 +1073,7 @@ function gameRequests(app) {
         let localGameObj = {
           hints: hintsCopy,
           status: "playing",
+          date: date,
         };
 
         let localGameOverObj = {
@@ -1077,6 +1081,7 @@ function gameRequests(app) {
           status: "playing",
           nextGameAvailable: false,
           targetNumber: targetNumber,
+          date: date,
         };
 
         /*
@@ -1232,9 +1237,10 @@ function gameRequests(app) {
 
       let localGameObj = {
         hints: hintsCopy,
-        status: "playing",
+        status: "defeat",
+        error: true,
       };
-      res.send(localGameObj);
+      res.send({gameObj: localGameObj});
     }
   }
 

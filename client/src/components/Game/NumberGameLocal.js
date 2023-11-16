@@ -157,6 +157,12 @@ function NumberGameLocal(props) {
     targetNumberRef.current = point;
   }
 
+  //The date for the game
+  const dateRef = useRef();
+  function setDateRef(point) {
+    setDateRef.current = point;
+  }
+
   //These functions are used to display / hide the Enter Guess / Message buttons
   //The enter guess is shown until the game ends, then its replaced with the reset button.
   function changeCurrentInputButton() {
@@ -227,7 +233,7 @@ function NumberGameLocal(props) {
         console.log("updating game state");
         updateGameStateFromLocalStorage();
         if (gameStatusRef.current !== "playing") {
-          disableGame();
+          disableGame(false);
         }
       }
     } else {
@@ -810,6 +816,7 @@ function NumberGameLocal(props) {
         disableGame();
         updateScores();
         setTargetNumberRef(resObj.gameObj.targetNumber);
+        setDateRef(resObj.gameObj.date);
         addTransitionDelay();
         changeKeyboardColors();
         //removeTransitionDelay();
@@ -834,6 +841,7 @@ function NumberGameLocal(props) {
           disableGame();
           updateScores();
           setTargetNumberRef(resObj.gameObj.targetNumber);
+          setDateRef(resObj.gameObj.date);
           addTransitionDelay();
           changeKeyboardColors();
           removeTransitionDelay();
@@ -1017,7 +1025,7 @@ function NumberGameLocal(props) {
         <div className="victory-label">Victory!</div>
         <div className="correct-number">{rowsTemp}</div>
         <div className="share-score-container">
-          <ShareScore hints={hintsRef.current} />
+          <ShareScore hints={hintsRef.current} date={dateRef.current} />
         </div>
         <Histogram digits={props.digits} attempts={props.attempts} />
       </div>
@@ -1112,15 +1120,18 @@ function NumberGameLocal(props) {
   //Returns a message telling how much time until the next game will be available
   //This appears on the button at the bottom once game ends
   function timeToNextGame() {
-    let date = new Date().toLocaleString("en-US", {timeZone: "America/New_York"});
+    let date = new Date().toLocaleString("en-US", {
+      timeZone: "America/New_York",
+    });
     let easternTime = new Date(date).getTime();
-    let easternMidnight = new Date(date).setHours(24, 0 , 0, 0);
-    let timeToNextGame = Math.ceil((easternMidnight - easternTime) / (1000 * 60 * 60));
+    let easternMidnight = new Date(date).setHours(24, 0, 0, 0);
+    let timeToNextGame = Math.ceil(
+      (easternMidnight - easternTime) / (1000 * 60 * 60)
+    );
     let message;
-    if (timeToNextGame <= 1){
+    if (timeToNextGame <= 1) {
       message = "New Game Available Soon";
-    }
-    else{
+    } else {
       message = "New Game in " + timeToNextGame + " Hours";
     }
     return message;

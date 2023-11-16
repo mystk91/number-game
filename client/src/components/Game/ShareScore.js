@@ -106,16 +106,16 @@ function ShareScore(props) {
   function getDate() {
     let date;
     if (props.date) {
-      date = easternTime.toLocaleString("default", {
+      console.log("passed in a date!");
+      date = props.date.toLocaleString("default", {
+        timeZone: "America/New_York",
         month: "short",
         day: "numeric",
       });
       return date;
     }
-    const easternTime = new Date(
-      new Date().toLocaleString("default", { timeZone: "America/New_York" })
-    );
-    date = easternTime.toLocaleString("default", {
+    date = new Date().toLocaleString("en-US", {
+      timeZone: "America/New_York",
       month: "short",
       day: "numeric",
     });

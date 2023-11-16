@@ -581,7 +581,6 @@ function NumberGame(props) {
     Object.entries(keyboardAnimationRef.current).forEach((x) => {
       keyboardAnimationCopy[x[0]] = x[1];
     });
-    keyboardAnimationCopy[keyName] = `mars`;
     setKeyboardAnimationRef(keyboardAnimationCopy);
     updateKeyboard();
     setTimeout(() => {

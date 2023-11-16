@@ -171,6 +171,10 @@
   animation: resetGameFlash 1s forwards;
 }
 
+.reset-game{
+  cursor: pointer;
+}
+
 .bottom-message, .reset-game{
   width: 300px;
   height: 48px;
