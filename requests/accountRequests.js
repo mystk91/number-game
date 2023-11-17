@@ -559,6 +559,23 @@ function accountRequests(app) {
     res.json(req.user);
   });
 
+  //Checks if user has premium, returns {premium: true} if they do
+  app.get("/api/checkPremium", async (req, res) => {
+    try {
+      const db = mongoClient.db("Accounts");
+      let accounts = db.collection("Accounts");
+      let account = await accounts.findOne({ session: req.user.session });
+      if (account.premium == true) {
+        res.send({
+          premium: true,
+        });
+      } else {
+        res.send({});
+      }
+    } catch {
+      res.send({});
+    }
+  });
 
   //Retuns the profile image link of the user, returns a default picture otherwise
   app.get("/api/profile_picture", async (req, res) => {

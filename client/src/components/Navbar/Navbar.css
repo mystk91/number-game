@@ -106,7 +106,7 @@
 .instructions-btn,
 .login-btn,
 .profile-btn,
-.premium-btn {
+.leaderboards-btn {
   width: 50px;
   height: 56px;
   background-color: transparent;
@@ -130,8 +130,8 @@
   border-radius: 50px;
 }
 
-.premium-btn > img {
-  padding: 11px;
+.leaderboards-btn > img {
+  padding: 7px;
 }
 
 /* Midsize Styles */

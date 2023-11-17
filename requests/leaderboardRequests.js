@@ -8,7 +8,6 @@ function leaderboardRequests(app) {
   let ObjectId = require("mongodb").ObjectId;
   const mongoClient = new MongoClient(process.env.mongoDB);
 
-  /*
   app.get("/api/getLeaderboard", async (req, res, next) => {
     const db = mongoClient.db("Leaderboards");
     let allLeaderboards = {};
@@ -26,7 +25,6 @@ function leaderboardRequests(app) {
       res.send({ error: true });
     }
   });
-  */
 }
 
 module.exports = { leaderboardRequests };

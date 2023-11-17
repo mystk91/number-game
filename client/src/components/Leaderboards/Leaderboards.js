@@ -40,6 +40,10 @@ function Leaderboards(props) {
     setLeaderboardsRef.current = point;
   }
 
+  //Used to display a modal that shows information about the leaderboards,
+  //Such as how it works / how to qualify for it
+  const [modal, setModal] = useState();
+
   //componentDidMount, runs when component mounts, then componentDismount
   useEffect(() => {
     setUp();
@@ -87,12 +91,66 @@ function Leaderboards(props) {
     } else {
       setLeaderboardsRef(resObj);
     }
+    checkPremium();
   }
 
   //Displays a modal that gives information about leaderboards
   function leaderboardInfo() {
-    //To do
-    console.log("here's some information about leaderboards");
+    if (!modal) {
+      setModal(
+        <div className="leaderboard-modal">
+          <div className="leaderboard-modal-container">
+            <span className="leaderboard-modal-top">
+              <button
+                className="close-leaderboard-modal"
+                onClick={() => setModal()}
+              >
+                X
+              </button>
+            </span>
+            <span className="headline">
+              <div className="headline-text">Leaderboards</div>
+            </span>
+            <div className="leadboard-modal-body">
+              <div>
+                Leaderboards show the top average scores for the Random Mode of
+                Numblr.
+              </div>
+              <div>
+                Only the last 30 games within 30 days are counted towards these
+                scores.
+              </div>
+              {showBuyRandomRef.current}
+              <button className="confirmation-btn" onClick={() => setModal()}>
+                Got it!
+              </button>
+            </div>
+          </div>
+        </div>
+      );
+    } else {
+      setModal();
+    }
+  }
+
+  //Shows a button that will lead user to purchase random mode version
+  const showBuyRandomRef = useRef();
+  function setShowRandomRef(point) {
+    showBuyRandomRef.current = point;
+  }
+
+  //Checks if user has Random Mode already
+  //This is called when page loads
+  function checkPremium() {
+    let res = fetch("/api/checkPremium");
+    let resObj = res.json();
+    if (resObj.premium === true) {
+      setShowRandomRef(
+        <a className="random-mode-link" href="/random-mode">
+          <div>Learn more about Random Mode</div>
+        </a>
+      );
+    }
   }
 
   //Switches the leaderboard currently being displayed
@@ -137,66 +195,78 @@ function Leaderboards(props) {
 
   return (
     <div className="leaderboards">
+      {modal}
       <header className="leaderboards-header">
         <div className="empty"></div>
-        <h1>Leaderboards</h1>
+        <div className="header-text">Leaderboards</div>
         <div className="leaderboard-info-container">
-          <button
-            className="leaderboard-info"
-            onClick={leaderboardInfo}
-          ><img src="/images/site/whiteQuestionMark.png" /></button>
+          <button className="leaderboard-info" onClick={leaderboardInfo}>
+            <img src="/images/site/whiteQuestionMark.png" />
+          </button>
         </div>
       </header>
       <main>
         <div className="leaderboards-container">
           <ul className="leaderboard-tabs">
-            <li
-              className={"leaderboard-tab" + activeLeaderboardTab[`tab2`]}
-              onClick={() => {
-                changeLeaderboard(2);
-              }}
-            >
-              <div>2 Digits</div>
+            <li>
+              <button
+                className={"leaderboard-tab" + activeLeaderboardTab[`tab2`]}
+                onClick={() => {
+                  changeLeaderboard(2);
+                }}
+              >
+                <div>2 Digits</div>
+              </button>
             </li>
-            <li
-              className={"leaderboard-tab" + activeLeaderboardTab[`tab3`]}
-              onClick={() => {
-                changeLeaderboard(3);
-              }}
-            >
-              <div>3 Digits</div>
+            <li>
+              <button
+                className={"leaderboard-tab" + activeLeaderboardTab[`tab3`]}
+                onClick={() => {
+                  changeLeaderboard(3);
+                }}
+              >
+                <div>3 Digits</div>
+              </button>
             </li>
-            <li
-              className={"leaderboard-tab" + activeLeaderboardTab[`tab4`]}
-              onClick={() => {
-                changeLeaderboard(4);
-              }}
-            >
-              <div>4 Digits</div>
+            <li>
+              <button
+                className={"leaderboard-tab" + activeLeaderboardTab[`tab4`]}
+                onClick={() => {
+                  changeLeaderboard(4);
+                }}
+              >
+                <div>4 Digits</div>
+              </button>
             </li>
-            <li
-              className={"leaderboard-tab" + activeLeaderboardTab[`tab5`]}
-              onClick={() => {
-                changeLeaderboard(5);
-              }}
-            >
-              <div>5 Digits</div>
+            <li>
+              <button
+                className={"leaderboard-tab" + activeLeaderboardTab[`tab5`]}
+                onClick={() => {
+                  changeLeaderboard(5);
+                }}
+              >
+                <div>5 Digits</div>
+              </button>
             </li>
-            <li
-              className={"leaderboard-tab" + activeLeaderboardTab[`tab6`]}
-              onClick={() => {
-                changeLeaderboard(6);
-              }}
-            >
-              <div>6 Digits</div>
+            <li>
+              <button
+                className={"leaderboard-tab" + activeLeaderboardTab[`tab6`]}
+                onClick={() => {
+                  changeLeaderboard(6);
+                }}
+              >
+                <div>6 Digits</div>
+              </button>
             </li>
-            <li
-              className={"leaderboard-tab" + activeLeaderboardTab[`tab7`]}
-              onClick={() => {
-                changeLeaderboard(7);
-              }}
-            >
-              <div>7 Digits</div>
+            <li>
+              <button
+                className={"leaderboard-tab" + activeLeaderboardTab[`tab7`]}
+                onClick={() => {
+                  changeLeaderboard(7);
+                }}
+              >
+                <div>7 Digits</div>
+              </button>
             </li>
           </ul>
 

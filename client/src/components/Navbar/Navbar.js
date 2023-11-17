@@ -195,9 +195,6 @@ function Navbar(props) {
     setModal(<Login key={new Date()} />);
   }
 
-  //Displays the premium modal
-  function premiumButton() {}
-
   return (
     <nav className="navigation-bar-container">
       {modal}
@@ -240,9 +237,11 @@ function Navbar(props) {
           </li>
           <li className="profile-btn-container">{profileButton}</li>
           <li>
-            <button className="premium-btn" onClick={premiumButton}>
-              <img src="/images/site/dollarSign.png" />
+            <a href="/leaderboards">
+            <button className="leaderboards-btn" >
+              <img src="/images/site/trophy.png" />
             </button>
+            </a>
           </li>
         </ul>
       </nav>
