@@ -170,7 +170,7 @@ li:last-child .leaderboard-tab {
 }
 
 .leaderboard-row {
-  animation: leaderboardDrop 0.6s;
+  animation: leaderboardDrop 0.3s;
   background-color: rgb(248, 248, 248);
 }
 

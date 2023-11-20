@@ -542,14 +542,11 @@ function accountRequests(app) {
       let accounts = db.collection("Accounts");
       let sessionUser = await accounts.findOne({ session: user.session });
       if (sessionUser) {
-        //console.log("the user was found");
         done(null, user);
       } else {
-        console.log("Session is not valid");
         done(null, null);
       }
     } else {
-      console.log("ther was no user to be found");
       done(null, null);
     }
   });

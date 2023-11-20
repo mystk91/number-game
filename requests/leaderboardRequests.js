@@ -8,7 +8,7 @@ function leaderboardRequests(app) {
   let ObjectId = require("mongodb").ObjectId;
   const mongoClient = new MongoClient(process.env.mongoDB);
 
-  app.get("/api/getLeaderboard", async (req, res, next) => {
+  app.get("/api/getLeaderboards", async (req, res, next) => {
     const db = mongoClient.db("Leaderboards");
     let allLeaderboards = {};
     try {
@@ -17,11 +17,13 @@ function leaderboardRequests(app) {
           .collection("Leaderboard-" + digits)
           .find()
           .toArray();
+          leaderboard.forEach(x=>{
+            x._id = "";
+          })
         allLeaderboards[`Leaderboard-` + digits] = leaderboard;
       }
       res.send(allLeaderboards);
     } catch {
-      console.log("there was an error");
       res.send({ error: true });
     }
   });

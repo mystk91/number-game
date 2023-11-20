@@ -12,7 +12,6 @@ function scheduledTasks(app) {
   let createDailyGames = nodeCron.schedule(
     `*/2 * * * *`,
     async () => {
-      console.log("A new started at " + new Date());
       const dbDailyGames = mongoClient.db("DailyGames");
       let dailyGames = dbDailyGames.collection(`DailyGames`);
       const characters =
@@ -91,7 +90,7 @@ function scheduledTasks(app) {
   //Creating some test accounts and putting them on the leaderboard
   function createTestLeaderboard() {
     const accountsDb = mongoClient.db("Accounts");
-    let accounts = dbDailyGames.collection(`TestAccounts`);
+    let accounts = accountsDb.collection(`TestAccounts`);
     let names = [
       "jaack",
       "ashhlee",
@@ -116,12 +115,12 @@ function scheduledTasks(app) {
         username: names[i],
         premium: true,
       };
-      if (i > 14) {
+      if (i >= 14) {
         accountObj.premium = false;
       }
 
       for (let digits = 2; digits <= 7; digits++) {
-        let average = Math.random() * 3 + 3 + 0.2 * digits;
+        let average = Math.random() * 3 + 2.5 + 0.2 * digits;
 
         let numberOfGames = 30;
         if (i % 5 == 0) {
@@ -130,7 +129,7 @@ function scheduledTasks(app) {
 
         let currentDate = new Date();
         let oldDate = new Date("2020-10-10T08:58:15.643+00:00");
-        let date = currentdate;
+        let date = currentDate;
         if (i % 5 == 1) {
           date = oldDate;
         }
@@ -147,21 +146,16 @@ function scheduledTasks(app) {
     }
   }
 
-  createTestLeaderboard();
+  //createTestLeaderboard();
 
   //Updates the leaderboards for each random category on an hourly basis
   let updateLeaderboards = nodeCron.schedule(
-    `*/2 * * * *`,
+    `*/5 * * * *`,
     async () => {
-      //Does stuff to update leaderboards
-      console.log("starting to update leaderboards");
-
       const accountsDb = mongoClient.db("Accounts");
-      let accounts = dbDailyGames.collection(`TestAccounts`);
-      let premiumAccounts = await accounts.find({ premium: true });
+      let accounts = accountsDb.collection(`TestAccounts`);
+      let premiumAccounts = await accounts.find({ premium: true }).toArray();
       const leaderboardsDb = mongoClient.db("Leaderboards");
-
-      console.log("loaded dbs");
 
       let todaysDate = new Date();
       let todaysTime = todaysDate.getTime();
@@ -169,52 +163,40 @@ function scheduledTasks(app) {
       for (let digits = 2; digits <= 7; digits++) {
         let eligibleAccounts = [];
         premiumAccounts.forEach((x) => {
-          console.log("lets check if these values work");
-          console.log(x[digits + `random-scores`]);
-          console.log(x[digits + `random-scores`].average30);
-          console.log(x[digits + `random-scores`].average30.numberOfGames);
-          if (
-            x[digits + `random-scores`].average30.numberOfGames == 30 &&
-            todaysTime - x[digits + `random-scores`].average30.date.getTime() <=
-              1000 * 60 * 60 * 24 * 30
-          ) {
-            eligibleAccounts.push(x);
-            console.log("eligible, pushing");
-          } else {
-            console.log("not eligible");
-          }
+          try {
+            let oldestDate = new Date(x[digits + `random-scores`].date);
+            if (
+              x[digits + `random-scores`].numberOfGames == 30 &&
+              todaysTime - oldestDate.getTime() <= 1000 * 60 * 60 * 24 * 30
+            ) {
+              eligibleAccounts.push(x);
+            } else {
+            }
+          } catch {}
         });
 
-        console.log("starting to sort");
-
-        eligibleAccounts.sort(function (a, b) {
+        eligibleAccounts = eligibleAccounts.sort(function (a, b) {
           return (
-            b[digits + `random-scores`].average30.average -
-            a[digits + `random-scores`].average30.average
+            a[digits + `random-scores`].average -
+            b[digits + `random-scores`].average
           );
         });
 
-        console.log("sorted");
-        console.log(eligibleAccounts);
-
         let leaderboard = leaderboardsDb.collection("Leaderboard-" + digits);
         //not sure if this will work
-        leaderboard.deleteMany({});
+        await leaderboard.deleteMany({});
 
-        console.log("clearing the database");
-
-        let numberOfEntries = Math.max(50, eligibleAccounts.length);
+        let numberOfEntries = Math.min(50, eligibleAccounts.length);
         let currentAccount = eligibleAccounts[0];
-        console.log("the first username is " + currentAccount.username);
 
         for (let i = 0; i < numberOfEntries; i++) {
           let currentAccount = eligibleAccounts[i];
           let leaderboardEntry = {
             rank: i + 1,
             username: currentAccount.username,
-            average: currentAccount[digits + `random-scores`].average30.average,
+            average: currentAccount[digits + `random-scores`].average,
           };
-          leaderboard.insertOne(leaderboardEntry);
+          await leaderboard.insertOne(leaderboardEntry);
         }
       }
     },
@@ -224,7 +206,7 @@ function scheduledTasks(app) {
     }
   );
 
-  //updateLeaderboards.start();
+  updateLeaderboards.start();
 }
 
 module.exports = { scheduledTasks };
