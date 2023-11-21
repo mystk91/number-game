@@ -25,12 +25,18 @@ function Navbar(props) {
     setGameModesList();
     addInstructions();
     addProfileButton();
+    if (props.digits === 0){
+      setInvisibleInstructions(" invisible");
+    }
     return () => {};
   }, [profileImageRef.current]);
 
   //Used to display and reveal the game modes
   const [gameModesButton, setGameModesButton] = useState();
   const [gameModesList, setGameModesList] = useState();
+
+  //Used to hide the instructions button on pages that don't have the game on them
+  const [invisibleInstructions, setInvisibleInstructions] = useState("");
 
   let gameModesButtonHTML = (
     <button className="game-modes-button" onClick={displayGameModes}>
@@ -130,13 +136,10 @@ function Navbar(props) {
       } else if (props.digits >= 2) {
         setModal(<Instructions key={new Date()} />);
       }
-      else {
-        //Sets Leaderboard Info Modal
-      }
     }
   }
 
-  //Adds either the login form or the profile dropdown options the webpage
+  //Adds either the login form or the profile dropdown option
   async function addProfileButton() {
     let res = await fetch("/api/profile_picture");
     let resObj = await res.json();
@@ -231,16 +234,23 @@ function Navbar(props) {
 
         <ul className="tools">
           <li>
-            <button className="instructions-btn" onClick={instructionsButton}>
+            <button className={"instructions-btn" + invisibleInstructions} onClick={instructionsButton}>
               <img src="/images/site/whiteQuestionMark.png" />
             </button>
           </li>
           <li className="profile-btn-container">{profileButton}</li>
           <li>
             <a href="/leaderboards">
-            <button className="leaderboards-btn" >
-              <img src="/images/site/trophy.png" />
-            </button>
+              <button className="leaderboards-btn">
+                <img src="/images/site/trophy.png" />
+              </button>
+            </a>
+          </li>
+          <li>
+            <a href="/random/info">
+              <button className="randomMode-btn">
+                <img src="/images/site/randomDice.png" />
+              </button>
             </a>
           </li>
         </ul>

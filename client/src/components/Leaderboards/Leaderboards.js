@@ -35,9 +35,9 @@ function Leaderboards(props) {
   const [activeLeaderboard, setActiveLeaderboard] = useState();
 
   //Stores all of the leaderboards in one object
-  const leaderboardsRef = useRef();
+  const leaderboardsRef = useRef({});
   function setLeaderboardsRef(point) {
-    setLeaderboardsRef.current = point;
+    leaderboardsRef.current = point;
   }
 
   //Used to display a modal that shows information about the leaderboards,
@@ -52,6 +52,7 @@ function Leaderboards(props) {
 
   //Fetches the leaderboards from the DB and stores them in leaderboardsRef
   async function setUp() {
+    /*
     //Some Test Users
     let names = [
       "DarknessDolphin",
@@ -69,6 +70,7 @@ function Leaderboards(props) {
       3.553, 3.654, 3.8, 4.03, 4.153, 4.253, 4.453, 4.59, 5.604, 6.034,
     ];
 
+
     let newLeaderboard = [];
     for (let i = 0; i < 10; i++) {
       let row = (
@@ -81,6 +83,7 @@ function Leaderboards(props) {
       newLeaderboard.push(row);
     }
     setActiveLeaderboard(newLeaderboard);
+    */
 
     let res = await fetch("/api/getLeaderboards");
     let resObj = await res.json();
@@ -90,6 +93,7 @@ function Leaderboards(props) {
       );
     } else {
       setLeaderboardsRef(resObj);
+      changeLeaderboard(5);
     }
     checkPremium();
   }
@@ -118,7 +122,7 @@ function Leaderboards(props) {
               </div>
               <div>
                 Only the last 30 games within 30 days are counted towards these
-                scores.
+                scores. Scores are updated hourly.
               </div>
               {showBuyRandomRef.current}
               <button className="confirmation-btn" onClick={() => setModal()}>
@@ -141,12 +145,12 @@ function Leaderboards(props) {
 
   //Checks if user has Random Mode already
   //This is called when page loads
-  function checkPremium() {
-    let res = fetch("/api/checkPremium");
-    let resObj = res.json();
-    if (resObj.premium === true) {
+  async function checkPremium() {
+    let res = await fetch("/api/checkPremium");
+    let resObj = await res.json();
+    if (resObj.premium !== true) {
       setShowRandomRef(
-        <a className="random-mode-link" href="/random-mode">
+        <a className="random-mode-link" href="/random/info">
           <div>Learn more about Random Mode</div>
         </a>
       );
@@ -167,30 +171,25 @@ function Leaderboards(props) {
     setActiveLeaderboardTab(newTab);
     setNumberOfDigits(n);
 
-    /*
     let leaderboardData = leaderboardsRef.current[`Leaderboard-` + n];
 
-    console.log(leaderboardData);
-
-    leaderboardData = leaderboardData.toArray();
-    leaderboardData.sort(function (a, b) {
-      return b.average - a.average;
-    });
-
     let newLeaderboard = [];
-    for (let i = 0; i < leaderboardData; i++) {
+    for (let i = 0; i < leaderboardData.length; i++) {
       let row = (
         <li className="leaderboard-row" key={i}>
           <div className="player-rank">{leaderboardData[i].rank}</div>
           <div className="player-username">{leaderboardData[i].username}</div>
-          <div className="player-average">{leaderboardData[i].average}</div>
+          <div className="player-average">
+            {leaderboardData[i].average.toFixed(3)}
+          </div>
         </li>
       );
       newLeaderboard.push(row);
     }
-
-    setActiveLeaderboard(newLeaderboard);
-    */
+    setActiveLeaderboard();
+    setTimeout(() => {
+      setActiveLeaderboard(newLeaderboard);
+    }, 1);
   }
 
   return (
@@ -208,6 +207,10 @@ function Leaderboards(props) {
       <main>
         <div className="leaderboards-container">
           <ul className="leaderboard-tabs">
+            <img
+              src="/images/site/swiping-left-icon.png"
+              className="swiping-left-icon"
+            />
             <li>
               <button
                 className={"leaderboard-tab" + activeLeaderboardTab[`tab2`]}
