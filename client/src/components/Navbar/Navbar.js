@@ -139,7 +139,7 @@ function Navbar(props) {
     }
   }
 
-  //Adds either the login form or the profile dropdown options the webpage
+  //Adds either the login form or the profile dropdown options
   async function addProfileButton() {
     let res = await fetch("/api/profile_picture");
     let resObj = await res.json();
@@ -243,6 +243,13 @@ function Navbar(props) {
             <a href="/leaderboards">
               <button className="leaderboards-btn">
                 <img src="/images/site/trophy.png" />
+              </button>
+            </a>
+          </li>
+          <li>
+            <a href="/random/info">
+              <button className="randomMode-btn">
+                <img src="/images/site/randomDice.png" />
               </button>
             </a>
           </li>
