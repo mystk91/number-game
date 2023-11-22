@@ -70,7 +70,7 @@ function Histogram(props) {
         if (histogramData[i] === 0) {
           barStyle[i] = "";
         } else {
-          barStyle[i] = ".5px solid black";
+          barStyle[i] = "inset(0 .5px 0 .5px)";
         }
       }
 
@@ -80,7 +80,7 @@ function Histogram(props) {
             <div className="histogram-score">{i + 1}</div>
             <div
               className={"histogram-bar" + " score-" + (i + 1)}
-              style={{ width: pixelData[i] + "px", borderRight: barStyle[i] }}
+              style={{ width: pixelData[i] + "px", clipPath: barStyle[i], }}
             ></div>
             <div className="histogram-frequency">{displayedFrequency[i]}</div>
           </div>

@@ -452,53 +452,6 @@ function NumberGameLocal(props) {
     return classList;
   }
 
-  //Retrieves the users game from backend so it game be displayed visually
-  //You can set shouldFetch to false & use a gameObj as a parameter to skip server call
-  /*
-  async function updateGameStateFromBackend(
-    shouldFetch = true,
-    resObj = null,
-    firstCall = false
-  ) {
-    if (shouldFetch) {
-      let reqObj = {
-        digits: props.digits,
-        firstCall: firstCall,
-      };
-      const url = "/api/getCurrentGameLocal";
-      const options = {
-        method: "PUT",
-        body: JSON.stringify(reqObj),
-        withCredentials: true,
-        credentials: "include",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-      };
-      let res = await fetch(url, options);
-      resObj = await res.json();
-    }
-    if (resObj) {
-      setBoardStateRef(resObj.gameObj.board);
-      setHintsRef(resObj.gameObj.hints);
-      setCurrentRowRef(resObj.gameObj.currentRow);
-      setGameStatusRef(resObj.gameObj.status);
-      if (resObj.gameObj.status !== "playing") {
-        setTargetNumberRef(resObj.gameObj.targetNumber);
-        setScoresObjRef(resObj.scoresObj);
-        console.log(resObj.gameObj.nextGameAvailable);
-        if (resObj.gameObj.nextGameAvailable) {
-          setNextGameAvailableRef(true);
-        } else {
-          setNextGameAvailableRef(false);
-        }
-      }
-      changeKeyboardColors();
-    }
-  }
-  */
-
   //Used to set up the keyboard on each render
   function updateKeyboard() {
     let keyboardHTML = (

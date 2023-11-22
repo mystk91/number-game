@@ -58,7 +58,7 @@ function Histogram(props) {
       }
       let displayedFrequency = new Array(props.attempts + 1);
       for (let i = 0; i < displayedFrequency.length; i++) {
-        if (histogramData[i] == 0) {
+        if (histogramData[i] === 0) {
           displayedFrequency[i] = "";
         } else {
           displayedFrequency[i] = histogramData[i];
@@ -66,20 +66,20 @@ function Histogram(props) {
       }
       let barStyle = new Array(props.attempts + 1);
       for (let i = 0; i < barStyle.length; i++) {
-        if (histogramData[i] == 0) {
-          barStyle[i] = ".5px solid black";
+        if (histogramData[i] === 0) {
+          barStyle[i] = "";
         } else {
-          barStyle[i] = "1px solid black";
+          barStyle[i] = "inset(0 .5px 0 .5px)";
         }
       }
 
       for (let i = 0; i < props.attempts + 1; i++) {
         let row = (
           <div className="histogram-row" key={"histogram-row-" + i}>
-            <div className="histogram-guesses">{i + 1}</div>
+            <div className="histogram-score">{i + 1}</div>
             <div
-              className={"histogram-bar" + " guess-" + (i + 1)}
-              style={{ width: pixelData[i] + "px", border: barStyle[i] }}
+              className={"histogram-bar" + " score-" + (i + 1)}
+              style={{ width: pixelData[i] + "px", clipPath: barStyle[i], }}
             ></div>
             <div className="histogram-frequency">{displayedFrequency[i]}</div>
           </div>

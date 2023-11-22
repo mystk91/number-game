@@ -42,39 +42,35 @@ function gameRequests(app) {
       let accounts = db.collection("Accounts");
       let account = await accounts.findOne({ session: req.user.session });
       let randomGameString = req.body.digits + "random";
-      if (req.body.url == "/" + randomGameString) {
-        if (!account[randomGameString]) {
-          resetGameRandom(req, res, next);
-        } else {
-          if (account[randomGameString].status == "playing") {
-            res.send({
-              gameObj: {
-                board: account[randomGameString].board,
-                currentRow: account[randomGameString].currentRow,
-                hints: account[randomGameString].hints,
-                status: account[randomGameString].status,
-              },
-            });
-          } else {
-            res.send({
-              gameObj: {
-                board: account[randomGameString].board,
-                currentRow: account[randomGameString].currentRow,
-                hints: account[randomGameString].hints,
-                status: account[randomGameString].status,
-                targetNumber: account[randomGameString].targetNumber,
-              },
-              scoresObj: {
-                average: account[randomGameString + `-scores`].average,
-                average30: account[randomGameString + `-scores`].average30,
-                scores: account[randomGameString + `-scores`].scores,
-                scores30: account[randomGameString + `-scores`].scores30,
-              },
-            });
-          }
-        }
+      if (!account[randomGameString]) {
+        resetGameRandom(req, res, next);
       } else {
-        throw new Error();
+        if (account[randomGameString].status == "playing") {
+          res.send({
+            gameObj: {
+              board: account[randomGameString].board,
+              currentRow: account[randomGameString].currentRow,
+              hints: account[randomGameString].hints,
+              status: account[randomGameString].status,
+            },
+          });
+        } else {
+          res.send({
+            gameObj: {
+              board: account[randomGameString].board,
+              currentRow: account[randomGameString].currentRow,
+              hints: account[randomGameString].hints,
+              status: account[randomGameString].status,
+              targetNumber: account[randomGameString].targetNumber,
+            },
+            scoresObj: {
+              average: account[randomGameString + `-scores`].average,
+              average30: account[randomGameString + `-scores`].average30,
+              scores: account[randomGameString + `-scores`].scores,
+              scores30: account[randomGameString + `-scores`].scores30,
+            },
+          });
+        }
       }
     } catch {
       res.redirect("/login");
@@ -89,76 +85,70 @@ function gameRequests(app) {
       let accounts = db.collection("Accounts");
       let account = await accounts.findOne({ session: req.user.session });
       let randomGameString = req.body.digits + "random";
-      if (req.body.url == "/" + randomGameString) {
-        let condition = false;
-        if (account[randomGameString]) {
-          if (account[randomGameString].status != "playing") {
-            condition = true;
-          }
-        } else {
+      let condition = false;
+      if (account[randomGameString]) {
+        if (account[randomGameString].status != "playing") {
           condition = true;
         }
-
-        if (condition) {
-          let targetNumber = Math.floor(
-            Math.random() * Math.pow(10, req.body.digits)
-          ).toString();
-          while (targetNumber.length < req.body.digits) {
-            targetNumber = "0" + targetNumber;
-          }
-          //Sets up the board
-          let props = {
-            attempts: 6,
-          };
-          let board = new Array(6);
-          for (let i = 0; i < 6; i++) {
-            board[i] = "";
-          }
-          //Sets up the hints
-          let hintsArr = new Array(6);
-          for (let i = 0; i < 6; i++) {
-            hintsArr[i] = "";
-          }
-
-          let randomGameObj = {
-            board: board,
-            currentRow: 0,
-            hints: hintsArr,
-            status: "playing",
-            targetNumber: targetNumber,
-          };
-
-          console.log(randomGameObj);
-
-          let randomGameString = req.body.digits + "random";
-          await accounts.updateOne(
-            { session: req.user.session },
-            {
-              $set: {
-                [randomGameString]: randomGameObj,
-              },
-            }
-          );
-
-          let gameObj = {
-            board: board,
-            currentRow: 0,
-            hints: hintsArr,
-            status: "playing",
-          };
-          let resObj = {
-            gameObj: gameObj,
-          };
-          console.log("reseting the game");
-
-          res.send(resObj);
-        } else {
-          getCurrentGameRandom(req, res, next);
-        }
       } else {
-        {
-          throw new Error();
+        condition = true;
+      }
+
+      if (condition) {
+        let targetNumber = Math.floor(
+          Math.random() * Math.pow(10, req.body.digits)
+        ).toString();
+        while (targetNumber.length < req.body.digits) {
+          targetNumber = "0" + targetNumber;
         }
+        //Sets up the board
+        let props = {
+          attempts: 6,
+        };
+        let board = new Array(6);
+        for (let i = 0; i < 6; i++) {
+          board[i] = "";
+        }
+        //Sets up the hints
+        let hintsArr = new Array(6);
+        for (let i = 0; i < 6; i++) {
+          hintsArr[i] = "";
+        }
+
+        let randomGameObj = {
+          board: board,
+          currentRow: 0,
+          hints: hintsArr,
+          status: "playing",
+          targetNumber: targetNumber,
+        };
+
+        console.log(randomGameObj);
+
+        let randomGameString = req.body.digits + "random";
+        await accounts.updateOne(
+          { session: req.user.session },
+          {
+            $set: {
+              [randomGameString]: randomGameObj,
+            },
+          }
+        );
+
+        let gameObj = {
+          board: board,
+          currentRow: 0,
+          hints: hintsArr,
+          status: "playing",
+        };
+        let resObj = {
+          gameObj: gameObj,
+        };
+        console.log("reseting the game");
+
+        res.send(resObj);
+      } else {
+        getCurrentGameRandom(req, res, next);
       }
     } catch {
       console.log(error);
@@ -181,7 +171,7 @@ function gameRequests(app) {
         validateNumber = true;
       }
       let string = "/" + req.body.digits + "random";
-      if (req.body.url == string && validateNumber) {
+      if (validateNumber) {
         let randomGameString = req.body.digits + "random";
 
         function checkNumber(number) {
@@ -399,63 +389,57 @@ function gameRequests(app) {
       let accounts = db.collection("Accounts");
       let account = await accounts.findOne({ session: req.user.session });
       let regularGameString = req.body.digits + "digits";
-      //if (req.body.url == "/" + gameString) {
-      if (req.body.url == "/regular") {
-        if (!account[regularGameString]) {
-          resetGameRegular(req, res, next);
-        } else {
-          if (account[regularGameString].status == "playing") {
-            if (account[regularGameString].board[0] == "") {
-              resetGameRegular(req, res, next);
-            } else {
-              res.send({
-                gameObj: {
-                  board: account[regularGameString].board,
-                  currentRow: account[regularGameString].currentRow,
-                  hints: account[regularGameString].hints,
-                  status: account[regularGameString].status,
-                },
-              });
-            }
+      if (!account[regularGameString]) {
+        resetGameRegular(req, res, next);
+      } else {
+        if (account[regularGameString].status == "playing") {
+          if (account[regularGameString].board[0] == "") {
+            resetGameRegular(req, res, next);
           } else {
-            const dbDailyGames = mongoClient.db("DailyGames");
-            let todaysGame = await dbDailyGames
-              .collection("DailyGames")
-              .findOne({ digits: req.body.digits });
-            let nextGameAvailable = false;
-            if (todaysGame.gameId != account[regularGameString].gameId) {
-              nextGameAvailable = true;
-            }
-            console.log(
-              "it is " + nextGameAvailable + " that the next game is available"
-            );
-            if (req.body.firstCall && nextGameAvailable) {
-              resetGameRegular(req, res, next);
-            } else {
-              console.log(account[regularGameString].board);
-              res.send({
-                gameObj: {
-                  board: account[regularGameString].board,
-                  currentRow: account[regularGameString].currentRow,
-                  hints: account[regularGameString].hints,
-                  status: account[regularGameString].status,
-                  targetNumber: account[regularGameString].targetNumber,
-                  //gameId: account[gameString].gameId,
-                  nextGameAvailable:
-                    account[regularGameString].nextGameAvailable,
-                },
-                scoresObj: {
-                  average: account[regularGameString + `-scores`].average,
-                  average30: account[regularGameString + `-scores`].average30,
-                  scores: account[regularGameString + `-scores`].scores,
-                  scores30: account[regularGameString + `-scores`].scores30,
-                },
-              });
-            }
+            res.send({
+              gameObj: {
+                board: account[regularGameString].board,
+                currentRow: account[regularGameString].currentRow,
+                hints: account[regularGameString].hints,
+                status: account[regularGameString].status,
+              },
+            });
+          }
+        } else {
+          const dbDailyGames = mongoClient.db("DailyGames");
+          let todaysGame = await dbDailyGames
+            .collection("DailyGames")
+            .findOne({ digits: req.body.digits });
+          let nextGameAvailable = false;
+          if (todaysGame.gameId != account[regularGameString].gameId) {
+            nextGameAvailable = true;
+          }
+          console.log(
+            "it is " + nextGameAvailable + " that the next game is available"
+          );
+          if (req.body.firstCall && nextGameAvailable) {
+            resetGameRegular(req, res, next);
+          } else {
+            console.log(account[regularGameString].board);
+            res.send({
+              gameObj: {
+                board: account[regularGameString].board,
+                currentRow: account[regularGameString].currentRow,
+                hints: account[regularGameString].hints,
+                status: account[regularGameString].status,
+                targetNumber: account[regularGameString].targetNumber,
+                //gameId: account[gameString].gameId,
+                nextGameAvailable: account[regularGameString].nextGameAvailable,
+              },
+              scoresObj: {
+                average: account[regularGameString + `-scores`].average,
+                average30: account[regularGameString + `-scores`].average30,
+                scores: account[regularGameString + `-scores`].scores,
+                scores30: account[regularGameString + `-scores`].scores30,
+              },
+            });
           }
         }
-      } else {
-        throw new Error();
       }
     } catch {
       console.log("error");
@@ -471,82 +455,75 @@ function gameRequests(app) {
       let accounts = db.collection("Accounts");
       let account = await accounts.findOne({ session: req.user.session });
       let gameString = req.body.digits + "digits";
-      //if (req.body.url == "/" + gameString) {
-      if (req.body.url == "/regular") {
-        let condition = false;
-        if (account[gameString]) {
-          if (
-            account[gameString].status != "playing" ||
-            account[gameString].board[0] == ""
-          ) {
-            condition = true;
-          }
-        } else {
+      let condition = false;
+      if (account[gameString]) {
+        if (
+          account[gameString].status != "playing" ||
+          account[gameString].board[0] == ""
+        ) {
           condition = true;
         }
-
-        if (condition) {
-          const dbDailyGames = mongoClient.db("DailyGames");
-          let todaysGame = await dbDailyGames
-            .collection("DailyGames")
-            .findOne({ digits: req.body.digits });
-
-          //Sets up the board
-          let props = {
-            attempts: 6,
-          };
-          let board = new Array(6);
-          for (let i = 0; i < 6; i++) {
-            board[i] = "";
-          }
-          //Sets up the hints
-          let hintsArr = new Array(6);
-          for (let i = 0; i < 6; i++) {
-            hintsArr[i] = "";
-          }
-
-          let regularGameObj = {
-            board: board,
-            currentRow: 0,
-            hints: hintsArr,
-            status: "playing",
-            targetNumber: todaysGame.targetNumber,
-            gameId: todaysGame.gameId,
-            date: todaysGame.date,
-          };
-
-          console.log(regularGameObj);
-
-          let gameString = req.body.digits + "digits";
-          await accounts.updateOne(
-            { session: req.user.session },
-            {
-              $set: {
-                [gameString]: regularGameObj,
-              },
-            }
-          );
-
-          let gameObj = {
-            board: board,
-            currentRow: 0,
-            hints: hintsArr,
-            status: "playing",
-            date: regularGameObj.date,
-          };
-          let resObj = {
-            gameObj: gameObj,
-          };
-          console.log("reseting the game");
-
-          res.send(resObj);
-        } else {
-          getCurrentGameRegular(req, res, next);
-        }
       } else {
-        {
-          throw new Error();
+        condition = true;
+      }
+
+      if (condition) {
+        const dbDailyGames = mongoClient.db("DailyGames");
+        let todaysGame = await dbDailyGames
+          .collection("DailyGames")
+          .findOne({ digits: req.body.digits });
+
+        //Sets up the board
+        let props = {
+          attempts: 6,
+        };
+        let board = new Array(6);
+        for (let i = 0; i < 6; i++) {
+          board[i] = "";
         }
+        //Sets up the hints
+        let hintsArr = new Array(6);
+        for (let i = 0; i < 6; i++) {
+          hintsArr[i] = "";
+        }
+
+        let regularGameObj = {
+          board: board,
+          currentRow: 0,
+          hints: hintsArr,
+          status: "playing",
+          targetNumber: todaysGame.targetNumber,
+          gameId: todaysGame.gameId,
+          date: todaysGame.date,
+        };
+
+        console.log(regularGameObj);
+
+        let gameString = req.body.digits + "digits";
+        await accounts.updateOne(
+          { session: req.user.session },
+          {
+            $set: {
+              [gameString]: regularGameObj,
+            },
+          }
+        );
+
+        let gameObj = {
+          board: board,
+          currentRow: 0,
+          hints: hintsArr,
+          status: "playing",
+          date: regularGameObj.date,
+        };
+        let resObj = {
+          gameObj: gameObj,
+        };
+        console.log("reseting the game");
+
+        res.send(resObj);
+      } else {
+        getCurrentGameRegular(req, res, next);
       }
     } catch {
       console.log(error);
@@ -569,8 +546,7 @@ function gameRequests(app) {
         validateNumber = true;
       }
       let string = "/" + req.body.digits + "digits";
-      //if (req.body.url == string && validateNumber) {
-      if (req.body.url == "/regular" && validateNumber) {
+      if (validateNumber) {
         let regularGameString = req.body.digits + "digits";
 
         function checkNumber(number) {
@@ -797,168 +773,6 @@ function gameRequests(app) {
     }
   }
 
-  /*
-  //Returns the gameboard saved to the user in the database. Local
-  async function getCurrentGameLocal(req, res, next) {
-    try {
-      console.log("lets check out your game");
-      let regularGameString = req.body.digits + "digits";
-      //if (req.body.url == "/" + gameString) {
-      if (req.body.url == "/local") {
-        if (!account[regularGameString]) {
-          resetGameRegular(req, res, next);
-        } else {
-          if (account[regularGameString].status == "playing") {
-            if (account[regularGameString].board[0] == "") {
-              resetGameRegular(req, res, next);
-            } else {
-              res.send({
-                gameObj: {
-                  board: account[regularGameString].board,
-                  currentRow: account[regularGameString].currentRow,
-                  hints: account[regularGameString].hints,
-                  status: account[regularGameString].status,
-                },
-              });
-            }
-          } else {
-            const dbDailyGames = mongoClient.db("DailyGames");
-            let todaysGame = await dbDailyGames
-              .collection("DailyGames")
-              .findOne({ digits: req.body.digits });
-            let nextGameAvailable = false;
-            console.log(todaysGame.gameId);
-            console.log(account[regularGameString].gameId);
-            if (todaysGame.gameId != account[regularGameString].gameId) {
-              nextGameAvailable = true;
-            }
-            console.log(
-              "it is " + nextGameAvailable + " that the next game is available"
-            );
-            if (req.body.firstCall && nextGameAvailable) {
-              resetGameRegular(req, res, next);
-            } else {
-              console.log("success! sending!");
-              console.log(account[regularGameString].board);
-              res.send({
-                gameObj: {
-                  board: account[regularGameString].board,
-                  currentRow: account[regularGameString].currentRow,
-                  hints: account[regularGameString].hints,
-                  status: account[regularGameString].status,
-                  targetNumber: account[regularGameString].targetNumber,
-                  //gameId: account[gameString].gameId,
-                  nextGameAvailable:
-                    account[regularGameString].nextGameAvailable,
-                },
-                scoresObj: {
-                  average: account[regularGameString + `-scores`].average,
-                  average30: account[regularGameString + `-scores`].average30,
-                  scores: account[regularGameString + `-scores`].scores,
-                  scores30: account[regularGameString + `-scores`].scores30,
-                },
-              });
-            }
-          }
-        }
-      } else {
-        throw new Error();
-      }
-    } catch {
-      res.redirect("/login");
-    }
-  }
-
-  //Resets the gameboard and starts a new one save to the user in the database. Local
-  async function resetGameLocal(req, res, next) {
-    try {
-      console.log("starting to reset your game");
-      const db = mongoClient.db("Accounts");
-      let accounts = db.collection("Accounts");
-      let account = await accounts.findOne({ session: req.user.session });
-      let gameString = req.body.digits + "digits";
-      //if (req.body.url == "/" + gameString) {
-      if (req.body.url == "/local") {
-        let condition = false;
-        if (account[gameString]) {
-          if (
-            account[gameString].status != "playing" ||
-            account[gameString].board[0] == ""
-          ) {
-            condition = true;
-          }
-        } else {
-          condition = true;
-        }
-
-        if (condition) {
-          const dbDailyGames = mongoClient.db("DailyGames");
-          let todaysGame = await dbDailyGames
-            .collection("DailyGames")
-            .findOne({ digits: req.body.digits });
-
-          //Sets up the board
-          let props = {
-            attempts: 6,
-          };
-          let board = new Array(6);
-          for (let i = 0; i < 6; i++) {
-            board[i] = "";
-          }
-          //Sets up the hints
-          let hintsArr = new Array(6);
-          for (let i = 0; i < 6; i++) {
-            hintsArr[i] = "";
-          }
-
-          let regularGameObj = {
-            board: board,
-            currentRow: 0,
-            hints: hintsArr,
-            status: "playing",
-            targetNumber: todaysGame.targetNumber,
-            gameId: todaysGame.gameId,
-          };
-
-          console.log(regularGameObj);
-
-          let gameString = req.body.digits + "digits";
-          await accounts.updateOne(
-            { session: req.user.session },
-            {
-              $set: {
-                [gameString]: regularGameObj,
-              },
-            }
-          );
-
-          let gameObj = {
-            board: board,
-            currentRow: 0,
-            hints: hintsArr,
-            status: "playing",
-          };
-          let resObj = {
-            gameObj: gameObj,
-          };
-          console.log("reseting the game");
-
-          res.send(resObj);
-        } else {
-          getCurrentGameRegular(req, res, next);
-        }
-      } else {
-        {
-          throw new Error();
-        }
-      }
-    } catch {
-      console.log(error);
-      res.redirect("/login");
-    }
-  }
-  */
-
   //Used by Local version of the game to see if its gameId matches the current one.
   async function getGameId(req, res, next) {
     console.log("getting todays game ID");
@@ -989,6 +803,7 @@ function gameRequests(app) {
           let result = "";
           //Retreiving the target number, first looks it DailyGames DB, then old games
           let target;
+          let date;
           let nextGameAvailable = false;
           const dbDailyGames = mongoClient.db("DailyGames");
           let todaysGame = await dbDailyGames
@@ -997,6 +812,7 @@ function gameRequests(app) {
           if (todaysGame) {
             console.log("you have todays game");
             target = todaysGame.targetNumber;
+            date = todaysGame.date;
           } else {
             const dbDailyGames = mongoClient.db("DailyGames");
             let oldGame = await dbDailyGames
@@ -1005,7 +821,9 @@ function gameRequests(app) {
             if (oldGame) {
               console.log("You have an Old game");
               target = oldGame.targetNumber;
+              date = oldGame.date;
               nextGameAvailable = true;
+              console.log(target);
             } else {
               console.log("Cannot find that game ID.");
               throw new Error();
@@ -1044,31 +862,20 @@ function gameRequests(app) {
             result: result,
             targetNumber: target,
             nextGameAvailable: nextGameAvailable,
-            date: todaysGame.date,
+            date: date,
           };
         }
-
-        /*
-        let boardCopy = [];
-        Object.values(account[regularGameString].board).forEach((x) => {
-          boardCopy.push(x);
-        });
-        boardCopy[account[regularGameString].currentRow] = req.body.number;
-        */
 
         let { result, targetNumber, nextGameAvailable, date } =
           await checkNumber(req.body.number);
 
         console.log(req.body.hints);
         console.log(req.body.currentRow);
-        console.log("one");
         let hintsCopy = [];
         Object.values(req.body.hints).forEach((x) => {
           hintsCopy.push(x);
         });
         hintsCopy[req.body.currentRow] = result;
-
-        console.log("two");
 
         let localGameObj = {
           hints: hintsCopy,
@@ -1083,88 +890,7 @@ function gameRequests(app) {
           targetNumber: targetNumber,
           date: date,
         };
-
-        /*
-        let regularGameObj = {
-          board: boardCopy,
-          currentRow: currentRow,
-          hints: hintsCopy,
-          status: "playing",
-        };
-
-        let regularGameTargetObj = {
-          board: boardCopy,
-          currentRow: currentRow,
-          hints: hintsCopy,
-          status: "playing",
-          targetNumber: account[regularGameString].targetNumber,
-          nextGameAvailable: false,
-          gameId: account[regularGameString].gameId,
-        };
-        */
-
         console.log(localGameOverObj);
-
-        //Adds a score to the users database entry. Keeps track past 30 scores and 1k scores
-        //Returns an object containing the scores/averages that need to be updated in the DB
-        // score - the score player recieved for that game
-        // account - the users account that was retrieved from the DB
-        /*
-        function updateScores(score, account) {
-          let currentDate = new Date();
-
-          let scoresObjDb = account[regularGameString + `-scores`];
-          let scores30;
-          if (scoresObjDb) {
-            scores30 = scoresObjDb.scores30;
-            if (scores30.length >= 30) {
-              scores30.shift();
-            }
-          } else {
-            scores30 = [];
-          }
-
-          let scores30entry = {
-            score: score,
-            date: currentDate,
-          };
-          scores30.push(scores30entry);
-
-          let average30 =
-            scores30.reduce((total, x) => {
-              return total + x.score;
-            }, 0) / scores30.length;
-
-          let average30obj = {
-            average: average30,
-          };
-
-          let scores;
-          if (scoresObjDb) {
-            scores = scoresObjDb.scores;
-          }
-          if (!scores) {
-            scores = [];
-          }
-          if (scores.length > 4096) {
-            scores.shift();
-          }
-          scores.push(score);
-          let average =
-            scores.reduce((total, x) => {
-              return total + x;
-            }, 0) / scores.length;
-
-          let scoresObj = {
-            average: average,
-            average30: average30obj,
-            scores: scores,
-            scores30: scores30,
-          };
-
-          return scoresObj;
-        }
-        */
 
         let correctResult = "";
         for (let i = 0; i < req.body.digits; i++) {
@@ -1177,13 +903,6 @@ function gameRequests(app) {
         if (result == correctResult) {
           localGameOverObj.status = "victory";
           console.log("victory");
-          /*
-          let scoresObj = updateScores(
-            account[regularGameString].currentRow + 1,
-            account
-          );
-          //console.log(scoresObj);
-          */
 
           const dbDailyGames = mongoClient.db("DailyGames");
 
@@ -1203,8 +922,6 @@ function gameRequests(app) {
         } else if (req.body.currentRow == 5) {
           localGameOverObj.status = "defeat";
           console.log("defeat");
-          //let scoresObj = updateScores(7, account);
-          //console.log(scoresObj);
 
           if (nextGameAvailable) {
             localGameOverObj.nextGameAvailable = true;
@@ -1240,7 +957,7 @@ function gameRequests(app) {
         status: "defeat",
         error: true,
       };
-      res.send({gameObj: localGameObj});
+      res.send({ gameObj: localGameObj });
     }
   }
 
@@ -1273,20 +990,9 @@ function gameRequests(app) {
   app.put("/api/resetGameRegular", async (req, res, next) => {
     resetGameRegular(req, res, next);
   });
-
-  //Returns the regular game the user has going if it exists, setting up the board
-  app.put("/api/getCurrentGameLocal", async (req, res, next) => {
-    getCurrentGameLocal(req, res, next);
-  });
-
   //Checks the users guess, updates the game on the database, returns graphics update
   app.put("/api/checkGuessLocal", async (req, res, next) => {
     checkGuessLocal(req, res, next);
-  });
-
-  //Sets up or resets the regularr game, beginning a new game board if the game is completed
-  app.put("/api/resetGameLocal", async (req, res, next) => {
-    resetGameLocal(req, res, next);
   });
 
   //Gets the game id for the local game so it can be compared against the current one

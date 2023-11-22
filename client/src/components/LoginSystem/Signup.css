@@ -7,6 +7,8 @@
   overflow-y: scroll;
   display: flex;
   padding-bottom: 20%;
+  font-family: Inter, Verdana, sans-serif;
+  font-size: 1.8rem;
 }
 
 .hide-modal {
@@ -138,4 +140,3 @@
   margin-top: -12px;
   margin-bottom: -2px;
 }
-

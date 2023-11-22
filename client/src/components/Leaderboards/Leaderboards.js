@@ -13,12 +13,6 @@ import "../../custom.css";
 
 //Creates leaderboards for the games that can be viewed by clicking different tabs
 function Leaderboards(props) {
-  const [property, setProperty] = useState("initialValue");
-  const propRef = useRef("initialValue");
-  function setPropRef(point) {
-    propRef.current = point;
-  }
-
   //Used to change the class to " active" on the leaderboard tabs, changing their appearance
   const [activeLeaderboardTab, setActiveLeaderboardTab] = useState({
     tab2: "",
@@ -47,7 +41,6 @@ function Leaderboards(props) {
   //componentDidMount, runs when component mounts, then componentDismount
   useEffect(() => {
     setUp();
-    return () => {};
   }, []);
 
   //Fetches the leaderboards from the DB and stores them in leaderboardsRef
@@ -93,7 +86,7 @@ function Leaderboards(props) {
       );
     } else {
       setLeaderboardsRef(resObj);
-      changeLeaderboard(5);
+      changeLeaderboard(5, true);
     }
     checkPremium();
   }
@@ -158,7 +151,7 @@ function Leaderboards(props) {
   }
 
   //Switches the leaderboard currently being displayed
-  async function changeLeaderboard(n) {
+  function changeLeaderboard(n, firstCall = false) {
     let newTab = {
       tab2: "",
       tab3: "",
@@ -186,10 +179,14 @@ function Leaderboards(props) {
       );
       newLeaderboard.push(row);
     }
-    setActiveLeaderboard();
-    setTimeout(() => {
-      setActiveLeaderboard(newLeaderboard);
-    }, 1);
+
+    setActiveLeaderboard(newLeaderboard);
+    if (!firstCall) {
+      setActiveLeaderboard();
+      setTimeout(() => {
+        setActiveLeaderboard(newLeaderboard);
+      }, 1);
+    }
   }
 
   return (

@@ -194,9 +194,7 @@ function NumberGameRegular(props) {
 
   //Sets up the the game
   async function setupGame() {
-    console.log("it starts going");
     await updateGameStateFromBackend(true, null, true);
-    console.log("it arrives");
     if (gameStatusRef.current !== "playing") {
       setCurrentRowRef(currentRowRef.current - 1);
       disableGame(false);
@@ -361,7 +359,6 @@ function NumberGameRegular(props) {
       let reqObj = {
         session: user.session,
         digits: props.digits,
-        url: window.location.pathname,
         firstCall: firstCall,
       };
       const url = "/api/getCurrentGameRegular";
@@ -682,7 +679,6 @@ function NumberGameRegular(props) {
         session: user.session,
         digits: props.digits,
         number: boardStateRef.current[currentRowRef.current - 1],
-        url: window.location.pathname,
       };
       const url = "/api/checkGuessRegular";
       const options = {
@@ -1066,7 +1062,6 @@ function NumberGameRegular(props) {
     let reqObj = {
       session: user.session,
       digits: props.digits,
-      url: window.location.pathname,
     };
     const url = "/api/resetGameRegular";
     const options = {

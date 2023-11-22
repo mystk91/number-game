@@ -334,7 +334,6 @@ function NumberGameRandom(props) {
       let reqObj = {
         session: user.session,
         digits: props.digits,
-        url: window.location.pathname,
       };
       const url = "/api/getCurrentGameRandom";
       const options = {
@@ -644,7 +643,6 @@ function NumberGameRandom(props) {
         session: user.session,
         digits: props.digits,
         number: boardStateRef.current[currentRowRef.current - 1],
-        url: window.location.pathname,
       };
       const url = "/api/checkGuessRandom";
       const options = {
@@ -994,7 +992,6 @@ function NumberGameRandom(props) {
     let reqObj = {
       session: user.session,
       digits: props.digits,
-      url: window.location.pathname,
     };
     const url = "/api/resetGameRandom";
     const options = {
