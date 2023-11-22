@@ -25,7 +25,7 @@ function Navbar(props) {
     setGameModesList();
     addInstructions();
     addProfileButton();
-    if (props.digits === 0){
+    if (props.digits === 0) {
       setInvisibleInstructions(" invisible");
     }
     return () => {};
@@ -130,12 +130,10 @@ function Navbar(props) {
 
   //Displays the instruction modal
   function instructionsButton() {
-    if (!localStorage.getItem("previouslyVisited")) {
-      if (props.digits >= 5) {
-        setModal(<InstructionsFive key={new Date()} />);
-      } else if (props.digits >= 2) {
-        setModal(<Instructions key={new Date()} />);
-      }
+    if (props.digits >= 5) {
+      setModal(<InstructionsFive key={new Date()} />);
+    } else if (props.digits >= 2) {
+      setModal(<Instructions key={new Date()} />);
     }
   }
 
@@ -234,7 +232,10 @@ function Navbar(props) {
 
         <ul className="tools">
           <li>
-            <button className={"instructions-btn" + invisibleInstructions} onClick={instructionsButton}>
+            <button
+              className={"instructions-btn" + invisibleInstructions}
+              onClick={instructionsButton}
+            >
               <img src="/images/site/whiteQuestionMark.png" />
             </button>
           </li>
