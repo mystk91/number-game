@@ -30,8 +30,8 @@
 }
 
 .login-top-regular {
-  min-height: 31px;
-  height: 31px;
+  min-height: 20px;
+  height: 20px;
 }
 
 .login-top button {
@@ -59,7 +59,7 @@
   width: 280px;
   display: flex;
   flex-direction: column;
-  margin: 0 0 20px 0;
+  margin: 0 0 4px 0;
 }
 
 .login-form > * {
@@ -109,6 +109,7 @@
   display: flex;
   flex-direction: column;
   height: max-content;
+  margin: 12px 0 6px 0;
 }
 
 .recover-password-link {

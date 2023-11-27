@@ -1,15 +1,24 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import "./Signup.css";
-import "../../normalize.css"
+import "../../normalize.css";
 import "../../custom.css";
 import LoadingIcon from "../Parts/LoadingIcon";
 
 //A modal version of the signup screen.
 function Signup(props) {
+  //Stops the game from being played when the modal is open
+  const stopOtherKeydowns = useCallback((e) => {
+    e.stopPropagation();
+  }, []);
+
   //componentDidMount, runs when component mounts, then componentDismount
   useEffect(() => {
     inputReference.current.focus();
-    return () => {};
+    document.addEventListener("keydown", stopOtherKeydowns, true);
+    return () => {
+      console.log("Cleanup function called");
+      document.removeEventListener("keydown", stopOtherKeydowns, true);
+    };
   }, []);
 
   //Used to give focus to the form input on load
@@ -26,12 +35,14 @@ function Signup(props) {
   function hideSignupModal(e) {
     if (e.target.classList[0] === "signup-modal") {
       setHideModal(" hide-modal");
+      document.removeEventListener("keydown", stopOtherKeydowns, true);
     }
   }
 
   /* Hides the modal when you click on the X */
   function hideModalButton(e) {
     setHideModal(" hide-modal");
+    document.removeEventListener("keydown", stopOtherKeydowns, true);
   }
 
   //Used to keep track of the inputed values
@@ -59,13 +70,13 @@ function Signup(props) {
   //Used to display Password input errors
   function displayPasswordErrors() {
     let passwordRegExp = new RegExp(
-      "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,32}$"
+      "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*[!@#$%^&*_0-9]).{10,32}$"
     );
     if (!passwordRegExp.test(passwordValue)) {
       setErrPassword(
         <div className="error">
-          Passwords must be at least 8 characters and have an uppercase and
-          lowercase letter, a number, and a special character.
+          Passwords must have at least 10 characters, an upper and
+          lowercase letter, and a number or special character.
         </div>
       );
       return false;

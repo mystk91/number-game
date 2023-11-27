@@ -64,9 +64,9 @@ function ForgotPassword(props) {
   async function forgotPasswordSubmit(e) {
     e.preventDefault();
     setHideModal(" hide-modal");
-    setCurrentScreen(loadingScreen);
     let noEmailErrors = displayEmailErrors();
     if (noEmailErrors) {
+      setCurrentScreen(loadingScreen);
       const url = "/api/forgot-password";
       const formData = new FormData(e.target);
       const formDataObj = Object.fromEntries(formData.entries());
@@ -90,6 +90,8 @@ function ForgotPassword(props) {
         setErrEmail(<div className="error">{errors.email}</div>);
         setHideModal("");
       }
+    } else {
+      setHideModal("");
     }
   }
 
@@ -110,7 +112,6 @@ function ForgotPassword(props) {
       <LoadingIcon />
     </div>
   );
-  
 
   return (
     <div className={hideComponent}>

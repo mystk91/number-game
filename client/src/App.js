@@ -11,6 +11,8 @@ import "./App.css";
 import NumberGame from "./components/Game/NumberGame";
 import Navbar from "./components/Navbar/Navbar";
 import GamePage from "./components/Pages/GamePage";
+import SignupPage from "./components/Pages/SignupPage";
+import LoginPage from "./components/Pages/LoginPage";
 import GamePageRandom from "./components/Pages/GamePageRandom";
 import GamePageRegular from "./components/Pages/GamePageRegular";
 import NumberGameLocal from "./components/Game/NumberGameLocal";
@@ -54,8 +56,8 @@ function App() {
           <Route path="/instructions" element={<Instructions />} />
           <Route path="/five" element={<InstructionsFive />} />
           <Route path="/navbar" element={<Navbar />} />
-          <Route path="/login" element={<LoginRegular />} />
-          <Route path="/signup" element={<SignupRegular />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/signup" element={<SignupPage />} />
           <Route
             path="/verify-email/:verificationCode"
             element={<EmailVerification />}

@@ -2,20 +2,29 @@ import React, {
   useState,
   useEffect,
   useRef,
+  useCallback,
   createContext,
   useContext,
 } from "react";
 import "./ForgotPassword.css";
-import "../../normalize.css"
+import "../../normalize.css";
 import "../../custom.css";
 import LoadingIcon from "../Parts/LoadingIcon";
 
 //Lets you submit an email address to send a password reset
 function ForgotPassword(props) {
+  //Stops the game from being played when the modal is open
+  const stopOtherKeydowns = useCallback((e) => {
+    e.stopPropagation();
+  }, []);
+
   //componentDidMount, runs when component mounts, then componentDismount
   useEffect(() => {
+    document.addEventListener("keydown", stopOtherKeydowns, true);
     inputReference.current.focus();
-    return () => {};
+    return () => {
+      document.removeEventListener("keydown", stopOtherKeydowns, true);
+    };
   }, []);
 
   //Used to give focus to the form input on load
@@ -46,12 +55,14 @@ function ForgotPassword(props) {
   function hideForgotModal(e) {
     if (e.target.classList[0] === "forgot-modal") {
       setHideModal(" hide-modal");
+      document.removeEventListener("keydown", stopOtherKeydowns, true);
     }
   }
 
   /* Hides the modal when you click on the X */
   function hideForgotButton(e) {
     setHideModal(" hide-modal");
+    document.removeEventListener("keydown", stopOtherKeydowns, true);
   }
 
   //Used to change the screen when a password reset is sent.
@@ -64,9 +75,9 @@ function ForgotPassword(props) {
   async function forgotPasswordSubmit(e) {
     e.preventDefault();
     setHideModal(" hide-modal");
-    setCurrentScreen(loadingScreen);
     let noEmailErrors = displayEmailErrors();
     if (noEmailErrors) {
+      setCurrentScreen(loadingScreen);
       const url = "/api/forgot-password";
       const formData = new FormData(e.target);
       const formDataObj = Object.fromEntries(formData.entries());
@@ -91,6 +102,8 @@ function ForgotPassword(props) {
         setErrEmail(<div className="error">{errors.email}</div>);
         setHideModal("");
       }
+    } else {
+      setHideModal("");
     }
   }
 

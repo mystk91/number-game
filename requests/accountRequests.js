@@ -61,10 +61,11 @@ function accountRequests(app) {
     }
     //Checks if password is valid
     let passwordRegExp = new RegExp(
-      "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,32}$"
+      "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*[!@#$%^&*_0-9]).{10,32}$"
     );
     if (!passwordRegExp.test(req.body.password)) {
-      errors.password = `Passwords must be at least 8 characters and have an uppercase and lowercase letter, a number, and a special character.`;
+      errors.password = `Passwords must have at least 10 characters, an upper and
+      lowercase letter, and a number or special character.`;
     }
     if (errorFound) {
       res.status(400).send(errors);
@@ -289,10 +290,11 @@ function accountRequests(app) {
 
     //Checks if password is valid
     let passwordRegExp = new RegExp(
-      "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,32}$"
+      "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*[!@#$%^&*_0-9]).{10,32}$"
     );
     if (!passwordRegExp.test(newPassword)) {
-      errors.password = `Passwords must be at least 8 characters and have an uppercase and lowercase letter, a number, and a special character.`;
+      errors.password = `Passwords must have at least 10 characters, an upper and
+      lowercase letter, and a number or special character.`;
       errors.errorFound = true;
     }
 

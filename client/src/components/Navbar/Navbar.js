@@ -28,6 +28,9 @@ function Navbar(props) {
     if (props.digits === 0) {
       setInvisibleInstructions(" invisible");
     }
+    if (props.login === false) {
+      setInvisibleLogin(" invisible");
+    }
     return () => {};
   }, [profileImageRef.current]);
 
@@ -37,6 +40,8 @@ function Navbar(props) {
 
   //Used to hide the instructions button on pages that don't have the game on them
   const [invisibleInstructions, setInvisibleInstructions] = useState("");
+  //Used to hide the login / profile button on the login page
+  const [invisibleLogin, setInvisibleLogin] = useState("");
 
   let gameModesButtonHTML = (
     <button className="game-modes-button" onClick={displayGameModes}>
@@ -239,7 +244,7 @@ function Navbar(props) {
               <img src="/images/site/whiteQuestionMark.png" />
             </button>
           </li>
-          <li className="profile-btn-container">{profileButton}</li>
+          <li className={"profile-btn-container" + invisibleLogin}>{profileButton}</li>
           <li>
             <a href="/leaderboards">
               <button className="leaderboards-btn">

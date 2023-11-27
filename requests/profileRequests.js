@@ -1,4 +1,5 @@
 //Requests that change things about your profile, like name, profile pic, password, account deletion
+//Also handles routing that occurs when user isn't logged in
 function profileRequests(app) {
   const bcrypt = require("bcryptjs");
   const uniqid = require("uniqid");
@@ -8,10 +9,15 @@ function profileRequests(app) {
   const { MongoClient, Timestamp } = require("mongodb");
   let ObjectId = require("mongodb").ObjectId;
   const mongoClient = new MongoClient(process.env.mongoDB);
-  async function connectMongo() {
-    await mongoClient.connect();
-  }
-  connectMongo();
+
+  //Redirects user to homepage if they are already logged in
+  app.get("/login", async (req, res, next) => {
+    if (req.user.session) {
+      next();
+    } else {
+      res.direct("/");
+    }
+  });
 }
 
 module.exports = { profileRequests };

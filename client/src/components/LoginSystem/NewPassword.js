@@ -36,13 +36,13 @@ function NewPassword(props) {
   //Used to display Password input errors
   function displayPasswordErrors() {
     let passwordRegExp = new RegExp(
-      "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,32}$"
+      "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*[!@#$%^&*_0-9]).{10,32}$"
     );
     if (!passwordRegExp.test(passwordValue)) {
       setErrPassword(
         <div className="error">
-          Passwords must be at least 8 characters and have an uppercase and
-          lowercase letter, a number, and a special character.
+          Passwords must have at least 10 characters, an upper and
+          lowercase letter, and a number or special character.
         </div>
       );
       return false;

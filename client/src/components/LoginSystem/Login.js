@@ -1,12 +1,13 @@
 import React, {
   useState,
   useEffect,
+  useCallback,
   useRef,
   createContext,
   useContext,
 } from "react";
 import "./Login.css";
-import "../../normalize.css"
+import "../../normalize.css";
 import "../../custom.css";
 import LoginOption from "./LoginOption";
 import ForgotPassword from "./ForgotPassword";
@@ -14,9 +15,17 @@ import Signup from "./Signup";
 
 //Creates a Login Modal
 function Login(props) {
-  //componentDidMount, runs when component mounts, then componentDismount
+  //Stops the game from being played when the modal is open
+  const stopOtherKeydowns = useCallback((e) => {
+    e.stopPropagation();
+  }, []);
+
+  //Adds the event listener that stops other keydowns from occurring
   useEffect(() => {
-    return () => {};
+    document.addEventListener("keydown", stopOtherKeydowns, true);
+    return () => {
+      document.removeEventListener("keydown", stopOtherKeydowns, true);
+    };
   }, []);
 
   //Sets the current screen displayed on the login modal.
@@ -35,6 +44,7 @@ function Login(props) {
 
   /* Hides the modal when you click on the X */
   function hideModalButton(e) {
+    document.removeEventListener("keydown", stopOtherKeydowns, true);
     setHideComponent(" hide-modal");
   }
 
@@ -43,19 +53,19 @@ function Login(props) {
   const [errPassword, setErrPassword] = useState();
 
   //Changes the modal to the signup screen
-  const signupScreen = <Signup />;
   function getSignupScreen(e) {
     e.preventDefault();
+    document.removeEventListener("keydown", stopOtherKeydowns, true);
     setHideModal(" hide-modal");
-    setCurrentScreen(signupScreen);
+    setCurrentScreen(<Signup />);
   }
 
   //Changes the modal to the forgot password screen
-  const forgotScreen = <ForgotPassword />;
   function getForgotScreen(e) {
     e.preventDefault();
+    document.removeEventListener("keydown", stopOtherKeydowns, true);
     setHideModal(" hide-modal");
-    setCurrentScreen(forgotScreen);
+    setCurrentScreen(<ForgotPassword />);
   }
 
   //Handles to lhe login logic
@@ -82,8 +92,7 @@ function Login(props) {
       let resLogin = await fetch(loginURL, options);
       if (resLogin.status == 302) {
         window.location.reload();
-      }
-      else{
+      } else {
         window.location = "/login";
       }
     } else {
@@ -96,7 +105,7 @@ function Login(props) {
   return (
     <div className={hideComponent}>
       <div className="sub-modals"> {currentScreen}</div>
-      <div className={"login-modal" + hideModal} onMouseDown={hideLoginModal}>
+      <div className={"login-modal" + hideModal}>
         <div className={"login-box"}>
           <span className="login-top">
             <button className="close-login" onClick={(e) => hideModalButton(e)}>
@@ -123,7 +132,7 @@ function Login(props) {
               <input id="current-password" name="password" type="password" />
               {errPassword}
               <a
-                href="/forgotPassword"
+                href="/reset-password"
                 className="recover-password-link"
                 onClick={(e) => getForgotScreen(e)}
               >
@@ -137,27 +146,6 @@ function Login(props) {
             </div>
           </form>
 
-          <div className="login-options">
-            <LoginOption
-              href="/login/google"
-              className="google"
-              imageURL="/images/login-logos/google-logo.jpg"
-              buttonText="Sign in with Google"
-            />
-            <LoginOption
-              href="/login/apple"
-              className="apple"
-              imageURL="/images/login-logos/apple-logo.png"
-              buttonText="Sign in with Apple"
-            />
-            <LoginOption
-              href="/login/facebook"
-              className="facebook"
-              imageURL="/images/login-logos/facebook-logo.jpg"
-              buttonText="Sign in with Facebook"
-            />
-          </div>
-
           <div className="signup-cont">
             Not a member?{" "}
             <a
@@ -167,6 +155,27 @@ function Login(props) {
             >
               Sign up!
             </a>
+          </div>
+
+          <div className="login-options-simple">
+            <hr></hr>
+            <div className="login-options-buttons">
+              <LoginOption
+                href="/login/google"
+                className="google"
+                imageURL="/images/login-logos/google-logo.png"
+              />
+              <LoginOption
+                href="/login/apple"
+                className="apple"
+                imageURL="/images/login-logos/apple-logo.png"
+              />
+              <LoginOption
+                href="/login/facebook"
+                className="facebook"
+                imageURL="/images/login-logos/facebook-logo.png"
+              />
+            </div>
           </div>
         </div>
       </div>

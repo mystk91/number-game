@@ -2,45 +2,42 @@ import React, {
   useState,
   useEffect,
   useRef,
+  useCallback,
   createContext,
   useContext,
 } from "react";
 import uniqid from "uniqid";
 import "./Instructions.css";
-import "../../normalize.css"
+import "../../normalize.css";
 import "../../custom.css";
 
 //A modal that will pop-up when a new user visits the page or hits the question mark button.
 //Gives a guide on how to play the game.
 function Instructions(props) {
-  const [property, setProperty] = useState("initialValue");
-  const propRef = useRef("initialValue");
-  function setPropRef(point) {
-    propRef.current = point;
-  }
-
   //Used to hide the modal after its done being used
   const [displayInstructions, setDisplayInstructions] = useState("");
+
+  //Stops the game from being played when the modal is open
+  const stopOtherKeydowns = useCallback((e) => {
+    e.stopPropagation();
+  }, []);
 
   //componentDidMount, runs when component mounts, then componentDismount
   useEffect(() => {
     setDigitAnimationTimingRef(setInterval(tickDigitAnimation, 500));
     setFlipAnimationTimingRef(setInterval(tickFlipAnimation, 500));
+    document.addEventListener("keydown", stopOtherKeydowns, true);
     return () => {
       clearInterval(digitAnimationTimingRef.current);
       clearInterval(flipAnimationTimingRef.current);
+      document.removeEventListener("keydown", stopOtherKeydowns, true);
     };
-  }, []);
-  //componentDidUpdate, runs after render
-  useEffect(() => {}, [property]);
-  //componentDismount
-  useEffect(() => {
-    return () => {};
-  });
+  }, [stopOtherKeydowns]);
 
   /* Hides the modal when you click outside the main box */
   function hideInstructionsModal(e) {
     if (e.target.classList[0] === "instructions-modal") {
+      document.removeEventListener("keydown", stopOtherKeydowns, true);
       setDisplayInstructions(" hide-modal");
       clearInterval(digitAnimationTimingRef.current);
       clearInterval(flipAnimationTimingRef.current);
@@ -49,6 +46,7 @@ function Instructions(props) {
 
   /* Hides the modal when you click on the X */
   function hideInstructionsButton(e) {
+    document.removeEventListener("keydown", stopOtherKeydowns, true);
     setDisplayInstructions(" hide-modal");
     clearInterval(digitAnimationTimingRef.current);
     clearInterval(flipAnimationTimingRef.current);
@@ -192,17 +190,33 @@ function Instructions(props) {
           Arrows tell you to guess higher or lower.
         </div>
         <div className="game-example previous-row">
-          <div className={"digit" + currentClassList[0] + currentClassList[4]}>4</div>
-          <div className={"digit" + currentClassList[1] + currentClassList[4]}>6</div>
-          <div className={"digit" + currentClassList[2] + currentClassList[4]}>1</div>
-          <div className={"digit" + currentClassList[3] + currentClassList[4]}>8</div>
+          <div className={"digit" + currentClassList[0] + currentClassList[4]}>
+            4
+          </div>
+          <div className={"digit" + currentClassList[1] + currentClassList[4]}>
+            6
+          </div>
+          <div className={"digit" + currentClassList[2] + currentClassList[4]}>
+            1
+          </div>
+          <div className={"digit" + currentClassList[3] + currentClassList[4]}>
+            8
+          </div>
           <div className={"hint" + currentClassList[4]}></div>
         </div>
         <div className="game-example previous-row">
-          <div className={"digit" + currentClassList[0] + currentClassList[5]}>4</div>
-          <div className={"digit" + currentClassList[1] + currentClassList[5]}>6</div>
-          <div className={"digit" + currentClassList[2] + currentClassList[5]}>1</div>
-          <div className={"digit" + currentClassList[3] + currentClassList[5]}>8</div>
+          <div className={"digit" + currentClassList[0] + currentClassList[5]}>
+            4
+          </div>
+          <div className={"digit" + currentClassList[1] + currentClassList[5]}>
+            6
+          </div>
+          <div className={"digit" + currentClassList[2] + currentClassList[5]}>
+            1
+          </div>
+          <div className={"digit" + currentClassList[3] + currentClassList[5]}>
+            8
+          </div>
           <div className={"hint" + currentClassList[5]}></div>
         </div>
         <hr></hr>

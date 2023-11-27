@@ -32,7 +32,7 @@ function LoadingIcon(props) {
 
   return (
     <div className="loading-icon1-container" style={{width: boxWidth, height: boxHeight}}>
-      <span class="loading-icon1" style={{width: iconHeight, height: iconHeight}}></span>
+      <span className="loading-icon1" style={{width: iconHeight, height: iconHeight}}></span>
     </div>
   );
 }

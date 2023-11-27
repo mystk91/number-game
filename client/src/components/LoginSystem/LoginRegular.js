@@ -6,7 +6,7 @@ import React, {
   useContext,
 } from "react";
 import "./LoginRegular.css";
-import "../../normalize.css"
+import "../../normalize.css";
 import "../../custom.css";
 import LoginOption from "./LoginOption";
 
@@ -59,7 +59,6 @@ function LoginRegular(props) {
     <div className={"login-regular"}>
       <div className={"login-box-regular"}>
         <span className="login-top-regular"></span>
-        <img src="./images/site/siteLogo.png" className="site-logo" />
         <form
           action="/api/login"
           method="POST"
@@ -85,33 +84,32 @@ function LoginRegular(props) {
             </button>
           </div>
         </form>
-
-        <div className="login-options">
-          <LoginOption
-            href="/login/google"
-            className="google"
-            imageURL="./images/login-logos/google-logo.jpg"
-            buttonText="Sign in with Google"
-          />
-          <LoginOption
-            href="/login/apple"
-            className="apple"
-            imageURL="./images/login-logos/apple-logo.png"
-            buttonText="Sign in with Apple"
-          />
-          <LoginOption
-            href="/login/facebook"
-            className="facebook"
-            imageURL="./images/login-logos/facebook-logo.jpg"
-            buttonText="Sign in with Facebook"
-          />
-        </div>
-
         <div className="signup-cont">
           Not a member?{" "}
           <a href="/signup" className="signup-link">
             Sign up!
           </a>
+        </div>
+
+        <div className="login-options-simple">
+          <hr></hr>
+          <div className="login-options-buttons">
+            <LoginOption
+              href="/login/google"
+              className="google"
+              imageURL="/images/login-logos/google-logo.png"
+            />
+            <LoginOption
+              href="/login/apple"
+              className="apple"
+              imageURL="/images/login-logos/apple-logo.png"
+            />
+            <LoginOption
+              href="/login/facebook"
+              className="facebook"
+              imageURL="/images/login-logos/facebook-logo.png"
+            />
+          </div>
         </div>
       </div>
     </div>

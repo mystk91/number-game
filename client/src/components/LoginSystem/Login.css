@@ -6,7 +6,7 @@
   height: 100%;
   display: flex;
   overflow-y: scroll;
-  padding-bottom: 80px;
+  padding-bottom: 140px;
   font-family: Inter, Verdana, sans-serif;
   font-size: 1.8rem;
 }
@@ -117,10 +117,34 @@
   filter: brightness(0.8);
 }
 
-.login-options {
+.login-modal .login-options {
   display: flex;
   flex-direction: column;
   height: max-content;
+}
+
+.login-options-simple{
+  display: flex;
+  flex-direction: column;
+  row-gap: 8px;
+  width: 90%;
+  margin: 6px 0;
+}
+
+.login-options-buttons{
+  display: flex;
+  justify-content: center;
+  column-gap: 10%;
+  margin: 16px 0 6px;
+}
+
+.login-options-headline{
+  margin-left: 20px;
+}
+
+.login-options-buttons > .login-button{
+  width: 64px;
+  height: 64px;
 }
 
 .recover-password-link {

@@ -11,9 +11,18 @@ function LoginOption(props) {
     propRef.current = point;
   }
 
+  //Sets the button text if the prop exists, otherwise centers the image
+  const [buttonText, setButtonText] = useState();
+  const [justifyImage, setJustifyImage] = useState();
+
   //componentDidMount, runs when component mounts, then componentDismount
   useEffect(() => {
-    
+    if (props.buttonText){
+      setButtonText(<span>{props.buttonText}</span>);
+    }
+    else{
+      setJustifyImage("center");
+    }
     return() => {};
   }, []);
   //componentDidUpdate, runs after render
@@ -27,9 +36,9 @@ function LoginOption(props) {
 
   
   return (
-    <button className={props.className + ' login-button'} onClick={()=>goLogin(props.href)}>
+    <button className={props.className + ' login-button'} onClick={()=>goLogin(props.href)} style={{justifyContent: justifyImage}}>
       <img src={props.imageURL}/>
-      <span>{props.buttonText}</span>
+      {buttonText}
     </button>
   );
 }
