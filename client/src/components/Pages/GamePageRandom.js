@@ -12,12 +12,30 @@ import NumberGameRandom from "../Game/NumberGameRandom";
 
 //Creates a standard page for the website that displays the navbar and the game
 function GamePageRandom(props) {
-  return (
-    <div className="game-page">
-      <Navbar digits={props.digits} />
-      <NumberGameRandom digits={props.digits} attempts={props.attempts} />
-    </div>
-  );
+  let [gamePage, setGamePage] = useState();
+
+  //Runs on mount. Gets users profile pic and starts game
+  useEffect(() => {
+    fetchUser();
+    return () => {};
+  }, []);
+
+  async function fetchUser() {
+    let res = await fetch("/api/profile_picture");
+    let resObj = await res.json();
+    setGamePage(
+      <div className="game-page">
+        <Navbar
+          digits={props.digits}
+          random={true}
+          user={resObj}
+        />
+        <NumberGameRandom digits={props.digits} attempts={props.attempts} />
+      </div>
+    );
+  }
+
+  return gamePage;
 }
 
 export default GamePageRandom;

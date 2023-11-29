@@ -163,6 +163,31 @@ function NumberGameLocal(props) {
     setDateRef.current = point;
   }
 
+  //These functions set the links of the arrows at the bottom of the keyboard to go to other games
+  let linkRightRef = useRef("");
+  function setLinkRightRef(point) {
+    linkRightRef.current = point;
+  }
+
+  let linkLeftRef = useRef("");
+  function setLinkLeftRef(point) {
+    linkLeftRef.current = point;
+  }
+
+  function setUpArrowLinks() {
+    let maxDigits = 7;
+    if (props.digits === maxDigits) {
+      setLinkLeftRef(`/digits${maxDigits - 1}`);
+      setLinkRightRef(`/digits${2}`);
+    } else if (props.digits === 2) {
+      setLinkLeftRef(`/digits${maxDigits}`);
+      setLinkRightRef(`/digits${3}`);
+    } else {
+      setLinkLeftRef(`/digits${props.digits - 1}`);
+      setLinkRightRef(`/digits${props.digits + 1}`);
+    }
+  }
+
   //These functions are used to display / hide the Enter Guess / Message buttons
   //The enter guess is shown until the game ends, then its replaced with the reset button.
   function changeCurrentInputButton() {
@@ -191,6 +216,7 @@ function NumberGameLocal(props) {
 
   //componentDidMount, runs when component mounts, then componentDismount
   useEffect(() => {
+    sessionStorage.setItem("currentMode", "daily");
     setupGame();
     document.addEventListener("keydown", handleKeydown);
 
@@ -201,11 +227,9 @@ function NumberGameLocal(props) {
 
   //Sets up the the game
   async function setupGame() {
-    console.log("hello");
     let storage = localStorage.getItem("game" + props.digits);
     //Setting the localStorage for the game or loading it
     if (storage) {
-      console.log("there is storage");
       let storageObj = JSON.parse(storage);
 
       const url = "/api/gameId";
@@ -221,37 +245,31 @@ function NumberGameLocal(props) {
       };
       let res = await fetch(url, options);
       let resObj = await res.json();
-      console.log("got the object");
 
       if (
         !storageObj.board[0] ||
         (resObj.gameId !== storageObj.gameId && storageObj.status != `playing`)
       ) {
-        console.log("resetting");
         resetGame();
       } else {
-        console.log("updating game state");
         updateGameStateFromLocalStorage();
         if (gameStatusRef.current !== "playing") {
           disableGame(false);
         }
       }
     } else {
-      console.log("there is no storage");
       //Sets up the board
       let board = new Array(props.attempts);
       for (let i = 0; i < props.attempts; i++) {
         board[i] = "";
       }
       setBoardStateRef(board);
-      console.log("trying to make things");
       //Sets up the hints
       let hintsArr = new Array(props.attempts);
       for (let i = 0; i < props.attempts; i++) {
         hintsArr[i] = "";
       }
       setHintsRef(hintsArr);
-      console.log(hintsRef.current);
       const url = "/api/gameId";
       const options = {
         method: "PUT",
@@ -279,6 +297,7 @@ function NumberGameLocal(props) {
 
     changeCurrentInputButton();
     updateGameBoard();
+    setUpArrowLinks();
     updateKeyboard();
   }
 
@@ -563,22 +582,30 @@ function NumberGameLocal(props) {
             onClick={backspace}
           ></button>
         </div>
-        <button
-          className={"enter-guess" + hideGuessButtonRef.current}
-          style={{ animation: keyboardAnimationRef.current[`keyEnter`] }}
-          onClick={checkGuess}
-        >
-          Enter
-        </button>
-        <button className={"bottom-message" + hideMessageButtonRef.current}>
-          {timeToNextGame()}
-        </button>
-        <button
-          className={"reset-game" + hideResetButtonRef.current}
-          onClick={resetGame}
-        >
-          Play Todays Game
-        </button>
+        <div className="keyboard-bottom">
+          <a href={linkLeftRef.current}>
+            <button className={"arrow-left"} />
+          </a>
+          <button
+            className={"enter-guess" + hideGuessButtonRef.current}
+            style={{ animation: keyboardAnimationRef.current[`keyEnter`] }}
+            onClick={checkGuess}
+          >
+            Enter
+          </button>
+          <button className={"bottom-message" + hideMessageButtonRef.current}>
+            {timeToNextGame()}
+          </button>
+          <button
+            className={"reset-game" + hideResetButtonRef.current}
+            onClick={resetGame}
+          >
+            Play Todays Game
+          </button>
+          <a href={linkRightRef.current}>
+            <button className={"arrow-right"} />
+          </a>
+        </div>
       </div>
     );
     setKeyboard(keyboardHTML);
@@ -785,7 +812,6 @@ function NumberGameLocal(props) {
           updateLocalStorage();
         } else {
           setGameStatusRef(`defeat`);
-          console.log(resObj.gameObj.nextGameAvailable);
           if (resObj.gameObj.nextGameAvailable) {
             setNextGameAvailableRef(true);
           } else {
@@ -1055,7 +1081,6 @@ function NumberGameLocal(props) {
     document.removeEventListener("keydown", handleKeydown);
     setKeyboardClassNameRef("number-inputs disabled");
     updateKeyboard();
-    //console.log(gameStatusRef.current);
     setTimeout(() => {
       changeCurrentInputButton();
       updateKeyboard();

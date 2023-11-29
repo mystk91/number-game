@@ -21,16 +21,16 @@ function Navbar(props) {
 
   //componentDidMount, runs when component mounts, then componentDismount
   useEffect(() => {
-    setGameModesButton(gameModesButtonHTML);
-    setGameModesList();
-    addInstructions();
-    addProfileButton();
     if (props.digits === 0) {
       setInvisibleInstructions(" invisible");
     }
     if (props.login === false) {
       setInvisibleLogin(" invisible");
     }
+    addInstructions();
+    addProfileButton();
+    setGameModesButton(gameModesButtonHTML);
+    setGameModesList();
     return () => {};
   }, [profileImageRef.current]);
 
@@ -44,7 +44,11 @@ function Navbar(props) {
   const [invisibleLogin, setInvisibleLogin] = useState("");
 
   let gameModesButtonHTML = (
-    <button className="game-modes-button" onClick={displayGameModes}>
+    <button
+      className="game-modes-button"
+      onClick={displayGameModes}
+      onMouseOver={displayGameModes}
+    >
       Game Modes
     </button>
   );
@@ -56,22 +60,22 @@ function Navbar(props) {
   let listVisible = (
     <ul className="game-modes-list-mobile visible">
       <li>
-        <a href="/2digits">2 Digits</a>
+        <a href="/digits2">2 Digits</a>
       </li>
       <li>
-        <a href="/3digits">3 Digits</a>
+        <a href="/digits3">3 Digits</a>
       </li>
       <li>
-        <a href="/4digits">4 Digits</a>
+        <a href="/digits4">4 Digits</a>
       </li>
       <li>
-        <a href="/5digits">5 Digits</a>
+        <a href="/digits5">5 Digits</a>
       </li>
       <li>
-        <a href="/6digits">6 Digits</a>
+        <a href="/digits6">6 Digits</a>
       </li>
       <li>
-        <a href="/7digits">7 Digits</a>
+        <a href="/digits7">7 Digits</a>
       </li>
     </ul>
   );
@@ -79,22 +83,22 @@ function Navbar(props) {
   let listHidden = (
     <ul className="game-modes-list-mobile hidden">
       <li>
-        <a href="/2digits">2 Digits</a>
+        <a href="/digits2">2 Digits</a>
       </li>
       <li>
-        <a href="/3digits">3 Digits</a>
+        <a href="/digits3">3 Digits</a>
       </li>
       <li>
-        <a href="/4digits">4 Digits</a>
+        <a href="/digits4">4 Digits</a>
       </li>
       <li>
-        <a href="/5digits">5 Digits</a>
+        <a href="/digits5">5 Digits</a>
       </li>
       <li>
-        <a href="/6digits">6 Digits</a>
+        <a href="/digits6">6 Digits</a>
       </li>
       <li>
-        <a href="/7digits">7 Digits</a>
+        <a href="/digits7">7 Digits</a>
       </li>
     </ul>
   );
@@ -103,18 +107,22 @@ function Navbar(props) {
   function displayGameModes(e) {
     setGameModesList(listVisible);
     setGameModesButton(gameModesButtonHTMLClicked);
+    setHoverDropUpRef(true);
     e.stopPropagation();
     document.addEventListener("click", hideGameModes);
   }
 
   //Hides the game list
   function hideGameModes(e) {
-    setGameModesList(listHidden);
-    setGameModesButton(gameModesButtonHTML);
-    document.removeEventListener("click", hideGameModes);
-    setTimeout(() => {
-      setGameModesList();
-    }, 300);
+    if (hoverDropUpRef.current) {
+      setHoverDropUpRef(false);
+      setGameModesList(listHidden);
+      setGameModesButton(gameModesButtonHTML);
+      document.removeEventListener("click", hideGameModes);
+      setTimeout(() => {
+        setGameModesList();
+      }, 300);
+    }
   }
 
   //Used to display the modals from the buttons on the tool-bar
@@ -144,15 +152,13 @@ function Navbar(props) {
 
   //Adds either the login form or the profile dropdown option
   async function addProfileButton() {
-    let res = await fetch("/api/profile_picture");
-    let resObj = await res.json();
-    if (resObj.loggedIn) {
-      setProfileImageRef(resObj.imageURL);
+    if (props.user.loggedIn) {
+      setProfileImageRef(props.user.imageUrl);
       setProfileButton(profileDropdownInitialHTML);
     } else {
       let buttonHTML = (
         <button className="login-btn" onClick={loginButton}>
-          <img src="/images/site/account2.png" />
+          <img src={props.user.imageUrl}/>
         </button>
       );
       setProfileButton(buttonHTML);
@@ -160,14 +166,22 @@ function Navbar(props) {
   }
 
   let profileDropdownInitialHTML = (
-    <button className="profile-btn" onClick={showProfileDropdown}>
+    <button
+      className="profile-btn"
+      onClick={showProfileDropdown}
+      onMouseOver={showProfileDropdown}
+    >
       <img src={profileImageRef.current} />
     </button>
   );
 
   let profileDropdownHiddenHTML = (
     <div>
-      <button className="profile-btn" onClick={showProfileDropdown}>
+      <button
+        className="profile-btn"
+        onClick={showProfileDropdown}
+        onMouseOver={showProfileDropdown}
+      >
         <img src={profileImageRef.current} />
       </button>
       <ProfileDropdown hidden="true" key="profileDropdownHidden" />
@@ -175,7 +189,7 @@ function Navbar(props) {
   );
 
   let profileDropdownVisibleHTML = (
-    <div>
+    <div onMouseLeave={hideProfileDropdown}>
       <button className="profile-btn clicked">
         <img src={profileImageRef.current} />
       </button>
@@ -185,6 +199,7 @@ function Navbar(props) {
 
   //Shows the profile Dropdown
   function showProfileDropdown(e) {
+    setHoverDropUpRef(true);
     setProfileButton(profileDropdownVisibleHTML);
     e.stopPropagation();
     document.addEventListener("click", hideProfileDropdown);
@@ -192,13 +207,22 @@ function Navbar(props) {
 
   //Hides the profile dropdown on click
   function hideProfileDropdown(e) {
-    setProfileButton(profileDropdownHiddenHTML);
-    document.removeEventListener("click", hideProfileDropdown);
+    if (hoverDropUpRef.current) {
+      setHoverDropUpRef(false);
+      setProfileButton(profileDropdownHiddenHTML);
+      document.removeEventListener("click", hideProfileDropdown);
+    }
   }
 
   //Displays the login modal
   function loginButton() {
     setModal(<Login key={new Date()} />);
+  }
+
+  //Used to turn off drop-up animation when button is clicked again
+  let hoverDropUpRef = useRef(false);
+  function setHoverDropUpRef(point) {
+    hoverDropUpRef.current = point;
   }
 
   return (
@@ -208,29 +232,31 @@ function Navbar(props) {
         <div className="game-modes">
           <ul className="game-modes-list">
             <li>
-              <a href="/2digits">2 Digits</a>
+              <a href="/digits2">2 Digits</a>
             </li>
             <li>
-              <a href="/3digits">3 Digits</a>
+              <a href="/digits3">3 Digits</a>
             </li>
             <li>
-              <a href="/4digits">4 Digits</a>
+              <a href="/digits4">4 Digits</a>
             </li>
             <li>
-              <a href="/5digits">5 Digits</a>
+              <a href="/digits5">5 Digits</a>
             </li>
             <li>
-              <a href="/6digits">6 Digits</a>
+              <a href="/digits6">6 Digits</a>
             </li>
             <li>
-              <a href="/7digits">7 Digits</a>
+              <a href="/digits7">7 Digits</a>
             </li>
           </ul>
         </div>
 
-        <div className="game-modes-mobile">
-          {gameModesButton}
-          {gameModesList}
+        <div className="game-modes-container">
+          <div className="game-modes-mobile" onMouseLeave={hideGameModes}>
+            {gameModesButton}
+            {gameModesList}
+          </div>
         </div>
 
         <div className="logo">Numblr</div>
@@ -244,7 +270,9 @@ function Navbar(props) {
               <img src="/images/site/whiteQuestionMark.png" />
             </button>
           </li>
-          <li className={"profile-btn-container" + invisibleLogin}>{profileButton}</li>
+          <li className={"profile-btn-container" + invisibleLogin}>
+            {profileButton}
+          </li>
           <li>
             <a href="/leaderboards">
               <button className="leaderboards-btn">

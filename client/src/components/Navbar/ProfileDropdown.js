@@ -41,6 +41,7 @@ function ProfileDropdown(props) {
     if (res.status == 302) {
       localStorage.clear();
       localStorage.setItem("previouslyVisited", "true");
+      sessionStorage.setItem("currentMode", "daily");
       window.location.reload();
     }
   }
@@ -64,7 +65,7 @@ function ProfileDropdown(props) {
         <a href="/profile">My Profile</a>
       </li>
       <li>
-        <a href={logout} className="logout-link">
+        <a onClick={logout} className="logout-link">
           Logout
         </a>
       </li>

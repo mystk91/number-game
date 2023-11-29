@@ -1,6 +1,6 @@
 :root {
   --navbar-background-color: rgb(65, 68, 87);
-  --navbar-background-hover:  rgb(66, 67, 85);
+  --navbar-background-hover: rgb(66, 67, 85);
   --navbar-text-color: rgb(255, 255, 255);
 }
 
@@ -20,6 +20,11 @@
 
 .navigation-bar li {
   list-style: none;
+}
+
+.game-modes-container {
+  display: none;
+  justify-content: center;
 }
 
 .game-modes {
@@ -69,6 +74,7 @@
 }
 
 .game-modes-mobile {
+  width: min-content;
   display: none;
 }
 
@@ -97,7 +103,8 @@
   grid-gap: 10%;
 }
 
-.tools button:hover, .tools button.clicked {
+.tools button:hover,
+.tools button.clicked {
   filter: brightness(0.8);
   background-color: var(--navbar-background-hover);
 }
@@ -117,7 +124,7 @@
   cursor: pointer;
 }
 
-.profile-btn-container{
+.profile-btn-container {
   min-width: 50px;
 }
 
@@ -125,7 +132,8 @@
   padding: 5px;
 }
 
-.login-btn > img, .profile-btn > img  {
+.login-btn > img,
+.profile-btn > img {
   padding: 5px;
   border-radius: 50px;
 }
@@ -134,7 +142,7 @@
   padding: 7px;
 }
 
-.invisible{
+.invisible {
   visibility: hidden;
 }
 
@@ -255,6 +263,10 @@
     column-gap: 4%;
     margin-right: 10px;
     justify-content: center;
+  }
+
+  .game-modes-container {
+    display: flex;
   }
 }
 
@@ -381,8 +393,12 @@
     width: 46px;
   }
 
-  .profile-btn-container{
+  .profile-btn-container {
     min-width: 40px;
+  }
+
+  .game-modes-container {
+    display: flex;
   }
 }
 
@@ -509,14 +525,18 @@
     width: 45px;
   }
 
-  .profile-btn-container{
+  .profile-btn-container {
     min-width: 40px;
+  }
+
+  .game-modes-container {
+    display: flex;
   }
 }
 
 /* Phone Sizes */
-@media screen and (max-width: 430px){
-   .game-modes {
+@media screen and (max-width: 430px) {
+  .game-modes {
     display: none;
   }
 
@@ -635,8 +655,8 @@
     justify-content: center;
   }
 
-  .logo{
-    margin:  0;
+  .logo {
+    margin: 0;
     padding: 2px;
     font-size: 2.6rem;
     border: 1px solid black;
@@ -646,9 +666,11 @@
     width: 40px;
   }
 
-  .profile-btn-container{
+  .profile-btn-container {
     min-width: 40px;
   }
-  
 
+  .game-modes-container {
+    display: flex;
+  }
 }

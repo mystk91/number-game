@@ -24,6 +24,7 @@ import Signup from "./components/LoginSystem/Signup";
 import SignupRegular from "./components/LoginSystem/SignupRegular";
 import ForgotPassword from "./components/LoginSystem/ForgotPassword";
 import ForgotPasswordRegular from "./components/LoginSystem/ForgotPasswordRegular";
+import ResetPasswordPage from "./components/Pages/ResetPasswordPage";
 import NewPasswordPage from "./components/Pages/NewPasswordPage";
 import EmailVerification from "./components/LoginSystem/EmailVerification";
 import LoadingIcon from "./components/Parts/LoadingIcon";
@@ -32,6 +33,7 @@ import ShareScore from "./components/Game/ShareScore";
 import LeaderboardsPage from "./components/Pages/LeaderboardsPage";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import NumberGameRegular from "./components/Game/NumberGameRegular";
+import GamePageDaily from "./components/Pages/GamePageDaily";
 
 function App() {
   return (
@@ -62,8 +64,7 @@ function App() {
             path="/verify-email/:verificationCode"
             element={<EmailVerification />}
           />
-          <Route path="/reset-password" element={<ForgotPasswordRegular />} />
-          <Route path="/" element={<GamePage digits={5} attempts={6} />} />
+          <Route path="/reset-password" element={<ResetPasswordPage />} />
           <Route
             path="/regular"
             element={<GamePageRegular digits={6} attempts={6} />}
@@ -73,52 +74,78 @@ function App() {
             element={<NumberGameLocal digits={5} attempts={6} />}
           />
           <Route
-            path="/2digits"
+            path="/old2"
             element={<GamePage digits={2} attempts={6} />}
           />
           <Route
-            path="/3digits"
+            path="/old3"
             element={<GamePage digits={3} attempts={6} />}
           />
           <Route
-            path="/4digits"
+            path="/old4"
             element={<GamePage digits={4} attempts={6} />}
           />
           <Route
-            path="/5digits"
+            path="/old5"
             element={<GamePage digits={5} attempts={6} />}
           />
           <Route
-            path="/6digits"
+            path="/old6"
             element={<GamePage digits={6} attempts={6} />}
           />
           <Route
-            path="/7digits"
+            path="/old7"
             element={<GamePage digits={7} attempts={6} />}
           />
 
           <Route
-            path="/2random"
+            path="/digits2"
+            element={<GamePageDaily digits={2} attempts={6} />}
+          />
+          <Route
+            path="/digits3"
+            element={<GamePageDaily digits={3} attempts={6} />}
+          />
+          <Route
+            path="/digits4"
+            element={<GamePageDaily digits={4} attempts={6} />}
+          />
+          <Route path="/" element={<GamePageDaily digits={5} attempts={6} />} />
+          <Route
+            path="/digits5"
+            element={<GamePageDaily digits={5} attempts={6} />}
+          />
+          <Route
+            path="/digits6"
+            element={<GamePageDaily digits={6} attempts={6} />}
+          />
+          <Route
+            path="/digits7"
+            element={<GamePageDaily digits={7} attempts={6} />}
+          />
+
+          <Route
+            path="/random2"
             element={<GamePageRandom digits={2} attempts={6} />}
           />
           <Route
-            path="/3random"
+            path="/random3"
             element={<GamePageRandom digits={3} attempts={6} />}
           />
           <Route
-            path="/4random"
+            path="/random4"
             element={<GamePageRandom digits={4} attempts={6} />}
           />
           <Route
-            path="/5random"
+            path="/random5"
             element={<GamePageRandom digits={5} attempts={6} />}
           />
           <Route
-            path="/6random"
+            path="/random6"
             element={<GamePageRandom digits={6} attempts={6} />}
           />
           <Route
-            path="/7random"
+            path="/random7"
             element={<GamePageRandom digits={7} attempts={6} />}
           />
         </Routes>

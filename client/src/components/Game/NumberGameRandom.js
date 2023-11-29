@@ -139,6 +139,31 @@ function NumberGameRandom(props) {
     hideResetButtonRef.current = point;
   }
 
+  //These functions set the links of the arrows at the bottom of the keyboard to go to other games
+  let linkRightRef = useRef("");
+  function setLinkRightRef(point) {
+    linkRightRef.current = point;
+  }
+
+  let linkLeftRef = useRef("");
+  function setLinkLeftRef(point) {
+    linkLeftRef.current = point;
+  }
+
+  function setUpArrowLinks() {
+    let maxDigits = 7;
+    if (props.digits === maxDigits) {
+      setLinkLeftRef(`/random${maxDigits - 1}`);
+      setLinkRightRef(`/random${2}`);
+    } else if (props.digits === 2) {
+      setLinkLeftRef(`/random${maxDigits}`);
+      setLinkRightRef(`/random${3}`);
+    } else {
+      setLinkLeftRef(`/random${props.digits - 1}`);
+      setLinkRightRef(`/random${props.digits + 1}`);
+    }
+  }
+
   //These functions are used to display / hide the Enter Guess / Reset button.
   //The enter guess is shown until the game ends, then its replaced with the reset button.
   function changeCurrentInputButton() {
@@ -159,6 +184,7 @@ function NumberGameRandom(props) {
 
   //componentDidMount, runs when component mounts, then componentDismount
   useEffect(() => {
+    sessionStorage.setItem("currentMode", "random");
     setupGame();
     if (gameStatusRef.current === `playing`) {
       document.addEventListener("keydown", handleKeydown);
@@ -174,12 +200,13 @@ function NumberGameRandom(props) {
   //Sets up the the game
   async function setupGame() {
     await updateGameStateFromBackend();
-    if(gameStatusRef.current !== "playing"){
+    if (gameStatusRef.current !== "playing") {
       setCurrentRowRef(currentRowRef.current - 1);
       disableGame(false);
     }
     changeCurrentInputButton();
     updateGameBoard();
+    setUpArrowLinks();
     updateKeyboard();
   }
 
@@ -473,19 +500,27 @@ function NumberGameRandom(props) {
             onClick={backspace}
           ></button>
         </div>
-        <button
-          className={"enter-guess" + hideGuessButtonRef.current}
-          style={{ animation: keyboardAnimationRef.current[`keyEnter`] }}
-          onClick={checkGuess}
-        >
-          Enter
-        </button>
-        <button
-          className={"reset-game" + hideResetButtonRef.current}
-          onClick={resetGame}
-        >
-          Reset
-        </button>
+        <div className="keyboard-bottom">
+          <a href={linkLeftRef.current}>
+            <button className={"arrow-left"} />
+          </a>
+          <button
+            className={"enter-guess" + hideGuessButtonRef.current}
+            style={{ animation: keyboardAnimationRef.current[`keyEnter`] }}
+            onClick={checkGuess}
+          >
+            Enter
+          </button>
+          <button
+            className={"reset-game" + hideResetButtonRef.current}
+            onClick={resetGame}
+          >
+            Reset
+          </button>
+          <a href={linkRightRef.current}>
+            <button className={"arrow-right"} />
+          </a>
+        </div>
       </div>
     );
     setKeyboard(keyboardHTML);
@@ -701,17 +736,17 @@ function NumberGameRandom(props) {
     }
   }
 
-    //Turns off keyboard interactions
-    function disableInputs(){
-      document.removeEventListener("keydown", handleKeydown);
-      setKeyboardClassNameRef("number-inputs disabled");
-    }
-  
-    //Turns on keyboard interactions
-    function enableInputs(){
-      document.addEventListener("keydown", handleKeydown);
-      setKeyboardClassNameRef("number-inputs");
-    }
+  //Turns off keyboard interactions
+  function disableInputs() {
+    document.removeEventListener("keydown", handleKeydown);
+    setKeyboardClassNameRef("number-inputs disabled");
+  }
+
+  //Turns on keyboard interactions
+  function enableInputs() {
+    document.addEventListener("keydown", handleKeydown);
+    setKeyboardClassNameRef("number-inputs");
+  }
 
   //Checks the number against the users guess, returns a string with the colors the blocks should become, ending with hint telling higher or lower
   // ex. 5 digit number,  gyxxxl
@@ -960,7 +995,7 @@ function NumberGameRandom(props) {
 
   function disableGame(delay = true) {
     let delayTime = 1000 * (0.85 + 0.2 * (props.digits - 1));
-    if (!delay){
+    if (!delay) {
       delayTime = 0;
     }
     document.removeEventListener("keydown", handleKeydown);

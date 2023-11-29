@@ -156,6 +156,31 @@ function NumberGameRegular(props) {
     setDateRef.current = point;
   }
 
+  //These functions set the links of the arrows at the bottom of the keyboard to go to other games
+  let linkRightRef = useRef("");
+  function setLinkRightRef(point) {
+    linkRightRef.current = point;
+  }
+
+  let linkLeftRef = useRef("");
+  function setLinkLeftRef(point) {
+    linkLeftRef.current = point;
+  }
+
+  function setUpArrowLinks() {
+    let maxDigits = 7;
+    if (props.digits === maxDigits) {
+      setLinkLeftRef(`/digits${maxDigits - 1}`);
+      setLinkRightRef(`/digits${2}`);
+    } else if (props.digits === 2) {
+      setLinkLeftRef(`/digits${maxDigits}`);
+      setLinkRightRef(`/digits${3}`);
+    } else {
+      setLinkLeftRef(`/digits${props.digits - 1}`);
+      setLinkRightRef(`/digits${props.digits + 1}`);
+    }
+  }
+
   //These functions are used to display / hide the Enter Guess / Message buttons
   //The enter guess is shown until the game ends, then its replaced with the reset button.
   function changeCurrentInputButton() {
@@ -184,6 +209,7 @@ function NumberGameRegular(props) {
 
   //componentDidMount, runs when component mounts, then componentDismount
   useEffect(() => {
+    sessionStorage.setItem("currentMode", "daily");
     setupGame();
     document.addEventListener("keydown", handleKeydown);
 
@@ -201,6 +227,7 @@ function NumberGameRegular(props) {
     }
     changeCurrentInputButton();
     updateGameBoard();
+    setUpArrowLinks();
     updateKeyboard();
   }
 
@@ -506,22 +533,30 @@ function NumberGameRegular(props) {
             onClick={backspace}
           ></button>
         </div>
-        <button
-          className={"enter-guess" + hideGuessButtonRef.current}
-          style={{ animation: keyboardAnimationRef.current[`keyEnter`] }}
-          onClick={checkGuess}
-        >
-          Enter
-        </button>
-        <button className={"bottom-message" + hideMessageButtonRef.current}>
-          {timeToNextGame()}
-        </button>
-        <button
-          className={"reset-game" + hideResetButtonRef.current}
-          onClick={resetGame}
-        >
-          Play Todays Game
-        </button>
+        <div className="keyboard-bottom">
+          <a href={linkLeftRef.current}>
+            <button className={"arrow-left"} />
+          </a>
+          <button
+            className={"enter-guess" + hideGuessButtonRef.current}
+            style={{ animation: keyboardAnimationRef.current[`keyEnter`] }}
+            onClick={checkGuess}
+          >
+            Enter
+          </button>
+          <button className={"bottom-message" + hideMessageButtonRef.current}>
+            {timeToNextGame()}
+          </button>
+          <button
+            className={"reset-game" + hideResetButtonRef.current}
+            onClick={resetGame}
+          >
+            Play Todays Game
+          </button>
+          <a href={linkRightRef.current}>
+            <button className={"arrow-right"} />
+          </a>
+        </div>
       </div>
     );
     setKeyboard(keyboardHTML);

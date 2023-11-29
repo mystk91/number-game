@@ -582,18 +582,24 @@ function accountRequests(app) {
       if (req.user.loginType == "email") {
         res.send({
           loggedIn: true,
-          imageURL: "./images/account/profile-images/logged-in.png",
+          imageUrl: "./images/account/profile-images/logged-in.png",
         });
       } else if (req.user.loginType == "google") {
         res.send({
           loggedIn: true,
-          imageURL: req.user.googleProfilePicture,
+          imageUrl: req.user.googleProfilePicture,
         });
       } else {
-        res.send({ loggedIn: false, imageURL: "" });
+        res.send({
+          loggedIn: false,
+          imageUrl: "./images/site/account2.png",
+        });
       }
     } catch {
-      res.send({ loggedIn: false, imageURL: "" });
+      res.send({
+        loggedIn: false,
+        imageUrl: "./images/site/account2.png",
+      });
     }
   });
 }

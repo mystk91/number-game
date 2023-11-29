@@ -8,11 +8,11 @@ import React, {
 import "../../normalize.css";
 import "../../custom.css";
 import Navbar from "../Navbar/Navbar";
-import LoginRegular from "../LoginSystem/LoginRegular";
+import ResetPassword from "../LoginSystem/ForgotPasswordRegular";
 
 //Creates the page used for password reset
-function LoginPage(props) {
-  let [loginPage, setLoginPage] = useState();
+function ResetPasswordPage(props) {
+  let [passwordPage, setPasswordPage] = useState();
 
   //Runs on mount. Gets users profile pic and starts game
   useEffect(() => {
@@ -23,15 +23,14 @@ function LoginPage(props) {
   async function fetchUser() {
     let res = await fetch("/api/profile_picture");
     let resObj = await res.json();
-    setLoginPage(
-      <div className="login-page">
+    setPasswordPage(
+      <div className="reset-password-page">
         <Navbar digits={0} user={resObj} />
-        <LoginRegular />
+        <ResetPassword />
       </div>
     );
   }
-
-  return loginPage;
+  return passwordPage;
 }
 
-export default LoginPage;
+export default ResetPasswordPage;

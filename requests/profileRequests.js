@@ -12,10 +12,12 @@ function profileRequests(app) {
 
   //Redirects user to homepage if they are already logged in
   app.get("/login", async (req, res, next) => {
-    if (req.user.session) {
+    try {
+      if (req.user.session) {
+        res.redirect("/");
+      }
+    } catch {
       next();
-    } else {
-      res.direct("/");
     }
   });
 }
