@@ -106,7 +106,6 @@ function ShareScore(props) {
   function getDate() {
     let date;
     if (props.date) {
-      console.log("passed in a date!");
       date = props.date.toLocaleString("default", {
         timeZone: "America/New_York",
         month: "short",

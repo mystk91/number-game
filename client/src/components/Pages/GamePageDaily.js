@@ -8,6 +8,7 @@ import React, {
 import "../../normalize.css";
 import "../../custom.css";
 import Navbar from "../Navbar/Navbar";
+import NavbarDaily from "../Navbar/NavbarDaily";
 import NumberGameRegular from "../Game/NumberGameRegular";
 import NumberGameLocal from "../Game/NumberGameLocal";
 
@@ -26,10 +27,11 @@ function GamePageDaily(props) {
   async function fetchUser() {
     let res = await fetch("/api/profile_picture");
     let resObj = await res.json();
-    if (resObj.loggedIn) {
+    if (true){
+    //if (resObj.loggedIn) {
       setGamePage(
         <div className="game-page">
-          <Navbar digits={props.digits} user={resObj} />
+          <NavbarDaily digits={props.digits} user={resObj} />
           <NumberGameRegular digits={props.digits} attempts={props.attempts} />
         </div>
       );

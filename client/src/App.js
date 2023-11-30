@@ -34,6 +34,7 @@ import LeaderboardsPage from "./components/Pages/LeaderboardsPage";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import NumberGameRegular from "./components/Game/NumberGameRegular";
 import GamePageDaily from "./components/Pages/GamePageDaily";
+import CalendarIcon from "./components/Parts/CalendarIcon";
 
 function App() {
   return (
@@ -53,6 +54,7 @@ function App() {
             path="/new-password/:verificationCode"
             element={<NewPasswordPage />}
           />
+          <Route path="/calendar" element={<CalendarIcon />} />
           <Route path="/leaderboards" element={<LeaderboardsPage />} />
           <Route path="/icon" element={<LoadingIcon />} />
           <Route path="/instructions" element={<Instructions />} />
@@ -73,30 +75,12 @@ function App() {
             path="/local"
             element={<NumberGameLocal digits={5} attempts={6} />}
           />
-          <Route
-            path="/old2"
-            element={<GamePage digits={2} attempts={6} />}
-          />
-          <Route
-            path="/old3"
-            element={<GamePage digits={3} attempts={6} />}
-          />
-          <Route
-            path="/old4"
-            element={<GamePage digits={4} attempts={6} />}
-          />
-          <Route
-            path="/old5"
-            element={<GamePage digits={5} attempts={6} />}
-          />
-          <Route
-            path="/old6"
-            element={<GamePage digits={6} attempts={6} />}
-          />
-          <Route
-            path="/old7"
-            element={<GamePage digits={7} attempts={6} />}
-          />
+          <Route path="/old2" element={<GamePage digits={2} attempts={6} />} />
+          <Route path="/old3" element={<GamePage digits={3} attempts={6} />} />
+          <Route path="/old4" element={<GamePage digits={4} attempts={6} />} />
+          <Route path="/old5" element={<GamePage digits={5} attempts={6} />} />
+          <Route path="/old6" element={<GamePage digits={6} attempts={6} />} />
+          <Route path="/old7" element={<GamePage digits={7} attempts={6} />} />
 
           <Route
             path="/digits2"

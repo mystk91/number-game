@@ -56,6 +56,11 @@
   justify-content: center;
 }
 
+.game-modes .current {
+  background-color: var(--navbar-background-color);
+  filter: brightness(1.35);
+}
+
 .game-modes li:first-child {
   border-left: 0.5px solid black;
 }
@@ -73,13 +78,25 @@
   color: var(--navbar-text-color);
 }
 
+.random-game-modes-list {
+  font-size: 2.2rem;
+}
+
+.random-game-modes-list img {
+  width: 34px;
+}
+
+.random-mode-link img {
+  width: 50px;
+}
+
 .game-modes-mobile {
   width: min-content;
   display: none;
 }
 
-.navigation-bar a:hover {
-  filter: brightness(0.8);
+.navigation-bar .game-modes-list a:hover:not(.current) {
+  filter: brightness(1.2);
   background-color: var(--navbar-background-hover);
 }
 
@@ -100,7 +117,12 @@
   align-items: center;
   border: none;
   height: 100%;
-  grid-gap: 10%;
+  grid-gap: 7%;
+}
+
+.tools .swap-modes {
+  display: none;
+  text-decoration: none;
 }
 
 .tools button:hover,
@@ -113,7 +135,8 @@
 .login-btn,
 .profile-btn,
 .leaderboards-btn,
-.randomMode-btn {
+.randomMode-btn,
+.dailyMode-btn {
   width: 50px;
   height: 56px;
   background-color: transparent;
@@ -123,6 +146,7 @@
   border: none;
   cursor: pointer;
 }
+
 
 .profile-btn-container {
   min-width: 50px;
@@ -144,6 +168,11 @@
 
 .invisible {
   visibility: hidden;
+}
+
+.game-modes-list-mobile.visible a:hover {
+  filter: brightness(0.8);
+  background-color: var(--navbar-background-hover);
 }
 
 /* Midsize Styles */
@@ -267,6 +296,10 @@
 
   .game-modes-container {
     display: flex;
+  }
+
+  .tools .swap-modes {
+    display: block;
   }
 }
 
@@ -400,6 +433,10 @@
   .game-modes-container {
     display: flex;
   }
+
+  .tools .swap-modes {
+    display: block;
+  }
 }
 
 /* smaller mid-size */
@@ -532,6 +569,10 @@
   .game-modes-container {
     display: flex;
   }
+
+  .tools .swap-modes {
+    display: block;
+  }
 }
 
 /* Phone Sizes */
@@ -662,6 +703,16 @@
     border: 1px solid black;
   }
 
+  .logo.random{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .logo.random img{
+    max-width: 24px;
+  }
+
   .tools button {
     width: 40px;
   }
@@ -672,5 +723,9 @@
 
   .game-modes-container {
     display: flex;
+  }
+
+  .tools .swap-modes {
+    display: block;
   }
 }

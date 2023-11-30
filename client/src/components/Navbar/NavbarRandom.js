@@ -6,18 +6,27 @@ import "../../custom.css";
 import Instructions from "./Instructions";
 import InstructionsFive from "./InstructionsFive";
 import ProfileDropdown from "./ProfileDropdown";
+import CalendarIcon from "../Parts/CalendarIcon";
 import Login from "../LoginSystem/Login";
 
-//Creates the Navbar at the top of the page.
+//Creates the Random Navbar at the top of the page.
 //Contains links for other game modes, the instructions, the login system
 // props.digits - used to display either instructions either with 4 digits or 5 digits
-function Navbar(props) {
+function NavbarRandom(props) {
   //Used to set the profile button / image
   const [profileButton, setProfileButton] = useState();
   const profileImageRef = useRef();
   function setProfileImageRef(point) {
     profileImageRef.current = point;
   }
+
+  //Used to hide the instructions button on pages that don't have the game on them
+  const [invisibleInstructions, setInvisibleInstructions] = useState("");
+  //Used to hide the login / profile button on the login page
+  const [invisibleLogin, setInvisibleLogin] = useState("");
+
+  //Used to add the button that swaps from random mode to daily mode
+  const [swapButtonLink, setSwapButtonLink] = useState(`digits${props.digits}`);
 
   //componentDidMount, runs when component mounts, then componentDismount
   useEffect(() => {
@@ -32,17 +41,15 @@ function Navbar(props) {
     highlightDigitButton();
     setGameModesButton(gameModesButtonHTML);
     setGameModesList();
+    if (!props.digits) {
+      setSwapButtonLink("/digits5");
+    }
     return () => {};
   }, [profileImageRef.current]);
 
   //Used to display and reveal the game modes
   const [gameModesButton, setGameModesButton] = useState();
   const [gameModesList, setGameModesList] = useState();
-
-  //Used to hide the instructions button on pages that don't have the game on them
-  const [invisibleInstructions, setInvisibleInstructions] = useState("");
-  //Used to hide the login / profile button on the login page
-  const [invisibleLogin, setInvisibleLogin] = useState("");
 
   let gameModesButtonHTML = (
     <button
@@ -61,22 +68,25 @@ function Navbar(props) {
   let listVisible = (
     <ul className="game-modes-list-mobile visible">
       <li>
-        <a href="/digits2">2 Digits</a>
+        <a href="/random2">2 Random</a>
       </li>
       <li>
-        <a href="/digits3">3 Digits</a>
+        <a href="/random3">3 Random</a>
       </li>
       <li>
-        <a href="/digits4">4 Digits</a>
+        <a href="/random4">4 Random</a>
       </li>
       <li>
-        <a href="/digits5">5 Digits</a>
+        <a href="/random5">5 Random</a>
       </li>
       <li>
-        <a href="/digits6">6 Digits</a>
+        <a href="/random6">6 Random</a>
       </li>
       <li>
-        <a href="/digits7">7 Digits</a>
+        <a href="/random7">7 Random</a>
+      </li>
+      <li>
+        <a href={swapButtonLink}>Daily Games</a>
       </li>
     </ul>
   );
@@ -84,22 +94,25 @@ function Navbar(props) {
   let listHidden = (
     <ul className="game-modes-list-mobile hidden">
       <li>
-        <a href="/digits2">2 Digits</a>
+        <a href="/random2">2 Random</a>
       </li>
       <li>
-        <a href="/digits3">3 Digits</a>
+        <a href="/random3">3 Random</a>
       </li>
       <li>
-        <a href="/digits4">4 Digits</a>
+        <a href="/random4">4 Random</a>
       </li>
       <li>
-        <a href="/digits5">5 Digits</a>
+        <a href="/random5">5 Random</a>
       </li>
       <li>
-        <a href="/digits6">6 Digits</a>
+        <a href="/random6">6 Random</a>
       </li>
       <li>
-        <a href="/digits7">7 Digits</a>
+        <a href="/random7">7 Digits</a>
+      </li>
+      <li>
+        <a href={swapButtonLink}>Daily Games</a>
       </li>
     </ul>
   );
@@ -252,26 +265,43 @@ function Navbar(props) {
   return (
     <nav className="navigation-bar-container">
       {modal}
-      <nav className="navigation-bar">
+      <nav className="navigation-bar random">
         <div className="game-modes">
-          <ul className="game-modes-list">
+          <ul className="game-modes-list random-game-modes-list">
             <li>
-              <a href="/digits2" className={currentDigitRef.current["digits2"]}>2 Digits</a>
+              <a href="/random2" className={currentDigitRef.current["digits2"]}>
+                2 <img src="/images/site/randomDice.png" />
+              </a>
             </li>
             <li>
-              <a href="/digits3" className={currentDigitRef.current["digits3"]}>3 Digits</a>
+              <a href="/random3" className={currentDigitRef.current["digits3"]}>
+                3 <img src="/images/site/randomDice.png" />
+              </a>
             </li>
             <li>
-              <a href="/digits4" className={currentDigitRef.current["digits4"]}>4 Digits</a>
+              <a href="/random4" className={currentDigitRef.current["digits4"]}>
+                4 <img src="/images/site/randomDice.png" />
+              </a>
             </li>
             <li>
-              <a href="/digits5" className={currentDigitRef.current["digits5"]}>5 Digits</a>
+              <a href="/random5" className={currentDigitRef.current["digits5"]}>
+                5 <img src="/images/site/randomDice.png" />
+              </a>
             </li>
             <li>
-              <a href="/digits6" className={currentDigitRef.current["digits6"]}>6 Digits</a>
+              <a href="/random6" className={currentDigitRef.current["digits6"]}>
+                6 <img src="/images/site/randomDice.png" />
+              </a>
             </li>
             <li>
-              <a href="/digits7" className={currentDigitRef.current["digits7"]}>7 Digits</a>
+              <a href="/random7" className={currentDigitRef.current["digits7"]}>
+                7 <img src="/images/site/randomDice.png" />
+              </a>
+            </li>
+            <li>
+              <a href={swapButtonLink}>
+                <CalendarIcon />
+              </a>
             </li>
           </ul>
         </div>
@@ -283,7 +313,11 @@ function Navbar(props) {
           </div>
         </div>
 
-        <div className="logo">Numblr</div>
+        <div className="logo random">
+          <img src="/images/site/randomDice.png" />
+          Numblr
+          <img src="/images/site/randomDice.png" />
+        </div>
 
         <ul className="tools">
           <li>
@@ -305,9 +339,9 @@ function Navbar(props) {
             </a>
           </li>
           <li>
-            <a href="/random/info">
-              <button className="randomMode-btn">
-                <img src="/images/site/randomDice.png" />
+            <a href={swapButtonLink} className="swap-modes">
+              <button className="dailyMode-btn">
+                <CalendarIcon />
               </button>
             </a>
           </li>
@@ -317,4 +351,4 @@ function Navbar(props) {
   );
 }
 
-export default Navbar;
+export default NavbarRandom;

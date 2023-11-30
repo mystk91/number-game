@@ -7,7 +7,7 @@ import React, {
 } from "react";
 import "../../normalize.css";
 import "../../custom.css";
-import Navbar from "../Navbar/Navbar";
+import NavbarRandom from "../Navbar/NavbarRandom";
 import NumberGameRandom from "../Game/NumberGameRandom";
 
 //Creates a standard page for the website that displays the navbar and the game
@@ -25,9 +25,8 @@ function GamePageRandom(props) {
     let resObj = await res.json();
     setGamePage(
       <div className="game-page">
-        <Navbar
+        <NavbarRandom
           digits={props.digits}
-          random={true}
           user={resObj}
         />
         <NumberGameRandom digits={props.digits} attempts={props.attempts} />
