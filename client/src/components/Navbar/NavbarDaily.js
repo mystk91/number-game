@@ -86,7 +86,7 @@ function NavbarDaily(props) {
         <a href="/digits7">7 Digits</a>
       </li>
       <li>
-        <a href={swapButtonLink}>Random Games</a>
+        <a href={swapButtonLink}>Random Mode</a>
       </li>
     </ul>
   );
@@ -112,7 +112,7 @@ function NavbarDaily(props) {
         <a href="/digits7">7 Digits</a>
       </li>
       <li>
-        <a href={swapButtonLink}>Random Games</a>
+        <a href={swapButtonLink}>Random Mode</a>
       </li>
     </ul>
   );

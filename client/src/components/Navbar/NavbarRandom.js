@@ -314,9 +314,12 @@ function NavbarRandom(props) {
         </div>
 
         <div className="logo random">
-          <img src="/images/site/randomDice.png" />
-          Numblr
-          <img src="/images/site/randomDice.png" />
+          <img src="/images/site/randomDice.png" className="random-mode" />
+          <div className="logo-banner">Numblr</div>
+          <div className="logo-small">
+            <img src="/images/site/logo.png" />
+          </div>
+          <img src="/images/site/randomDice.png" className="random-mode" />
         </div>
 
         <ul className="tools">

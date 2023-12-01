@@ -147,7 +147,6 @@
   cursor: pointer;
 }
 
-
 .profile-btn-container {
   min-width: 50px;
 }
@@ -173,6 +172,29 @@
 .game-modes-list-mobile.visible a:hover {
   filter: brightness(0.8);
   background-color: var(--navbar-background-hover);
+}
+
+.logo.random {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  column-gap: 4px;
+}
+
+.logo.random img {
+  padding-top: 5px;
+  width: 30px;
+}
+
+.logo.random .logo-small {
+  display: none;
+}
+
+.logo.random .logo-small img {
+  padding: 0px;
+  min-width: 48px;
+  min-height: 48px;
+  border: 1.5px solid black;
 }
 
 /* Midsize Styles */
@@ -573,6 +595,14 @@
   .tools .swap-modes {
     display: block;
   }
+
+  .random .logo-banner {
+    display: none;
+  }
+
+  .logo.random .logo-small {
+    display: flex;
+  }
 }
 
 /* Phone Sizes */
@@ -703,16 +733,6 @@
     border: 1px solid black;
   }
 
-  .logo.random{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-
-  .logo.random img{
-    max-width: 24px;
-  }
-
   .tools button {
     width: 40px;
   }
@@ -727,5 +747,38 @@
 
   .tools .swap-modes {
     display: block;
+  }
+
+  .random .logo-banner {
+    display: none;
+  }
+
+  .logo.random {
+    column-gap: 1px;
+    padding: 0;
+  }
+
+  .logo.random .logo-small {
+    display: flex;
+  }
+
+  .logo .random-mode {
+    max-width: 26px;
+  }
+
+  .game-modes-list-mobile {
+    left: 0px;
+  }
+}
+
+/* Very small screens */
+@media screen and (max-width: 379px) {
+  .logo.random .logo-small img {
+    min-width: 40px;
+    min-height: 40px;
+  }
+
+  .logo .random-mode {
+    max-width: 24px;
   }
 }
