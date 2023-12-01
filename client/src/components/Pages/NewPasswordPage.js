@@ -8,6 +8,7 @@ import React, {
 import "../../normalize.css";
 import "../../custom.css";
 import Navbar from "../Navbar/Navbar";
+import NavbarDynamic from "../Navbar/NavbarDynamic";
 import NewPassword from "../LoginSystem/NewPassword";
 
 //Creates the page used for password reset
@@ -25,7 +26,7 @@ function NewPasswordPage(props) {
     let resObj = await res.json();
     setPasswordPage(
       <div className="new-password-page">
-        <Navbar digits={0} profilePic={resObj} />
+        <NavbarDynamic digits={0} user={resObj} />
         <NewPassword />
       </div>
     );

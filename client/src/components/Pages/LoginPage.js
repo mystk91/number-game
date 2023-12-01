@@ -25,7 +25,7 @@ function LoginPage(props) {
     let resObj = await res.json();
     setLoginPage(
       <div className="login-page">
-        <Navbar digits={0} user={resObj} />
+        <Navbar digits={0} user={resObj} login={false} />
         <LoginRegular />
       </div>
     );

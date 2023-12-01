@@ -441,9 +441,11 @@ function accountRequests(app) {
   //Logs the user out
   app.post("/api/logout", (req, res, next) => {
     req.logout(function (err) {
-      //if (err) { return next(err); }
-      res.sendStatus(302);
+      if (err) {
+        return next(err);
+      }
     });
+    res.sendStatus(302);
   });
 
   //Google Authentication
@@ -583,11 +585,13 @@ function accountRequests(app) {
         res.send({
           loggedIn: true,
           imageUrl: "./images/account/profile-images/logged-in.png",
+          session: req.user.session,
         });
       } else if (req.user.loginType == "google") {
         res.send({
           loggedIn: true,
           imageUrl: req.user.googleProfilePicture,
+          session: req.user.session,
         });
       } else {
         res.send({

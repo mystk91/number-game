@@ -8,6 +8,7 @@ import React, {
 import "../../normalize.css";
 import "../../custom.css";
 import Navbar from "../Navbar/Navbar";
+import NavbarDynamic from "../Navbar/NavbarDynamic";
 import SignupRegular from "../LoginSystem/SignupRegular";
 
 //Creates the page used for password reset
@@ -25,7 +26,7 @@ function SignupPage(props) {
     let resObj = await res.json();
     setSignupPage(
       <div className="signup-page">
-        <Navbar digits={0} user={resObj} />
+        <NavbarDynamic digits={0} user={resObj} />
         <SignupRegular />
       </div>
     );

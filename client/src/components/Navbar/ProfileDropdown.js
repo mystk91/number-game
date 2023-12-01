@@ -42,7 +42,7 @@ function ProfileDropdown(props) {
       localStorage.clear();
       localStorage.setItem("previouslyVisited", "true");
       sessionStorage.setItem("currentMode", "daily");
-      window.location.reload();
+      window.location.assign("/login");
     }
   }
 

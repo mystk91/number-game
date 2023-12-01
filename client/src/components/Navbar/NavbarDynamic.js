@@ -1,41 +1,51 @@
-import React, { useState, useEffect, useRef, createContext, useContext } from "react";
-import update from 'immutability-helper';
-import uniqid from "uniqid";
-//import logo from './logo.svg';
-//import { SomeContext } from "../App";
-//Rename all Boilerplate as your new Component
-import './Boilerplate.css';
-import "../normalize.css";
-import "../custom.css";
-import { Link } from "react-router-dom";
-//import styled, { css, ThemeProvider } from 'styled-components';
+import React, { useState, useEffect, useRef } from "react";
+import "../../normalize.css";
+import "../../custom.css";
+import Navbar from "./Navbar";
+import NavbarDaily from "./NavbarDaily";
+import NavbarRandom from "./NavbarRandom";
 
-function Boilerplate(props) {
-  const [property, setProperty] = useState('initialValue');
-  const propRef = useRef('initialValue');
-  function setPropRef(point) {
-    propRef.current = point;
-  }
+/*Creates a navbar based on if user is logged in / signed up to random mode
+  props.digits - the number of digits the game has
+  props.user - takes a user resObj that was fetched from a higher order component
+*/
+function NavbarDynamic(props) {
+  const [navbar, setNavbar] = useState();
 
   //componentDidMount, runs when component mounts, then componentDismount
   useEffect(() => {
-    
-    return() => {};
+    fetchUser();
+    return () => {};
   }, []);
-  //componentDidUpdate, runs after render
-  useEffect(() => {}, [property]);
-  //componentDismount
-  useEffect(() => {return() => {}})
 
-  
-  
-  return (
-    <div className="Boilerplate">
+  //Checks if user is logged in and if they have random mode, sets a Navbar
+  async function fetchUser() {
+    let resObj;
+    if (props.user) {
+      resObj = props.user;
+    } else {
+      let res = await fetch("/api/profile_picture");
+      resObj = await res.json();
+    }
+    if (resObj.loggedIn) {
+      let checkPremium = await fetch("/api/checkPremium");
+      let checkPremiumObj = await checkPremium.json();
 
+      if (checkPremiumObj.premium) {
+        if (sessionStorage.getItem("currentMode") === "random") {
+          setNavbar(<NavbarRandom digits={props.digits} user={resObj} />);
+        } else {
+          setNavbar(<NavbarDaily digits={props.digits} user={resObj} />);
+        }
+      } else {
+        setNavbar(<Navbar digits={props.digits} user={resObj} />);
+      }
+    } else {
+      setNavbar(<Navbar digits={props.digits} user={resObj} />);
+    }
+  }
 
-
-    </div>
-  );
+  return navbar;
 }
 
-export default Boilerplate;
+export default NavbarDynamic;

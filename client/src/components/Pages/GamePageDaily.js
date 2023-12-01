@@ -11,6 +11,7 @@ import Navbar from "../Navbar/Navbar";
 import NavbarDaily from "../Navbar/NavbarDaily";
 import NumberGameRegular from "../Game/NumberGameRegular";
 import NumberGameLocal from "../Game/NumberGameLocal";
+import NavbarDynamic from "../Navbar/NavbarDynamic";
 
 //Creates a page for the website that displays the navbar and the daily game
 //The game page will either use localStorage or data from players account
@@ -27,11 +28,10 @@ function GamePageDaily(props) {
   async function fetchUser() {
     let res = await fetch("/api/profile_picture");
     let resObj = await res.json();
-    if (true){
-    //if (resObj.loggedIn) {
+    if (resObj.loggedIn) {
       setGamePage(
         <div className="game-page">
-          <NavbarDaily digits={props.digits} user={resObj} />
+          <NavbarDynamic digits={props.digits} user={resObj} />
           <NumberGameRegular digits={props.digits} attempts={props.attempts} />
         </div>
       );
@@ -43,6 +43,8 @@ function GamePageDaily(props) {
         </div>
       );
     }
+
+    
   }
 
   return gamePage;

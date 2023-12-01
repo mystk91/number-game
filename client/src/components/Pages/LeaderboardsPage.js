@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import "../../normalize.css";
 import "../../custom.css";
 import Navbar from "../Navbar/Navbar";
+import NavbarDynamic from "../Navbar/NavbarDynamic";
 import Leaderboards from "../Leaderboards/Leaderboards";
 
 //Creates a page for the leaderboards with a navbar
@@ -19,7 +20,7 @@ function LeaderboardsPage(props) {
     let resObj = await res.json();
     setLeaderboardPage(
       <div className="leaderboards-page">
-        <Navbar digits={0} user={resObj} />
+        <NavbarDynamic digits={0} user={resObj} />
         <Leaderboards />
       </div>
     );
