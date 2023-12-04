@@ -30,6 +30,11 @@ function accountRequests(app) {
   const Google_Client_Id = process.env.googleClientId;
   const Google_Client_Secret = process.env.googleClientSecret;
 
+  //Facebook Authentication
+  const FacebookStrategy = require("passport-facebook");
+  const Facebook_Client_Id = process.env.facebookClientId;
+  const Facebook_Client_Secret = process.env.facebookClientSecret;
+
   /////////////////////
   /* Account Creation
   /* Creates a new unverified account and sends a verification email. */
@@ -535,6 +540,97 @@ function accountRequests(app) {
       res.redirect(`${process.env.protocol}${process.env.domain}`);
     }
   );
+
+  //Facebook Authentication
+  /*
+  app.get(
+    "/login/facebook",
+    passport.authenticate("facebook", {
+      scope: ["public_profile"],
+    })
+  );
+  passport.use(
+    new FacebookStrategy(
+      {
+        clientID: Facebook_Client_Id,
+        clientSecret: Facebook_Client_Secret,
+        callbackURL: `${process.env.protocol}${process.env.domain}/login/facebook/callback`,
+      },
+      async function (accessToken, refreshToken, profile, done) {
+        const characters =
+          "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%^&";
+        function generateString(length) {
+          let result = "";
+          const charactersLength = characters.length;
+          for (let i = 0; i < length; i++) {
+            result += characters.charAt(
+              Math.floor(
+                (characters.length *
+                  crypto.getRandomValues(new Uint32Array(1))) /
+                  Math.pow(2, 32)
+              )
+            );
+          }
+          return result;
+        }
+        let session = generateString(48);
+        let returnedAccount = {
+          facebookProfilePicture: public_profile.picture,
+          loginType: "facebook",
+          session: session,
+        };
+        const db = mongoClient.db("Accounts");
+        let accounts = db.collection("Accounts");
+        let account = await accounts.findOne({ facebookId: public_profile.id });
+        console.log(public_profile.email);
+        if (!account) {
+          account = await accounts.findOne({ email: public_proile.email });
+        }
+        if (!account) {
+          let password = await bcrypt.hash(uniqid(), 10);
+          let newAccount = {
+            email: public_profile.email,
+            facebookId: public_profile.id,
+            password: password,
+            session: session,
+          };
+          await accounts.insertOne(newAccount);
+          done(null, returnedAccount);
+        } else {
+          if (!account.facebookId) {
+            await accounts.updateOne(
+              { email: public_profile.email },
+              {
+                $set: {
+                  facebookId: public_profile.id,
+                  session: session,
+                },
+              }
+            );
+          } else {
+            await accounts.updateOne(
+              { facebookId: public_profile.id },
+              {
+                $set: {
+                  session: session,
+                },
+              }
+            );
+          }
+          done(null, returnedAccount);
+        }
+      }
+    )
+  );
+
+  app.get(
+    "/login/facebook/callback",
+    passport.authenticate("facebook", { failureRedirect: "/login" }),
+    async function (req, res) {
+      res.redirect(`${process.env.protocol}${process.env.domain}`);
+    }
+  );
+  */
 
   passport.serializeUser((user, done) => {
     done(null, user);
