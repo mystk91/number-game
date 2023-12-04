@@ -661,7 +661,7 @@ function accountRequests(app) {
     try {
       const db = mongoClient.db("Accounts");
       let accounts = db.collection("Accounts");
-      let account = await accounts.findOne({ session: req.local.session || req.user.session });
+      let account = await accounts.findOne({ session: req.user.session });
       if (account.premium == true) {
         res.send({
           premium: true,
