@@ -37,6 +37,16 @@
     color: white;
 }
 
+.login-button.twitter{
+    background-color: rgb(0, 0, 0);
+    color: white;
+}
+
+.login-button.twitter:hover{
+    background-color: rgb(35, 35, 35);
+}
+
+
 .login-button:hover{
     filter:brightness(1.2);
     cursor: pointer;

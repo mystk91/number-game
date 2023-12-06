@@ -120,6 +120,11 @@ function LoginRegular(props) {
               className="facebook"
               imageURL="/images/login-logos/facebook-logo.png"
             />
+            <LoginOption
+              href="/login/twitter"
+              className="twitter"
+              imageURL="/images/login-logos/twitter-logo.png"
+            />
           </div>
         </div>
       </div>

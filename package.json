@@ -40,6 +40,7 @@
     "passport-facebook": "^3.0.0",
     "passport-google-oauth20": "^2.0.0",
     "passport-local": "^1.0.0",
+    "passport-twitter": "^1.0.4",
     "socket.io": "^4.7.2",
     "socket.io-client": "^4.7.2",
     "uniqid": "^5.4.0"

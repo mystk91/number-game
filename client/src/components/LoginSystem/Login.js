@@ -92,9 +92,7 @@ function Login(props) {
       let resLogin = await fetch(loginURL, options);
 
       if (resLogin.status == 302) {
-        console.log("one");
         let profile = await fetch("/api/current_user");
-        console.log("two");
         let profileObj = await profile.json();
         console.log(profileObj);
         if (profileObj) {
@@ -189,6 +187,11 @@ function Login(props) {
                 href="/login/facebook"
                 className="facebook"
                 imageURL="/images/login-logos/facebook-logo.png"
+              />
+              <LoginOption
+                href="/login/twitter"
+                className="twitter"
+                imageURL="/images/login-logos/twitter-logo.png"
               />
             </div>
           </div>

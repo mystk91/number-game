@@ -133,8 +133,7 @@
 
 .login-options-buttons{
   display: flex;
-  justify-content: center;
-  column-gap: 10%;
+  justify-content: space-around;
   margin: 16px 0 6px;
 }
 

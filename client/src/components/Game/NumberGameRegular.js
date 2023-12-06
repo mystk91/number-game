@@ -382,8 +382,9 @@ function NumberGameRegular(props) {
     firstCall = false
   ) {
     if (shouldFetch) {
-      let userRes = await fetch("/api/current_user");
-      let user = await userRes.json();
+      //let userRes = await fetch("/api/current_user");
+      //let user = await userRes.json();
+      let user = props.user;
       let reqObj = {
         session: user.session,
         digits: props.digits,
@@ -709,8 +710,9 @@ function NumberGameRegular(props) {
     if (boardStateRef.current[currentRowRef.current].length === props.digits) {
       disableInputs();
       setCurrentRowRef(currentRowRef.current + 1);
-      let userRes = await fetch("/api/current_user");
-      let user = await userRes.json();
+      //let userRes = await fetch("/api/current_user");
+      //let user = await userRes.json();
+      let user = props.user;
       let reqObj = {
         session: user.session,
         digits: props.digits,
@@ -1093,8 +1095,9 @@ function NumberGameRegular(props) {
 
   //Resets the game.
   async function resetGame() {
-    let userRes = await fetch("/api/current_user");
-    let user = await userRes.json();
+    //let userRes = await fetch("/api/current_user");
+    //let user = await userRes.json();
+    let user = props.user;
     let reqObj = {
       session: user.session,
       digits: props.digits,

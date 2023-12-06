@@ -35,6 +35,11 @@ function accountRequests(app) {
   const Facebook_Client_Id = process.env.facebookClientId;
   const Facebook_Client_Secret = process.env.facebookClientSecret;
 
+  //Twitter Authentication
+  const TwitterStrategy = require("passport-twitter");
+  const Twitter_Client_Id = process.env.twitterClientId;
+  const Twitter_Client_Secret = process.env.twitterClientSecret;
+
   /////////////////////
   /* Account Creation
   /* Creates a new unverified account and sends a verification email. */
@@ -661,6 +666,97 @@ function accountRequests(app) {
     }
   );
   */
+
+
+  //Twitter Authentication
+  app.get(
+    "/login/twitter",
+    passport.authenticate("twitter", {
+      scope: ["public_profile"],
+    })
+  );
+  passport.use(
+    new TwitterStrategy(
+      {
+        consumerKey: Twitter_Client_Id,
+        consumerSecret: Twitter_Client_Secret,
+        callbackURL: `${process.env.protocol}${process.env.domain}/login/twitter/callback`,
+      },
+      async function (accessToken, refreshToken, profile, done) {
+        const characters =
+          "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%^&";
+        function generateString(length) {
+          let result = "";
+          const charactersLength = characters.length;
+          for (let i = 0; i < length; i++) {
+            result += characters.charAt(
+              Math.floor(
+                (characters.length *
+                  crypto.getRandomValues(new Uint32Array(1))) /
+                  Math.pow(2, 32)
+              )
+            );
+          }
+          return result;
+        }
+        let session = generateString(48);
+        let returnedAccount = {
+          twitterProfilePicture: public_profile.picture,
+          loginType: "twitter",
+          session: session,
+        };
+        const db = mongoClient.db("Accounts");
+        let accounts = db.collection("Accounts");
+        let account = await accounts.findOne({ twitterId: public_profile.id });
+        console.log(public_profile.email);
+        if (!account) {
+          account = await accounts.findOne({ email: public_proile.email });
+        }
+        if (!account) {
+          let password = await bcrypt.hash(uniqid(), 10);
+          let newAccount = {
+            email: public_profile.email,
+            twitterId: public_profile.id,
+            password: password,
+            session: session,
+          };
+          await accounts.insertOne(newAccount);
+          done(null, returnedAccount);
+        } else {
+          if (!account.twitterId) {
+            await accounts.updateOne(
+              { email: public_profile.email },
+              {
+                $set: {
+                  twitterId: public_profile.id,
+                  session: session,
+                },
+              }
+            );
+          } else {
+            await accounts.updateOne(
+              { twitterId: public_profile.id },
+              {
+                $set: {
+                  session: session,
+                },
+              }
+            );
+          }
+          done(null, returnedAccount);
+        }
+      }
+    )
+  );
+
+  app.get(
+    "/login/twitter/callback",
+    passport.authenticate("twitter", { failureRedirect: "/login" }),
+    async function (req, res) {
+      res.redirect(`${process.env.protocol}${process.env.domain}`);
+    }
+  );
+
 
   passport.serializeUser((user, done) => {
     done(null, user);

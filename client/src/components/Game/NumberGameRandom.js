@@ -356,8 +356,9 @@ function NumberGameRandom(props) {
   //You can set shouldFetch to false & use a gameObj as a parameter to skip server call
   async function updateGameStateFromBackend(shouldFetch = true, resObj = null) {
     if (shouldFetch) {
-      let userRes = await fetch("/api/current_user");
-      let user = await userRes.json();
+      //let userRes = await fetch("/api/current_user");
+      //let user = await userRes.json();
+      let user = props.user;
       let reqObj = {
         session: user.session,
         digits: props.digits,
@@ -672,8 +673,9 @@ function NumberGameRandom(props) {
     if (boardStateRef.current[currentRowRef.current].length === props.digits) {
       disableInputs();
       setCurrentRowRef(currentRowRef.current + 1);
-      let userRes = await fetch("/api/current_user");
-      let user = await userRes.json();
+      //let userRes = await fetch("/api/current_user");
+      //let user = await userRes.json();
+      let user = props.user;
       let reqObj = {
         session: user.session,
         digits: props.digits,
@@ -1022,8 +1024,9 @@ function NumberGameRandom(props) {
 
   //Resets the game.
   async function resetGame() {
-    let userRes = await fetch("/api/current_user");
-    let user = await userRes.json();
+    //let userRes = await fetch("/api/current_user");
+    //let user = await userRes.json();
+    let user = props.user;
     let reqObj = {
       session: user.session,
       digits: props.digits,
