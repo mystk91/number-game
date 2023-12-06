@@ -424,6 +424,8 @@ function accountRequests(app) {
             let session = generateString(48);
             newUser.session = session;
             newUser.loginType = "email";
+            newUser.profile_picture =
+              "./images/account/profile-images/logged-in.png";
           } else {
             errors.password = "Wrong password. Try again.";
             errorExists = true;
@@ -444,12 +446,41 @@ function accountRequests(app) {
   );
 
   //Logs the user out
-  app.post("/api/logout", (req, res, next) => {
+  app.post("/api/logout", async (req, res, next) => {
     req.logout(function (err) {
       if (err) {
         return next(err);
       }
     });
+    try {
+      const db = mongoClient.db("Accounts");
+      let accounts = db.collection("Accounts");
+      const characters =
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%^&";
+      function generateString(length) {
+        let result = "";
+        const charactersLength = characters.length;
+        for (let i = 0; i < length; i++) {
+          result += characters.charAt(
+            Math.floor(
+              (characters.length * crypto.getRandomValues(new Uint32Array(1))) /
+                Math.pow(2, 32)
+            )
+          );
+        }
+        return result;
+      }
+      let newSession = generateString(32);
+      await accounts.updateOne(
+        { session: req.body.session },
+        {
+          $set: {
+            session: newSession,
+          },
+        }
+      );
+    } catch {}
+
     res.sendStatus(302);
   });
 
@@ -484,8 +515,7 @@ function accountRequests(app) {
         }
         let session = generateString(48);
         let returnedAccount = {
-          googleProfilePicture: profile.photos[0].value,
-          googleUsername: profile.name.givenName,
+          profile_picture: profile.photos[0].value,
           loginType: "google",
           session: session,
         };
@@ -653,15 +683,33 @@ function accountRequests(app) {
 
   //Returns the info of the current user
   app.get("/api/current_user", async (req, res) => {
-    res.json(req.user);
+    res.send(req.user);
   });
 
-  //Checks if user has premium, returns {premium: true} if they do
-  app.get("/api/checkPremium", async (req, res) => {
+  //Checks if the user has an active login session, returns {loggedIn: true} if they do
+  app.post("/api/checkSession", async (req, res) => {
     try {
       const db = mongoClient.db("Accounts");
       let accounts = db.collection("Accounts");
-      let account = await accounts.findOne({ session: req.user.session });
+      let account = await accounts.findOne({ session: req.body.session });
+      if (account) {
+        res.send({
+          loggedIn: true,
+        });
+      } else {
+        res.send({});
+      }
+    } catch {
+      res.send({});
+    }
+  });
+
+  //Checks if user has premium, returns {premium: true} if they do
+  app.post("/api/checkPremium", async (req, res) => {
+    try {
+      const db = mongoClient.db("Accounts");
+      let accounts = db.collection("Accounts");
+      let account = await accounts.findOne({ session: req.body.session });
       if (account.premium == true) {
         res.send({
           premium: true,
@@ -675,18 +723,13 @@ function accountRequests(app) {
   });
 
   //Retuns the profile image link of the user, returns a default picture otherwise
+  //Does almost the same thing as /api/current user, but I coded this into project first
   app.get("/api/profile_picture", async (req, res) => {
     try {
-      if (req.user.loginType == "email") {
+      if (req.user) {
         res.send({
           loggedIn: true,
-          imageUrl: "./images/account/profile-images/logged-in.png",
-          session: req.user.session,
-        });
-      } else if (req.user.loginType == "google") {
-        res.send({
-          loggedIn: true,
-          imageUrl: req.user.googleProfilePicture,
+          imageUrl: req.user.profile_picture,
           session: req.user.session,
         });
       } else {

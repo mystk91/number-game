@@ -44,6 +44,17 @@ function LoginRegular(props) {
       let loginURL = "/api/login";
       let resLogin = await fetch(loginURL, options);
       if (resLogin.status == 302) {
+        let profile = await fetch("/api/current_user");
+        let profileObj = await profile.json();
+        if (profileObj) {
+          localStorage.setItem(
+            "profile",
+            JSON.stringify({
+              session: profileObj.session,
+              profile_picture: profileObj.profile_picture,
+            })
+          );
+        }
         window.location = "/";
       } else {
         window.location.refresh();

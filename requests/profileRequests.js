@@ -10,6 +10,7 @@ function profileRequests(app) {
   let ObjectId = require("mongodb").ObjectId;
   const mongoClient = new MongoClient(process.env.mongoDB);
 
+  /*
   //Redirects user to homepage if they are already logged in
   app.get("/login", async (req, res, next) => {
     try {
@@ -20,6 +21,11 @@ function profileRequests(app) {
       next();
     }
   });
+  */
+
+  
+
+
 }
 
 module.exports = { profileRequests };

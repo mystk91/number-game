@@ -16,12 +16,26 @@ function LeaderboardsPage(props) {
   }, []);
 
   async function fetchUser() {
-    let res = await fetch("/api/profile_picture");
-    let resObj = await res.json();
+    let resObj;
+    let profile = localStorage.getItem("profile");
+    if (props.user) {
+      resObj = props.user;
+    } else if (profile) {
+      let profileObj = JSON.parse(profile);
+      resObj = {
+        session: profileObj.session,
+        imageUrl: profileObj.profile_picture,
+        loggedIn: true,
+      };
+      console.log("using local object " + resObj);
+    } else {
+      let res = await fetch("/api/profile_picture");
+      resObj = await res.json();
+    }
     setLeaderboardPage(
       <div className="leaderboards-page">
         <NavbarDynamic digits={0} user={resObj} />
-        <Leaderboards />
+        <Leaderboards user={resObj}/>
       </div>
     );
   }

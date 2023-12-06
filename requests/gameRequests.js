@@ -20,7 +20,7 @@ function gameRequests(app) {
       if (account.premium == true) {
         next();
       } else {
-        res.redirect("/premium");
+        res.redirect("/random/info");
       }
     } catch {
       res.redirect("/login");
@@ -28,12 +28,14 @@ function gameRequests(app) {
   }
 
   //Used to redirect user to buy premium page if they haven't bought it
+  /*
   app.get("/random2", redirectNonPremium);
   app.get("/random3", redirectNonPremium);
   app.get("/random4", redirectNonPremium);
   app.get("/random5", redirectNonPremium);
   app.get("/random6", redirectNonPremium);
   app.get("/random7", redirectNonPremium);
+  */
 
   //Returns the gameboard saved to the user in the database. RANDOM
   async function getCurrentGameRandom(req, res, next) {

@@ -29,7 +29,7 @@ function ProfileDropdown(props) {
     const url = "/api/logout";
     const options = {
       method: "POST",
-      body: null,
+      body: JSON.stringify(props.user),
       withCredentials: true,
       credentials: "include",
       headers: {
@@ -39,8 +39,8 @@ function ProfileDropdown(props) {
     };
     let res = await fetch(url, options);
     if (res.status == 302) {
-      localStorage.clear();
-      localStorage.setItem("previouslyVisited", "true");
+      localStorage.removeItem("profile");
+      localStorage.setItem("previouslyVisited", "5");
       sessionStorage.setItem("currentMode", "daily");
       window.location.assign("/login");
     }

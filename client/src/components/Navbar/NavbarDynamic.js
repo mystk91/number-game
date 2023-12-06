@@ -21,14 +21,33 @@ function NavbarDynamic(props) {
   //Checks if user is logged in and if they have random mode, sets a Navbar
   async function fetchUser() {
     let resObj;
+    let profile = localStorage.getItem("profile");
     if (props.user) {
       resObj = props.user;
+    } else if (profile) {
+      let profileObj = JSON.parse(profile);
+      resObj = {
+        session: profileObj.session,
+        imageUrl: profileObj.profile_picture,
+        loggedIn: true,
+      };
+      console.log("using local object " + resObj);
     } else {
       let res = await fetch("/api/profile_picture");
       resObj = await res.json();
     }
-    if (resObj.loggedIn) {
-      let checkPremium = await fetch("/api/checkPremium");
+    if (resObj.session) {
+      const options = {
+        method: "POST",
+        body: JSON.stringify(resObj),
+        withCredentials: true,
+        credentials: "include",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+      };
+      let checkPremium = await fetch("/api/checkPremium", options);
       let checkPremiumObj = await checkPremium.json();
 
       if (checkPremiumObj.premium) {

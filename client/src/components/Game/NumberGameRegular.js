@@ -212,6 +212,7 @@ function NumberGameRegular(props) {
     sessionStorage.setItem("currentMode", "daily");
     setupGame();
     document.addEventListener("keydown", handleKeydown);
+    completeLogin();
 
     return () => {
       document.removeEventListener("keydown", handleKeydown);
@@ -1124,6 +1125,21 @@ function NumberGameRegular(props) {
     changeCurrentInputButton();
     updateKeyboard();
     updateGameBoard();
+  }
+
+  //External logins like from google will redirect to this page. This will put the profile info into local storage
+  async function completeLogin() {
+    let profile = await fetch("/api/current_user");
+    let profileObj = await profile.json();
+    if (profileObj) {
+      localStorage.setItem(
+        "profile",
+        JSON.stringify({
+          session: profileObj.session,
+          profile_picture: profileObj.profile_picture,
+        })
+      );
+    }
   }
 
   //Displays the button that links to the premium page

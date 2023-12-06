@@ -207,7 +207,7 @@ function NavbarRandom(props) {
       <button className="profile-btn clicked">
         <img src={profileImageRef.current} />
       </button>
-      <ProfileDropdown key="profileDropdownVisisble" />
+      <ProfileDropdown key="profileDropdownVisisble" user={props.user} />
     </div>
   );
 

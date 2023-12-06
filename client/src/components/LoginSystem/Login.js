@@ -90,7 +90,22 @@ function Login(props) {
     if (res.status == 302) {
       let loginURL = "/api/login";
       let resLogin = await fetch(loginURL, options);
+
       if (resLogin.status == 302) {
+        console.log("one");
+        let profile = await fetch("/api/current_user");
+        console.log("two");
+        let profileObj = await profile.json();
+        console.log(profileObj);
+        if (profileObj) {
+          localStorage.setItem(
+            "profile",
+            JSON.stringify({
+              session: profileObj.session,
+              profile_picture: profileObj.profile_picture,
+            })
+          );
+        }
         window.location.reload();
       } else {
         window.location = "/login";
