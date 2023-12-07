@@ -37,20 +37,7 @@ function NavbarDynamic(props) {
       resObj = await res.json();
     }
     if (resObj.session) {
-      const options = {
-        method: "POST",
-        body: JSON.stringify(resObj),
-        withCredentials: true,
-        credentials: "include",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-      };
-      let checkPremium = await fetch("/api/checkPremium", options);
-      let checkPremiumObj = await checkPremium.json();
-
-      if (checkPremiumObj.premium) {
+      if (resObj.premium) {
         if (sessionStorage.getItem("currentMode") === "random") {
           setNavbar(<NavbarRandom digits={props.digits} user={resObj} />);
         } else {

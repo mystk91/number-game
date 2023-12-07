@@ -11,6 +11,7 @@ function gameRequests(app) {
   let ObjectId = require("mongodb").ObjectId;
   const mongoClient = new MongoClient(process.env.mongoDB);
 
+  /*
   //Used to redirect user to buy premium page if they haven't bought it
   async function redirectNonPremium(req, res, next) {
     try {
@@ -26,6 +27,7 @@ function gameRequests(app) {
       res.redirect("/login");
     }
   }
+  */
 
   //Used to redirect user to buy premium page if they haven't bought it
   /*
@@ -42,7 +44,7 @@ function gameRequests(app) {
     try {
       const db = mongoClient.db("Accounts");
       let accounts = db.collection("Accounts");
-      let account = await accounts.findOne({ session: req.user.session });
+      let account = await accounts.findOne({ session: req.body.session });
       let randomGameString = req.body.digits + "random";
       if (!account[randomGameString]) {
         resetGameRandom(req, res, next);
@@ -85,7 +87,7 @@ function gameRequests(app) {
       console.log("starting to reset your game");
       const db = mongoClient.db("Accounts");
       let accounts = db.collection("Accounts");
-      let account = await accounts.findOne({ session: req.user.session });
+      let account = await accounts.findOne({ session: req.body.session });
       let randomGameString = req.body.digits + "random";
       let condition = false;
       if (account[randomGameString]) {
@@ -129,7 +131,7 @@ function gameRequests(app) {
 
         let randomGameString = req.body.digits + "random";
         await accounts.updateOne(
-          { session: req.user.session },
+          { session: req.body.session },
           {
             $set: {
               [randomGameString]: randomGameObj,
@@ -163,7 +165,7 @@ function gameRequests(app) {
     try {
       const db = mongoClient.db("Accounts");
       let accounts = db.collection("Accounts");
-      let account = await accounts.findOne({ session: req.user.session });
+      let account = await accounts.findOne({ session: req.body.session });
       let validateNumber = false;
       if (
         isFinite(req.body.number) &&
@@ -389,7 +391,7 @@ function gameRequests(app) {
       console.log("lets check out your game");
       const db = mongoClient.db("Accounts");
       let accounts = db.collection("Accounts");
-      let account = await accounts.findOne({ session: req.user.session });
+      let account = await accounts.findOne({ session: req.body.session });
       let regularGameString = req.body.digits + "digits";
       if (!account[regularGameString]) {
         resetGameRegular(req, res, next);
@@ -455,7 +457,7 @@ function gameRequests(app) {
       console.log("starting to reset your game");
       const db = mongoClient.db("Accounts");
       let accounts = db.collection("Accounts");
-      let account = await accounts.findOne({ session: req.user.session });
+      let account = await accounts.findOne({ session: req.body.session });
       let gameString = req.body.digits + "digits";
       let condition = false;
       if (account[gameString]) {
@@ -503,7 +505,7 @@ function gameRequests(app) {
 
         let gameString = req.body.digits + "digits";
         await accounts.updateOne(
-          { session: req.user.session },
+          { session: req.body.session },
           {
             $set: {
               [gameString]: regularGameObj,
@@ -538,7 +540,7 @@ function gameRequests(app) {
     try {
       const db = mongoClient.db("Accounts");
       let accounts = db.collection("Accounts");
-      let account = await accounts.findOne({ session: req.user.session });
+      let account = await accounts.findOne({ session: req.body.session });
       let validateNumber = false;
       if (
         isFinite(req.body.number) &&

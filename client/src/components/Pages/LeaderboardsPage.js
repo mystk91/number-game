@@ -27,15 +27,31 @@ function LeaderboardsPage(props) {
         imageUrl: profileObj.profile_picture,
         loggedIn: true,
       };
-      console.log("using local object " + resObj);
     } else {
       let res = await fetch("/api/profile_picture");
       resObj = await res.json();
     }
+    if (resObj.session) {
+      const options = {
+        method: "POST",
+        body: JSON.stringify(resObj),
+        withCredentials: true,
+        credentials: "include",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+      };
+      let checkPremium = await fetch("/api/checkPremium", options);
+      let checkPremiumObj = await checkPremium.json();
+      if (checkPremiumObj.premium) {
+        resObj.premium = true;
+      }
+    }
     setLeaderboardPage(
       <div className="leaderboards-page">
         <NavbarDynamic digits={0} user={resObj} />
-        <Leaderboards user={resObj}/>
+        <Leaderboards user={resObj} />
       </div>
     );
   }

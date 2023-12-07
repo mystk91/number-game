@@ -42,12 +42,33 @@ function GamePageDaily(props) {
       let res = await fetch("/api/profile_picture");
       resObj = await res.json();
     }
-    if (resObj.loggedIn) {
+    if (resObj.session) {
+      const options = {
+        method: "POST",
+        body: JSON.stringify(resObj),
+        withCredentials: true,
+        credentials: "include",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+      };
+      let checkPremium = await fetch("/api/checkPremium", options);
+      let checkPremiumObj = await checkPremium.json();
+      if (checkPremiumObj.premium) {
+        resObj.premium = true;
+      }
+    }
+    if (resObj.session) {
       console.log("giving you the daily dynamic game page");
       setGamePage(
         <div className="game-page">
           <NavbarDynamic digits={props.digits} user={resObj} />
-          <NumberGameRegular digits={props.digits} attempts={props.attempts} user={resObj} />
+          <NumberGameRegular
+            digits={props.digits}
+            attempts={props.attempts}
+            user={resObj}
+          />
         </div>
       );
     } else {
@@ -55,7 +76,11 @@ function GamePageDaily(props) {
       setGamePage(
         <div className="game-page">
           <Navbar digits={props.digits} user={resObj} />
-          <NumberGameLocal digits={props.digits} attempts={props.attempts} user={resObj} />
+          <NumberGameLocal
+            digits={props.digits}
+            attempts={props.attempts}
+            user={resObj}
+          />
         </div>
       );
     }

@@ -36,7 +36,7 @@ function accountRequests(app) {
   const Facebook_Client_Secret = process.env.facebookClientSecret;
 
   //Twitter Authentication
-  const TwitterStrategy = require("passport-twitter");
+  const TwitterStrategy = require("@superfaceai/passport-twitter-oauth2");
   const Twitter_Client_Id = process.env.twitterClientId;
   const Twitter_Client_Secret = process.env.twitterClientSecret;
 
@@ -440,7 +440,7 @@ function accountRequests(app) {
         if (errorExists) {
           return done(null, false, errors);
         } else {
-          accounts.updateOne(
+          await accounts.updateOne(
             { _id: user._id },
             { $set: { session: newUser.session } }
           );
@@ -668,21 +668,23 @@ function accountRequests(app) {
   */
 
 
+  /*
   //Twitter Authentication
   app.get(
     "/login/twitter",
     passport.authenticate("twitter", {
-      scope: ["public_profile"],
+      scope: ["profile"],
     })
   );
   passport.use(
     new TwitterStrategy(
       {
-        consumerKey: Twitter_Client_Id,
-        consumerSecret: Twitter_Client_Secret,
+        clientType: 'confidential',
+        clientID: Twitter_Client_Id,
+        clientSecret: Twitter_Client_Secret,
         callbackURL: `${process.env.protocol}${process.env.domain}/login/twitter/callback`,
       },
-      async function (accessToken, refreshToken, profile, done) {
+      async function (token, tokenSecret, profile, done) {
         const characters =
           "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%^&";
         function generateString(length) {
@@ -701,22 +703,21 @@ function accountRequests(app) {
         }
         let session = generateString(48);
         let returnedAccount = {
-          twitterProfilePicture: public_profile.picture,
+          twitterProfilePicture: profile.photos[0],
           loginType: "twitter",
           session: session,
         };
         const db = mongoClient.db("Accounts");
         let accounts = db.collection("Accounts");
-        let account = await accounts.findOne({ twitterId: public_profile.id });
-        console.log(public_profile.email);
+        let account = await accounts.findOne({ twitterId: profile.id });
         if (!account) {
-          account = await accounts.findOne({ email: public_proile.email });
+          account = await accounts.findOne({ email: profile.email[0] });
         }
         if (!account) {
           let password = await bcrypt.hash(uniqid(), 10);
           let newAccount = {
-            email: public_profile.email,
-            twitterId: public_profile.id,
+            email: profile.email,
+            twitterId: profile.id,
             password: password,
             session: session,
           };
@@ -725,17 +726,17 @@ function accountRequests(app) {
         } else {
           if (!account.twitterId) {
             await accounts.updateOne(
-              { email: public_profile.email },
+              { email: profile.email },
               {
                 $set: {
-                  twitterId: public_profile.id,
+                  twitterId: profile.id,
                   session: session,
                 },
               }
             );
           } else {
             await accounts.updateOne(
-              { twitterId: public_profile.id },
+              { twitterId: profile.id },
               {
                 $set: {
                   session: session,
@@ -756,6 +757,7 @@ function accountRequests(app) {
       res.redirect(`${process.env.protocol}${process.env.domain}`);
     }
   );
+  */
 
 
   passport.serializeUser((user, done) => {
@@ -779,6 +781,7 @@ function accountRequests(app) {
 
   //Returns the info of the current user
   app.get("/api/current_user", async (req, res) => {
+    console.log(req.user);
     res.send(req.user);
   });
 
