@@ -5,6 +5,7 @@ import "../../normalize.css";
 import "../../custom.css";
 import HistogramRegular from "./HistogramRegular";
 import ShareScore from "./ShareScore";
+import AdRandomMode from "./AdRandomMode";
 
 function NumberGameRegular(props) {
   //Used to update the board state visually
@@ -754,6 +755,7 @@ function NumberGameRegular(props) {
         //removeTransitionDelay();
         updateGameBoard();
         //updateLocalStorage();
+        updateTimesVisited();
       } else {
         if (resObj.gameObj.status === `playing`) {
           addTransitionDelay();
@@ -775,6 +777,7 @@ function NumberGameRegular(props) {
           changeKeyboardColors();
           removeTransitionDelay();
           updateGameBoard();
+          updateTimesVisited();
         }
       }
     } else {
@@ -1128,6 +1131,7 @@ function NumberGameRegular(props) {
     changeCurrentInputButton();
     updateKeyboard();
     updateGameBoard();
+    showAd();
   }
 
   //External logins like from google will redirect to this page. This will put the profile info into local storage
@@ -1145,12 +1149,88 @@ function NumberGameRegular(props) {
     }
   }
 
-  //Displays the button that links to the premium page
-  function showPremiumButton() {}
+  //Used for showing a popup ad before game starts
+  const [adPopup, setAdPopup] = useState();
+
+  //Displays a popup ad for the random mode of the game after visitor has visited site a couple times
+  //Starts displaying ordinary ads afterwards at random intervals
+  function showAd() {
+    if (!props.user.premium) {
+      let previouslyVisited = Number.parseInt(
+        localStorage.getItem("previouslyVisited")
+      );
+      //if (false) {
+      if (previouslyVisited < 4) {
+        //} else if (true) {
+      } else if (previouslyVisited === 4) {
+        document.removeEventListener("keydown", handleKeydown);
+        setKeyboardClassNameRef("number-inputs disabled");
+        let adHTML = (
+          <div className="ad-modal">
+            <span className="ad-modal-top">
+              <button className="close-ad-modal" onClick={closeAdModal}>
+                X
+              </button>
+            </span>
+            <AdRandomMode />
+            <button className="confirmation-btn" onClick={closeAdModal}>
+              Not Today!
+            </button>
+          </div>
+        );
+        setAdPopup(adHTML);
+        localStorage.setItem("previouslyVisited", "5");
+      }
+      /* This is where an ad could be inserted
+    else {
+      let randomNum = Math.floor(Math.random() * 9);
+      if (randomNum === 0) {
+        let adHTML = (
+          <div className="ad-modal">
+            <span className="ad-modal-top">
+              <button
+                className="close-ad-modal"
+                onClick={(e) => closeAdModal(e)}
+              >
+                X
+              </button>
+            </span>
+            <AdRandomMode />
+            <button className="confirmation-btn" onClick={closeAdModal}>
+              Go to Game
+            </button>
+          </div>
+        );
+        setAdPopup(adHTML);
+      }
+    }
+    */
+    }
+  }
+
+  //Closes the modal that pops up at the end of the game
+  function closeAdModal(e) {
+    document.addEventListener("keydown", handleKeydown);
+    setKeyboardClassNameRef("number-inputs");
+    setAdPopup();
+  }
+
+  function updateTimesVisited() {
+    if (!props.user.premium) {
+      let previouslyVisited = Number.parseInt(
+        localStorage.getItem("previouslyVisited")
+      );
+      if (previouslyVisited < 4) {
+        previouslyVisited++;
+        localStorage.setItem("previouslyVisited", previouslyVisited);
+      }
+    }
+  }
 
   return (
     <main className="game-container">
       <div className={"gameboard"}>
+        {adPopup}
         {errorMessagesDiv}
         {gameOverModalRef.current}
         <div className="rows" ref={yPosition}>

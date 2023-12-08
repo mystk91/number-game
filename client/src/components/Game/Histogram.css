@@ -6,8 +6,8 @@
 
 .histogram-row {
   display: flex;
-  column-gap: 8px;
-  width: 320px;
+  column-gap: 6px;
+  width: 330px;
   height: 30px;
   margin: 0 4px;
   animation: -2s 4s dropdownHistogram;
@@ -21,6 +21,7 @@
 .histogram-score {
   width: 20px;
   max-width: 20px;
+  margin-left: 4px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -70,8 +71,6 @@
 }
 
 .histogram-frequency {
-  width: 20px;
-  max-width: 20px;
   display: flex;
   justify-content: center;
   align-items: center;

@@ -45,7 +45,7 @@ function Histogram(props) {
       });
 
       let pixelData = new Array(props.attempts + 1);
-      let histoLength = 250;
+      let histoLength = 248;
       for (let i = 0; i < pixelData.length; i++) {
         if (histogramData[i] > 0) {
           pixelData[i] = Math.max(

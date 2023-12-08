@@ -611,30 +611,33 @@
 }
 
 .defeat-modal,
-.victory-modal {
+.victory-modal,
+.ad-modal {
   position: absolute;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: max-content;
   top: 56px;
-  left: calc(50% - 170px);
+  left: calc(50% - 175px);
   background-color: rgb(245, 245, 245);
   border: 1px solid black;
   border-top: none;
   padding: 10px 0 0 0;
   z-index: 1;
+  width: 350px;
 }
 
 .defeat-modal > *,
-.victory-modal > * {
+.victory-modal > *,
+.ad-modal > * {
   margin: 1px 0;
   font-size: 1.8rem;
 }
 
 .defeat-modal-top,
-.victory-modal-top {
+.victory-modal-top,
+.ad-modal-top {
   display: flex;
   justify-content: flex-end;
   margin: 1px 0px 0px 0px;
@@ -642,12 +645,14 @@
 }
 
 .defeat-modal-top button,
-.victory-modal-top button {
+.victory-modal-top button,
+.ad-modal-top button {
   user-select: none;
 }
 
 .close-defeat-modal,
-.close-victory-modal {
+.close-victory-modal,
+.close-ad-modal {
   all: unset;
   height: max-content;
   font-size: 2rem;
@@ -655,6 +660,10 @@
   font-family: sans-serif;
   margin-right: 4px;
   padding: 2px 6px 4px 8px;
+}
+
+.ad-modal{
+  z-index: 3;
 }
 
 .defeat-label,
@@ -703,7 +712,7 @@
   display: flex;
   align-items: center;
   column-gap: 24px;
-  transition: .2s column-gap;
+  transition: 0.2s column-gap;
 }
 
 .arrow-left,
@@ -730,38 +739,41 @@
   border-left: 40px solid var(--arrow-color);
 }
 
+.ad-modal .confirmation-btn{
+  margin: 3px 0 12px;
+}
+
 /* Even Smaller Style */
 @media screen and (max-width: 379px) {
   .number-inputs button {
     width: 31px;
   }
-  .keyboard-bottom{
+  .keyboard-bottom {
     column-gap: 2px;
-    transition: .2s column-gap;
+    transition: 0.2s column-gap;
   }
   .arrow-left {
     border-right: 30px solid var(--arrow-color);
   }
-  
+
   .arrow-right {
     border-left: 30px solid var(--arrow-color);
   }
 }
 
 /* Typical Phone Style */
-@media screen and (min-width: 380px) and (max-width: 419px){
-  .keyboard-bottom{
+@media screen and (min-width: 380px) and (max-width: 419px) {
+  .keyboard-bottom {
     column-gap: 6px;
-    transition: .2s column-gap;
+    transition: 0.2s column-gap;
   }
   .arrow-left {
     border-right: 36px solid var(--arrow-color);
   }
-  
+
   .arrow-right {
     border-left: 36px solid var(--arrow-color);
   }
-
 }
 
 /* Mid-size Styles */
@@ -779,10 +791,10 @@
     width: 38.4px;
     transition: 0.2s width;
   }
-  
-  .keyboard-bottom{
+
+  .keyboard-bottom {
     column-gap: 8px;
-    transition: .2s column-gap;
+    transition: 0.2s column-gap;
   }
 }
 

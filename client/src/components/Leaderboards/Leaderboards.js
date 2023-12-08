@@ -180,13 +180,13 @@ function Leaderboards(props) {
     let newLeaderboard = [];
     for (let i = 0; i < leaderboardData.length; i++) {
       let row = (
-        <li className="leaderboard-row" key={i}>
-          <div className="player-rank">{leaderboardData[i].rank}</div>
-          <div className="player-username">{leaderboardData[i].username}</div>
-          <div className="player-average">
+        <tr className="leaderboard-row" key={i}>
+          <td className="player-rank">{leaderboardData[i].rank}</td>
+          <td className="player-username">{leaderboardData[i].username}</td>
+          <td className="player-average">
             {leaderboardData[i].average.toFixed(3)}
-          </div>
-        </li>
+          </td>
+        </tr>
       );
       newLeaderboard.push(row);
     }
@@ -281,17 +281,19 @@ function Leaderboards(props) {
             </li>
           </ul>
 
-          <div className="leaderboard">
-            <label className="leaderboard-digits-label">
+          <table className="leaderboard">
+            <caption className="leaderboard-caption">
               {numberOfDigits + " Digits - Random Mode"}
-            </label>
-            <li className="leaderboard-labels">
-              <label className="player-rank-label">Rank</label>
-              <label className="player-username-label">Name</label>
-              <label className="player-average-label">Average</label>
-            </li>
-            <ul className="leaderboard-entries">{activeLeaderboard}</ul>
-          </div>
+            </caption>
+            <thead>
+              <tr className="leaderboard-labels">
+                <th className="player-rank-label">Rank</th>
+                <th className="player-username-label">Name</th>
+                <th className="player-average-label">Average</th>
+              </tr>
+            </thead>
+            <tbody className="leaderboard-entries">{activeLeaderboard}</tbody>
+          </table>
         </div>
       </main>
     </div>
