@@ -647,7 +647,6 @@ function NumberGameRegular(props) {
     Object.entries(keyboardAnimationRef.current).forEach((x) => {
       keyboardAnimationCopy[x[0]] = x[1];
     });
-    keyboardAnimationCopy[keyName] = `mars`;
     setKeyboardAnimationRef(keyboardAnimationCopy);
     updateKeyboard();
     setTimeout(() => {
@@ -1082,7 +1081,7 @@ function NumberGameRegular(props) {
     );
     let message;
     if (timeToNextGame <= 1) {
-      message = "New Game Available Soon";
+      message = "New Game Soon";
     } else {
       message = "New Game in " + timeToNextGame + " Hours";
     }
@@ -1159,9 +1158,8 @@ function NumberGameRegular(props) {
       let previouslyVisited = Number.parseInt(
         localStorage.getItem("previouslyVisited")
       );
-      //if (false) {
       if (previouslyVisited < 4) {
-        //} else if (true) {
+        //Do nothing
       } else if (previouslyVisited === 4) {
         document.removeEventListener("keydown", handleKeydown);
         setKeyboardClassNameRef("number-inputs disabled");

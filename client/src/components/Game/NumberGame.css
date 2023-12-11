@@ -135,8 +135,9 @@
   margin: 4px 0;
 }
 
-.number-inputs.disabled button {
+.number-inputs.disabled button, .enter-guess.disabled {
   pointer-events: none;
+  cursor: none;
 }
 
 .number-inputs {
@@ -144,7 +145,8 @@
   justify-content: center;
 }
 
-.number-inputs button {
+.number-inputs button,
+.show-scores {
   height: 64px;
   width: 34px;
   margin: 0 0.5px;
@@ -153,11 +155,13 @@
   font-size: 4.2rem;
   background-color: rgb(250, 250, 250);
   color: black;
+  cursor: pointer;
 }
 
 .enter-guess,
 .reset-game,
-.bottom-message {
+.bottom-message,
+.show-scores {
   width: 288px;
   height: 48px;
   border-radius: 12px;
@@ -165,6 +169,10 @@
   font-size: 2rem;
   background-color: rgb(250, 250, 250);
   color: black;
+}
+
+.enter-guess {
+  cursor: pointer;
 }
 
 .reset-game,
@@ -185,6 +193,33 @@
   background-color: rgb(250, 250, 250);
   color: black;
   font-size: 2.2rem;
+}
+
+.show-scores-container {
+  display: flex;
+  justify-content: center;
+  margin: 3px 0 8px;
+}
+
+.show-scores {
+  border: 1px solid black;
+  font-size: 2.2rem;
+  cursor: pointer;
+}
+
+.show-scores.float-down {
+  animation: showScoresButton 0.8s;
+}
+
+@keyframes showScoresButton {
+  0% {
+    position: relative;
+    bottom: 210px;
+  }
+  100% {
+    position: relative;
+    bottom: 0px;
+  }
 }
 
 @keyframes resetGameFlash {
@@ -517,9 +552,19 @@
 }
 
 /*Handle the keydown animation*/
-.keydown {
+.number-input.keydown, .backspace.keydown {
   animation-name: keydown;
   animation-duration: 0.5s;
+}
+
+.enter-guess.keydown {
+  animation-name: keydown;
+  animation-duration: 0.3s;
+}
+
+.show-scores.keydown {
+  animation-name: keydown;
+  animation-duration: 0.3s;
 }
 
 @keyframes keydown {
@@ -610,9 +655,33 @@
   }
 }
 
+.ad-modal{
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  z-index: 3;
+  top: 0px;
+  background-color: rgba(0,0,0, .2);
+}
+
+.ad-modal-box{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: rgb(245, 245, 245);
+  border: 1px solid black;
+  padding: 10px 0 0 0;
+  width: 350px;
+  height: max-content;
+  position: absolute;
+  top: 4%;
+}
+
 .defeat-modal,
-.victory-modal,
-.ad-modal {
+.victory-modal{
   position: absolute;
   display: flex;
   flex-direction: column;
@@ -630,7 +699,7 @@
 
 .defeat-modal > *,
 .victory-modal > *,
-.ad-modal > * {
+.ad-modal-box > * {
   margin: 1px 0;
   font-size: 1.8rem;
 }
@@ -660,10 +729,6 @@
   font-family: sans-serif;
   margin-right: 4px;
   padding: 2px 6px 4px 8px;
-}
-
-.ad-modal{
-  z-index: 3;
 }
 
 .defeat-label,
@@ -739,7 +804,7 @@
   border-left: 40px solid var(--arrow-color);
 }
 
-.ad-modal .confirmation-btn{
+.ad-modal-box .confirmation-btn {
   margin: 3px 0 12px;
 }
 

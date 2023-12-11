@@ -93,6 +93,7 @@
 .game-modes-mobile {
   width: min-content;
   display: none;
+  z-index: 3;
 }
 
 .navigation-bar .game-modes-list a:hover:not(.current) {
@@ -252,7 +253,7 @@
     border: 1px solid black;
     animation: 0.3s showGameModes forwards;
     position: relative;
-    z-index: 1;
+    z-index: 2;
   }
 
   @keyframes showGameModes {

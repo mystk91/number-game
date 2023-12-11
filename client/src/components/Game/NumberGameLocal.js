@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import uniqid from "uniqid";
 import "./NumberGame.css";
 import "../../normalize.css";
@@ -126,7 +126,7 @@ function NumberGameLocal(props) {
 
   //Used to set the class name for the keyboard.
   //It will be set to `keyboard disabled` when the game is over so it won't take inputs
-  const keyboardClassNameRef = useRef(`number-inputs`);
+  const keyboardClassNameRef = useRef(``);
   function setKeyboardClassNameRef(point) {
     keyboardClassNameRef.current = point;
   }
@@ -477,140 +477,296 @@ function NumberGameLocal(props) {
   function updateKeyboard() {
     let keyboardHTML = (
       <div className="keyboard">
-        <div className={keyboardClassNameRef.current}>
+        <div className={"number-inputs" + keyboardClassNameRef.current}>
           <button
-            className={"number-input" + keyboardColorsRef.current["color1"]}
+            className={
+              "number-input" +
+              keyboardColorsRef.current["color1"] +
+              keyboardAnimationRef.current[`key1`]
+            }
             style={{
-              animation: keyboardAnimationRef.current[`key1`],
               transitionDelay: transitionDelayRef.current["key1"],
             }}
-            onClick={() => inputNumber(1)}
+            onClick={(e) => {
+              e.target.blur();
+              inputNumber(1);
+            }}
+            onKeyDown={(e) => {
+              handleKeyboardKeyDown(e, 1);
+            }}
+            tabIndex={1}
           >
             1
           </button>
           <button
-            className={"number-input" + keyboardColorsRef.current["color2"]}
+            className={
+              "number-input" +
+              keyboardColorsRef.current["color2"] +
+              keyboardAnimationRef.current[`key2`]
+            }
             style={{
-              animation: keyboardAnimationRef.current[`key2`],
               transitionDelay: transitionDelayRef.current["key2"],
             }}
-            onClick={() => inputNumber(2)}
+            onClick={(e) => {
+              e.target.blur();
+              inputNumber(2);
+            }}
+            onKeyDown={(e) => {
+              handleKeyboardKeyDown(e, 2);
+            }}
+            tabIndex={1}
           >
             2
           </button>
           <button
-            className={"number-input" + keyboardColorsRef.current["color3"]}
+            className={
+              "number-input" +
+              keyboardColorsRef.current["color3"] +
+              keyboardAnimationRef.current[`key3`]
+            }
             style={{
-              animation: keyboardAnimationRef.current[`key3`],
               transitionDelay: transitionDelayRef.current["key3"],
             }}
-            onClick={() => inputNumber(3)}
+            onClick={(e) => {
+              e.target.blur();
+              inputNumber(3);
+            }}
+            onKeyDown={(e) => {
+              handleKeyboardKeyDown(e, 3);
+            }}
+            tabIndex={1}
           >
             3
           </button>
           <button
-            className={"number-input" + keyboardColorsRef.current["color4"]}
+            className={
+              "number-input" +
+              keyboardColorsRef.current["color4"] +
+              keyboardAnimationRef.current[`key4`]
+            }
             style={{
-              animation: keyboardAnimationRef.current[`key4`],
               transitionDelay: transitionDelayRef.current["key4"],
             }}
-            onClick={() => inputNumber(4)}
+            onClick={(e) => {
+              e.target.blur();
+              inputNumber(4);
+            }}
+            onKeyDown={(e) => {
+              handleKeyboardKeyDown(e, 4);
+            }}
+            tabIndex={1}
           >
             4
           </button>
           <button
-            className={"number-input" + keyboardColorsRef.current["color5"]}
+            className={
+              "number-input" +
+              keyboardColorsRef.current["color5"] +
+              keyboardAnimationRef.current[`key5`]
+            }
             style={{
-              animation: keyboardAnimationRef.current[`key5`],
               transitionDelay: transitionDelayRef.current["key5"],
             }}
-            onClick={() => inputNumber(5)}
+            onClick={(e) => {
+              e.target.blur();
+              inputNumber(5);
+            }}
+            onKeyDown={(e) => {
+              handleKeyboardKeyDown(e, 5);
+            }}
+            tabIndex={1}
           >
             5
           </button>
           <button
-            className={"number-input" + keyboardColorsRef.current["color6"]}
+            className={
+              "number-input" +
+              keyboardColorsRef.current["color6"] +
+              keyboardAnimationRef.current[`key6`]
+            }
             style={{
-              animation: keyboardAnimationRef.current[`key6`],
               transitionDelay: transitionDelayRef.current["key6"],
             }}
-            onClick={() => inputNumber(6)}
+            onClick={(e) => {
+              e.target.blur();
+              inputNumber(6);
+            }}
+            onKeyDown={(e) => {
+              handleKeyboardKeyDown(e, 6);
+            }}
+            tabIndex={1}
           >
             6
           </button>
           <button
-            className={"number-input" + keyboardColorsRef.current["color7"]}
+            className={
+              "number-input" +
+              keyboardColorsRef.current["color7"] +
+              keyboardAnimationRef.current[`key7`]
+            }
             style={{
-              animation: keyboardAnimationRef.current[`key7`],
               transitionDelay: transitionDelayRef.current["key7"],
             }}
-            onClick={() => inputNumber(7)}
+            onClick={(e) => {
+              e.target.blur();
+              inputNumber(7);
+            }}
+            onKeyDown={(e) => {
+              handleKeyboardKeyDown(e, 7);
+            }}
+            tabIndex={1}
           >
             7
           </button>
           <button
-            className={"number-input" + keyboardColorsRef.current["color8"]}
+            className={
+              "number-input" +
+              keyboardColorsRef.current["color8"] +
+              keyboardAnimationRef.current[`key8`]
+            }
             style={{
-              animation: keyboardAnimationRef.current[`key8`],
               transitionDelay: transitionDelayRef.current["key8"],
             }}
-            onClick={() => inputNumber(8)}
+            onClick={(e) => {
+              e.target.blur();
+              inputNumber(8);
+            }}
+            onKeyDown={(e) => {
+              handleKeyboardKeyDown(e, 8);
+            }}
+            tabIndex={1}
           >
             8
           </button>
           <button
-            className={"number-input" + keyboardColorsRef.current["color9"]}
+            className={
+              "number-input" +
+              keyboardColorsRef.current["color9"] +
+              keyboardAnimationRef.current[`key9`]
+            }
             style={{
-              animation: keyboardAnimationRef.current[`key9`],
               transitionDelay: transitionDelayRef.current["key9"],
             }}
-            onClick={() => inputNumber(9)}
+            onClick={(e) => {
+              e.target.blur();
+              inputNumber(9);
+            }}
+            onKeyDown={(e) => {
+              handleKeyboardKeyDown(e, 9);
+            }}
+            tabIndex={1}
           >
             9
           </button>
           <button
-            className={"number-input" + keyboardColorsRef.current["color0"]}
+            className={
+              "number-input" +
+              keyboardColorsRef.current["color0"] +
+              keyboardAnimationRef.current[`key0`]
+            }
             style={{
-              animation: keyboardAnimationRef.current[`key0`],
               transitionDelay: transitionDelayRef.current["key0"],
             }}
-            onClick={() => inputNumber(0)}
+            onClick={(e) => {
+              e.target.blur();
+              inputNumber(0);
+            }}
+            onKeyDown={(e) => {
+              handleKeyboardKeyDown(e, 0);
+            }}
+            tabIndex={1}
           >
             0
           </button>
           <button
-            className={"backspace"}
-            style={{ animation: keyboardAnimationRef.current[`keyBackspace`] }}
-            onClick={backspace}
+            className={
+              "backspace" + keyboardAnimationRef.current[`keyBackspace`]
+            }
+            onClick={(e) => {
+              e.target.blur();
+              backspace();
+            }}
+            onKeyDown={(e) => {
+              handleBackspaceKeyDown(e);
+            }}
+            tabIndex={1}
           ></button>
         </div>
         <div className="keyboard-bottom">
-          <a href={linkLeftRef.current}>
-            <button className={"arrow-left"} />
+          <a href={linkLeftRef.current} tabIndex={2}>
+            <button className={"arrow-left"} tabIndex={0} />
           </a>
           <button
-            className={"enter-guess" + hideGuessButtonRef.current}
-            style={{ animation: keyboardAnimationRef.current[`keyEnter`] }}
-            onClick={checkGuess}
+            className={
+              "enter-guess" +
+              hideGuessButtonRef.current +
+              keyboardAnimationRef.current[`keyEnter`] +
+              keyboardClassNameRef.current
+            }
+            onClick={(e) => {
+              e.target.blur();
+              checkGuess();
+            }}
+            onKeyDown={(e) => {
+              handleEnterKeyDown(e);
+            }}
+            tabIndex={1}
           >
             Enter
           </button>
-          <button className={"bottom-message" + hideMessageButtonRef.current}>
+          <button
+            className={"bottom-message" + hideMessageButtonRef.current}
+            tabIndex={1}
+          >
             {timeToNextGame()}
           </button>
           <button
             className={"reset-game" + hideResetButtonRef.current}
             onClick={resetGame}
+            tabIndex={1}
           >
             Play Todays Game
           </button>
-          <a href={linkRightRef.current}>
-            <button className={"arrow-right"} />
+          <a href={linkRightRef.current} tabIndex={2}>
+            <button className={"arrow-right"} tabIndex={0} />
           </a>
         </div>
       </div>
     );
     setKeyboard(keyboardHTML);
+  }
+
+  //Used to handle the keydown when number is tab-selected
+  function handleKeyboardKeyDown(e, number) {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      e.stopPropagation();
+      if (
+        boardStateRef.current[currentRowRef.current].length === props.digits
+      ) {
+        checkGuess();
+      } else {
+        inputNumber(number);
+      }
+    }
+  }
+
+  //Used to handle the keydown when backspace is tab-selected
+  function handleBackspaceKeyDown(e) {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      e.stopPropagation();
+      backspace();
+    }
+  }
+
+  //Used to handle the keydown when enter is tab-selected
+  function handleEnterKeyDown(e) {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      e.stopPropagation();
+      checkGuess();
+    }
   }
 
   //Used to set the colors on the keyboard at the bottom of the game
@@ -695,7 +851,7 @@ function NumberGameLocal(props) {
     Object.entries(keyboardAnimationRef.current).forEach((x) => {
       keyboardAnimationCopy[x[0]] = x[1];
     });
-    keyboardAnimationCopy[keyName] = `mars`;
+    keyboardAnimationCopy[keyName] = ``;
     setKeyboardAnimationRef(keyboardAnimationCopy);
     updateKeyboard();
     setTimeout(() => {
@@ -703,22 +859,9 @@ function NumberGameLocal(props) {
       Object.entries(keyboardAnimationRef.current).forEach((x) => {
         keyboardAnimationCopy[x[0]] = x[1];
       });
-      if (keyName !== "keyEnter") {
-        keyboardAnimationCopy[keyName] = `keydown .5s`;
-      } else {
-        keyboardAnimationCopy[keyName] = `keydown .3s`;
-      }
+      keyboardAnimationCopy[keyName] = ` keydown`;
       setKeyboardAnimationRef(keyboardAnimationCopy);
       updateKeyboard();
-      setTimeout(() => {
-        let keyboardAnimationCopy = [];
-        Object.entries(keyboardAnimationRef.current).forEach((x) => {
-          keyboardAnimationCopy[x[0]] = x[1];
-        });
-        keyboardAnimationCopy[keyName] = ``;
-        setKeyboardAnimationRef(keyboardAnimationCopy);
-        updateKeyboard();
-      }, 500);
     }, 1);
   }
 
@@ -756,6 +899,7 @@ function NumberGameLocal(props) {
 
   //Checks the users guess
   async function checkGuess() {
+    keydownAnimation("keyEnter");
     if (boardStateRef.current[currentRowRef.current].length === props.digits) {
       disableInputs();
       setCurrentRowRef(currentRowRef.current + 1);
@@ -783,7 +927,6 @@ function NumberGameLocal(props) {
       //resObj.gameObj.currentRow -= 1;
       setCurrentRowRef(currentRowRef.current - 1);
       setHintsRef(resObj.gameObj.hints);
-      keydownAnimation("keyEnter");
 
       enableInputs();
 
@@ -803,7 +946,7 @@ function NumberGameLocal(props) {
         changeKeyboardColors();
         //removeTransitionDelay();
         updateGameBoard();
-        updateTimesVisited()
+        updateTimesVisited();
         updateLocalStorage();
       } else {
         if (resObj.gameObj.status === `playing`) {
@@ -828,7 +971,7 @@ function NumberGameLocal(props) {
           changeKeyboardColors();
           removeTransitionDelay();
           updateGameBoard();
-          updateTimesVisited()
+          updateTimesVisited();
           updateLocalStorage();
         }
       }
@@ -846,13 +989,13 @@ function NumberGameLocal(props) {
   //Turns off keyboard interactions
   function disableInputs() {
     document.removeEventListener("keydown", handleKeydown);
-    setKeyboardClassNameRef("number-inputs disabled");
+    setKeyboardClassNameRef(" disabled");
   }
 
   //Turns on keyboard interactions
   function enableInputs() {
     document.addEventListener("keydown", handleKeydown);
-    setKeyboardClassNameRef("number-inputs");
+    setKeyboardClassNameRef("");
   }
 
   //Sets the score for this game next to any previous games and updates the average score among all games
@@ -1064,21 +1207,65 @@ function NumberGameLocal(props) {
     setGameOverModalRef(defeatHTML);
   }
 
-  //Closes the modal that pops up at the end of the game
-  function closeGameOverModal(e) {
-    setGameOverModalRef();
-    updateGameBoard();
-  }
-
-  //Replaces the game-over modal with a modal that can be clicked to reshow the databoard
-  function reshowGameOverButton(){
-    
-  }
-
   //Used to display a modal
   const gameOverModalRef = useRef();
   function setGameOverModalRef(point) {
     gameOverModalRef.current = point;
+  }
+
+  //Closes the modal that pops up at the end of the game
+  function closeGameOverModal(e) {
+    setGameOverModalRef();
+    updateGameBoard();
+    addShowScoresButton();
+  }
+
+  //Used to create a shows scores button if the scores modal is closed
+  let [showScoresButton, setShowScoresButton] = useState();
+  let scoresWindowRevealedRef = useRef(false);
+  function setScoresWindowRevealRef(point) {
+    setScoresWindowRevealRef.current = point;
+  }
+
+  //Adds a button to the bottom of the page the will reshow the scores after that window has been closed
+  function addShowScoresButton() {
+    if (setScoresWindowRevealRef.current) {
+      setShowScoresButton(
+        <button className={"show-scores"} onClick={scoresButtonClicked}>
+          Show Scores
+        </button>
+      );
+    } else {
+      setShowScoresButton(
+        <button
+          className={"show-scores float-down"}
+          onClick={scoresButtonClicked}
+        >
+          Show Scores
+        </button>
+      );
+      setScoresWindowRevealRef(true);
+    }
+  }
+
+  function scoresButtonClicked() {
+    if (gameStatusRef.current === "victory") {
+      victory();
+    } else {
+      defeat();
+    }
+    setShowScoresButton(
+      <button className={"show-scores"} onClick={scoresButtonClicked}>
+        Show Scores
+      </button>
+    );
+    setTimeout(() => {
+      setShowScoresButton(
+        <button className={"show-scores keydown"} onClick={scoresButtonClicked}>
+          Show Scores
+        </button>
+      );
+    }, 1);
   }
 
   //Disables the game after the player wins or loses
@@ -1088,7 +1275,7 @@ function NumberGameLocal(props) {
       delayTime = 0;
     }
     document.removeEventListener("keydown", handleKeydown);
-    setKeyboardClassNameRef("number-inputs disabled");
+    setKeyboardClassNameRef(" disabled");
     updateKeyboard();
     setTimeout(() => {
       changeCurrentInputButton();
@@ -1117,7 +1304,7 @@ function NumberGameLocal(props) {
     );
     let message;
     if (timeToNextGame <= 1) {
-      message = "New Game Available Soon";
+      message = "New Game Soon";
     } else {
       message = "New Game in " + timeToNextGame + " Hours";
     }
@@ -1136,7 +1323,7 @@ function NumberGameLocal(props) {
     document.removeEventListener("keydown", resetEnter);
     localStorage.removeItem("game" + props.digits);
     setCurrentRowRef(0);
-    setKeyboardClassNameRef(`number-inputs`);
+    setKeyboardClassNameRef(``);
     if (gameStatusRef.current !== `playing`) {
       document.addEventListener("keydown", handleKeydown);
     }
@@ -1145,13 +1332,33 @@ function NumberGameLocal(props) {
     setupGame();
     changeKeyboardColors();
     changeCurrentInputButton();
+    setTransitionDelayRef({
+      key1: "",
+      key2: "",
+      key3: "",
+      key4: "",
+      key5: "",
+      key6: "",
+      key7: "",
+      key8: "",
+      key9: "",
+      key0: "",
+      keyBackspace: "",
+      keyEnter: "",
+    });
     updateKeyboard();
     updateGameBoard();
+    setShowScoresButton();
     showAd();
   }
 
   //Used for showing a popup ad before game starts
   const [adPopup, setAdPopup] = useState();
+
+  //Stops the game from being played when the ad modal is open
+  const stopOtherKeydowns = useCallback((e) => {
+    e.stopPropagation();
+  }, []);
 
   //Displays a popup ad for the random mode of the game after visitor has visited site a couple times
   //Starts displaying ordinary ads afterwards at random intervals
@@ -1159,23 +1366,23 @@ function NumberGameLocal(props) {
     let previouslyVisited = Number.parseInt(
       localStorage.getItem("previouslyVisited")
     );
-    //if (false) {
-      if (previouslyVisited < 4) {
-    //} else if (true) {
-      } else if (previouslyVisited === 4) {
-      document.removeEventListener("keydown", handleKeydown);
-      setKeyboardClassNameRef("number-inputs disabled");
+    if (previouslyVisited < 4) {
+      //Do nothing
+    } else if (previouslyVisited === 5) {
+      document.addEventListener("keydown", stopOtherKeydowns, true);
       let adHTML = (
-        <div className="ad-modal">
-          <span className="ad-modal-top">
-            <button className="close-ad-modal" onClick={closeAdModal}>
-              X
+        <div class="ad-modal">
+          <div className="ad-modal-box">
+            <span className="ad-modal-top">
+              <button className="close-ad-modal" onClick={closeAdModal}>
+                X
+              </button>
+            </span>
+            <AdRandomMode />
+            <button className="confirmation-btn" onClick={closeAdModal}>
+              Maybe Later
             </button>
-          </span>
-          <AdRandomMode />
-          <button className="confirmation-btn" onClick={closeAdModal}>
-            Not Today!
-          </button>
+          </div>
         </div>
       );
       setAdPopup(adHTML);
@@ -1185,6 +1392,7 @@ function NumberGameLocal(props) {
     else {
       let randomNum = Math.floor(Math.random() * 9);
       if (randomNum === 0) {
+        document.addEventListener("keydown", stopOtherKeydowns, true);
         let adHTML = (
           <div className="ad-modal">
             <span className="ad-modal-top">
@@ -1209,8 +1417,9 @@ function NumberGameLocal(props) {
 
   //Closes the modal that pops up at the end of the game
   function closeAdModal(e) {
-    document.addEventListener("keydown", handleKeydown);
-    setKeyboardClassNameRef("number-inputs");
+    document.removeEventListener("keydown", stopOtherKeydowns, true);
+    setKeyboardClassNameRef("");
+    updateKeyboard();
     setAdPopup();
   }
 
@@ -1225,17 +1434,20 @@ function NumberGameLocal(props) {
   }
 
   return (
-    <main className="game-container">
-      <div className={"gameboard"}>
-        {errorMessagesDiv}
-        {adPopup}
-        {gameOverModalRef.current}
-        <div className="rows" ref={yPosition}>
-          {board}
+    <div className="number-game">
+      {adPopup}
+      <main className="game-container">
+        <div className={"gameboard"}>
+          {errorMessagesDiv}
+          {gameOverModalRef.current}
+          <div className="rows" ref={yPosition}>
+            {board}
+          </div>
+          {keyboard}
+          <div className="show-scores-container">{showScoresButton}</div>
         </div>
-        {keyboard}
-      </div>
-    </main>
+      </main>
+    </div>
   );
 }
 
