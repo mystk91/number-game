@@ -1,0 +1,137 @@
+:root {
+  --modal-background-color: rgb(90, 90, 90, 0.3);
+  --modal-panel-background-color: rgb(250, 250, 250);
+  --modal-border: 1px solid rgb(69, 69, 69);
+  --modal-border-radius: 6px;
+}
+
+.random-mode-modal {
+  position: fixed;
+  z-index: 4;
+  background-color: var(--modal-background-color);
+  width: 100%;
+  height: 100%;
+  display: flex;
+  overflow-y: scroll;
+  padding-bottom: 60px;
+}
+
+.random-mode-info {
+  margin: auto;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 350px;
+  height: max-content;
+  font-family: "Times New Roman", Times, serif;
+  text-align: left;
+  padding-left: 6px;
+  padding-bottom: 12px;
+  background-color: var(--modal-panel-background-color);
+  border: var(--modal-border);
+  border-radius: var(--modal-border-radius);
+  color: black;
+  top: 10px;
+  margin: auto;
+}
+
+.random-mode-info > * {
+  margin: 2px;
+}
+
+.random-mode-top {
+  display: flex;
+  justify-content: flex-end;
+  margin: 2px 0px 0px 0px;
+}
+
+.random-mode-top button {
+  user-select: none;
+}
+
+.close-random-mode {
+  all: unset;
+  height: max-content;
+  font-size: 2rem;
+  cursor: pointer;
+  font-family: sans-serif;
+  margin-right: 4px;
+  padding: 10px 10px 10px 16px;
+  z-index: 5;
+}
+
+.hide-random-mode {
+  display: none;
+}
+
+.random-mode-info-body{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.random-mode-info .headline-container{
+  display: flex;
+  justify-content: center;
+}
+
+.random-mode-info .headline {
+  all: unset;
+  font-family: Verdana, Helvetica, sans-serif;
+  font-size: 2.4rem;
+  font-weight: bolder;
+  margin-top: -20px;
+  margin-bottom: 6px;
+  padding: 0 20px 2px;
+  border-bottom: 1.5px solid black;
+}
+
+.random-mode-info img{
+  width: 320px;
+}
+
+.random-mode-info .reset-game-img{
+  border: 1px solid black;
+  padding: 5px;
+  height: 135px;
+  width: auto;
+}
+
+.random-info-text {
+  margin: 6px 0px 6px 0;
+  font-size: 1.8rem;
+}
+
+.random-mode-info hr {
+  margin: 3px 2px;
+}
+
+.random-modal-btn {
+  height: 40px;
+  margin: 4px 0;
+  width: 280px;
+  border-radius: 20px;
+  border: none;
+  color: white;
+  font-size: 2.2rem;
+  cursor: pointer;
+  background-color: var(--navbar-background-color);
+}
+
+.random-modal-btn:hover{
+  filter: brightness(0.8);
+}
+
+.random-modal-btn.sign-up{
+  background-color: rgb(71, 40, 101);
+}
+
+.random-modal-btn.sign-up:hover{
+  filter: brightness(1.2);
+}
+
+.random-info-text.product{
+  font-size: 2.0rem;
+  font-family: Geneva, Verdana, sans-serif;
+
+}

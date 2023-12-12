@@ -92,22 +92,136 @@ function scheduledTasks(app) {
     const accountsDb = mongoClient.db("Accounts");
     let accounts = accountsDb.collection(`TestAccounts`);
     let names = [
-      "jaack",
-      "ashhlee",
-      "dolfin",
-      "jauglar",
-      "cheetlion",
-      "maarz",
-      "tara",
-      "michealus",
-      "loal",
-      "oliv28",
-      "uhhhm",
-      "martin",
-      "farren",
-      "priscz",
-      "freshman",
-      "woha",
+      "martiusAutumn",
+      "Aprilwinters",
+      "julietParsnips",
+      "AugustusSummers",
+      "parsleyGoat",
+      "JaneSaffron",
+      "MartiusChestnut",
+      "aprilCarrots",
+      "MayParsnips",
+      "junePotato",
+      "JulietSunflower",
+      "augustusPeach",
+      "OctaviusTurnip",
+      "saffronOx",
+      "Chestnutpepper",
+      "tomatoCarrot",
+      "Barleyparsnips",
+      "potatoBarrel",
+      "PumpkinApple",
+      "sunflowerCelery",
+      "Peachpear",
+      "turnipPigeon",
+      "OxFork",
+      "pepperTruffle",
+      "OliveTomato",
+      "barleylettuce",
+      "BarrelCauliflowr",
+      "appleJuniper",
+      "CeleryDeer",
+      "pearMaple",
+      "HorseCricket",
+      "pineGoose",
+      "PloughPeat",
+      "coalTurkey",
+      "OrangeSulfur",
+      "shovelcat",
+      "Lavafork",
+      "truffleNitrate",
+      "OliveGranite",
+      "claylettuce",
+      "CauliflowerSlate",
+      "juniperRabbit",
+      "HorseradishFlint",
+      "cedarLimestone",
+      "Marbledeer",
+      "ivyGypsum",
+      "Maplesalt",
+      "Ironcricket",
+      "Pinecopper",
+      "peatCat",
+      "coalTin",
+      "Sulfurlead",
+      "zincDog",
+      "LavaMercury",
+      "laurelNitrate",
+      "GraniteSnowdrop",
+      "clayaxe",
+      "Slatebull",
+      "sandstoneGrass",
+      "HazelRabbit",
+      "flintGoat",
+      "VioletLimestone",
+      "marbleWillow",
+      "GypsumElm",
+      "mandrakeSalt",
+      "Irontuna",
+      "copperDandelion",
+      "CatTwine",
+      "tinSleigh",
+      "LeadHen",
+      "zincBirch",
+      "MercuryClove",
+      "laurelBee",
+      "HemlockCart",
+      "radishAxe",
+      "HawthornBull",
+      "PineNightingale",
+      "Hazeloak",
+      "goatRose",
+      "VioletWallflower",
+      "willowSilkworm",
+      "Elmcarp",
+      "mandrakeDuck",
+      "ParsleyScythe",
+      "Thymetuna",
+      "DandelionStrawberry",
+      "quailtwine",
+      "ElderberrySleigh",
+      "tulipCarnation",
+      "Hencart",
+      "birchOat",
+      "PeriwinkleRye",
+      "Onionbee",
+      "HemlockRosemary",
+      "radishCucumber",
+      "PigeonSickle",
+      "hawthornArtchoke",
+      "CorianderElm",
+      "oakClove",
+      "RosemaryLavender",
+      "wallflowerMint",
+      "SilkwormSage",
+      "carpGarlic",
+      "Wheatduck",
+      "scytheRam",
+      "ThymeBlackberry",
+      "strawberryBasil",
+      "QuailMarshmallow",
+      "elderberryLock",
+      "CarnationOtter",
+      "cartMill",
+      "OatPlum",
+      "ryeSalmon",
+      "OnionFennel",
+      "IronRosemary",
+      "CucumberFire",
+      "sickleWalnut",
+      "ArtichokeTrout",
+      "corianderBasket",
+      "CloveHazelnut",
+      "lavenderHops",
+      "MintNightmare",
+      "sageghost",
+      "GarlicArmor",
+      "SnowWheat",
+      "RainRam",
+      "bearEmerald",
+      "SilverAnchor",
+      "Jadegold",
+      "ShyKind"
     ];
 
     for (let i = 0; i < names.length; i++) {
@@ -115,19 +229,19 @@ function scheduledTasks(app) {
         username: names[i],
         premium: true,
       };
-      if (i >= 14) {
+      if (i % 14 == 0) {
         accountObj.premium = false;
       }
 
       for (let digits = 2; digits <= 7; digits++) {
-        let average = Math.random() * 3 + 2.5 + 0.2 * digits;
+        let average = Math.random() * 1.8 + 3.8 + 0.2 * digits;
 
         let numberOfGames = 30;
         if (i % 5 == 0) {
           numberOfGames = 15;
         }
 
-        let currentDate = new Date();
+        let currentDate = new Date("2120-10-10T08:58:15.643+00:00");
         let oldDate = new Date("2020-10-10T08:58:15.643+00:00");
         let date = currentDate;
         if (i % 5 == 1) {
@@ -146,7 +260,7 @@ function scheduledTasks(app) {
     }
   }
 
-  //createTestLeaderboard();
+  createTestLeaderboard();
 
   //Updates the leaderboards for each random category on an hourly basis
   let updateLeaderboards = nodeCron.schedule(

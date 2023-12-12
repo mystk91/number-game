@@ -26,7 +26,6 @@ function AdRandomMode(props) {
   
   return (
     <div className="random-mode-ad">
-      Here is gmeaio mariota treatm reataz?
 
 
 

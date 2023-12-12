@@ -6,6 +6,7 @@ import "../../custom.css";
 import Instructions from "./Instructions";
 import InstructionsFive from "./InstructionsFive";
 import ProfileDropdown from "./ProfileDropdown";
+import AdRandomModal from "./AdRandomModal";
 import Login from "../LoginSystem/Login";
 
 //Creates the Navbar at the top of the page.
@@ -256,22 +257,34 @@ function Navbar(props) {
         <div className="game-modes">
           <ul className="game-modes-list">
             <li>
-              <a href="/digits2" className={currentDigitRef.current["digits2"]}>2 Digits</a>
+              <a href="/digits2" className={currentDigitRef.current["digits2"]}>
+                2 Digits
+              </a>
             </li>
             <li>
-              <a href="/digits3" className={currentDigitRef.current["digits3"]}>3 Digits</a>
+              <a href="/digits3" className={currentDigitRef.current["digits3"]}>
+                3 Digits
+              </a>
             </li>
             <li>
-              <a href="/digits4" className={currentDigitRef.current["digits4"]}>4 Digits</a>
+              <a href="/digits4" className={currentDigitRef.current["digits4"]}>
+                4 Digits
+              </a>
             </li>
             <li>
-              <a href="/digits5" className={currentDigitRef.current["digits5"]}>5 Digits</a>
+              <a href="/digits5" className={currentDigitRef.current["digits5"]}>
+                5 Digits
+              </a>
             </li>
             <li>
-              <a href="/digits6" className={currentDigitRef.current["digits6"]}>6 Digits</a>
+              <a href="/digits6" className={currentDigitRef.current["digits6"]}>
+                6 Digits
+              </a>
             </li>
             <li>
-              <a href="/digits7" className={currentDigitRef.current["digits7"]}>7 Digits</a>
+              <a href="/digits7" className={currentDigitRef.current["digits7"]}>
+                7 Digits
+              </a>
             </li>
           </ul>
         </div>
@@ -305,11 +318,14 @@ function Navbar(props) {
             </a>
           </li>
           <li>
-            <a href="/random/info">
-              <button className="randomMode-btn">
-                <img src="/images/site/randomDice.png" />
-              </button>
-            </a>
+            <button
+              className="randomMode-btn"
+              onClick={() => {
+                setModal(<AdRandomModal key={new Date()}/>);
+              }}
+            >
+              <img src="/images/site/randomDice.png" />
+            </button>
           </li>
         </ul>
       </nav>

@@ -700,8 +700,7 @@ function NumberGameLocal(props) {
             className={
               "enter-guess" +
               hideGuessButtonRef.current +
-              keyboardAnimationRef.current[`keyEnter`] +
-              keyboardClassNameRef.current
+              keyboardAnimationRef.current[`keyEnter`]
             }
             onClick={(e) => {
               e.target.blur();
@@ -1346,6 +1345,20 @@ function NumberGameLocal(props) {
       keyBackspace: "",
       keyEnter: "",
     });
+    setKeyboardAnimationRef({
+      key1: "",
+      key2: "",
+      key3: "",
+      key4: "",
+      key5: "",
+      key6: "",
+      key7: "",
+      key8: "",
+      key9: "",
+      key0: "",
+      keyBackspace: "",
+      keyEnter: "",
+    });
     updateKeyboard();
     updateGameBoard();
     setShowScoresButton();
@@ -1368,7 +1381,7 @@ function NumberGameLocal(props) {
     );
     if (previouslyVisited < 4) {
       //Do nothing
-    } else if (previouslyVisited === 5) {
+    } else if (previouslyVisited === 4) {
       document.addEventListener("keydown", stopOtherKeydowns, true);
       let adHTML = (
         <div class="ad-modal">
