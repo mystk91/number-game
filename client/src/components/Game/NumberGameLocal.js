@@ -5,7 +5,7 @@ import "../../normalize.css";
 import "../../custom.css";
 import Histogram from "./Histogram";
 import ShareScore from "./ShareScore";
-import AdRandomMode from "./AdRandomMode";
+import AdRandomModal from "../Navbar/AdRandomModal";
 
 //Creates a game that stores data using local storage rather than the database
 function NumberGameLocal(props) {
@@ -1391,7 +1391,7 @@ function NumberGameLocal(props) {
                 X
               </button>
             </span>
-            <AdRandomMode />
+            <AdRandomModal />
             <button className="confirmation-btn" onClick={closeAdModal}>
               Maybe Later
             </button>

@@ -35,7 +35,6 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import NumberGameRegular from "./components/Game/NumberGameRegular";
 import GamePageDaily from "./components/Pages/GamePageDaily";
 import CalendarIcon from "./components/Parts/CalendarIcon";
-import AdRandomMode from "./components/Game/AdRandomMode";
 
 function App() {
   return (
@@ -55,7 +54,6 @@ function App() {
             path="/new-password/:verificationCode"
             element={<NewPasswordPage />}
           />
-          <Route path="randomad" element={<AdRandomMode />} />
           <Route path="/calendar" element={<CalendarIcon />} />
           <Route path="/leaderboards" element={<LeaderboardsPage />} />
           <Route path="/icon" element={<LoadingIcon />} />

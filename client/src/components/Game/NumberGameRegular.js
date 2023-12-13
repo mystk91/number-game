@@ -5,7 +5,7 @@ import "../../normalize.css";
 import "../../custom.css";
 import HistogramRegular from "./HistogramRegular";
 import ShareScore from "./ShareScore";
-import AdRandomMode from "./AdRandomMode";
+import AdRandomModal from "../Navbar/AdRandomModal";
 
 function NumberGameRegular(props) {
   //Used to update the board state visually
@@ -1357,16 +1357,18 @@ function NumberGameRegular(props) {
 
   //External logins like from google will redirect to this page. This will put the profile info into local storage
   async function completeLogin() {
-    let profile = await fetch("/api/current_user");
-    let profileObj = await profile.json();
-    if (profileObj) {
-      localStorage.setItem(
-        "profile",
-        JSON.stringify({
-          session: profileObj.session,
-          profile_picture: profileObj.profile_picture,
-        })
-      );
+    if (!localStorage.getItem("profile")) {
+      let profile = await fetch("/api/current_user");
+      let profileObj = await profile.json();
+      if (profileObj) {
+        localStorage.setItem(
+          "profile",
+          JSON.stringify({
+            session: profileObj.session,
+            profile_picture: profileObj.profile_picture,
+          })
+        );
+      }
     }
   }
 
@@ -1396,7 +1398,7 @@ function NumberGameRegular(props) {
                 X
               </button>
             </span>
-            <AdRandomMode />
+            <AdRandomModal />
             <button className="confirmation-btn" onClick={closeAdModal}>
               Maybe Later
             </button>

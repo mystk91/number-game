@@ -3,6 +3,7 @@
   --modal-panel-background-color: rgb(250, 250, 250);
   --modal-border: 1px solid rgb(69, 69, 69);
   --modal-border-radius: 6px;
+  --random-button-color: rgb(71, 40, 101);
 }
 
 .random-mode-modal {
@@ -13,7 +14,7 @@
   height: 100%;
   display: flex;
   overflow-y: scroll;
-  padding-bottom: 60px;
+  padding-bottom: 120px;
 }
 
 .random-mode-info {
@@ -21,18 +22,16 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  width: 350px;
+  width: 360px;
   height: max-content;
   font-family: "Times New Roman", Times, serif;
   text-align: left;
-  padding-left: 6px;
-  padding-bottom: 12px;
+  padding-bottom: 16px;
   background-color: var(--modal-panel-background-color);
   border: var(--modal-border);
   border-radius: var(--modal-border-radius);
   color: black;
-  top: 10px;
-  margin: auto;
+  top: 6px;
 }
 
 .random-mode-info > * {
@@ -64,13 +63,13 @@
   display: none;
 }
 
-.random-mode-info-body{
+.random-mode-info-body {
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
-.random-mode-info .headline-container{
+.random-mode-info .headline-container {
   display: flex;
   justify-content: center;
 }
@@ -86,24 +85,45 @@
   border-bottom: 1.5px solid black;
 }
 
-.random-mode-info img{
+.random-mode-modal hr {
+  width: 97%;
+  margin: 10px 0 8px;
+  background-color: var(--navbar-background-color);
+  filter:brightness();
+  height: 1px;
+  border: none;
+}
+
+.random-mode-features{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.leaderboard-feature{
+  align-items: flex-start;
+}
+
+
+.random-mode-info img {
   width: 320px;
 }
 
-.random-mode-info .reset-game-img{
-  border: 1px solid black;
-  padding: 5px;
+.random-mode-info .reset-game-img {
+  padding: 6px;
   height: 135px;
   width: auto;
 }
 
+.random-mode-info .leaderboard-img {
+  border: .5px solid black;
+  height: 150px;
+  width: auto;
+}
 .random-info-text {
   margin: 6px 0px 6px 0;
   font-size: 1.8rem;
-}
-
-.random-mode-info hr {
-  margin: 3px 2px;
 }
 
 .random-modal-btn {
@@ -118,20 +138,21 @@
   background-color: var(--navbar-background-color);
 }
 
-.random-modal-btn:hover{
+.random-modal-btn:hover {
   filter: brightness(0.8);
 }
 
-.random-modal-btn.sign-up{
-  background-color: rgb(71, 40, 101);
+.random-modal-btn.sign-up {
+  background-color: var(--random-button-color);
 }
 
-.random-modal-btn.sign-up:hover{
+.random-modal-btn.sign-up:hover {
   filter: brightness(1.2);
 }
 
-.random-info-text.product{
-  font-size: 2.0rem;
+.random-info-text.product {
+  font-size: 2rem;
   font-family: Geneva, Verdana, sans-serif;
-
 }
+
+

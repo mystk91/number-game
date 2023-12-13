@@ -57,6 +57,13 @@ img, video, iframe {
     url('./fonts/perpetua_light.ttf') format("truetype");
 }
 
+@font-face{
+    font-family: 'Roboto_Mono';
+    src: local("Roboto_Mono"),
+    url('./fonts/Roboto_Mono/RobotoMono-VariableFont_wght.ttf') format("truetype");
+}
+
+
 nav {
     font-family: OpenSansCondensed, Inter, sans-serif;
     font-size: 2.2rem;

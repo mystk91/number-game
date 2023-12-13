@@ -10,6 +10,7 @@ import uniqid from "uniqid";
 import "./Leaderboards.css";
 import "../../normalize.css";
 import "../../custom.css";
+import AdRandomModal from "../Navbar/AdRandomModal";
 
 //Creates leaderboards for the games that can be viewed by clicking different tabs
 function Leaderboards(props) {
@@ -37,6 +38,7 @@ function Leaderboards(props) {
   //Used to display a modal that shows information about the leaderboards,
   //Such as how it works / how to qualify for it
   const [modal, setModal] = useState();
+  const [adModal, setAdModal] = useState();
 
   //componentDidMount, runs when component mounts, then componentDismount
   useEffect(() => {
@@ -45,39 +47,6 @@ function Leaderboards(props) {
 
   //Fetches the leaderboards from the DB and stores them in leaderboardsRef
   async function setUp() {
-    /*
-    //Some Test Users
-    let names = [
-      "DarknessDolphin",
-      "oliv28",
-      "ragakor",
-      "MiceIce",
-      "juagler",
-      "cheetlion",
-      "Dree",
-      "Wao",
-      "Prizs",
-      "Wrolki",
-    ];
-    let scores = [
-      3.553, 3.654, 3.8, 4.03, 4.153, 4.253, 4.453, 4.59, 5.604, 6.034,
-    ];
-
-
-    let newLeaderboard = [];
-    for (let i = 0; i < 10; i++) {
-      let row = (
-        <li className="leaderboard-row" key={i}>
-          <div className="player-rank">{i + 1}</div>
-          <div className="player-username">{names[i]}</div>
-          <div className="player-average">{scores[i]}</div>
-        </li>
-      );
-      newLeaderboard.push(row);
-    }
-    setActiveLeaderboard(newLeaderboard);
-    */
-
     let res = await fetch("/api/getLeaderboards");
     let resObj = await res.json();
     if (resObj.error) {
@@ -117,10 +86,12 @@ function Leaderboards(props) {
                 Only the last 30 games within 30 days are counted towards these
                 scores. Scores are updated hourly.
               </div>
+              <div className="leaderboard-info-btns">
               {showBuyRandomRef.current}
               <button className="confirmation-btn" onClick={() => setModal()}>
                 Got it!
               </button>
+              </div>
             </div>
           </div>
         </div>
@@ -132,7 +103,7 @@ function Leaderboards(props) {
 
   //Shows a button that will lead user to purchase random mode version
   const showBuyRandomRef = useRef();
-  function setShowRandomRef(point) {
+  function setShowBuyRandomRef(point) {
     showBuyRandomRef.current = point;
   }
 
@@ -153,10 +124,10 @@ function Leaderboards(props) {
       resObj = await res.json();
     }
     if (resObj.premium !== true) {
-      setShowRandomRef(
-        <a className="random-mode-link" href="/random/info">
-          <div>Learn more about Random Mode</div>
-        </a>
+      setShowBuyRandomRef(
+        <button className="random-mode-info-btn" onClick={() => {setModal(); setAdModal(<AdRandomModal key={new Date()}/>)}}>
+        Random Mode?
+      </button>
       );
     }
   }
@@ -200,8 +171,14 @@ function Leaderboards(props) {
     }
   }
 
+  //Used by a button at bottom of page to scroll user back to the top
+  function goToTop() {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
   return (
     <div className="leaderboards">
+      {adModal}
       {modal}
       <header className="leaderboards-header">
         <div className="empty"></div>
@@ -296,6 +273,9 @@ function Leaderboards(props) {
           </table>
         </div>
       </main>
+      <button className="go-to-top" onClick={goToTop}>
+        <img src="./images/game/upArrow.png" alt="Arrow pointing up"></img>
+      </button>
     </div>
   );
 }

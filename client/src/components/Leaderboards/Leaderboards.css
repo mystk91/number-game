@@ -4,7 +4,7 @@
 
 .leaderboards {
   width: 100%;
-  height: 100%;
+  height: 100vh;
   min-height: 2250px;
   display: flex;
   flex-direction: column;
@@ -79,6 +79,7 @@
 .leaderboards-container {
   display: flex;
   flex-direction: column;
+  min-height: 1730px;
 }
 
 .leaderboard-tabs {
@@ -161,8 +162,23 @@ li:last-child .leaderboard-tab {
 .leaderboard-labels {
   display: flex;
   align-items: center;
-  column-gap: 24px;
   height: 32px;
+}
+
+.player-username-label{
+  margin-left: 10px;
+  font-family: "Roboto_Mono", monospace;
+  font-weight:400;
+}
+
+.player-username{
+  all: unset;
+  margin-left: 10px;
+  font-size: 1.7rem;
+  font-family: "Roboto_Mono", monospace;
+  letter-spacing: .01rem;
+  font-weight: 350;
+  overflow-x: scroll;
 }
 
 .leaderboard-labels {
@@ -196,7 +212,8 @@ li:last-child .leaderboard-tab {
 .player-average-label {
   display: flex;
   justify-content: center;
-  width: min(35vw, 250px);
+  width: min(30vw, 250px);
+  min-width: 110px;
   margin-left: auto;
 }
 
@@ -275,9 +292,16 @@ li:last-child .leaderboard-tab {
   align-items: center;
 }
 
-.confirmation-btn {
+.leaderboard-info-btns{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin: 12px 0 6px;
+}
+
+.confirmation-btn, .random-mode-info-btn {
   height: 40px;
-  margin-top: 12px;
+  margin: 4px 0;
   width: 280px;
   border-radius: 20px;
   border: none;
@@ -287,8 +311,16 @@ li:last-child .leaderboard-tab {
   background-color: var(--navbar-background-color);
 }
 
+.random-mode-info-btn{
+  background-color: var(--random-button-color);
+}
+
 .confirmation-btn:hover{
   filter: brightness(0.8);
+}
+
+.random-mode-info-btn:hover{
+  filter: brightness(1.2);
 }
 
 .random-mode-link {
@@ -298,6 +330,21 @@ li:last-child .leaderboard-tab {
 
 .swiping-left-icon {
   display: none;
+}
+
+.player-rank{
+  min-width: 60px;
+}
+
+.go-to-top{
+  all: unset;
+  background-color: var(--higherColor);
+  border-radius: 50px;
+  width: 100px;
+  margin: 60px;
+  padding: 30px;
+  cursor: pointer;
+  user-select: none;
 }
 
 /* Medium Styles */
@@ -317,3 +364,7 @@ li:last-child .leaderboard-tab {
     display: none;
   }
 }
+
+
+
+

@@ -30,14 +30,11 @@ function AdRandomModal(props) {
     };
   }, [stopOtherKeydowns]);
 
-
   /* Hides the modal when you click on the X */
   function hideInstructionsButton(e) {
     document.removeEventListener("keydown", stopOtherKeydowns, true);
     setDisplayInstructions(" hide-modal");
   }
-
-
 
   return (
     <div className={"random-mode-modal" + displayInstructions}>
@@ -52,23 +49,50 @@ function AdRandomModal(props) {
         </span>
         <div className="random-mode-info-body">
           <div className="headline-container">
-        <h1 className="headline">Random Mode</h1>
+            <h1 className="headline">Random Mode</h1>
+          </div>
+          <div className="random-mode-features">
+            <div className="random-info-text">
+              Play unlimited games with Random Mode!
+            </div>
+            <img
+              src="./images/site/reset-every-time1.png"
+              alt="Reset button at bottom of the game"
+              className="reset-game-img"
+            ></img>
+          </div>
+          <hr></hr>
+
+          <div className="random-mode-features leaderboard-feature">
+            <div className="random-info-text">Climb the Leaderboards!</div>
+            <img
+              src="./images/site/leaderboard-example3.png"
+              alt="A leaderboard filled with player names and scores"
+              className="leaderboard-img"
+            />
+          </div>
+          <hr></hr>
+          <div className="random-mode-features">
+            <img
+              src="./images/site/random-modes.png"
+              alt="Different Random Game Modes"
+              className="random-modes-img"
+            ></img>
+            <div className="random-info-text product">
+              6 Random Game Modes for $6
+            </div>
+          </div>
+          <a href="/products/random-mode">
+            <button className="random-modal-btn sign-up">Sign me up!</button>
+          </a>
+
+          <button
+            className="continue random-modal-btn"
+            onClick={(e) => hideInstructionsButton(e)}
+          >
+            Maybe Later
+          </button>
         </div>
-        <div className="random-info-text">Play unlimited games with Random Mode!</div>
-        <hr></hr>
-        <div className="random-info-text">Start a new game after you win!</div>
-        <img src="./images/site/reset-every-time1.png" alt="Reset button at bottom of the game" className="reset-game-img"></img>
-
-        <div className="random-info-text">Guess random numbers with 2 - 7 digits</div>
-        <img src="./images/site/random-modes.png" alt="Different Random Game Modes" className="random-modes-img"></img>
-        <div className="random-info-text product">6 Random Game Modes for $6</div>
-        <a href="/products/random-mode"><button className="random-modal-btn sign-up">Sign me up!</button></a>
-        <button className="continue random-modal-btn" onClick={(e) => hideInstructionsButton(e)}>Maybe Later</button>
-
-
-        <hr></hr>
-        </div>
-
       </div>
     </div>
   );
