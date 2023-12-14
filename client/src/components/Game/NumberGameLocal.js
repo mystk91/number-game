@@ -1380,60 +1380,20 @@ function NumberGameLocal(props) {
       localStorage.getItem("previouslyVisited")
     );
     if (previouslyVisited < 4) {
+      //setAdPopup(<AdRandomModal />);
       //Do nothing
     } else if (previouslyVisited === 4) {
-      document.addEventListener("keydown", stopOtherKeydowns, true);
-      let adHTML = (
-        <div class="ad-modal">
-          <div className="ad-modal-box">
-            <span className="ad-modal-top">
-              <button className="close-ad-modal" onClick={closeAdModal}>
-                X
-              </button>
-            </span>
-            <AdRandomModal />
-            <button className="confirmation-btn" onClick={closeAdModal}>
-              Maybe Later
-            </button>
-          </div>
-        </div>
-      );
-      setAdPopup(adHTML);
+      setAdPopup(<AdRandomModal />);
       localStorage.setItem("previouslyVisited", "5");
     }
     /* This is where an ad could be inserted
     else {
       let randomNum = Math.floor(Math.random() * 9);
       if (randomNum === 0) {
-        document.addEventListener("keydown", stopOtherKeydowns, true);
-        let adHTML = (
-          <div className="ad-modal">
-            <span className="ad-modal-top">
-              <button
-                className="close-ad-modal"
-                onClick={(e) => closeAdModal(e)}
-              >
-                X
-              </button>
-            </span>
-            <AdRandomMode />
-            <button className="confirmation-btn" onClick={closeAdModal}>
-              Go to Game
-            </button>
-          </div>
-        );
-        setAdPopup(adHTML);
+        setAdPopup(<AnAdComponent>);
       }
     }
     */
-  }
-
-  //Closes the modal that pops up at the end of the game
-  function closeAdModal(e) {
-    document.removeEventListener("keydown", stopOtherKeydowns, true);
-    setKeyboardClassNameRef("");
-    updateKeyboard();
-    setAdPopup();
   }
 
   function updateTimesVisited() {

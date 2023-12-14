@@ -201,7 +201,7 @@ function scheduledTasks(app) {
       "HorseCricket",
       "pineGoose",
       "PloughPeat",
-      "coalTurkey",
+      "TurnipTurkey",
       "OrangeSulfur",
       "shovelcat",
       "Lavafork",
@@ -220,7 +220,7 @@ function scheduledTasks(app) {
       "peatCat",
       "coalTin",
       "Sulfurlead",
-      "zincDog",
+      "zincViolet",
       "LavaMercury",
       "laurelNitrate",
       "GraniteSnowdrop",
@@ -253,7 +253,7 @@ function scheduledTasks(app) {
       "mandrakeDuck",
       "ParsleyScythe",
       "Thymetuna",
-      "DandelionStrawberry",
+      "DandelionRadish",
       "quailtwine",
       "ElderberrySleigh",
       "tulipCarnation",
@@ -297,7 +297,7 @@ function scheduledTasks(app) {
       "bearEmerald",
       "SilverAnchor",
       "Jadegold",
-      "ShyKind",
+      "Shykind",
     ];
 
     for (let i = 0; i < names.length; i++) {

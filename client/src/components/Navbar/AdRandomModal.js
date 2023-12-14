@@ -55,13 +55,23 @@ function AdRandomModal(props) {
             <div className="random-info-text">
               Play unlimited games with Random Mode!
             </div>
-            <img
-              src="./images/site/reset-every-time1.png"
-              alt="Reset button at bottom of the game"
-              className="reset-game-img"
-            ></img>
+            <div>
+              <div className="video-container">
+                <video
+                  src="./images/site/randomMode.mp4"
+                  poster="./images/site/random-mode-video-poster.png"
+                  className="random-mode-video"
+                  autoPlay={true}
+                  loop={true}
+                  playsInline={true}
+                  type="video/mp4"
+                  id="random-mode-video"
+                  rel="preload"
+                ></video>
+              </div>
+            </div>
           </div>
-          <hr></hr>
+
 
           <div className="random-mode-features leaderboard-feature">
             <div className="random-info-text">Climb the Leaderboards!</div>
@@ -82,7 +92,7 @@ function AdRandomModal(props) {
               6 Random Game Modes for $6
             </div>
           </div>
-          <a href="/products/random-mode">
+          <a href="/products/random-mode" >
             <button className="random-modal-btn sign-up">Sign me up!</button>
           </a>
 

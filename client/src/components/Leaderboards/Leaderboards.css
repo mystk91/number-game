@@ -12,7 +12,7 @@
   background-color: var(--leaderboardBgColor);
 }
 
-.leaderboards > * {
+.leaderboards-container {
   width: min(700px, 100vw);
 }
 
