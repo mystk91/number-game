@@ -8,22 +8,15 @@ import React, {
 import "./normalize.css";
 import "./custom.css";
 import "./App.css";
-import NumberGame from "./components/Game/NumberGame";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar/Navbar";
 import GamePage from "./components/Pages/GamePage";
 import SignupPage from "./components/Pages/SignupPage";
 import LoginPage from "./components/Pages/LoginPage";
 import GamePageRandom from "./components/Pages/GamePageRandom";
-import GamePageRegular from "./components/Pages/GamePageRegular";
 import NumberGameLocal from "./components/Game/NumberGameLocal";
 import Instructions from "./components/Navbar/Instructions";
 import InstructionsFive from "./components/Navbar/InstructionsFive";
-import Login from "./components/LoginSystem/Login";
-import LoginRegular from "./components/LoginSystem/LoginRegular";
-import Signup from "./components/LoginSystem/Signup";
-import SignupRegular from "./components/LoginSystem/SignupRegular";
-import ForgotPassword from "./components/LoginSystem/ForgotPassword";
-import ForgotPasswordRegular from "./components/LoginSystem/ForgotPasswordRegular";
 import ResetPasswordPage from "./components/Pages/ResetPasswordPage";
 import NewPasswordPage from "./components/Pages/NewPasswordPage";
 import EmailVerification from "./components/LoginSystem/EmailVerification";
@@ -31,10 +24,10 @@ import LoadingIcon from "./components/Parts/LoadingIcon";
 import Histogram from "./components/Game/Histogram";
 import ShareScore from "./components/Game/ShareScore";
 import LeaderboardsPage from "./components/Pages/LeaderboardsPage";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import NumberGameRegular from "./components/Game/NumberGameRegular";
 import GamePageDaily from "./components/Pages/GamePageDaily";
 import CalendarIcon from "./components/Parts/CalendarIcon";
+import ProfilePage from "./components/Pages/ProfilePage";
+import ProfileCSS from "./components/Pages/ProfileCSS";
 
 function App() {
   return (
@@ -67,10 +60,6 @@ function App() {
             element={<EmailVerification />}
           />
           <Route path="/reset-password" element={<ResetPasswordPage />} />
-          <Route
-            path="/regular"
-            element={<GamePageRegular digits={6} attempts={6} />}
-          />
           <Route
             path="/local"
             element={<NumberGameLocal digits={5} attempts={6} />}
@@ -132,8 +121,10 @@ function App() {
             path="/random7"
             element={<GamePageRandom digits={7} attempts={6} />}
           />
+          <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/profiletest" element={<ProfileCSS />} />
         </Routes>
-      </BrowserRouter>
+      </BrowserRouter> 
     </div>
   );
 }

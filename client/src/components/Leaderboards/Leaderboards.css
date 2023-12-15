@@ -116,7 +116,7 @@ li:last-child .leaderboard-tab {
   transition: all 0.3s;
 }
 
-.active:hover {
+.leaderboard .active:hover {
   filter: brightness(1.3);
   font-size: 2.2rem;
 }

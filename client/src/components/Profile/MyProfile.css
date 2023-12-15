@@ -1,0 +1,157 @@
+
+.profile{
+    display: flex;
+    background-color: rgba(250, 250, 250);
+}
+
+.profile-tabs-container{
+    height: calc(100vh - 56px);
+    width: 190px;
+    display: flex;
+    border-right: .5x solid black;
+    justify-content: flex-start;
+    flex-direction: column;
+    background-color: var(--navbar-background-color);
+    filter: brightness(1.65);
+    transition: .5s width;
+}
+
+
+.profile-tabs{
+    display: flex;
+    flex-direction: column;
+}
+
+.username-tab{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: rgb(0, 0, 0);
+    min-height: 60px;
+    font-size: 1.6rem;
+    font-family: "Roboto_Mono", monospace;
+    font-weight: 600;
+    width: 100%;
+    backdrop-filter: brightness(.9);
+}
+
+.profile-tabs-container li {
+    max-height: 90px;
+}
+
+.username-container{
+    border: 1px solid var(--navbar-background-color);
+    background-color: var(--navbar-text-color);
+    width: 95%;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px;
+    transition: .9s opacity;
+}
+
+.profile-tabs button{
+    width: 190px;
+    border: .5px solid black;
+    height: 90px;
+    font-size: 2.0rem;
+    cursor: pointer;
+    background-color: var(--navbar-background-color);
+    filter: brightness(calc(1 / 1.65));
+    color: var(--navbar-text-color);
+    transition: .5s width, .2s background-color, .3s margin;;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.profile-tabs button:hover{
+    background-color: rgb(86, 90, 116);
+    font-size: 2.1rem;
+}
+
+.profile-tabs button > * {
+    margin-left: 6px;
+}
+
+.profile-tabs img{
+    min-width: 56px;
+    filter: invert() brightness(.95);
+}
+
+
+.profile-tabs .active{
+    border: 1.5px solid black;
+    border-right: 8px solid rgba(250, 250, 250);
+    transition: .1s border, .5s width, .5s filter, .3s background-color;
+    background-color: var(--navbar-highlight-color);
+}
+
+.profile-tabs .active:hover{
+    background-color: rgba(0, 0, 0, 0);
+    font-size: 2.0rem;
+}
+
+.tab-button-label{
+    opacity: 1;
+    width: max-content;
+    transition: .5s width, .3s opacity;
+}
+
+
+
+/* Mobile Styles */
+@media screen and (max-width: 490px) {
+
+    .profile-tabs-container{
+        width: 60px;
+        transition: .5s width;
+    }
+
+    .profile-tabs button{
+        width: 60px;
+        transition: .5s width;
+    }
+
+    .username-container{
+        opacity: 0;
+        transition: .15s opacity;
+        width: 0px;
+        user-select: none;
+    }
+
+
+
+    .profile-tabs .active{
+        border: 1px solid black;
+        transition: .5s width, .1s border, .5s filter;
+        filter: brightness(.8);
+        border-right: 1px solid transparent;
+    }
+
+    .tab-button-label{
+        display: none;
+        width: 0px;
+        opacity: 0;
+        transition: .5s width, .3s opacity;
+    }
+
+    .profile-tabs button > * {
+        margin: 0;
+        transition: .3s margin;
+    }
+    
+
+
+
+
+}
+
+/* Desktop Styles */
+@media screen and (min-width: 651px) and (max-width: 1023px) {
+
+
+}
+
+

@@ -327,7 +327,7 @@
 }
 
 /* mid-size */
-@media screen and (min-width: 551px) and (max-width: 650px) {
+@media screen and (min-width: 551px) and (max-width: 651px) {
   .game-modes {
     display: none;
   }
@@ -463,7 +463,7 @@
 }
 
 /* smaller mid-size */
-@media screen and (min-width: 431px) and (max-width: 550px) {
+@media screen and (min-width: 431px) and (max-width: 551px) {
   .game-modes {
     display: none;
   }
@@ -607,7 +607,7 @@
 }
 
 /* Phone Sizes */
-@media screen and (max-width: 430px) {
+@media screen and (max-width: 431px) {
   .game-modes {
     display: none;
   }
