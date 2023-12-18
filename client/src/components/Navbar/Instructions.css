@@ -73,7 +73,7 @@
   margin: 3.5px 0px 3.5px 12px;
 }
 
-.game-example > .hint {
+.instructions .game-example > .hint {
   width: 46px;
   background-size: auto 35px;
 }
@@ -84,7 +84,7 @@
   user-select: none;
 }
 
-.game-example > * {
+.game-example > .digit, .game-example > .hint {
   height: 52px;
   line-height: 52px;
   font-size: 3rem;

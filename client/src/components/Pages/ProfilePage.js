@@ -60,7 +60,7 @@ function ProfilePage(props) {
       setProfilePage(
         <div className="profile-page">
           <NavbarDynamic digits={props.digits} user={resObj} />
-          <MyProfile />
+          <MyProfile user={resObj} />
         </div>
       );
     } else {

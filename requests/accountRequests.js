@@ -821,7 +821,7 @@ function accountRequests(app) {
     }
   });
 
-  //Retuns the profile image link of the user, returns a default picture otherwise
+  //Returns the profile image link of the user, returns a default picture otherwise
   //Does almost the same thing as /api/current user, but I coded this into project first
   app.get("/api/profile_picture", async (req, res) => {
     try {

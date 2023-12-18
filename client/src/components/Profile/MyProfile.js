@@ -11,10 +11,9 @@ import Contact from "./Contact";
 //    props.stats - inserts game statistics into Statistics component
 //    props.username - their username, also part of props.user
 function MyProfile(props) {
-  const [activeTab, setActiveTab] = useState(<Settings user />);
+  const [activeTab, setActiveTab] = useState(<Statistics user={props.user} stats={props.stats} />);
   const [username, setUsername] = useState(
-    props.username || "CarnationOtters7"
-  );
+    props.username);
 
   //Used to give the buttons an effect indicating they are clicked
   const [activeButton, setActiveButton] = useState({
@@ -41,7 +40,7 @@ function MyProfile(props) {
         break;
       }
       case "statistics": {
-        setActiveTab(<Statistics stats={props.stats} />);
+        setActiveTab(<Statistics user={props.user }stats={props.stats} />);
         setActiveButton({
           statistics: " active",
           settings: "",
@@ -59,7 +58,7 @@ function MyProfile(props) {
         break;
       }
       default: {
-        setActiveTab(<Statistics stats={props.stats} />);
+        setActiveTab(<Statistics user={props.user }stats={props.stats} />);
         setActiveButton({
           statistics: " active",
           settings: "",
@@ -88,7 +87,7 @@ function MyProfile(props) {
                 alt="statistics icon"
                 width="56px"
               />
-              <div className="tab-button-label">Statistics</div>
+              <label className="tab-button-label">Statistics</label>
             </button>
           </li>
           <li>
@@ -103,7 +102,7 @@ function MyProfile(props) {
                 alt="settings icon"
                 width="56px"
               />
-              <div className="tab-button-label">Settings</div>
+              <label className="tab-button-label">Settings</label>
             </button>
           </li>
           <li>
@@ -118,7 +117,7 @@ function MyProfile(props) {
                 alt="contact icon"
                 width="56px"
               />
-              <div className="tab-button-label">Contact</div>
+              <label className="tab-button-label">Contact</label>
             </button>
           </li>
         </ul>

@@ -74,7 +74,6 @@ function Login(props) {
     const url = "/api/validate";
     const formData = new FormData(e.target);
     const formDataObj = Object.fromEntries(formData.entries());
-    formDataObj.location = window.location;
     const formDataString = JSON.stringify(formDataObj);
     const options = {
       method: "POST",

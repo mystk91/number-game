@@ -16,7 +16,6 @@ function Signup(props) {
     inputReference.current.focus();
     document.addEventListener("keydown", stopOtherKeydowns, true);
     return () => {
-      console.log("Cleanup function called");
       document.removeEventListener("keydown", stopOtherKeydowns, true);
     };
   }, []);

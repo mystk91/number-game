@@ -9,6 +9,7 @@ import NumberGameRegular from "../Game/NumberGameRegular";
 import NumberGameLocal from "../Game/NumberGameLocal";
 import NavbarDynamic from "../Navbar/NavbarDynamic";
 import MyProfile from "../Profile/MyProfile";
+import Navbar from "../Navbar/Navbar";
 
 //Creates a profile page for the website that displays the navbar and the users profile
 //The game page will either use localStorage or data from players account
@@ -24,6 +25,8 @@ function ProfileCSS(props) {
   //Checks if the user is logged in and retreives their information for the profile page
   async function fetchUser() {
     let resObj;
+    let res = await fetch("/api/profile_picture");
+    resObj = await res.json();
     /*
     let profile = localStorage.getItem("profile");
     if (props.user) {
@@ -35,7 +38,6 @@ function ProfileCSS(props) {
         imageUrl: profileObj.profile_picture,
         loggedIn: true,
       };
-      console.log("using local object " + resObj);
     } else {
       let res = await fetch("/api/profile_picture");
       resObj = await res.json();
@@ -62,7 +64,7 @@ function ProfileCSS(props) {
     //if (resObj.session) {
       setProfilePage(
         <div className="profile-page">
-          <NavbarDynamic digits={props.digits} user={resObj} />
+          <Navbar user={resObj} />
           <MyProfile />
         </div>
       );
