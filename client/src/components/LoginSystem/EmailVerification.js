@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import uniqid from "uniqid";
 import "./EmailVerification.css";
-import "../../normalize.css"
+import "../../normalize.css";
 import "../../custom.css";
 import { useParams } from "react-router-dom";
 import LoadingIcon from "../Parts/LoadingIcon";
@@ -10,6 +10,11 @@ import LoadingIcon from "../Parts/LoadingIcon";
 function EmailVerification(props) {
   //Used to set the currently displayed screen
   const [currentScreen, setCurrentScreen] = useState();
+
+  const firstCallRef = useRef(true);
+  function setFirstCallRef(point) {
+    firstCallRef.current = point;
+  }
 
   //Stores the verification code parameter
   const verificationCodeRef = useRef();
@@ -20,7 +25,10 @@ function EmailVerification(props) {
 
   //componentDidMount, runs when component mounts, then componentDismount
   useEffect(() => {
-    checkVerification();
+    if (firstCallRef.current) {
+      checkVerification();
+      setFirstCallRef(false);
+    }
     return () => {};
   }, []);
 

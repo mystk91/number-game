@@ -11,9 +11,10 @@ import Contact from "./Contact";
 //    props.stats - inserts game statistics into Statistics component
 //    props.username - their username, also part of props.user
 function MyProfile(props) {
-  const [activeTab, setActiveTab] = useState(<Statistics user={props.user} stats={props.stats} />);
-  const [username, setUsername] = useState(
-    props.username);
+  const [activeTab, setActiveTab] = useState(
+    <Statistics user={props.user} stats={props.stats} />
+  );
+  const [username, setUsername] = useState(props.username);
 
   //Used to give the buttons an effect indicating they are clicked
   const [activeButton, setActiveButton] = useState({
@@ -24,6 +25,9 @@ function MyProfile(props) {
 
   //componentDidMount, runs when component mounts, then componentDismount
   useEffect(() => {
+    if (props.tabName) {
+      switchTab(props.tabName);
+    }
     return () => {};
   }, []);
 
@@ -40,7 +44,7 @@ function MyProfile(props) {
         break;
       }
       case "statistics": {
-        setActiveTab(<Statistics user={props.user }stats={props.stats} />);
+        setActiveTab(<Statistics user={props.user} stats={props.stats} />);
         setActiveButton({
           statistics: " active",
           settings: "",
@@ -58,7 +62,7 @@ function MyProfile(props) {
         break;
       }
       default: {
-        setActiveTab(<Statistics user={props.user }stats={props.stats} />);
+        setActiveTab(<Statistics user={props.user} stats={props.stats} />);
         setActiveButton({
           statistics: " active",
           settings: "",

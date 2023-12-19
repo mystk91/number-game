@@ -27,15 +27,15 @@ function ChangeUsername(props) {
   }, []);
 
   //Attempts to change the username
-  async function changeUsername(e) {
+  async function deleteAccount(e) {
     e.preventDefault();
-    const url = "/api/change-username";
+    const url = "/api/delete-my-account";
     const formData = new FormData(e.target);
     const formDataObj = Object.fromEntries(formData.entries());
     formDataObj.user = props.user;
     const formDataString = JSON.stringify(formDataObj);
     const options = {
-      method: "POST",
+      method: "DELETE",
       body: formDataString,
       withCredentials: true,
       credentials: "include",
@@ -47,55 +47,24 @@ function ChangeUsername(props) {
     let res = await fetch(url, options);
     let resObj = await res.json();
     if (resObj.success) {
-      setHideThis(" hide");
-      setCurrentScreen(successScreen);
+      localStorage.removeItem("profile");
+      window.location = "/login";
     } else {
-      setUsernameErrs(<div className="error">{resObj.errors.username}</div>);
       setPasswordErrs(<div className="error">{resObj.errors.password}</div>);
     }
   }
 
-  let successScreen = (
-    <div className="success-screen">
-      <div className="username-success-container">
-        <div className="username-success-message">
-          Your username has been updated.
-        </div>
-      </div>
-    </div>
-  );
-
   return (
-    <div className="new-username">
-      {currentScreen}
-      <div className={"new-username-container" + hideThis}>
-        <div className="username-info">
-          Your username will appear on the leaderboards if you get a top 50
-          average score in Random Mode.
-        </div>
-        <div className="username-info">
-          You can only change your username once a month. Inappropriate names
-          may lead to account suspensions.
+    <div className="delete-account">
+      <div className={"delete-account--container"}>
+        <div className="delete-account-headline">
+          Enter your password to delete your account. This process cannot be reversed. 
         </div>
         <form
           method="post"
-          className="change-username-form"
-          onSubmit={(e) => changeUsername(e)}
+          className="delete-account-form"
+          onSubmit={(e) => deleteAccount(e)}
         >
-          <div className="form-input">
-            <label htmlFor="newUsername">New Username</label>
-            <input
-              id="newUsername"
-              name="newUsername"
-              type="text"
-              maxLength={16}
-              value={usernameValue}
-              onChange={(e) => setUsernameValue(e.target.value)}
-              ref={inputReference}
-            />
-            {usernameErrs}
-          </div>
-
           <div className="form-input">
             <label htmlFor="password">Password</label>
             <input
@@ -104,6 +73,7 @@ function ChangeUsername(props) {
               type="password"
               maxLength={32}
               value={passwordValue}
+              ref={inputReference}
               onChange={(e) => setPasswordValue(e.target.value)}
             />
             {passwordErrs}
@@ -112,10 +82,10 @@ function ChangeUsername(props) {
           <div>
             <button
               type="submit"
-              className="change-username"
-              name="change-username"
+              className="deleteAccount"
+              name="deleteAccount"
             >
-              Change Username
+              Delete Account
             </button>
           </div>
         </form>

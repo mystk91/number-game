@@ -62,6 +62,9 @@ function NewPasswordPage(props) {
       </div>
     );
   }
+
+
+  return passwordPage;
 }
 
 export default NewPasswordPage;

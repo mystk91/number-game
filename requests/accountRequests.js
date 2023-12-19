@@ -83,21 +83,6 @@ function accountRequests(app) {
       //Creates the account if parameters are correct
       let random = Math.floor(Math.random() * 6) + 4;
 
-      const characters =
-        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-      function generateString(length) {
-        let result = "";
-        const charactersLength = characters.length;
-        for (let i = 0; i < length; i++) {
-          result += characters.charAt(
-            Math.floor(
-              (characters.length * crypto.getRandomValues(new Uint32Array(1))) /
-                Math.pow(2, 32)
-            )
-          );
-        }
-        return result;
-      }
       let verificationCode = generateString(32);
 
       bcrypt.hash(req.body.password, 10, async (err, hashedPassword) => {
@@ -169,6 +154,11 @@ function accountRequests(app) {
         email: unverifiedUser.email,
       });
 
+      let newSession = generateString(32);
+      console.log("so we get here");
+      console.log(generateUsername());
+      console.log("but we don't get here");
+
       if (
         unverifiedUser.verificationCode === newestVerificationCode &&
         !previouslyCreatedAccount
@@ -176,6 +166,9 @@ function accountRequests(app) {
         const verifiedUser = {
           email: unverifiedUser.email,
           password: unverifiedUser.password,
+          username: generateUsername(),
+          usernameDate: new Date("Wed Jan 01 2020 00:00:00 GMT-0500"),
+          session: newSession,
           createdAt: new Date(),
         };
         await accounts.insertOne(verifiedUser);
@@ -233,21 +226,6 @@ function accountRequests(app) {
       //Sends a password reset if the email address exists
       let random = Math.floor(Math.random() * 6) + 4;
 
-      const characters =
-        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-      function generateString(length) {
-        let result = "";
-        const charactersLength = characters.length;
-        for (let i = 0; i < length; i++) {
-          result += characters.charAt(
-            Math.floor(
-              (characters.length * crypto.getRandomValues(new Uint32Array(1))) /
-                Math.pow(2, 32)
-            )
-          );
-        }
-        return result;
-      }
       let verificationCode = generateString(32);
 
       const user = {
@@ -270,7 +248,7 @@ function accountRequests(app) {
         to: req.body.email,
         subject: "Numblr Password Reset",
         html: `<p>Click here to reset your password. If you didn't request a password reset, you can ignore this. </p>
-        <a href='${process.env.protocol}${process.env.domain}/new-password/${verificationCode}'>${process.env.protocol}${process.env.domain}/reset-password/${verificationCode}</a>`,
+        <a href='${process.env.protocol}${process.env.domain}/new-password/${verificationCode}'>${process.env.protocol}${process.env.domain}/new-password/${verificationCode}</a>`,
       };
 
       transporter.sendMail(mailOptions, function (error, info) {
@@ -410,27 +388,12 @@ function accountRequests(app) {
           errorExists = true;
         } else {
           if (await bcrypt.compare(password, user.password)) {
-            const characters =
-              "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%^&";
-            function generateString(length) {
-              let result = "";
-              const charactersLength = characters.length;
-              for (let i = 0; i < length; i++) {
-                result += characters.charAt(
-                  Math.floor(
-                    (characters.length *
-                      crypto.getRandomValues(new Uint32Array(1))) /
-                      Math.pow(2, 32)
-                  )
-                );
-              }
-              return result;
-            }
+
             let session = generateString(48);
             newUser.session = session;
             newUser.loginType = "email";
             newUser.profile_picture =
-              "./images/account/profile-images/logged-in.png";
+              "/images/account/profile-images/logged-in.png";
           } else {
             errors.password = "Wrong password. Try again.";
             errorExists = true;
@@ -460,21 +423,7 @@ function accountRequests(app) {
     try {
       const db = mongoClient.db("Accounts");
       let accounts = db.collection("Accounts");
-      const characters =
-        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%^&";
-      function generateString(length) {
-        let result = "";
-        const charactersLength = characters.length;
-        for (let i = 0; i < length; i++) {
-          result += characters.charAt(
-            Math.floor(
-              (characters.length * crypto.getRandomValues(new Uint32Array(1))) /
-                Math.pow(2, 32)
-            )
-          );
-        }
-        return result;
-      }
+
       let newSession = generateString(32);
       await accounts.updateOne(
         { session: req.body.session },
@@ -502,22 +451,7 @@ function accountRequests(app) {
         callbackURL: `${process.env.protocol}${process.env.domain}/login/google/callback`,
       },
       async function (accessToken, refreshToken, profile, done) {
-        const characters =
-          "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%^&";
-        function generateString(length) {
-          let result = "";
-          const charactersLength = characters.length;
-          for (let i = 0; i < length; i++) {
-            result += characters.charAt(
-              Math.floor(
-                (characters.length *
-                  crypto.getRandomValues(new Uint32Array(1))) /
-                  Math.pow(2, 32)
-              )
-            );
-          }
-          return result;
-        }
+
         let session = generateString(48);
         let returnedAccount = {
           profile_picture: profile.photos[0].value,
@@ -537,6 +471,8 @@ function accountRequests(app) {
             email: profile.emails[0].value,
             googleId: profile.id,
             password: password,
+            username: generateUsername(),
+            usernameDate: new Date("Wed Jan 01 2020 00:00:00 GMT-0500"),
             session: session,
           };
           await accounts.insertOne(newAccount);
@@ -592,22 +528,7 @@ function accountRequests(app) {
         callbackURL: `${process.env.protocol}${process.env.domain}/login/facebook/callback`,
       },
       async function (accessToken, refreshToken, profile, done) {
-        const characters =
-          "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%^&";
-        function generateString(length) {
-          let result = "";
-          const charactersLength = characters.length;
-          for (let i = 0; i < length; i++) {
-            result += characters.charAt(
-              Math.floor(
-                (characters.length *
-                  crypto.getRandomValues(new Uint32Array(1))) /
-                  Math.pow(2, 32)
-              )
-            );
-          }
-          return result;
-        }
+
         let session = generateString(48);
         let returnedAccount = {
           facebookProfilePicture: public_profile.picture,
@@ -667,7 +588,6 @@ function accountRequests(app) {
   );
   */
 
-
   /*
   //Twitter Authentication
   app.get(
@@ -685,22 +605,7 @@ function accountRequests(app) {
         callbackURL: `${process.env.protocol}${process.env.domain}/login/twitter/callback`,
       },
       async function (token, tokenSecret, profile, done) {
-        const characters =
-          "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%^&";
-        function generateString(length) {
-          let result = "";
-          const charactersLength = characters.length;
-          for (let i = 0; i < length; i++) {
-            result += characters.charAt(
-              Math.floor(
-                (characters.length *
-                  crypto.getRandomValues(new Uint32Array(1))) /
-                  Math.pow(2, 32)
-              )
-            );
-          }
-          return result;
-        }
+
         let session = generateString(48);
         let returnedAccount = {
           twitterProfilePicture: profile.photos[0],
@@ -758,7 +663,6 @@ function accountRequests(app) {
     }
   );
   */
-
 
   passport.serializeUser((user, done) => {
     done(null, user);
@@ -821,7 +725,7 @@ function accountRequests(app) {
     }
   });
 
-  //Returns the profile image link of the user, returns a default picture otherwise
+  //Returns the profile image link of the user and their session, created by 
   //Does almost the same thing as /api/current user, but I coded this into project first
   app.get("/api/profile_picture", async (req, res) => {
     try {
@@ -834,16 +738,158 @@ function accountRequests(app) {
       } else {
         res.send({
           loggedIn: false,
-          imageUrl: "./images/site/account2.png",
+          imageUrl: "/images/site/account2.png",
         });
       }
     } catch {
       res.send({
         loggedIn: false,
-        imageUrl: "./images/site/account2.png",
+        imageUrl: "/images/site/account2.png",
       });
     }
   });
+
+  //Returns a random string, used for creating passwords and sessions
+  function generateString(length) {
+    const characters =
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    let result = "";
+    const charactersLength = characters.length;
+    for (let i = 0; i < length; i++) {
+      result += characters.charAt(
+        Math.floor(
+          (characters.length * crypto.getRandomValues(new Uint32Array(1))) /
+            Math.pow(2, 32)
+        )
+      );
+    }
+    return result;
+  }
+
+  //Creates a generic username for the user to start with
+  function generateUsername() {
+    let prefixes = ["Unnamed", "Nameless", "Unknown"];
+    let suffixes = [
+      "Saffron",
+      "Chestnut",
+      "Carrot",
+      "Parsnip",
+      "Potato",
+      "Pumpkin",
+      "Turnip",
+      "Ox",
+      "Pepper",
+      "Tomato",
+      "Barley",
+      "Barrel",
+      "Apple",
+      "Celery",
+      "Pear",
+      "Horse",
+      "Goose",
+      "Orange",
+      "Shovel",
+      "Fork",
+      "Truffle",
+      "Olive",
+      "Lettuce",
+      "Juniper",
+      "Cedar",
+      "Deer",
+      "Ivy",
+      "Maple",
+      "Cricket",
+      "Pine",
+      "Peat",
+      "Coal",
+      "Dog",
+      "Nitrate",
+      "Granite",
+      "Clay",
+      "Slate",
+      "Rabbit",
+      "Flint",
+      "Marble",
+      "Gypsum",
+      "Salt",
+      "Iron",
+      "Copper",
+      "Cat",
+      "Tin",
+      "Lead",
+      "Zinc",
+      "Mercury",
+      "Laurel",
+      "Snowdrop",
+      "Axe",
+      "Bull",
+      "Grass",
+      "Hazel",
+      "Goat",
+      "Violet",
+      "Willow",
+      "Elm",
+      "Mandrake",
+      "Parsley",
+      "Tuna",
+      "Twine",
+      "Sleigh",
+      "Tulip",
+      "Hen",
+      "Birch",
+      "Bee",
+      "Hemlock",
+      "Radish",
+      "Pigeon",
+      "Hawthorn",
+      "Oak",
+      "Rose",
+      "Silkworm",
+      "Carp",
+      "Duck",
+      "Scythe",
+      "Thyme",
+      "Quail",
+      "Cart",
+      "Oat",
+      "Rye",
+      "Onion",
+      "Rosemary",
+      "Sickle",
+      "Clove",
+      "Lavender",
+      "Mint",
+      "Sage",
+      "Garlic",
+      "Wheat",
+      "Basil",
+      "Lock",
+      "Otter",
+      "Mill",
+      "Plum",
+      "Salmon",
+      "Fennel",
+      "Water",
+      "Walnut",
+      "Trout",
+      "Basket",
+      "Armor",
+      "Snow",
+      "Rain",
+      "Amber",
+      "Anchor",
+      "Emerald",
+      "Silver",
+      "Gold",
+      "Jade",
+      "Bear",
+    ];
+
+    return (
+      prefixes[Math.floor(Math.random() * prefixes.length)] +
+      suffixes[Math.floor(Math.random() * suffixes.length)]
+    );
+  }
 }
 
 module.exports = { accountRequests };
