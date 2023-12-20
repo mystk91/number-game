@@ -253,8 +253,10 @@ function gameRequests(app) {
 
           let scoresObjDb = account[randomGameString + `-scores`];
           let scores30;
+          let best30;
           if (scoresObjDb) {
             scores30 = scoresObjDb.scores30;
+            best30 = scoresObjDb.best30;
             while (
               currentDate.getTime() - scores30[0].date.getTime() >
               2592000000
@@ -266,6 +268,7 @@ function gameRequests(app) {
             }
           } else {
             scores30 = [];
+            best30 = {average: 8, date: currentDate}
           }
 
           let scores30entry = {
@@ -278,6 +281,13 @@ function gameRequests(app) {
             scores30.reduce((total, x) => {
               return total + x.score;
             }, 0) / scores30.length;
+
+          if (scores30.length == 30){
+            if (average30 < best30.average){
+              best30.average = average30;
+              best30.date = currentDate;
+            }
+          }
 
           let average30obj = {
             average: average30,
@@ -306,6 +316,7 @@ function gameRequests(app) {
             average30: average30obj,
             scores: scores,
             scores30: scores30,
+            best30: best30,
           };
 
           return scoresObj;
@@ -335,6 +346,7 @@ function gameRequests(app) {
                   average30: scoresObj.average30,
                   scores: scoresObj.scores,
                   scores30: scoresObj.scores30,
+                  best30: scoresObj.best30
                 },
               },
             }
@@ -358,6 +370,7 @@ function gameRequests(app) {
                   average30: scoresObj.average30,
                   scores: scoresObj.scores,
                   scores30: scoresObj.scores30,
+                  best30: scoresObj.best30
                 },
               },
             }

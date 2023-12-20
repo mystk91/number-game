@@ -8,11 +8,12 @@ import Contact from "./Contact";
 
 //A component that holds other components associated with account information, setting, and statistics
 //    props.user - which the page retrieves on load
-//    props.stats - inserts game statistics into Statistics component
+//    props.stats - inserts game statistics into Statistics component, a statObj
 //    props.username - their username, also part of props.user
+//    props.premium - true if they have purchased random mode
 function MyProfile(props) {
   const [activeTab, setActiveTab] = useState(
-    <Statistics user={props.user} stats={props.stats} />
+    <Statistics user={props.user} stats={props.stats} premium={props.premium} />
   );
   const [username, setUsername] = useState(props.username);
 
@@ -44,7 +45,7 @@ function MyProfile(props) {
         break;
       }
       case "statistics": {
-        setActiveTab(<Statistics user={props.user} stats={props.stats} />);
+        setActiveTab(<Statistics user={props.user} stats={props.stats} premium={props.premium} />);
         setActiveButton({
           statistics: " active",
           settings: "",
@@ -62,7 +63,7 @@ function MyProfile(props) {
         break;
       }
       default: {
-        setActiveTab(<Statistics user={props.user} stats={props.stats} />);
+        setActiveTab(<Statistics user={props.user} stats={props.stats} premium={props.premium} />);
         setActiveButton({
           statistics: " active",
           settings: "",

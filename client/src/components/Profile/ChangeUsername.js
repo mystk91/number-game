@@ -47,8 +47,11 @@ function ChangeUsername(props) {
     let res = await fetch(url, options);
     let resObj = await res.json();
     if (resObj.success) {
+      window.location = "/profile";
+      /*
       setHideThis(" hide");
       setCurrentScreen(successScreen);
+      */
     } else {
       setUsernameErrs(<div className="error">{resObj.errors.username}</div>);
       setPasswordErrs(<div className="error">{resObj.errors.password}</div>);

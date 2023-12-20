@@ -6,6 +6,7 @@ import "../../custom.css";
 //Copies the gameboard as unicode emojis so it can be pasted elsewhere
 //props.hints - for the game that was just completed
 //props.date - the date the game
+//props.random - true if this is a random game
 function ShareScore(props) {
   const hintsRef = useRef();
   function setHintsRef(point) {
@@ -33,6 +34,9 @@ function ShareScore(props) {
 
     let headerSpacesLeft = [1, 3, 6, 8, 10, 13];
     let labelSpacesLeft = [0, 0, 2, 5, 7, 10];
+    if (props.random) {
+      labelSpacesLeft = [0, 0, 1, 3, 5, 8];
+    }
 
     let copiedText = "";
     for (let i = 0; i < headerSpacesLeft[props.hints[0].length - 3]; i++) {
@@ -88,7 +92,12 @@ function ShareScore(props) {
     for (let i = 0; i < labelSpacesLeft[props.hints[0].length - 3]; i++) {
       copiedText += " ";
     }
-    copiedText += attempts + "/" + props.hints.length + " - " + getDate();
+    copiedText += attempts + "/" + props.hints.length + " - ";
+    if (props.random) {
+      copiedText += "Random";
+    } else {
+      copiedText += getDate();
+    }
     await navigator.clipboard.writeText(copiedText);
     e.target.style.cursor = "default";
     e.target.style.pointerEvents = "none";

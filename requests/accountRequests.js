@@ -155,9 +155,6 @@ function accountRequests(app) {
       });
 
       let newSession = generateString(32);
-      console.log("so we get here");
-      console.log(generateUsername());
-      console.log("but we don't get here");
 
       if (
         unverifiedUser.verificationCode === newestVerificationCode &&
@@ -168,6 +165,7 @@ function accountRequests(app) {
           password: unverifiedUser.password,
           username: generateUsername(),
           usernameDate: new Date("Wed Jan 01 2020 00:00:00 GMT-0500"),
+          premium: false,
           session: newSession,
           createdAt: new Date(),
         };
@@ -388,7 +386,6 @@ function accountRequests(app) {
           errorExists = true;
         } else {
           if (await bcrypt.compare(password, user.password)) {
-
             let session = generateString(48);
             newUser.session = session;
             newUser.loginType = "email";
@@ -451,7 +448,6 @@ function accountRequests(app) {
         callbackURL: `${process.env.protocol}${process.env.domain}/login/google/callback`,
       },
       async function (accessToken, refreshToken, profile, done) {
-
         let session = generateString(48);
         let returnedAccount = {
           profile_picture: profile.photos[0].value,
@@ -468,9 +464,10 @@ function accountRequests(app) {
         if (!account) {
           let password = await bcrypt.hash(uniqid(), 10);
           let newAccount = {
-            email: profile.emails[0].value,
             googleId: profile.id,
+            email: profile.emails[0].value,
             password: password,
+            premium: false,
             username: generateUsername(),
             usernameDate: new Date("Wed Jan 01 2020 00:00:00 GMT-0500"),
             session: session,
@@ -725,7 +722,7 @@ function accountRequests(app) {
     }
   });
 
-  //Returns the profile image link of the user and their session, created by 
+  //Returns the profile image link of the user and their session, generated when session begins
   //Does almost the same thing as /api/current user, but I coded this into project first
   app.get("/api/profile_picture", async (req, res) => {
     try {
@@ -746,6 +743,39 @@ function accountRequests(app) {
         loggedIn: false,
         imageUrl: "/images/site/account2.png",
       });
+    }
+  });
+
+  //Returns the username associated with the current session and a statistcs object with their game info, and if they have premium
+  app.post("/api/profile", async (req, res) => {
+    try {
+      if (req.body.session) {
+        const db = mongoClient.db("Accounts");
+        let accounts = db.collection("Accounts");
+        let account = await accounts.findOne({ session: req.body.session });
+        let statsObj = {};
+
+        for (let i = 2; i <= 7; i++) {
+          if (account[`${i}digits-scores`]) {
+            statsObj[`${i}digits-scores`] = account[`${i}digits-scores`];
+          }
+          if (account[`${i}random-scores`]) {
+            statsObj[`${i}random-scores`] = account[`${i}random-scores`];
+          }
+        }
+
+        console.log(statsObj);
+
+        res.send({
+          username: account.username,
+          premium: account.premium,
+          statsObj: statsObj,
+        });
+      } else {
+        res.send({ username: "", premium: false, statsObj: {} });
+      }
+    } catch {
+      res.send({ username: "", premium: false, statsObj: {} });
     }
   });
 

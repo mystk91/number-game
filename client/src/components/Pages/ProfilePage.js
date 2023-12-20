@@ -34,11 +34,13 @@ function ProfilePage(props) {
         imageUrl: profileObj.profile_picture,
         loggedIn: true,
       };
-      console.log("using local object " + resObj);
     } else {
       let res = await fetch("/api/profile_picture");
       resObj = await res.json();
     }
+    let username;
+    let statsObj;
+    let premium;
     if (resObj.session) {
       const options = {
         method: "POST",
@@ -50,17 +52,20 @@ function ProfilePage(props) {
           "Content-Type": "application/json",
         },
       };
-      let checkPremium = await fetch("/api/checkPremium", options);
-      let checkPremiumObj = await checkPremium.json();
-      if (checkPremiumObj.premium) {
+      let getProfile = await fetch("/api/profile", options);
+      let profileObj = await getProfile.json();
+      username = profileObj.username;
+      statsObj = profileObj.statsObj;
+      premium = profileObj.premium;
+      if (profileObj.premium) {
         resObj.premium = true;
       }
     }
     if (resObj.session) {
       setProfilePage(
         <div className="profile-page">
-          <NavbarDynamic digits={props.digits} user={resObj} />
-          <MyProfile user={resObj} />
+          <NavbarDynamic digits={0} user={resObj} />
+          <MyProfile user={resObj} username={username} stats={statsObj} premium={premium} />
         </div>
       );
     } else {

@@ -1057,7 +1057,7 @@ function NumberGameRandom(props) {
         <div className="victory-label">Victory!</div>
         <div className="correct-number">{rowsTemp}</div>
         <div className="share-score-container">
-          <ShareScore hints={hintsRef.current} />
+          <ShareScore hints={hintsRef.current} random={true} />
         </div>
         <Histogram30Random
           digits={props.digits}

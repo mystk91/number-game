@@ -166,6 +166,20 @@ function profileRequests(app) {
       res.send({ errors });
     }
   });
+
+
+
+  //Resets the statistics of the user in a single game mode
+app.post("/api/reset-stats", async (req,res,next)=>{
+
+});
+
+
+
+
+
 }
+
+
 
 module.exports = { profileRequests };
