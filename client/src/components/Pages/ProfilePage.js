@@ -1,8 +1,4 @@
-import React, {
-  useState,
-  useEffect,
-  useCallback
-} from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import "../../normalize.css";
 import "../../custom.css";
 import NumberGameRegular from "../Game/NumberGameRegular";
@@ -60,16 +56,72 @@ function ProfilePage(props) {
       if (profileObj.premium) {
         resObj.premium = true;
       }
+
+      let today = new Date();
+      //Removes old games from stats and updates the averages
+      for (let i = 2; i <= 7; i++) {
+        if (statsObj[`${i}random-scores`]) {
+          let shifted = false;
+          while (
+            today.getTime() -
+              new Date(statsObj[`${i}random-scores`].scores30[0].date).getTime() >
+            2592000000
+          ) {
+            statsObj[`${i}random-scores`].scores30.shift();
+            shifted = true;
+          }
+          if (shifted) {
+            let average30 =
+              statsObj[`${i}random-scores`].scores30.reduce((total, x) => {
+                return total + x.score;
+              }, 0) / statsObj[`${i}random-scores`].scores30.length;
+
+            statsObj[`${i}random-scores`].average30.average = average30;
+            statsObj[`${i}random-scores`].average30.numberOfGames =
+              statsObj[`${i}random-scores`].scores30.length;
+          }
+
+          if(statsObj[`${i}random-scores`].best30.average === 8){
+            statsObj[`${i}random-scores`].best30.average = "";
+            statsObj[`${i}random-scores`].best30.date = "";
+          }
+        }
+
+        if (statsObj[`${i}digits-scores`]) {
+          let shifted = false;
+          while (
+            today.getTime() -
+              new Date(statsObj[`${i}digits-scores`].scores30[0].date).getTime() >
+            2592000000
+          ) {
+            statsObj[`${i}digits-scores`].scores30.shift();
+            shifted = true;
+          }
+          if (shifted) {
+            let average30 =
+              statsObj[`${i}digits-scores`].scores30.reduce((total, x) => {
+                return total + x.score;
+              }, 0) / statsObj[`${i}digits-scores`].scores30.length;
+
+            statsObj[`${i}digits-scores`].average30.average = average30;
+          }
+        }
+      }
     }
     if (resObj.session) {
       setProfilePage(
         <div className="profile-page">
           <NavbarDynamic digits={0} user={resObj} />
-          <MyProfile user={resObj} username={username} stats={statsObj} premium={premium} />
+          <MyProfile
+            user={resObj}
+            username={username}
+            stats={statsObj}
+            premium={premium}
+          />
         </div>
       );
     } else {
-      window.location = ("/login");
+      window.location = "/login";
     }
   }
 

@@ -156,7 +156,7 @@ function profileRequests(app) {
       let account = await accounts.findOne({ session: req.body.user.session });
       if (await bcrypt.compare(req.body.password, account.password)) {
         accounts.deleteOne(account);
-        res.send({success: true})
+        res.send({ success: true });
       } else {
         errors.password = "Incorrect password";
         res.send({ errors });
@@ -167,19 +167,27 @@ function profileRequests(app) {
     }
   });
 
-
-
-  //Resets the statistics of the user in a single game mode
-app.post("/api/reset-stats", async (req,res,next)=>{
-
-});
-
-
-
-
-
+  //Resets the statistics of the user for a single game mode
+  app.post("/api/reset-stats", async (req, res, next) => {
+    const db = mongoClient.db("Accounts");
+    let accounts = db.collection("Accounts");
+    let account = await accounts.findOne({ session: req.body.session });
+    try {
+      let modeName = req.body.mode.slice(1, req.body.mode.length);
+      //Done to avoid user to unset different field parameters in DB
+      if (modeName == "random" || modeName == "digits") {
+        await accounts.updateOne(
+          { session: req.body.session },
+          { $unset: {[`${req.body.mode}-scores`] : ""} }
+        );
+        res.send({ success: true });
+      } else {
+        res.send({ error: true });
+      }
+    } catch {
+      res.send({ error: true });
+    }
+  });
 }
-
-
 
 module.exports = { profileRequests };

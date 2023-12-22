@@ -12,9 +12,8 @@ import Contact from "./Contact";
 //    props.username - their username, also part of props.user
 //    props.premium - true if they have purchased random mode
 function MyProfile(props) {
-  const [activeTab, setActiveTab] = useState(
-    <Statistics user={props.user} stats={props.stats} premium={props.premium} />
-  );
+  const statsTab = <Statistics user={props.user} stats={props.stats} premium={props.premium} key="statsTab"/>;
+  const [activeTab, setActiveTab] = useState(statsTab);
   const [username, setUsername] = useState(props.username);
 
   //Used to give the buttons an effect indicating they are clicked
@@ -45,7 +44,7 @@ function MyProfile(props) {
         break;
       }
       case "statistics": {
-        setActiveTab(<Statistics user={props.user} stats={props.stats} premium={props.premium} />);
+        setActiveTab(statsTab);
         setActiveButton({
           statistics: " active",
           settings: "",
@@ -63,7 +62,7 @@ function MyProfile(props) {
         break;
       }
       default: {
-        setActiveTab(<Statistics user={props.user} stats={props.stats} premium={props.premium} />);
+        setActiveTab(statsTab);
         setActiveButton({
           statistics: " active",
           settings: "",
