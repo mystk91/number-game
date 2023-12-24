@@ -188,6 +188,7 @@ function profileRequests(app) {
       res.send({ error: true });
     }
   });
+  
 }
 
 module.exports = { profileRequests };

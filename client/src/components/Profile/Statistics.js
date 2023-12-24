@@ -163,7 +163,12 @@ function Statistics(props) {
         }
       }
 
-    setStats(statsArr);
+    if (statsArr.length > 0){
+      setStats(statsArr);
+    }
+    else{
+      setStats(<div className="stats-error-message">Your game history is empty.</div>);
+    }
   }
 
   //Creates a confirmation modal asking if user is sure they want to reset stats

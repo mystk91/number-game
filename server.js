@@ -124,8 +124,8 @@ gameRequests.gameRequests(app);
 let leaderboardRequests = require("./requests/leaderboardRequests.js");
 leaderboardRequests.leaderboardRequests(app);
 
-let siteRequests = require("./requests/siteRequests.js");
-siteRequests.siteRequests(app);
+let adminRequests = require("./requests/adminRequests.js");
+adminRequests.adminRequests(app);
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

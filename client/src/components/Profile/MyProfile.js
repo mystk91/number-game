@@ -53,7 +53,7 @@ function MyProfile(props) {
         break;
       }
       case "contact": {
-        setActiveTab(<Contact />);
+        setActiveTab(<Contact user={props.user} />);
         setActiveButton({
           statistics: "",
           settings: "",
