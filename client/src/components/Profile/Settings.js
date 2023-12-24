@@ -12,11 +12,22 @@ function Settings(props) {
   const [changeUsername, setChangeUsername] = useState();
   const [changePassword, setChangePassword] = useState();
   const [deleteAccount, setDeleteAccount] = useState();
+  const [randomMode, setRandomMode] = useState();
 
   //componentDidMount, runs when component mounts, then componentDismount
   useEffect(() => {
+    checkRandomMode();
     return () => {};
   }, []);
+
+  function checkRandomMode(){
+    if (props.premium){
+      setRandomMode(<div>You have purchased Random Mode</div>)
+    }
+    else{
+      setRandomMode(<div className="random-mode-status"><div>You don't have Random Mode</div><a href="/products/random-mode">Get Random Mode</a></div>)
+    }
+  }
 
   return (
     <div className="account-settings">
@@ -53,6 +64,11 @@ function Settings(props) {
           </button>
         </div>
         {changePassword}
+      </div>
+
+      <div className="settings-option-container">
+        <div className="settings-option">Random Mode</div>
+        {randomMode}
       </div>
 
       <div className="settings-option-container">

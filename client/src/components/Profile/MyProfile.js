@@ -35,7 +35,7 @@ function MyProfile(props) {
   function switchTab(tabName) {
     switch (tabName) {
       case "settings": {
-        setActiveTab(<Settings user={props.user} />);
+        setActiveTab(<Settings user={props.user}  premium={props.premium} />);
         setActiveButton({
           statistics: "",
           settings: " active",

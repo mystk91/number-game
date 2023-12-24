@@ -124,6 +124,9 @@ gameRequests.gameRequests(app);
 let leaderboardRequests = require("./requests/leaderboardRequests.js");
 leaderboardRequests.leaderboardRequests(app);
 
+let siteRequests = require("./requests/siteRequests.js");
+siteRequests.siteRequests(app);
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // Serve the static files from the React app

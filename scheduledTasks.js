@@ -382,6 +382,7 @@ function scheduledTasks(app) {
         for (let i = 0; i < numberOfEntries; i++) {
           let currentAccount = eligibleAccounts[i];
           let leaderboardEntry = {
+            userId: currentAccount._id,
             rank: i + 1,
             username: currentAccount.username,
             average: currentAccount[digits + `random-scores`].average,

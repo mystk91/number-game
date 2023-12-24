@@ -19,7 +19,8 @@ function leaderboardRequests(app) {
           .toArray();
           leaderboard.forEach(x=>{
             x._id = "";
-          })
+            x.userId = "";
+          });
         allLeaderboards[`Leaderboard-` + digits] = leaderboard;
       }
       res.send(allLeaderboards);

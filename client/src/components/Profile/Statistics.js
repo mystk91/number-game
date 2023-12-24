@@ -168,7 +168,7 @@ function Statistics(props) {
 
   //Creates a confirmation modal asking if user is sure they want to reset stats
   // digits - integer with number of digits of game stats being reset
-  // gameMode- a string with the name of the game mode. "random" or "digits"
+  // mode- a string with the name of the game mode. "random" or "digits"
   function resetStatsConfirmation(digits, mode){
     if (!modal) {
       setModal(
@@ -210,7 +210,7 @@ function Statistics(props) {
 
   //Resets the stats of a single game mode
   // digits - integer with number of digits of game stats being reset
-  // gameMode- a string with the name of the game mode. "random" or "digits"
+  // mode- a string with the name of the game mode. "random" or "digits"
   async function resetStats(digits, mode) {
     mode = mode.toLowerCase();
     let reqObj = {
