@@ -71,9 +71,8 @@ function adminRequests(app) {
 
         let account = await accounts.findOne({ session: req.body.session });
 
-        let someConditions = true;
-        if (someConditions) {
-          messages.insertOne({
+        if (account.messagesSent < 8) {
+          await messages.insertOne({
             userId: account._id,
             username: account.username,
             email: account.email,
@@ -82,9 +81,28 @@ function adminRequests(app) {
             message: req.body.message,
           });
 
+          await account.updateOne(
+            { session: req.body.session },
+            { $inc: { messagesSent: 1 } }
+          );
+
           res.send({ success: true });
         } else {
-          throw new Error();
+          await messages.updateOne(
+            { session: req.body.session },
+            {
+              $set: {
+                userId: account._id,
+                username: account.username,
+                email: account.email,
+                premium: account.premium,
+                subject: req.body.subject,
+                message: req.body.message,
+              },
+            }
+          );
+
+          res.send({ success: true });
         }
       } catch {
         errors.message = "Error sending message";
@@ -95,21 +113,61 @@ function adminRequests(app) {
 
   //Gets the site stats, leaderboards, and messages so they can be dealt with
   app.get("/api/admin-get-all-info", async (req, res, next) => {
-    
-  });
+    try {
+      const webDB = mongoClient.db("Website");
+      let Stats = webDB.collection("Stats");
+      let visitors = await Stats.findOne({ title: "visitors" });
+      let gamesCompleted = await Stats.findOne({ title: "gamesCompleted" });
+      let premiumUsers = await Stats.findOne({ title: "premiumUsers" });
 
+      let siteStats = {
+        visitors: visitors.visitors,
+        premiumUsers: premiumUsers.premiumUsers,
+        gamesCompleted: gamesCompleted.gamesCompleted,
+        randomGamesCompleted: gamesCompleted.randomGamesCompleted,
+        dailyGamesCompleted: gamesCompleted.dailyGamesCompleted,
+      };
+
+      let allLeaderboards = {};
+      const leaderboardDB = mongoClient.db("Leaderboards");
+      for (let digits = 2; digits <= 7; digits++) {
+        let leaderboard = await leaderboardDB
+          .collection("Leaderboard-" + digits)
+          .find()
+          .toArray();
+        allLeaderboards[`Leaderboard-` + digits] = leaderboard;
+      }
+
+      let resObj = {
+        siteStats: siteStats,
+        leaderboards: allLeaderboards,
+      };
+
+      console.log(resObj);
+
+      res.send(resObj);
+    } catch {
+      res.send({ error: true });
+    }
+  });
 
   //A page that only admins can access
   app.get("/admin/secretAdmins", async (req, res, next) => {
-    const db = mongoClient.db("Accounts");
-    let accounts = db.collections("Accounts");
-
-
-
+    try {
+      const db = mongoClient.db("Accounts");
+      let accounts = db.collection("Accounts");
+      let account = await accounts.findOne({
+        _id: new ObjectId("6588d21be7f4b9e8a622b42a"),
+      });
+      if (req.user.session == account.session) {
+        next();
+      } else {
+        res.redirect("/login");
+      }
+    } catch {
+      res.redirect("/login");
+    }
   });
-
-
-
 }
 
 module.exports = { adminRequests };

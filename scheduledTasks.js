@@ -90,37 +90,35 @@ function scheduledTasks(app) {
   //Adds the first games to the database if they don't exist, used when we have empty database entries
   async function addFirstGames() {
     const dbDailyGames = mongoClient.db("DailyGames");
-      let dailyGames = dbDailyGames.collection(`DailyGames`);
-      const characters =
-        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-      function generateString(length) {
-        let result = "";
-        const charactersLength = characters.length;
-        for (let i = 0; i < length; i++) {
-          result += characters.charAt(
-            Math.floor(
-              (characters.length * crypto.getRandomValues(new Uint32Array(1))) /
-                Math.pow(2, 32)
-            )
-          );
-        }
-        return result;
+    let dailyGames = dbDailyGames.collection(`DailyGames`);
+    const characters =
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    function generateString(length) {
+      let result = "";
+      const charactersLength = characters.length;
+      for (let i = 0; i < length; i++) {
+        result += characters.charAt(
+          Math.floor(
+            (characters.length * crypto.getRandomValues(new Uint32Array(1))) /
+              Math.pow(2, 32)
+          )
+        );
       }
-      let date = new Date().toLocaleString("en-US", {
-        timeZone: "America/New_York",
-      });
-      for (let i = 2; i <= 7; i++) {
-        let targetNumber = Math.floor(
-          Math.random() * Math.pow(10, i)
-        ).toString();
-        while (targetNumber.length < i) {
-          targetNumber = "0" + targetNumber;
-        }
+      return result;
+    }
+    let date = new Date().toLocaleString("en-US", {
+      timeZone: "America/New_York",
+    });
+    for (let i = 2; i <= 7; i++) {
+      let targetNumber = Math.floor(Math.random() * Math.pow(10, i)).toString();
+      while (targetNumber.length < i) {
+        targetNumber = "0" + targetNumber;
+      }
 
-        let todaysGame = await dailyGames.findOne({ digits: i });
-        let oldGames = dbDailyGames.collection(`OldGames-` + i);
-        if (todaysGame) {
-          /*
+      let todaysGame = await dailyGames.findOne({ digits: i });
+      let oldGames = dbDailyGames.collection(`OldGames-` + i);
+      if (todaysGame) {
+        /*
           await oldGames.insertOne({
             digits: todaysGame.digits,
             targetNumber: todaysGame.targetNumber,
@@ -150,15 +148,14 @@ function scheduledTasks(app) {
             }
           );
           */
-        } else {
-          await dailyGames.insertOne({
-            digits: i,
-            targetNumber: targetNumber,
-            gameId: i + generateString(6) + `00001`,
-          });
-        }
+      } else {
+        await dailyGames.insertOne({
+          digits: i,
+          targetNumber: targetNumber,
+          gameId: i + generateString(6) + `00001`,
+        });
       }
-
+    }
   }
 
   //addFirstGames();
@@ -309,8 +306,20 @@ function scheduledTasks(app) {
         accountObj.premium = false;
       }
 
+      let shadowbanned = false;
+      if (i % 29 == 0) {
+        shadowbanned = true;
+      }
+      accountObj.shadowbanned = shadowbanned;
+
+      let accountStrikes = 0;
+      if (i % 17 == 1){
+        accountStrikes++;
+      }
+      accountObj.accountStrikes = accountStrikes;
+
       for (let digits = 2; digits <= 7; digits++) {
-        let average = Math.random() * 1.8 + 3.8 + 0.2 * digits;
+        let average = Math.random() * 1.4 + 4.2 + 0.2 * digits;
 
         let numberOfGames = 30;
         if (i % 5 == 0) {
@@ -344,7 +353,9 @@ function scheduledTasks(app) {
     async () => {
       const accountsDb = mongoClient.db("Accounts");
       let accounts = accountsDb.collection(`TestAccounts`);
-      let premiumAccounts = await accounts.find({ premium: true }).toArray();
+      let premiumAccounts = await accounts
+        .find({ $and: [{ premium: true }, { shadowbanned: false }] })
+        .toArray();
       const leaderboardsDb = mongoClient.db("Leaderboards");
 
       let todaysDate = new Date();
@@ -373,7 +384,7 @@ function scheduledTasks(app) {
         });
 
         let leaderboard = leaderboardsDb.collection("Leaderboard-" + digits);
-        //not sure if this will work
+
         await leaderboard.deleteMany({});
 
         let numberOfEntries = Math.min(50, eligibleAccounts.length);
@@ -383,6 +394,7 @@ function scheduledTasks(app) {
           let currentAccount = eligibleAccounts[i];
           let leaderboardEntry = {
             userId: currentAccount._id,
+            strikes: currentAccount.accountStrikes,
             rank: i + 1,
             username: currentAccount.username,
             average: currentAccount[digits + `random-scores`].average,

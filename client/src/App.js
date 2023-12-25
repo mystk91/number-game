@@ -28,6 +28,7 @@ import GamePageDaily from "./components/Pages/GamePageDaily";
 import CalendarIcon from "./components/Parts/CalendarIcon";
 import ProfilePage from "./components/Pages/ProfilePage";
 import ProfileCSS from "./components/Pages/ProfileCSS";
+import Admin from "./components/Admin/Admin";
 
 function App() {
   return (
@@ -123,6 +124,7 @@ function App() {
           />
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/profiletest" element={<ProfileCSS />} />
+          <Route path="/admin/secretAdmins" element={<Admin />} />
         </Routes>
       </BrowserRouter> 
     </div>

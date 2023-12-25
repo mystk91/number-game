@@ -20,6 +20,9 @@ function leaderboardRequests(app) {
           leaderboard.forEach(x=>{
             x._id = "";
             x.userId = "";
+            delete x._id;
+            delete x.userId;
+            delete x.strikes;
           });
         allLeaderboards[`Leaderboard-` + digits] = leaderboard;
       }
