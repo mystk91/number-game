@@ -53,7 +53,6 @@ function Contact(props) {
       const formDataObj = Object.fromEntries(formData.entries());
       formDataObj.session = props.user.session;
       const formDataString = JSON.stringify(formDataObj);
-      console.log(formDataObj);
       const options = {
         method: "POST",
         body: formDataString,

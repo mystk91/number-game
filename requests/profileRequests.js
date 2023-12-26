@@ -65,7 +65,7 @@ function profileRequests(app) {
           if (today.getTime() - account.usernameDate.getTime() >= 2592000000) {
             await accounts.updateOne(
               { session: req.body.user.session },
-              { $set: { username: req.body.newUsername, usernameDate: today } }
+              { $set: { username: req.body.newUsername, usernameDate: today, shadowbanned: false } }
             );
             res.send({ success: true });
           } else {
@@ -188,6 +188,7 @@ function profileRequests(app) {
       res.send({ error: true });
     }
   });
+
   
 }
 

@@ -18,8 +18,6 @@ function leaderboardRequests(app) {
           .find()
           .toArray();
           leaderboard.forEach(x=>{
-            x._id = "";
-            x.userId = "";
             delete x._id;
             delete x.userId;
             delete x.strikes;

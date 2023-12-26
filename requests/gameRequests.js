@@ -248,7 +248,19 @@ function gameRequests(app) {
         //Returns an object containing the scores/averages that need to be updated in the DB
         // score - the score player recieved for that game
         // account - the users account that was retrieved from the DB
-        function updateScores(score, account) {
+        async function updateScores(score, account) {
+          //This updates the games completed stat
+          try {
+            const webDb = mongoClient.db("Website");
+            let stats = webDb.collection("Stats");
+            await stats.updateOne(
+              { title: "gamesCompleted" },
+              {
+                $inc: { gamesCompleted: 1, randomGamesCompleted: 1 },
+              }
+            );
+          } catch {}
+
           let currentDate = new Date();
 
           let scoresObjDb = account[randomGameString + `-scores`];
@@ -268,7 +280,7 @@ function gameRequests(app) {
             }
           } else {
             scores30 = [];
-            best30 = {average: 8, date: currentDate}
+            best30 = { average: 8, date: currentDate };
           }
 
           let scores30entry = {
@@ -282,8 +294,8 @@ function gameRequests(app) {
               return total + x.score;
             }, 0) / scores30.length;
 
-          if (scores30.length == 30){
-            if (average30 < best30.average){
+          if (scores30.length == 30) {
+            if (average30 < best30.average) {
               best30.average = average30;
               best30.date = currentDate;
             }
@@ -330,7 +342,7 @@ function gameRequests(app) {
 
         if (result == correctResult) {
           randomGameTargetObj.status = "victory";
-          let scoresObj = updateScores(
+          let scoresObj = await updateScores(
             account[randomGameString].currentRow + 1,
             account
           );
@@ -346,7 +358,7 @@ function gameRequests(app) {
                   average30: scoresObj.average30,
                   scores: scoresObj.scores,
                   scores30: scoresObj.scores30,
-                  best30: scoresObj.best30
+                  best30: scoresObj.best30,
                 },
               },
             }
@@ -358,7 +370,7 @@ function gameRequests(app) {
           });
         } else if (currentRow == 6) {
           randomGameTargetObj.status = "defeat";
-          let scoresObj = updateScores(7, account);
+          let scoresObj = await updateScores(7, account);
           console.log(scoresObj);
           await accounts.updateOne(
             { session: req.body.session },
@@ -370,7 +382,7 @@ function gameRequests(app) {
                   average30: scoresObj.average30,
                   scores: scoresObj.scores,
                   scores30: scoresObj.scores30,
-                  best30: scoresObj.best30
+                  best30: scoresObj.best30,
                 },
               },
             }
@@ -639,7 +651,19 @@ function gameRequests(app) {
         //Returns an object containing the scores/averages that need to be updated in the DB
         // score - the score player recieved for that game
         // account - the users account that was retrieved from the DB
-        function updateScores(score, account) {
+        async function updateScores(score, account) {
+          //This updates the games completed stat
+          try {
+            const webDb = mongoClient.db("Website");
+            let stats = webDb.collection("Stats");
+            await stats.updateOne(
+              { title: "gamesCompleted" },
+              {
+                $inc: { gamesCompleted: 1, dailyGamesCompleted: 1 },
+              }
+            );
+          } catch {}
+
           let currentDate = new Date();
 
           let scoresObjDb = account[regularGameString + `-scores`];
@@ -702,7 +726,7 @@ function gameRequests(app) {
 
         if (result == correctResult) {
           regularGameOverObj.status = "victory";
-          let scoresObj = updateScores(
+          let scoresObj = await updateScores(
             account[regularGameString].currentRow + 1,
             account
           );
@@ -743,7 +767,7 @@ function gameRequests(app) {
           });
         } else if (currentRow == 6) {
           regularGameOverObj.status = "defeat";
-          let scoresObj = updateScores(7, account);
+          let scoresObj = await updateScores(7, account);
           //console.log(scoresObj);
           await accounts.updateOne(
             { session: req.body.session },
@@ -918,6 +942,17 @@ function gameRequests(app) {
         console.log(correctResult);
         console.log(result);
         if (result == correctResult) {
+          //This updates the games completed stat
+          try {
+            const webDb = mongoClient.db("Website");
+            let stats = webDb.collection("Stats");
+            await stats.updateOne(
+              { title: "gamesCompleted" },
+              {
+                $inc: { gamesCompleted: 1, dailyGamesCompleted: 1 },
+              }
+            );
+          } catch {}
           localGameOverObj.status = "victory";
           console.log("victory");
 
@@ -937,6 +972,17 @@ function gameRequests(app) {
             gameObj: localGameOverObj,
           });
         } else if (req.body.currentRow == 5) {
+          //This updates the games completed stat
+          try {
+            const webDb = mongoClient.db("Website");
+            let stats = webDb.collection("Stats");
+            await stats.updateOne(
+              { title: "gamesCompleted" },
+              {
+                $inc: { gamesCompleted: 1, dailyGamesCompleted: 1 },
+              }
+            );
+          } catch {}
           localGameOverObj.status = "defeat";
           console.log("defeat");
 

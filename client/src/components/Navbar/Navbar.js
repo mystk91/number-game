@@ -140,6 +140,14 @@ function Navbar(props) {
         setModal(<Instructions key={new Date()} />);
         localStorage.setItem("previouslyVisited", 1);
       }
+      const options = {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+      };
+      let res = fetch("/api/add-visitor", options);
     }
   }
 

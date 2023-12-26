@@ -152,7 +152,7 @@ function Leaderboards(props) {
     for (let i = 0; i < leaderboardData.length; i++) {
       let row = (
         <tr className="leaderboard-row" key={i}>
-          <td className="player-rank">{leaderboardData[i].rank}</td>
+          <td className="player-rank">{i + 1}</td>
           <td className="player-username">{leaderboardData[i].username}</td>
           <td className="player-average">
             {leaderboardData[i].average.toFixed(3)}

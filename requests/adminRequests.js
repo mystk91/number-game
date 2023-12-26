@@ -79,6 +79,7 @@ function adminRequests(app) {
             premium: account.premium,
             subject: req.body.subject,
             message: req.body.message,
+            date: new Date(),
           });
 
           await account.updateOne(
@@ -98,6 +99,7 @@ function adminRequests(app) {
                 premium: account.premium,
                 subject: req.body.subject,
                 message: req.body.message,
+                date: new Date("Wed Jan 01 2020 00:00:00 GMT-0500"),
               },
             }
           );
@@ -114,6 +116,15 @@ function adminRequests(app) {
   //Gets the site stats, leaderboards, and messages so they can be dealt with
   app.get("/api/admin-get-all-info", async (req, res, next) => {
     try {
+
+      const accountsDB = mongoClient.db("Accounts");
+      let accounts = accountsDB.collection("Accounts");
+      let account = await accounts.findOne({
+        _id: new ObjectId("6588d21be7f4b9e8a622b42a"),
+      });
+
+      //if (req.user.session == account.session) {}
+
       const webDB = mongoClient.db("Website");
       let Stats = webDB.collection("Stats");
       let visitors = await Stats.findOne({ title: "visitors" });
@@ -143,8 +154,6 @@ function adminRequests(app) {
         leaderboards: allLeaderboards,
       };
 
-      console.log(resObj);
-
       res.send(resObj);
     } catch {
       res.send({ error: true });
@@ -166,6 +175,47 @@ function adminRequests(app) {
       }
     } catch {
       res.redirect("/login");
+    }
+  });
+
+  //Gives a strike to an account and removes them from the leaderboard
+  app.post("/admin/give-strike", async (req, res, next) => {
+    try {
+      const accountsDB = mongoClient.db("Accounts");
+      let accounts = accountsDB.collection("Accounts");
+      let testAccounts = accountsDB.collection("TestAccounts");
+
+      let leaderboardsDB = mongoClient.db("Leaderboards");
+
+      let account = await accounts.findOne({
+        _id: new ObjectId("6588d21be7f4b9e8a622b42a"),
+      });
+
+      //if (account.session == account.session) {
+      if (req.user.session == account.session) {
+        await testAccounts.updateOne(
+          {
+            _id: new ObjectId(req.body.userId),
+          },
+          {
+            $inc: { accountStrikes: 1 },
+            $set: { shadowbanned: true },
+          }
+        );
+        for (let i = 2; i <= 7; i++) {
+          let leaderboardCollection = leaderboardsDB.collection(
+            `Leaderboard-${i}`
+          );
+          await leaderboardCollection.deleteOne({
+            userId: new ObjectId(req.body.userId),
+          });
+        }
+        res.send({success: true});
+      } else {
+        res.send({error: true });
+      }
+    } catch {
+      res.send({error: true });
     }
   });
 }

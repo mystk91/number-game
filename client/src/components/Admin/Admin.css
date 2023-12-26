@@ -14,3 +14,91 @@
     flex-direction: column;
 }
 
+.admin-page .leaderboard{
+    width: 1200px;
+}
+
+.admin-page .leaderboard-labels .player-username-rank{
+    width: 180px;
+    display: flex;
+}
+
+.admin-page .leaderboard-labels .player-username-label{
+    width: 180px;
+    display: flex;
+    justify-content: flex-start;
+}
+
+.admin-page .leaderboard-labels .player-username-label{
+    width: 180px;
+    padding-left: 12px;
+    display: flex;
+    justify-content: flex-start;
+}
+
+.admin-page .leaderboard-labels .player-average-label{
+    width: 110px;
+    display: flex;
+    justify-content: flex-start;
+    padding-left: 25px;
+}
+
+.admin-page .leaderboard-labels .player-strikes-label{
+    width: 100px;
+    display: flex;
+    justify-content: flex-start;
+}
+
+.admin-page .leaderboard-row{
+    justify-content: flex-start;
+    grid-gap: 20px;
+}
+
+.admin-page .player-username{
+    margin-left: 0;
+    width: 180px;
+}
+
+
+.admin-page .player-rank,
+.admin-page .player-rank-label {
+  display: flex;
+  justify-content: center;
+  margin-left: 0px;
+  width: 60px;
+  padding-right: 0px;
+  border-right: none;
+}
+
+.admin-page .player-average,
+.admin-page .player-average-label {
+  display: flex;
+  justify-content: center;
+  width: 80px;
+  min-width: 80px;
+  margin-left: 0px;
+}
+
+.admin-modal{
+    position: fixed;
+    z-index: 2;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: auto;
+    width: 100vw;
+    height: 100vh;
+}
+
+.admin-modal > * {
+    margin: auto;
+    background-color: white;
+    width: 300px;
+    height: 200px;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+}
+
+

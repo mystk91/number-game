@@ -134,9 +134,9 @@ li:last-child .leaderboard-tab {
 .leaderboard {
   display: flex;
   flex-direction: column;
-  overflow-y: scroll;
   font-size: 1.9rem;
   border: 0.5px solid black;
+  min-width: 350px;
 }
 
 .leaderboard-caption {
@@ -178,7 +178,6 @@ li:last-child .leaderboard-tab {
   font-family: "Roboto_Mono", monospace;
   letter-spacing: .01rem;
   font-weight: 350;
-  overflow-x: scroll;
 }
 
 .leaderboard-labels {
