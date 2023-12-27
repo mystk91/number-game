@@ -69,7 +69,7 @@ function Contact(props) {
         setCurrentScreen(
           <div className="message-success">
             <div>Your message was sent.</div>{" "}
-            <div> You can check here later for a response. </div>
+            <div> You can check back later for a response. </div>
           </div>
         );
       } else {
@@ -113,8 +113,8 @@ function Contact(props) {
         onSubmit={(e) => sendMessage(e)}
       >
         <div>
-          <label htmlFor="messageSubject">Subject: </label>
-          <select name="messageSubject" id="messageSubject">
+          <label htmlFor="subject">Subject: </label>
+          <select name="subject" id="subject">
             <option value="bugReport">Bugs / Issues</option>
             <option value="randomMode">Random Mode</option>
             <option value="questions">Questions</option>

@@ -125,19 +125,19 @@ function Admin(props) {
       setModal(
         <div className="admin-modal">
           <div>
-          <div>Strike set</div>
-          <button onClick={() => setModal()}>Okay!</button>
+            <div>Strike set</div>
+            <button onClick={() => setModal()}>Okay!</button>
           </div>
         </div>
       );
     } else {
       setModal(
-      <div className="admin-modal">
-        <div>
-        <div>There was an error</div>
-        <button onClick={() => setModal()}>Okay!</button>
+        <div className="admin-modal">
+          <div>
+            <div>There was an error</div>
+            <button onClick={() => setModal()}>Okay!</button>
+          </div>
         </div>
-      </div>
       );
     }
   }
@@ -246,7 +246,15 @@ function Admin(props) {
         </div>
       </main>
 
-      <header className="leaderboards-header"></header>
+      <hr className="admin-hr"></hr>
+
+      <h1>Messages</h1>
+      <div className="admin-messages">
+
+        
+
+
+      </div>
     </div>
   );
 }

@@ -65,7 +65,7 @@ function adminRequests(app) {
     } else {
       try {
         const accountsDb = mongoClient.db("Accounts");
-        let accounts = accountsDb.collections("Accounts");
+        let accounts = accountsDb.collection("Accounts");
         const webDB = mongoClient.db("Website");
         let messages = webDB.collection("Messages");
 
@@ -77,12 +77,13 @@ function adminRequests(app) {
             username: account.username,
             email: account.email,
             premium: account.premium,
+            spammer: account.spammer,
             subject: req.body.subject,
             message: req.body.message,
             date: new Date(),
           });
 
-          await account.updateOne(
+          await accounts.updateOne(
             { session: req.body.session },
             { $inc: { messagesSent: 1 } }
           );
@@ -90,16 +91,17 @@ function adminRequests(app) {
           res.send({ success: true });
         } else {
           await messages.updateOne(
-            { session: req.body.session },
+            { userId: account._id },
             {
               $set: {
                 userId: account._id,
                 username: account.username,
                 email: account.email,
                 premium: account.premium,
+                spammer: account.spammer,
                 subject: req.body.subject,
                 message: req.body.message,
-                date: new Date("Wed Jan 01 2020 00:00:00 GMT-0500"),
+                date: new Date(),
               },
             }
           );

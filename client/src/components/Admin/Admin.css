@@ -102,3 +102,8 @@
 }
 
 
+.admin-hr{
+    border: none;
+    padding: 40px 0;
+    height: 3px;
+}
