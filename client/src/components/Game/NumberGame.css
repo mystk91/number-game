@@ -12,6 +12,7 @@
   --digitsHeight: 75px;
   --backgroundColor-hint: rgb(225, 225, 225);
   --arrow-color: rgb(120, 120, 120);
+  --dark-blue-text: rgb(11, 11, 53);
 }
 
 .game-container {
@@ -738,6 +739,7 @@
   padding: 0 6px;
   height: 30px;
   margin: -24px 0 8px 0;
+  color: rgb(18, 18, 55);
 }
 
 .game-over-hr {

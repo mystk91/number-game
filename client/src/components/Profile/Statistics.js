@@ -38,17 +38,16 @@ function Statistics(props) {
           </button>
           <button
             onClick={() => changeStatsTab("daily")}
-            className={"random-stats" + clickedRef.current[`daily`]}
+            className={"daily-stats" + clickedRef.current[`daily`]}
           >
             Daily Mode
           </button>
+          <div className="stats-tab-empty"></div>
         </div>
       );
       createStats("random");
-    }
-    else{
+    } else {
       createStats("daily");
-
     }
     return () => {};
   }, []);
@@ -82,32 +81,44 @@ function Statistics(props) {
         >
           Daily Mode
         </button>
+        <div className="stats-tab-empty"></div>
       </div>
     );
   }
 
   //Converts an inputted date to the format: Jan 03, 2023
-  function convertToDate(date){
+  function convertToDate(date) {
     date = new Date(date);
     let newDate = date.toLocaleString("default", {
-      month: "short",
+      month: "numeric",
       day: "numeric",
-      year: 'numeric',
+      year: "numeric",
     });
+    newDate = newDate.slice(0, newDate.length - 4) + newDate.slice(newDate.length -2);
     return newDate;
   }
 
   //Adds a row for best 30 score in random mode if user has played 30+ games
-  function createBest30(i){
-    if (props.stats[`${i}random-scores`].best30.average){
-      return(
-        <div className="best-30">
-        <div>Best 30 Game Average: {props.stats[`${i}random-scores`].best30.average.toFixed(3)} </div>
-        <div>{convertToDate(props.stats[`${i}random-scores`].best30.date)}</div>
-      </div>
-      )
-    }
-    else{
+  function createBest30(i) {
+    if (props.stats[`${i}random-scores`].best30.average) {
+      return (
+        <div className="averages">
+          <div className="best-30">
+            <div className="stat-name">Best 30 Average</div>
+            <div className="stat-value">
+              {props.stats[`${i}random-scores`].best30.average.toFixed(3)}{" "}
+            </div>
+          </div>
+
+          <div className="best30-date">
+            <div className="stat-name">Date</div>
+            <div className="stat-value">
+              {convertToDate(props.stats[`${i}random-scores`].best30.date)}
+            </div>
+          </div>
+        </div>
+      );
+    } else {
       return null;
     }
   }
@@ -119,88 +130,157 @@ function Statistics(props) {
 
     if (gameModeType === "random") {
       for (let i = 2; i <= 7; i++) {
-        if(props.stats[`${i}random-scores`]) {
+        if (props.stats[`${i}random-scores`]) {
           let statsHTML = (
-          <div className="stats-game-mode" key={"random-stats-" + i}>
-            <span className="stats-game-name">{i} Random</span>
-            <div className="averages">
-              <div className="average-30">{props.stats[`${i}random-scores`].average30.numberOfGames} Game Average: {props.stats[`${i}random-scores`].average30.average.toFixed(3)}</div>
+            <div className="stats-game-mode" key={"random-stats-" + i}>
+              <span className="stats-game-name">{i} Random</span>
+              <div className="averages-container">
+                <div className="averages">
+                  <div className="average-30">
+                    <div className="stat-name">
+                    {props.stats[`${i}random-scores`].average30.numberOfGames}{" "}
+                    Game Average
+                    </div>
+                    <div className="stat-value">
+                      {props.stats[
+                        `${i}random-scores`
+                      ].average30.average.toFixed(3)}
+                    </div>
+                  </div>
+                </div>
+                {createBest30(i)}
+                <div className="averages">
+                  <div className="average-all">
+                    <div className="stat-name">
+                    Lifetime Average
+                    </div>
+                    <div className="stat-value">
+                      {props.stats[`${i}random-scores`].average.toFixed(3)}
+                    </div>
+                  </div>
+                  <div className="games-all">
+                    <div className="stat-name">
+                    Total Games Played
+                    </div>
+                    <div className="stat-value">
+                      {props.stats[`${i}random-scores`].scores.length}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="reset-stats-container">
+                <button
+                  className="reset-stats"
+                  onClick={() => resetStatsConfirmation(i, "Random")}
+                >
+                  Reset Stats
+                </button>
+              </div>
             </div>
-            {createBest30(i)}
-            <div className="averages">
-              <div className="average-all">Lifetime Average: {props.stats[`${i}random-scores`].average.toFixed(3)}</div>
-              <div className="games-all">Total Games Played: {props.stats[`${i}random-scores`].scores.length}</div>
-            </div>
-            <div className="reset-stats-container">
-              <button className="reset-stats" onClick={() => resetStatsConfirmation(i, "Random")}>Reset Stats</button>
-            </div>
-          </div>
-        );
-        statsArr.push(statsHTML);
+          );
+          statsArr.push(statsHTML);
         }
       }
     } else {
       for (let i = 2; i <= 7; i++) {
-        if(props.stats[`${i}digits-scores`]) {
+        if (props.stats[`${i}digits-scores`]) {
           let statsHTML = (
-          <div className="stats-game-mode" key={"daily-stats-" + i}>
-            <span className="stats-game-name">{i} Digits</span>
-            <div className="averages">
-              <div className="average-30">Monthly Average: {props.stats[`${i}digits-scores`].average30.average.toFixed(3)}</div>
-              <div className="games-30">Games Played This Month: {props.stats[`${i}digits-scores`].scores30.length}</div>
+            <div className="stats-game-mode" key={"daily-stats-" + i}>
+              <span className="stats-game-name">{i} Digits</span>
+              <div className="averages-container">
+                <div className="averages">
+                  <div className="average-30">
+                    <div className="stat-name">
+                    Monthly Average
+                    </div>
+                    <div className="stat-value">
+                      {props.stats[
+                        `${i}digits-scores`
+                      ].average30.average.toFixed(3)}
+                    </div>
+                  </div>
+                  <div className="games-30">
+                    <div className="stat-name">
+                    Monthly Games
+                    </div>
+                    <div className="stat-value">
+                      {props.stats[`${i}digits-scores`].scores30.length}
+                    </div>
+                  </div>
+                </div>
+                <div className="averages">
+                  <div className="average-all">
+                    <div className="stat-name">
+                    Lifetime Average
+                    </div>
+                    <div className="stat-value">
+                      {props.stats[`${i}digits-scores`].average.toFixed(3)}
+                    </div>
+                  </div>
+                  <div className="games-all">
+                    <div className="stat-name">
+                    Total Games Played
+                    </div>
+                    <div className="stat-value">
+                      {props.stats[`${i}digits-scores`].scores.length}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="reset-stats-container">
+                <button
+                  className="reset-stats"
+                  onClick={() => resetStatsConfirmation(i, "Digits")}
+                >
+                  Reset Stats
+                </button>
+              </div>
             </div>
-            <div className="averages">
-              <div className="average-all">Lifetime Average: {props.stats[`${i}digits-scores`].average.toFixed(3)}</div>
-              <div className="games-all">Total Games Played: {props.stats[`${i}digits-scores`].scores.length}</div>
-            </div>
-            <div className="reset-stats-container">
-              <button className="reset-stats" onClick={() => resetStatsConfirmation(i, "Digits")}>Reset Stats</button>
-            </div>
-          </div>
-        );
-        statsArr.push(statsHTML);
-        } 
+          );
+          statsArr.push(statsHTML);
         }
       }
-
-    if (statsArr.length > 0){
-      setStats(statsArr);
     }
-    else{
-      setStats(<div className="stats-error-message">Your game history is empty.</div>);
+
+    if (statsArr.length > 0) {
+      setStats(statsArr);
+    } else {
+      setStats(
+        <div className="stats-error-message">Your game history is empty.</div>
+      );
     }
   }
 
   //Creates a confirmation modal asking if user is sure they want to reset stats
   // digits - integer with number of digits of game stats being reset
   // mode- a string with the name of the game mode. "random" or "digits"
-  function resetStatsConfirmation(digits, mode){
+  function resetStatsConfirmation(digits, mode) {
     if (!modal) {
       setModal(
         <div className="reset-modal">
           <div className="reset-modal-container">
             <span className="reset-modal-top">
-              <button
-                className="close-reset-modal"
-                onClick={() => setModal()}
-              >
+              <button className="close-reset-modal" onClick={() => setModal()}>
                 X
               </button>
             </span>
             <span className="headline">
-              <div className="headline-text">{digits} {mode}</div>
+              <div className="headline-text">
+                {digits} {mode}
+              </div>
             </span>
             <div className="reset-modal-body">
-              <div>
-                Are you sure you want to reset these stats?
-              </div>
+              <div>Are you sure you want to reset these stats?</div>
               <div className="reset-confirmation-btns">
-              <button className="confirmation-btn" onClick={() => resetStats(digits, mode)}>
-                Reset!
-              </button>
-              <button className="decline-btn" onClick={() => setModal()}>
-                Uhhh... Acktusually
-              </button>
+                <button
+                  className="confirmation-btn"
+                  onClick={() => resetStats(digits, mode)}
+                >
+                  Reset!
+                </button>
+                <button className="decline-btn" onClick={() => setModal()}>
+                  Uhhh... Acktusually
+                </button>
               </div>
             </div>
           </div>
@@ -209,8 +289,6 @@ function Statistics(props) {
     } else {
       setModal();
     }
-
-
   }
 
   //Resets the stats of a single game mode
@@ -233,7 +311,7 @@ function Statistics(props) {
     let res = await fetch("/api/reset-stats", options);
     let resObj = await res.json();
     setModal();
-    if (resObj.success){
+    if (resObj.success) {
       props.stats[`${digits}${mode}-scores`] = "";
       createStats(mode);
     }
@@ -243,8 +321,8 @@ function Statistics(props) {
     <div className="statistics">
       {modal}
       {statsTabs}
-      <h1>Game Statistics</h1>
-      {stats}
+        <h1>Game Statistics</h1>
+        <div className="stats-game-modes-container">{stats}</div>
     </div>
   );
 }
