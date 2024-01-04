@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import "./ChangeUsername.css";
+import "./SettingsModals.css";
 import "../../normalize.css";
 import "../../custom.css";
 
@@ -16,6 +17,7 @@ function ChangeUsername(props) {
   //Used for displaying success screen
   const [currentScreen, setCurrentScreen] = useState();
   const [hideThis, setHideThis] = useState("");
+  const [hideModal, setHideModal] = useState("");
 
   //Used to give focus to the form input on load
   const inputReference = useRef(null);
@@ -47,18 +49,59 @@ function ChangeUsername(props) {
     let res = await fetch(url, options);
     let resObj = await res.json();
     if (resObj.success) {
+      setHideThis(" hide");
+      setCurrentScreen(successScreen);
       localStorage.removeItem("profile");
-      window.location = "/login";
+      document.addEventListener("keydown", (e) => {
+        if (e.key == "Enter") {
+          window.location = "/profile";
+        }
+      });
     } else {
       setPasswordErrs(<div className="error">{resObj.errors.password}</div>);
     }
   }
 
+  //Displays if the account is successfully deleted
+  let successScreen = (
+    <div className="settings-modal">
+      <div className="success-container">
+        <span className="modal-top">
+          <button
+            className="close-modal"
+            onClick={(e) => (window.location = "/login")}
+          >
+            X
+          </button>
+        </span>
+        <div className="success-message">Your account has been deleted.</div>
+        <button
+          className="submit-btn"
+          onClick={(e) => (window.location = "/login")}
+        >
+          Goodbye
+        </button>
+      </div>
+    </div>
+  );
+
   return (
-    <div className="delete-account">
-      <div className={"delete-account--container"}>
-        <div className="delete-account-headline">
-          Enter your password to delete your account. This process cannot be reversed. 
+    <div className={"delete-account settings-modal" + hideModal}>
+      {currentScreen}
+      <div className={"delete-account-container" + hideThis}>
+        <span className="modal-top">
+          <button
+            className="close-modal"
+            onClick={(e) => setHideModal(" hide")}
+          >
+            X
+          </button>
+        </span>
+        <div>
+          <h1>Delete Account</h1>
+        </div>
+        <div className="delete-account-info">
+          Enter your password to delete your account. This cannot be reversed.
         </div>
         <form
           method="post"
@@ -82,7 +125,7 @@ function ChangeUsername(props) {
           <div>
             <button
               type="submit"
-              className="deleteAccount"
+              className="deleteAccount submit-btn"
               name="deleteAccount"
             >
               Delete Account

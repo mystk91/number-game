@@ -94,7 +94,8 @@ function Statistics(props) {
       day: "numeric",
       year: "numeric",
     });
-    newDate = newDate.slice(0, newDate.length - 4) + newDate.slice(newDate.length -2);
+    newDate =
+      newDate.slice(0, newDate.length - 4) + newDate.slice(newDate.length - 2);
     return newDate;
   }
 
@@ -138,8 +139,8 @@ function Statistics(props) {
                 <div className="averages">
                   <div className="average-30">
                     <div className="stat-name">
-                    {props.stats[`${i}random-scores`].average30.numberOfGames}{" "}
-                    Game Average
+                      {props.stats[`${i}random-scores`].average30.numberOfGames}{" "}
+                      Game Average
                     </div>
                     <div className="stat-value">
                       {props.stats[
@@ -151,17 +152,13 @@ function Statistics(props) {
                 {createBest30(i)}
                 <div className="averages">
                   <div className="average-all">
-                    <div className="stat-name">
-                    Lifetime Average
-                    </div>
+                    <div className="stat-name">Lifetime Average</div>
                     <div className="stat-value">
                       {props.stats[`${i}random-scores`].average.toFixed(3)}
                     </div>
                   </div>
                   <div className="games-all">
-                    <div className="stat-name">
-                    Total Games Played
-                    </div>
+                    <div className="stat-name">Total Games Played</div>
                     <div className="stat-value">
                       {props.stats[`${i}random-scores`].scores.length}
                     </div>
@@ -190,9 +187,7 @@ function Statistics(props) {
               <div className="averages-container">
                 <div className="averages">
                   <div className="average-30">
-                    <div className="stat-name">
-                    Monthly Average
-                    </div>
+                    <div className="stat-name">Monthly Average</div>
                     <div className="stat-value">
                       {props.stats[
                         `${i}digits-scores`
@@ -200,9 +195,7 @@ function Statistics(props) {
                     </div>
                   </div>
                   <div className="games-30">
-                    <div className="stat-name">
-                    Monthly Games
-                    </div>
+                    <div className="stat-name">Monthly Games</div>
                     <div className="stat-value">
                       {props.stats[`${i}digits-scores`].scores30.length}
                     </div>
@@ -210,17 +203,13 @@ function Statistics(props) {
                 </div>
                 <div className="averages">
                   <div className="average-all">
-                    <div className="stat-name">
-                    Lifetime Average
-                    </div>
+                    <div className="stat-name">Lifetime Average</div>
                     <div className="stat-value">
                       {props.stats[`${i}digits-scores`].average.toFixed(3)}
                     </div>
                   </div>
                   <div className="games-all">
-                    <div className="stat-name">
-                    Total Games Played
-                    </div>
+                    <div className="stat-name">Total Games Played</div>
                     <div className="stat-value">
                       {props.stats[`${i}digits-scores`].scores.length}
                     </div>
@@ -259,27 +248,29 @@ function Statistics(props) {
       setModal(
         <div className="reset-modal">
           <div className="reset-modal-container">
-            <span className="reset-modal-top">
-              <button className="close-reset-modal" onClick={() => setModal()}>
+            <span className="modal-top">
+              <button className="close-modal" onClick={() => setModal()}>
                 X
               </button>
             </span>
             <span className="headline">
-              <div className="headline-text">
+              <h1 className="headline-text">
                 {digits} {mode}
-              </div>
+              </h1>
             </span>
             <div className="reset-modal-body">
-              <div>Are you sure you want to reset these stats?</div>
+              <div className="reset-text">
+                Are you sure you want to reset these stats?
+              </div>
               <div className="reset-confirmation-btns">
+                <button className="cancel-btn confirmation-btn" onClick={() => setModal()}>
+                  Cancel
+                </button>
                 <button
                   className="confirmation-btn"
                   onClick={() => resetStats(digits, mode)}
                 >
-                  Reset!
-                </button>
-                <button className="decline-btn" onClick={() => setModal()}>
-                  Uhhh... Acktusually
+                  Reset
                 </button>
               </div>
             </div>
@@ -321,8 +312,8 @@ function Statistics(props) {
     <div className="statistics">
       {modal}
       {statsTabs}
-        <h1>Game Statistics</h1>
-        <div className="stats-game-modes-container">{stats}</div>
+      <h1>Game Statistics</h1>
+      <div className="stats-game-modes-container">{stats}</div>
     </div>
   );
 }

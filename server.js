@@ -127,6 +127,9 @@ leaderboardRequests.leaderboardRequests(app);
 let adminRequests = require("./requests/adminRequests.js");
 adminRequests.adminRequests(app);
 
+let testRequests = require("./requests/testRequests.js");
+testRequests.testRequests(app);
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // Serve the static files from the React app

@@ -198,6 +198,16 @@
   border: 1.5px solid black;
 }
 
+.logo img.site-banner{
+  margin-top: 2px;
+  height: 48px;
+  width: auto;
+  pointer-events: none;
+  display: none;
+}
+
+
+
 /* Midsize Styles */
 @media screen and (min-width: 651px) and (max-width: 960px) {
   .game-modes {

@@ -314,7 +314,7 @@ function gameRequests(app) {
           if (!scores) {
             scores = [];
           }
-          if (scores.length > 4096) {
+          if (scores.length > 9999) {
             scores.shift();
           }
           scores.push(score);
@@ -699,7 +699,7 @@ function gameRequests(app) {
           if (!scores) {
             scores = [];
           }
-          if (scores.length > 4096) {
+          if (scores.length > 9999) {
             scores.shift();
           }
           scores.push(score);

@@ -315,7 +315,7 @@ function NavbarRandom(props) {
 
         <div className="logo random">
           <img src="/images/site/randomDice.png" className="random-mode" />
-          <div className="logo-banner">Numblr</div>
+          <div className="logo-banner">Numbler<img className="site-banner" src="/images/site/site-banner.png" /></div>
           <div className="logo-small">
             <img src="/images/site/logo.png" />
           </div>

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import "./ChangePassword.css";
+import "./SettingsModals.css";
 import "../../normalize.css";
 import "../../custom.css";
 
@@ -16,6 +17,7 @@ function ChangePassword(props) {
   //Used for displaying success screen
   const [currentScreen, setCurrentScreen] = useState();
   const [hideThis, setHideThis] = useState("");
+  const [hideModal, setHideModal] = useState("");
 
   //Used to give focus to the form input on load
   const inputReference = useRef(null);
@@ -69,6 +71,7 @@ function ChangePassword(props) {
       if (!resObj.errors) {
         setHideThis(" hide");
         setCurrentScreen(successScreen);
+        document.addEventListener("keydown", removeModalEnter);
       } else {
         setCurrentPasswordErrs(
           <div className="error">{resObj.errors.currentPassword}</div>
@@ -80,25 +83,69 @@ function ChangePassword(props) {
     }
   }
 
+  //Displays if the password is successfully changed
   let successScreen = (
-    <div className="success-screen">
-      <div className="username-success-container">
-        <div className="username-success-message">
-          Your password has been changed.
-        </div>
+    <div className="settings-modal">
+      <div className="success-container">
+        <span className="modal-top">
+          <button
+            className="close-modal"
+            onClick={removeModal}
+          >
+            X
+          </button>
+        </span>
+        <div className="success-message">Your password has been changed.</div>
+        <button className="submit-btn" onClick={removeModal}>
+          Okay!
+        </button>
       </div>
     </div>
   );
 
+  function removeModal(e) {
+    setHideModal(" hide");
+    document.removeEventListener("keydown", removeModalEnter);
+  }
+
+  function removeModalEnter(e) {
+    if (e.key == "Enter") {
+      setHideModal(" hide");
+      document.removeEventListener("keydown", removeModalEnter);
+    }
+  }
+
   return (
-    <div className="change-password">
+    <div className={"change-password settings-modal" + hideModal}>
       {currentScreen}
-      <div className={"new-username-container" + hideThis}>
+      <div className={"new-password-container" + hideThis}>
+        <span className="modal-top">
+          <button
+            className="close-modal"
+            onClick={(e) => setHideModal(" hide")}
+          >
+            X
+          </button>
+        </span>
         <form
           method="post"
           className="change-password-form"
           onSubmit={(e) => changePassword(e)}
         >
+          <div className="form-input">
+            <label htmlFor="currentPassword">Current Password</label>
+            <input
+              id="currentPassword"
+              name="currentPassword"
+              type="password"
+              maxLength={32}
+              ref={inputReference}
+              value={currentPasswordValue}
+              onChange={(e) => setCurrentPasswordValue(e.target.value)}
+            />
+            {currentPasswordErrs}
+          </div>
+
           <div className="form-input">
             <label htmlFor="newPassword">New Password</label>
             <input
@@ -112,24 +159,10 @@ function ChangePassword(props) {
             {newPasswordErrs}
           </div>
 
-          <div className="form-input">
-            <label htmlFor="currentPassword">Current Password</label>
-            <input
-              id="currentPassword"
-              name="currentPassword"
-              type="password"
-              maxLength={32}
-              value={currentPasswordValue}
-              onChange={(e) => setCurrentPasswordValue(e.target.value)}
-              ref={inputReference}
-            />
-            {currentPasswordErrs}
-          </div>
-
           <div>
             <button
               type="submit"
-              className="change-password-input"
+              className="change-password-input submit-btn"
               name="change-password-input"
             >
               Change Password

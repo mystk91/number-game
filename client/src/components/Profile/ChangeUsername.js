@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import "./ChangeUsername.css";
+import "./SettingsModals.css";
 import "../../normalize.css";
 import "../../custom.css";
 
@@ -16,6 +17,7 @@ function ChangeUsername(props) {
   //Used for displaying success screen
   const [currentScreen, setCurrentScreen] = useState();
   const [hideThis, setHideThis] = useState("");
+  const [hideModal, setHideModal] = useState("");
 
   //Used to give focus to the form input on load
   const inputReference = useRef(null);
@@ -47,31 +49,58 @@ function ChangeUsername(props) {
     let res = await fetch(url, options);
     let resObj = await res.json();
     if (resObj.success) {
-      window.location = "/profile";
-      /*
+      //window.location = "/profile";
       setHideThis(" hide");
       setCurrentScreen(successScreen);
-      */
+      document.addEventListener("keydown", (e) => {
+        if (e.key == "Enter") {
+          window.location = "/profile";
+        }
+      });
     } else {
       setUsernameErrs(<div className="error">{resObj.errors.username}</div>);
       setPasswordErrs(<div className="error">{resObj.errors.password}</div>);
     }
   }
 
+  //Displays if the username is successfully changed
   let successScreen = (
-    <div className="success-screen">
-      <div className="username-success-container">
-        <div className="username-success-message">
-          Your username has been updated.
-        </div>
+    <div className="settings-modal">
+      <div className="success-container">
+        <span className="modal-top">
+          <button
+            className="close-modal"
+            onClick={(e) => (window.location = "/profile")}
+          >
+            X
+          </button>
+        </span>
+        <div className="success-message">Your username has been updated.</div>
+        <button
+          className="submit-btn"
+          onClick={(e) => (window.location = "/profile")}
+        >
+          Okay!
+        </button>
       </div>
     </div>
   );
 
   return (
-    <div className="new-username">
+    <div className={"new-username settings-modal" + hideModal}>
       {currentScreen}
       <div className={"new-username-container" + hideThis}>
+        <span className="modal-top">
+          <button
+            className="close-modal"
+            onClick={(e) => setHideModal(" hide")}
+          >
+            X
+          </button>
+        </span>
+        <div>
+          <h1>Username</h1>
+        </div>
         <div className="username-info">
           Your username will appear on the leaderboards if you get a top 50
           average score in Random Mode.
@@ -115,7 +144,7 @@ function ChangeUsername(props) {
           <div>
             <button
               type="submit"
-              className="change-username"
+              className="change-username submit-btn"
               name="change-username"
             >
               Change Username

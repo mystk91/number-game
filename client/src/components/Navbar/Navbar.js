@@ -304,7 +304,7 @@ function Navbar(props) {
           </div>
         </div>
 
-        <div className="logo">Numblr</div>
+        <div className="logo">Numbler<div className="logo-banner">Number<img className="site-banner" src="/images/site/site-banner.png" /></div></div>
 
         <ul className="tools">
           <li>

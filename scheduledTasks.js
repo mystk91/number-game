@@ -10,7 +10,7 @@ const crypto = require("crypto");
 function scheduledTasks(app) {
   const nodeCron = require("node-cron");
   let createDailyGames = nodeCron.schedule(
-    `*/2 * * * *`,
+    `*/5 * * * *`,
     async () => {
       const dbDailyGames = mongoClient.db("DailyGames");
       let dailyGames = dbDailyGames.collection(`DailyGames`);

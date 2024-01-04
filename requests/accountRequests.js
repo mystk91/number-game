@@ -421,7 +421,7 @@ function accountRequests(app) {
       const db = mongoClient.db("Accounts");
       let accounts = db.collection("Accounts");
 
-      let newSession = generateString(32);
+      let newSession = generateString(48);
       await accounts.updateOne(
         { session: req.body.session },
         {
@@ -921,5 +921,6 @@ function accountRequests(app) {
     );
   }
 }
+
 
 module.exports = { accountRequests };

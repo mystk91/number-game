@@ -83,22 +83,8 @@ function Contact(props) {
       setErrMessage(<div>{errors.message}</div>);
     }
   }
-
-  return (
-    <div className="contact">
-      <h1>Contact Us</h1>
-
-      <div className="contact-text">
-        Questions? Issues? Bugs?
-      </div>
-
-
-      <div className="contact-text email">
-       <div>Send us an email at: </div>
-       <div className="contact-email">somethingsomething@site.com</div>
-      </div>
-
-      <div className="contact-text or">
+  /*
+        <div className="contact-text or">
         Or...
       </div>
 
@@ -142,6 +128,20 @@ function Contact(props) {
           </button>
         </div>
       </form>
+  */
+
+  return (
+    <div className="contact">
+      <h1>Contact Us</h1>
+
+      <h2 className="contact-text">Questions? Issues? Bugs?</h2>
+
+      <div className="contact-text email">
+        <div>Send us an email at: </div>
+        <a href="mailto:somethingsomething@site.com">
+          somethingsomething@site.com
+        </a>
+      </div>
     </div>
   );
 }
