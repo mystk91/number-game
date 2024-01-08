@@ -159,29 +159,8 @@ function Statistics(props) {
                       ].average30.average.toFixed(3)}
                     </div>
                   </div>
-
-                  <div className="show-histogram-container">
-                    <button
-                      className="show-histogram"
-                      onClick={() =>
-                        showHistogramModal(
-                          i,
-                          "Random",
-                          `${
-                            props.stats[`${i}random-scores`].average30
-                              .numberOfGames
-                          } Game Average`,
-                          "average30"
-                        )
-                      }
-                    >
-                      Show Scores
-                    </button>
-                  </div>
-
                   {createHistogram(i, "Random", "", "average30")}
                 </div>
-
                 {createBest30(i)}
                 <div className="averages">
                   <div className="average-all">

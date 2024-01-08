@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import uniqid from "uniqid";
 import "./Navbar.css";
 import "../../normalize.css";
@@ -117,17 +117,8 @@ function NavbarRandom(props) {
     </ul>
   );
 
-  //Shows the game modes list
-  function displayGameModes(e) {
-    setGameModesList(listVisible);
-    setGameModesButton(gameModesButtonHTMLClicked);
-    setHoverDropUpRef(true);
-    e.stopPropagation();
-    document.addEventListener("click", hideGameModes);
-  }
-
   //Hides the game list
-  function hideGameModes(e) {
+  const hideGameModes = useCallback((e) => {
     if (hoverDropUpRef.current) {
       setHoverDropUpRef(false);
       setGameModesList(listHidden);
@@ -137,6 +128,15 @@ function NavbarRandom(props) {
         setGameModesList();
       }, 300);
     }
+  }, []);
+
+  //Shows the game modes list
+  function displayGameModes(e) {
+    setGameModesList(listVisible);
+    setGameModesButton(gameModesButtonHTMLClicked);
+    setHoverDropUpRef(true);
+    e.stopPropagation();
+    document.addEventListener("click", hideGameModes);
   }
 
   //Used to display the modals from the buttons on the tool-bar
@@ -168,7 +168,7 @@ function NavbarRandom(props) {
   async function addProfileButton() {
     if (props.user.loggedIn) {
       setProfileImageRef(props.user.imageUrl);
-      setProfileButton(profileDropdownInitialHTML);
+      setProfileButton(profileDropdownInitialHTML());
     } else {
       let buttonHTML = (
         <button className="login-btn" onClick={loginButton}>
@@ -179,18 +179,25 @@ function NavbarRandom(props) {
     }
   }
 
-  let profileDropdownInitialHTML = (
-    <button
-      className="profile-btn"
-      onClick={showProfileDropdown}
-      onMouseOver={showProfileDropdown}
-    >
-      <img src={profileImageRef.current} />
-    </button>
-  );
+  //Hides the profile dropdown on click
+  const hideProfileDropdown = useCallback((e) => {
+    if (hoverDropUpRef.current) {
+      setHoverDropUpRef(false);
+      setProfileButton(profileDropdownHiddenHTML());
+      document.removeEventListener("click", hideProfileDropdown);
+    }
+  }, []);
 
-  let profileDropdownHiddenHTML = (
-    <div>
+  //Shows the profile Dropdown
+  function showProfileDropdown(e) {
+    setHoverDropUpRef(true);
+    setProfileButton(profileDropdownVisibleHTML());
+    e.stopPropagation();
+    document.addEventListener("click", hideProfileDropdown);
+  }
+
+  function profileDropdownInitialHTML() {
+    return (
       <button
         className="profile-btn"
         onClick={showProfileDropdown}
@@ -198,34 +205,33 @@ function NavbarRandom(props) {
       >
         <img src={profileImageRef.current} />
       </button>
-      <ProfileDropdown hidden="true" key="profileDropdownHidden" />
-    </div>
-  );
-
-  let profileDropdownVisibleHTML = (
-    <div onMouseLeave={hideProfileDropdown}>
-      <button className="profile-btn clicked">
-        <img src={profileImageRef.current} />
-      </button>
-      <ProfileDropdown key="profileDropdownVisisble" user={props.user} />
-    </div>
-  );
-
-  //Shows the profile Dropdown
-  function showProfileDropdown(e) {
-    setHoverDropUpRef(true);
-    setProfileButton(profileDropdownVisibleHTML);
-    e.stopPropagation();
-    document.addEventListener("click", hideProfileDropdown);
+    );
   }
 
-  //Hides the profile dropdown on click
-  function hideProfileDropdown(e) {
-    if (hoverDropUpRef.current) {
-      setHoverDropUpRef(false);
-      setProfileButton(profileDropdownHiddenHTML);
-      document.removeEventListener("click", hideProfileDropdown);
-    }
+  function profileDropdownHiddenHTML() {
+    return (
+      <div>
+        <button
+          className="profile-btn"
+          onClick={showProfileDropdown}
+          onMouseOver={showProfileDropdown}
+        >
+          <img src={profileImageRef.current} />
+        </button>
+        <ProfileDropdown hidden="true" key="profileDropdownHidden" />
+      </div>
+    );
+  }
+
+  function profileDropdownVisibleHTML() {
+    return (
+      <div onMouseLeave={hideProfileDropdown}>
+        <button className="profile-btn clicked">
+          <img src={profileImageRef.current} />
+        </button>
+        <ProfileDropdown key="profileDropdownVisisble" user={props.user} />
+      </div>
+    );
   }
 
   //Displays the login modal
@@ -314,12 +320,17 @@ function NavbarRandom(props) {
         </div>
 
         <div className="logo random">
-          <img src="/images/site/randomDice.png" className="random-mode" />
-          <div className="logo-banner">Numbler<img className="site-banner" src="/images/site/site-banner.png" /></div>
+          <img src="/images/site/randomDice.png" className="random-mode left" />
+          <div className="logo-banner">
+            <img className="site-banner" src="/images/site/site-banner.png" />
+          </div>
           <div className="logo-small">
             <img src="/images/site/logo.png" />
           </div>
-          <img src="/images/site/randomDice.png" className="random-mode" />
+          <img
+            src="/images/site/randomDice.png"
+            className="random-mode right"
+          />
         </div>
 
         <ul className="tools">

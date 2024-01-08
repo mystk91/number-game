@@ -280,7 +280,7 @@ function gameRequests(app) {
             }
           } else {
             scores30 = [];
-            best30 = { average: 8, date: currentDate };
+            best30 = { average: 8, date: currentDate, scores: [] };
           }
 
           let scores30entry = {
@@ -298,6 +298,7 @@ function gameRequests(app) {
             if (average30 < best30.average) {
               best30.average = average30;
               best30.date = currentDate;
+              best30.scores = scores30;
             }
           }
 

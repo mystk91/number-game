@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
-import "./Histogram.css";
+import "./HistogramProfile.css";
 import "../../normalize.css";
 import "../../custom.css";
 
 /*
     Used to create a histogram for a game with different digits / different no. of attempts
-    props.digits - number of digit on the game
+    props.averageLabel
     props.attempts - number of attempts allowed on the game, usually 6
     props.scoresObj - an object containing scores used in the histogram
       scoresObj.average30
@@ -25,10 +25,12 @@ function HistogramRegular(props) {
     averageScoreRef.current = point;
   }
 
+  const [averageLabel, setAverageLabel] = useState();
+
   //componentDidMount, runs when component mounts, then componentDismount
   useEffect(() => {
     updateHistogram();
-
+    setAverageLabel(props.averageLabel);
     return () => {};
   }, []);
 
@@ -40,14 +42,19 @@ function HistogramRegular(props) {
       for (let i = 0; i < histogramData.length; i++) {
         histogramData[i] = 0;
       }
-      /*
-      scoresObj.scores30.forEach((x) => {
-        histogramData[x.score - 1] += 1;
-      });
-      */
 
-      for (let i = 0; i < scoresObj.scores.length; i++){
-        histogramData[scoresObj.scores[i] - 1] += 1;
+      if (props.scoreType === "average") {
+        for (let i = 0; i < scoresObj.scores.length; i++) {
+          histogramData[scoresObj.scores[i] - 1] += 1;
+        }
+      } else if (props.scoreType === "average30") {
+        scoresObj.scores30.forEach((x) => {
+          histogramData[x.score - 1] += 1;
+        });
+      } else if (props.scoreType === "best30") {
+        scoresObj.best30.scores.forEach((x) => {
+          histogramData[x.score - 1] += 1;
+        });
       }
 
       let highestHist = 0;
@@ -59,6 +66,7 @@ function HistogramRegular(props) {
 
       let pixelData = new Array(props.attempts + 1);
       let histoLength = 248;
+      histoLength = 200;
       for (let i = 0; i < pixelData.length; i++) {
         if (histogramData[i] > 0) {
           pixelData[i] = Math.max(
@@ -101,15 +109,25 @@ function HistogramRegular(props) {
       }
       setHistogram(histogramArr);
       //Calculate the average score
-      let average = scoresObj.average.toFixed(3);
-      setAverageScoreRef(average);
+      if (props.averageLabel) {
+        if (props.scoreType === "average") {
+          let average = scoresObj.average.toFixed(3);
+          setAverageScoreRef(average);
+        } else if (props.scoreType === "average30") {
+          let average = scoresObj.average30.average.toFixed(3);
+          setAverageScoreRef(average);
+        } else if (props.scoreType === "best30") {
+          let average = scoresObj.best30.average.toFixed(3);
+          setAverageScoreRef(average);
+        }
+      }
     }
   }
 
   return (
-    <div className="histogram-container">
+    <div className="histogram-container profile">
       <div className="average-score">
-        Average: {averageScoreRef.current}
+        {averageLabel} {averageScoreRef.current}
       </div>
       {histogram}
     </div>

@@ -81,7 +81,7 @@ function testRequests(app) {
           },
           scores: scores,
           scores30: scores30Objects,
-          best30: { average: average30, date: new Date() },
+          best30: { average: average30, date: new Date(), scores: scores30Objects },
         };
 
         accounts.updateOne(

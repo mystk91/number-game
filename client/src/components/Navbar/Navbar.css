@@ -182,8 +182,8 @@
   column-gap: 4px;
 }
 
-.logo.random img {
-  padding-top: 5px;
+.logo.random .random-mode {
+  margin-top: 6px;
   width: 30px;
 }
 
@@ -198,12 +198,18 @@
   border: 1.5px solid black;
 }
 
+.logo-banner{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .logo img.site-banner{
-  margin-top: 2px;
-  height: 48px;
+  height: 35px;
   width: auto;
+  padding: 0 3px;
+  object-fit: contain;
   pointer-events: none;
-  display: none;
 }
 
 
@@ -608,12 +614,27 @@
   }
 
   .random .logo-banner {
-    display: none;
+
   }
 
   .logo.random .logo-small {
-    display: flex;
+
   }
+
+  .random-mode.right{
+    display: none;
+  }
+
+  .random-mode.left{
+    margin-bottom: 4px;
+  }
+
+  .logo{
+    border: 1px solid black;
+    height: 56px;
+  }
+
+
 }
 
 /* Phone Sizes */
@@ -761,7 +782,7 @@
   }
 
   .random .logo-banner {
-    display: none;
+
   }
 
   .logo.random {
@@ -770,7 +791,7 @@
   }
 
   .logo.random .logo-small {
-    display: flex;
+
   }
 
   .logo .random-mode {
@@ -780,16 +801,38 @@
   .game-modes-list-mobile {
     left: 0px;
   }
+
+  .random-mode.right{
+    display: none;
+  }
+
+  .random-mode.left{
+    margin-bottom: 4px;
+    margin-left: 2px;
+  }
+
 }
 
 /* Very small screens */
 @media screen and (max-width: 379px) {
   .logo.random .logo-small img {
-    min-width: 40px;
-    min-height: 40px;
+    min-width: 38px;
+    min-height: 38px;
   }
 
   .logo .random-mode {
     max-width: 24px;
   }
+
+  .random-mode.right{
+    display: none;
+  }
+
+  .random-mode.left{
+    padding: 0;
+    margin-bottom: 4px;
+    margin-left: 2px;
+  }
+
+
 }

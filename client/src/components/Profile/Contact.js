@@ -134,7 +134,11 @@ function Contact(props) {
     <div className="contact">
       <h1>Contact Us</h1>
 
-      <h2 className="contact-text">Questions? Issues? Bugs?</h2>
+      <h2 className="contact-text">
+        <div>Questions?</div>
+        <div>Issues?</div>
+        <div> Bugs?</div>
+      </h2>
 
       <div className="contact-text email">
         <div>Send us an email at: </div>

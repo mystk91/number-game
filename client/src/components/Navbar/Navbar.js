@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import uniqid from "uniqid";
 import "./Navbar.css";
 import "../../normalize.css";
@@ -105,17 +105,8 @@ function Navbar(props) {
     </ul>
   );
 
-  //Shows the game modes list
-  function displayGameModes(e) {
-    setGameModesList(listVisible);
-    setGameModesButton(gameModesButtonHTMLClicked);
-    setHoverDropUpRef(true);
-    e.stopPropagation();
-    document.addEventListener("click", hideGameModes);
-  }
-
   //Hides the game list
-  function hideGameModes(e) {
+  const hideGameModes = useCallback((e) => {
     if (hoverDropUpRef.current) {
       setHoverDropUpRef(false);
       setGameModesList(listHidden);
@@ -125,6 +116,15 @@ function Navbar(props) {
         setGameModesList();
       }, 300);
     }
+  }, []);
+
+  //Shows the game modes list
+  function displayGameModes(e) {
+    setGameModesList(listVisible);
+    setGameModesButton(gameModesButtonHTMLClicked);
+    setHoverDropUpRef(true);
+    e.stopPropagation();
+    document.addEventListener("click", hideGameModes);
   }
 
   //Used to display the modals from the buttons on the tool-bar
@@ -163,8 +163,10 @@ function Navbar(props) {
   //Adds either the login form or the profile dropdown option
   async function addProfileButton() {
     if (props.user.loggedIn) {
+      /*
       setProfileImageRef(props.user.imageUrl);
       setProfileButton(profileDropdownInitialHTML);
+      */
     } else {
       let buttonHTML = (
         <button className="login-btn" onClick={loginButton}>
@@ -174,6 +176,7 @@ function Navbar(props) {
       setProfileButton(buttonHTML);
     }
   }
+  /*
 
   let profileDropdownInitialHTML = (
     <button
@@ -207,6 +210,7 @@ function Navbar(props) {
     </div>
   );
 
+
   //Shows the profile Dropdown
   function showProfileDropdown(e) {
     setHoverDropUpRef(true);
@@ -223,6 +227,7 @@ function Navbar(props) {
       document.removeEventListener("click", hideProfileDropdown);
     }
   }
+  */
 
   //Displays the login modal
   function loginButton() {
@@ -304,7 +309,11 @@ function Navbar(props) {
           </div>
         </div>
 
-        <div className="logo">Numbler<div className="logo-banner">Number<img className="site-banner" src="/images/site/site-banner.png" /></div></div>
+        <div className="logo">
+          <div className="logo-banner">
+            <img className="site-banner" src="/images/site/site-banner.png" />
+          </div>
+        </div>
 
         <ul className="tools">
           <li>
@@ -329,7 +338,7 @@ function Navbar(props) {
             <button
               className="randomMode-btn"
               onClick={() => {
-                setModal(<AdRandomModal key={new Date()}/>);
+                setModal(<AdRandomModal key={new Date()} />);
               }}
             >
               <img src="/images/site/randomDice.png" />

@@ -1275,6 +1275,7 @@ function NumberGameRandom(props) {
     updateKeyboard();
     updateGameBoard();
     setShowScoresButton();
+    setScoresWindowRevealRef(false);
   }
 
   return (
