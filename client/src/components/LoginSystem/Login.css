@@ -58,12 +58,21 @@
   padding: 2px 6px 4px 8px;
 }
 
-.login-box > .site-logo {
-  height: 100px;
-  margin: -10px 0 10px 0;
+.login-box > .site-banner-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 96px;
+  margin: -4px 24px 10px 24px;
   user-select: none;
   pointer-events: none;
+  background-color: var(--navbar-background-color);
 }
+
+.site-banner-container > .site-banner{
+  padding: 32px;
+}
+
 
 .login-form {
   width: 280px;

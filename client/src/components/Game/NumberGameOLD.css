@@ -136,9 +136,7 @@
   margin: 4px 0;
 }
 
-.number-inputs.disabled button,
-.enter-guess.disabled,
-.backspace.disabled {
+.number-inputs.disabled button, .enter-guess.disabled {
   pointer-events: none;
   cursor: none;
 }
@@ -555,8 +553,7 @@
 }
 
 /*Handle the keydown animation*/
-.number-input.keydown,
-.backspace.keydown {
+.number-input.keydown, .backspace.keydown {
   animation-name: keydown;
   animation-duration: 0.5s;
 }
@@ -659,7 +656,7 @@
   }
 }
 
-.ad-modal {
+.ad-modal{
   width: 100%;
   height: 100%;
   position: absolute;
@@ -667,10 +664,10 @@
   justify-content: center;
   z-index: 3;
   top: 0px;
-  background-color: rgba(0, 0, 0, 0.2);
+  background-color: rgba(0,0,0, .2);
 }
 
-.ad-modal-box {
+.ad-modal-box{
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -685,7 +682,7 @@
 }
 
 .defeat-modal,
-.victory-modal {
+.victory-modal{
   position: absolute;
   display: flex;
   flex-direction: column;
@@ -787,35 +784,26 @@
 
 .arrow-left,
 .arrow-right {
-  all: unset;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 40px;
-  width: 40px;
   cursor: pointer;
-  font-size: 2.0rem;
-  background-size: cover;
-  text-decoration: none;
-  color: rgb(245, 245, 245);
 }
-
 
 .arrow-left:hover,
 .arrow-right:hover {
   filter: brightness(1.3);
 }
 
-.arrow-left > div {
-  text-decoration: none;
-  color: rgb(245, 245, 245);
-  padding-left: 12px;
+.arrow-left {
+  all: unset;
+  border-top: 20px solid transparent;
+  border-bottom: 20px solid transparent;
+  border-right: 40px solid var(--arrow-color);
 }
 
-.arrow-right > div {
-  text-decoration: none;
-  color: rgb(245, 245, 245);
-  padding-right: 12px;
+.arrow-right {
+  all: unset;
+  border-top: 20px solid transparent;
+  border-bottom: 20px solid transparent;
+  border-left: 40px solid var(--arrow-color);
 }
 
 .ad-modal-box .confirmation-btn {
@@ -825,49 +813,34 @@
 /* Even Smaller Style */
 @media screen and (max-width: 379px) {
   .number-inputs button {
-    width: 33px;
-    margin: 0 1px;
+    width: 31px;
   }
   .keyboard-bottom {
     column-gap: 2px;
     transition: 0.2s column-gap;
   }
+  .arrow-left {
+    border-right: 30px solid var(--arrow-color);
+  }
+
+  .arrow-right {
+    border-left: 30px solid var(--arrow-color);
+  }
 }
 
 /* Typical Phone Style */
 @media screen and (min-width: 380px) and (max-width: 419px) {
-  .number-inputs button{
-    width: 35.5px;
-    margin: 0 1px;
-  }
-
   .keyboard-bottom {
     column-gap: 6px;
     transition: 0.2s column-gap;
   }
-}
+  .arrow-left {
+    border-right: 36px solid var(--arrow-color);
+  }
 
-.number-game .keyboard-bottom .backspace {
-  background-image: url("../../../public/images/game/backspace.jpg");
-  background-position: center center;
-  background-repeat: no-repeat;
-  background-size: auto 32px;
-  width: 60px;
-  height: 48px;
-  margin: 0 0;
-  border-radius: 6px;
-  border: 1px solid rgb(178, 178, 178);
-  background-color: rgb(250, 250, 250);
-  color: black;
-  cursor: pointer;
-  border-radius: 12px;
-}
-
-.keyboard-bottom {
-  display: flex;
-  align-items: center;
-  column-gap: 6px;
-  transition: 0.2s column-gap;
+  .arrow-right {
+    border-left: 36px solid var(--arrow-color);
+  }
 }
 
 /* Mid-size Styles */
@@ -877,7 +850,7 @@
     transition: 0.2s width;
   }
   .number-inputs button {
-    width: 36px;
+    width: 32px;
     margin: 0 2px;
     transition: 0.2s width;
   }

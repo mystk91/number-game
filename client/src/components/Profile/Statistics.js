@@ -3,6 +3,8 @@ import "./ProfileComponents.css";
 import "../../normalize.css";
 import "../../custom.css";
 import HistogramProfile from "./HistogramProfile";
+import Calendar from "../Parts/CalendarIcon";
+import CalendarIcon from "../Parts/CalendarIcon";
 
 //Displays various game stasitics for user. Lets them reset / delete their stats
 //    props.stats - a statistics object containing game stats of the user
@@ -117,21 +119,36 @@ function Statistics(props) {
               {convertToDate(props.stats[`${i}random-scores`].best30.date)}
             </div>
           </div>
-
-          <div className="show-histogram-container">
+          <div className="show-histogram-container random">
             <button
               className="show-histogram"
               onClick={() =>
-                showHistogramModal(i, "Random", "Best 30 Average: ", "best30")
+                showHistogramModal(i, "Digits", "Lifetime Average: ", "average")
               }
             >
               Show Scores
             </button>
           </div>
+
+          <div className="random-histogram">
+            {createHistogram(i, "Random", "", "best30")}
+          </div>
         </div>
       );
     } else {
-      return null;
+      return (
+        <div className="averages">
+          <div className="best-30">
+            <div className="stat-name">Best 30 Average</div>
+            <div className="stat-value">----</div>
+          </div>
+
+          <div className="best30-date">
+            <div className="stat-name">Date</div>
+            <div className="stat-value">--/--/--</div>
+          </div>
+        </div>
+      );
     }
   }
 
@@ -144,8 +161,14 @@ function Statistics(props) {
       for (let i = 2; i <= 7; i++) {
         if (props.stats[`${i}random-scores`]) {
           let statsHTML = (
-            <div className="stats-game-mode" key={"random-stats-" + i}>
-              <span className="stats-game-name">{i} Random</span>
+            <div className="stats-game-mode random" key={"random-stats-" + i}>
+              <span className="stats-game-name">
+                <div>{i} Random</div>
+                <div className="stats-icon">
+                  {i}
+                  <img src="images/site/randomDice.png" />
+                </div>
+              </span>
               <div className="averages-container random">
                 <div className="averages">
                   <div className="average-30">
@@ -159,8 +182,7 @@ function Statistics(props) {
                       ].average30.average.toFixed(3)}
                     </div>
                   </div>
-
-                  <div className="show-histogram-container">
+                  <div className="show-histogram-container random">
                     <button
                       className="show-histogram"
                       onClick={() =>
@@ -178,8 +200,9 @@ function Statistics(props) {
                       Show Scores
                     </button>
                   </div>
-
-                  {createHistogram(i, "Random", "", "average30")}
+                  <div className="random-histogram">
+                    {createHistogram(i, "Random", "", "average30")}
+                  </div>
                 </div>
 
                 {createBest30(i)}
@@ -196,20 +219,23 @@ function Statistics(props) {
                       {props.stats[`${i}random-scores`].scores.length}
                     </div>
                   </div>
-                  <div className="show-histogram-container">
+                  <div className="show-histogram-container random">
                     <button
                       className="show-histogram"
                       onClick={() =>
                         showHistogramModal(
                           i,
                           "Random",
-                          "Lifetime Average: ",
+                          `Lifetime Average`,
                           "average"
                         )
                       }
                     >
                       Show Scores
                     </button>
+                  </div>
+                  <div className="random-histogram">
+                    {createHistogram(i, "Random", "", "average")}
                   </div>
                 </div>
               </div>
@@ -230,8 +256,13 @@ function Statistics(props) {
       for (let i = 2; i <= 7; i++) {
         if (props.stats[`${i}digits-scores`]) {
           let statsHTML = (
-            <div className="stats-game-mode" key={"daily-stats-" + i}>
-              <span className="stats-game-name">{i} Digits</span>
+            <div className="stats-game-mode daily" key={"daily-stats-" + i}>
+              <span className="stats-game-name">
+                <div>{i} Digits</div>
+                <div className="daily-icon">
+                  <CalendarIcon />
+                </div>
+              </span>
               <div className="averages-container daily">
                 <div className="averages">
                   <div className="average-30">
@@ -248,7 +279,7 @@ function Statistics(props) {
                       {props.stats[`${i}digits-scores`].scores30.length}
                     </div>
                   </div>
-                  <div className="show-histogram-container">
+                  <div className="show-histogram-container daily">
                     <button
                       className="show-histogram"
                       onClick={() =>
@@ -262,6 +293,9 @@ function Statistics(props) {
                     >
                       Show Scores
                     </button>
+                  </div>
+                  <div className="daily-histogram">
+                    {createHistogram(i, "Digits", "", "average30")}
                   </div>
                 </div>
                 <div className="averages">
@@ -277,7 +311,7 @@ function Statistics(props) {
                       {props.stats[`${i}digits-scores`].scores.length}
                     </div>
                   </div>
-                  <div className="show-histogram-container">
+                  <div className="show-histogram-container daily">
                     <button
                       className="show-histogram"
                       onClick={() =>
@@ -291,6 +325,9 @@ function Statistics(props) {
                     >
                       Show Scores
                     </button>
+                  </div>
+                  <div className="daily-histogram">
+                    {createHistogram(i, "Digits", "", "average")}
                   </div>
                 </div>
               </div>

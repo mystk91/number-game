@@ -124,7 +124,7 @@ function Login(props) {
               X
             </button>
           </span>
-          <img src="/images/site/siteLogo.png" className="site-logo" />
+          <div className="site-banner-container"><img src="/images/site/site-banner.png" className="site-banner" /></div>
           <form
             action="/api/login"
             method="POST"

@@ -60,6 +60,7 @@ button.daily-stats.clicked {
   max-width: 976px;
   column-gap: 8px;
   row-gap: 8px;
+  width: max-content;
 }
 
 .statistics h1 {
@@ -75,47 +76,78 @@ button.daily-stats.clicked {
   border: 3px solid rgb(8, 8, 62);
   border-radius: 14px;
   margin: 2px 2px;
+
+  max-width: max-content;
+  width: max-content;
 }
 
 .stats-game-name {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   width: 100%;
   height: 54px;
   font-size: 2.4rem;
-  border-bottom: 3px solid rgb(5, 5, 52);
+  border-bottom: 1px solid rgb(5, 5, 52);
   background-color: rgb(72, 74, 106);
   color: white;
   font-weight: bolder;
   padding-top: 10px;
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
-  padding: 10px 8px 0 8px;
+  padding: 8px 24px 2px 16px;
+}
+
+.stats-game-name > * {
+  display: flex;
+  justify-content: center;
+}
+
+.stats-game-name img {
+  height: 28px;
+}
+
+.stats-game-name .daily-icon{
+  margin-bottom: 5px;
 }
 
 .averages-container {
   background-color: rgb(240, 241, 249);
-  padding-top: 2px;
+  display: flex;
 }
 
 .averages-container.random {
   min-height: 264px;
+  min-height: max-content;
 }
 
 .averages-container.daily {
   min-height: 200px;
+  min-height: max-content;
+}
+
+.averages-container > * {
+  border-right: 2px solid rgb(8, 8, 62);
+}
+
+.averages-container > *:last-child {
+  border-right: none;
 }
 
 .averages {
-  margin: 10px 0;
+  padding: 0 0 16px 0;
 }
 
 .averages > * {
   display: flex;
   justify-content: space-between;
-  width: 100%;
-  border-top: 1px solid black;
+  width: 300px;
+  border-bottom: 1px solid black;
   background-color: rgb(250, 250, 250);
+}
+
+.averages > *:first-child > * {
+  min-height: 32px;
 }
 
 .averages > *:last-child {
@@ -132,11 +164,17 @@ button.daily-stats.clicked {
 .stat-value {
   display: flex;
   justify-content: center;
-  align-self: center;
+  align-items: center;
   width: 100px;
   padding: 1.5px 0 1.5px 0;
   background-color: rgb(212, 231, 224);
   border-left: 1px solid black;
+  height: 100%;
+}
+
+.daily-histogram,
+.random-histogram {
+  min-height: 130px;
 }
 
 .show-histogram-container {
@@ -145,6 +183,11 @@ button.daily-stats.clicked {
   display: flex;
   justify-content: flex-end;
   align-items: center;
+}
+
+.show-histogram-container.random,
+.show-histogram-container.daily {
+  display: none;
 }
 
 .show-histogram-container button {
@@ -189,6 +232,78 @@ button.reset-stats {
 button.reset-stats:hover {
   filter: brightness(0.8);
   transition: filter 0.2s;
+}
+
+@media screen and (max-width: 992px) {
+  .averages-container.random {
+    flex-direction: column;
+  }
+
+  .averages-container.random > * {
+    border-right: none;
+  }
+
+  .averages-container.random > * > *:first-child {
+    border-top: 0.5px solid black;
+  }
+
+  .stats-game-mode.random .stats-icon {
+    display: none;
+  }
+
+  .show-histogram-container.random {
+    display: flex;
+  }
+
+  .random-histogram {
+    display: none;
+  }
+
+  .averages-container.random {
+    min-height: 292px;
+  }
+
+  .stats-game-modes-container {
+    width: calc(100vw - 210px);
+  }
+}
+
+@media screen and (max-width: 864px) {
+  .averages-container.daily {
+    flex-direction: column;
+  }
+
+  .averages-container.daily > * {
+    border-right: none;
+  }
+
+  .averages-container.daily > * > *:first-child {
+    border-top: 0.5px solid black;
+  }
+
+  .stats-game-mode.daily .stats-icon {
+    display: none;
+  }
+
+  .show-histogram-container.daily {
+    display: flex;
+  }
+
+  .daily-histogram {
+    display: none;
+  }
+
+  .averages-container.daily {
+    min-height: 224px;
+  }
+
+  .stats-game-modes-container {
+    width: calc(100vw - 210px);
+  }
+
+  .daily-icon{
+    display: none;
+  }
 }
 
 @media screen and (min-width: 490px) and (max-width: 540px) {
@@ -294,6 +409,10 @@ button.reset-stats:hover {
   display: flex;
   column-gap: 8px;
   margin: 12px 4px 0 4px;
+}
+
+.reset-confirmation-btns > button {
+  border: 0.8px solid black;
 }
 
 .cancel-btn.confirmation-btn {
@@ -413,10 +532,9 @@ button.reset-stats:hover {
   max-width: calc(100vw - 210px);
 }
 
-.contact h2.contact-text{
+.contact h2.contact-text {
   display: flex;
   column-gap: 6px;
-
 }
 
 .contact .contact-text {
@@ -430,7 +548,7 @@ button.reset-stats:hover {
 }
 
 @media screen and (max-width: 559px) {
-  .contact h2.contact-text{
+  .contact h2.contact-text {
     flex-direction: column;
   }
 }
@@ -447,5 +565,4 @@ button.reset-stats:hover {
   .contact .contact-text {
     padding: 5px 0 5px 6px;
   }
-
 }

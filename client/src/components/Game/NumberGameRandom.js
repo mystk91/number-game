@@ -164,15 +164,29 @@ function NumberGameRandom(props) {
     }
   }
 
+  //Hides the arrow at the bottom of the game, reveals them when game ends so user can move to diff digit games
+  const hideArrowsRef = useRef(" hide");
+  function setHideArrowsRef(point) {
+    hideArrowsRef.current = point;
+  }
+
+  //Used to hide the backspace key once the game ends
+  const hideBackspaceRef = useRef("");
+  function setHideBackspaceRef(point) {
+    hideBackspaceRef.current = point;
+  }
+
   //These functions are used to display / hide the Enter Guess / Reset button.
   //The enter guess is shown until the game ends, then its replaced with the reset button.
   function changeCurrentInputButton() {
     if (gameStatusRef.current === "playing") {
       setHideGuessButtonRef("");
       setHideResetButtonRef(" hide");
+      removeArrows();
     } else {
       setHideGuessButtonRef(" hide");
       setHideResetButtonRef("");
+      addArrows();
     }
   }
 
@@ -595,56 +609,99 @@ function NumberGameRandom(props) {
           >
             0
           </button>
-          <button
-            className={
-              "backspace" + keyboardAnimationRef.current[`keyBackspace`]
-            }
-            onClick={(e) => {
-              e.target.blur();
-              backspace();
-            }}
-            onKeyDown={(e) => {
-              handleBackspaceKeyDown(e);
-            }}
-            tabIndex={1}
-          ></button>
         </div>
         <div className="keyboard-bottom">
-          <a href={linkLeftRef.current} tabIndex={2}>
-            <button className={"arrow-left"} tabIndex={0} />
-          </a>
-          <button
-            className={
-              "enter-guess" +
-              hideGuessButtonRef.current +
-              keyboardAnimationRef.current[`keyEnter`] +
-              keyboardClassNameRef.current
-            }
-            onClick={(e) => {
-              e.target.blur();
-              checkGuess();
-            }}
-            onKeyDown={(e) => {
-              handleEnterKeyDown(e);
-            }}
-            tabIndex={1}
-          >
-            Enter
-          </button>
-          <button
-            className={"reset-game" + hideResetButtonRef.current}
-            onClick={resetGame}
-            tabIndex={1}
-          >
-            Reset Game
-          </button>
-          <a href={linkRightRef.current} tabIndex={2}>
-            <button className={"arrow-right"} tabIndex={0} />
-          </a>
+          {leftArrow()}
+          {guessButton()}
+          {resetButton()}
+          {rightArrow()}
+          {backspaceButton()}
         </div>
       </div>
     );
     setKeyboard(keyboardHTML);
+  }
+
+  /**These functions are for adding buttons below the keyboard */
+  function leftArrow() {
+    if (!hideArrowsRef.current) {
+      return (
+        <a
+          href={linkLeftRef.current}
+          className={"arrow-left"}
+          tabIndex={2}
+          style={{ backgroundImage: `url(/images/site/left-arrow.png)` }}
+        >
+          <div>-</div>
+        </a>
+      );
+    }
+  }
+
+  function guessButton() {
+    if (!hideGuessButtonRef.current) {
+      return (
+        <button
+          className={"enter-guess" + keyboardAnimationRef.current[`keyEnter`]}
+          onClick={(e) => {
+            e.target.blur();
+            checkGuess();
+          }}
+          onKeyDown={(e) => {
+            handleEnterKeyDown(e);
+          }}
+          tabIndex={1}
+        >
+          Enter
+        </button>
+      );
+    }
+  }
+  function resetButton() {
+    if (!hideResetButtonRef.current) {
+      return (
+        <button className={"reset-game"} onClick={resetGame} tabIndex={1}>
+          Reset Game
+        </button>
+      );
+    }
+  }
+
+  function rightArrow() {
+    if (!hideArrowsRef.current) {
+      return (
+        <a
+          href={linkRightRef.current}
+          className={"arrow-right"}
+          tabIndex={2}
+          style={{ backgroundImage: `url(/images/site/right-arrow.png)` }}
+        >
+          <div>+</div>
+        </a>
+      );
+    }
+  }
+
+  function backspaceButton() {
+    if (!hideGuessButtonRef.current) {
+      return (
+        <button
+          className={
+            "backspace" +
+            keyboardAnimationRef.current[`keyBackspace`] +
+            keyboardClassNameRef.current
+          }
+          onClick={(e) => {
+            e.target.blur();
+            backspace();
+          }}
+          onKeyDown={(e) => {
+            handleBackspaceKeyDown(e);
+          }}
+          tabIndex={1}
+        ></button>
+      );
+    }
   }
 
   //Used to handle the keydown when number is tab-selected
@@ -1139,18 +1196,22 @@ function NumberGameRandom(props) {
   function addShowScoresButton() {
     if (setScoresWindowRevealRef.current) {
       setShowScoresButton(
+        <div className="show-scores-container">
         <button className={"show-scores"} onClick={scoresButtonClicked}>
           Show Scores
         </button>
+        </div>
       );
     } else {
       setShowScoresButton(
+        <div className="show-scores-container">
         <button
           className={"show-scores float-down"}
           onClick={scoresButtonClicked}
         >
           Show Scores
         </button>
+        </div>
       );
       setScoresWindowRevealRef(true);
     }
@@ -1163,15 +1224,19 @@ function NumberGameRandom(props) {
       defeat();
     }
     setShowScoresButton(
+      <div className="show-scores-container">
       <button className={"show-scores"} onClick={scoresButtonClicked}>
         Show Scores
       </button>
+      </div>
     );
     setTimeout(() => {
       setShowScoresButton(
+        <div className="show-scores-container">
         <button className={"show-scores keydown"} onClick={scoresButtonClicked}>
           Show Scores
         </button>
+        </div>
       );
     }, 1);
   }
@@ -1209,6 +1274,18 @@ function NumberGameRandom(props) {
     if (e.key === "Enter") {
       resetGame();
     }
+  }
+
+  //Adds arrows to other game modes once game ends
+  function addArrows() {
+    setHideArrowsRef("");
+    setHideBackspaceRef(" hide");
+  }
+
+  //Removes arrows when resetting the game
+  function removeArrows() {
+    setHideArrowsRef(" hide");
+    setHideBackspaceRef("");
   }
 
   //Resets the game.
@@ -1279,17 +1356,19 @@ function NumberGameRandom(props) {
   }
 
   return (
-    <main className="game-container">
-      <div className={"gameboard"}>
-        {errorMessagesDiv}
-        {gameOverModalRef.current}
-        <div className="rows" ref={yPosition}>
-          {board}
+    <div className="number-game">
+      <main className="game-container">
+        <div className={"gameboard"}>
+          {errorMessagesDiv}
+          {gameOverModalRef.current}
+          <div className="rows" ref={yPosition}>
+            {board}
+          </div>
+          {keyboard}
+          {showScoresButton}
         </div>
-        {keyboard}
-        <div className="show-scores-container">{showScoresButton}</div>
-      </div>
-    </main>
+      </main>
+    </div>
   );
 }
 

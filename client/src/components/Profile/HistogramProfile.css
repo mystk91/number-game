@@ -7,11 +7,12 @@
 .histogram-container.profile .histogram-row {
   display: flex;
   column-gap: 6px;
-  width: 330px;
-  height: 30px;
+  width: max-content;
+  height: 16px;
   margin: 0 4px;
   animation: -2s 4s dropdownHistogram;
   animation: none;
+  font-size: 1.6rem;
 }
 
 .histogram-container.profile .average-score {
@@ -39,7 +40,7 @@
 
 .histogram-container.profile  .histogram-bar {
   animation: -2s 4s dropdownHistogram;
-  height: 30px;
+  height: 16px;
   border-top: solid .5px black;
   border-right: solid 1px black;
   border-bottom: solid .5px black;
