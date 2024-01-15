@@ -15,10 +15,6 @@ import "../../custom.css";
   */
 function HistogramRegular(props) {
   const [histogram, setHistogram] = useState();
-  const histogramDataRef = useRef();
-  function setHistogramDataRef(point) {
-    histogramDataRef.current = point;
-  }
 
   const averageScoreRef = useRef();
   function setAverageScoreRef(point) {
@@ -46,7 +42,7 @@ function HistogramRegular(props) {
       });
       */
 
-      for (let i = 0; i < scoresObj.scores.length; i++){
+      for (let i = 0; i < scoresObj.scores.length; i++) {
         histogramData[scoresObj.scores[i] - 1] += 1;
       }
 
@@ -91,8 +87,8 @@ function HistogramRegular(props) {
           <div className="histogram-row" key={"histogram-row-" + i}>
             <div className="histogram-score">{i + 1}</div>
             <div
-              className={"histogram-bar" + " score-" + (i + 1)}
-              style={{ width: pixelData[i] + "px", clipPath: barStyle[i] }}
+              className={`histogram-bar score-${i + 1}`}
+              style={{ width: `${pixelData[i]}px`, clipPath: barStyle[i] }}
             ></div>
             <div className="histogram-frequency">{displayedFrequency[i]}</div>
           </div>
@@ -108,9 +104,7 @@ function HistogramRegular(props) {
 
   return (
     <div className="histogram-container">
-      <div className="average-score">
-        Average: {averageScoreRef.current}
-      </div>
+      <div className="average-score">Average: {averageScoreRef.current}</div>
       {histogram}
     </div>
   );

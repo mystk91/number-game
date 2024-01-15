@@ -32,7 +32,7 @@ import Admin from "./components/Admin/Admin";
 
 function App() {
   return (
-    <div className="App">
+    <div className="Numbler">
       <BrowserRouter>
         <Routes>
           <Route

@@ -1,12 +1,10 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
-import uniqid from "uniqid";
 import "./Navbar.css";
 import "../../normalize.css";
 import "../../custom.css";
 import Instructions from "./Instructions";
 import InstructionsFive from "./InstructionsFive";
 import ProfileDropdown from "./ProfileDropdown";
-import CalendarIcon from "../Parts/CalendarIcon";
 import Login from "../LoginSystem/Login";
 
 //Creates the Random Navbar at the top of the page.
@@ -56,17 +54,20 @@ function NavbarDaily(props) {
       className="game-modes-button"
       onClick={displayGameModes}
       onMouseOver={displayGameModes}
+      aria-label="Game Modes"
     >
       Game Modes
     </button>
   );
 
   let gameModesButtonHTMLClicked = (
-    <button className="game-modes-button clicked">Game Modes</button>
+    <button className="game-modes-button clicked" aria-label="Game Modes">
+      Game Modes
+    </button>
   );
 
   let listVisible = (
-    <ul className="game-modes-list-mobile visible">
+    <ul className="game-modes-list-mobile visible" aria-label="Game Modes">
       <li>
         <a href="/digits2">2 Digits</a>
       </li>
@@ -171,18 +172,28 @@ function NavbarDaily(props) {
       setProfileButton(profileDropdownInitialHTML());
     } else {
       let buttonHTML = (
-        <button className="login-btn" onClick={loginButton}>
-          <img src={props.user.imageUrl} />
+        <button
+          className="login-btn"
+          onClick={loginButton}
+          aria-label="Login or Sign up"
+        >
+          <img src={props.user.imageUrl} alt="Icon of a person" />
         </button>
       );
       setProfileButton(buttonHTML);
     }
   }
 
+  //Used to control the profile dropdown
+  const profileHoverUpRef = useRef();
+  function setProfileHoverUpRef(point) {
+    profileHoverUpRef.current = point;
+  }
+
   //Hides the profile dropdown on click
   const hideProfileDropdown = useCallback((e) => {
-    if (hoverDropUpRef.current) {
-      setHoverDropUpRef(false);
+    if (profileHoverUpRef.current) {
+      setProfileHoverUpRef(false);
       setProfileButton(profileDropdownHiddenHTML());
       document.removeEventListener("click", hideProfileDropdown);
     }
@@ -190,7 +201,7 @@ function NavbarDaily(props) {
 
   //Shows the profile Dropdown
   function showProfileDropdown(e) {
-    setHoverDropUpRef(true);
+    setProfileHoverUpRef(true);
     setProfileButton(profileDropdownVisibleHTML());
     e.stopPropagation();
     document.addEventListener("click", hideProfileDropdown);
@@ -202,8 +213,9 @@ function NavbarDaily(props) {
         className="profile-btn"
         onClick={showProfileDropdown}
         onMouseOver={showProfileDropdown}
+        aria-label="Profile Dropdown"
       >
-        <img src={profileImageRef.current} />
+        <img src={profileImageRef.current} alt="Your Profile Icon" />
       </button>
     );
   }
@@ -213,10 +225,11 @@ function NavbarDaily(props) {
       <div>
         <button
           className="profile-btn"
+          aria-label="Profile Dropdown"
           onClick={showProfileDropdown}
           onMouseOver={showProfileDropdown}
         >
-          <img src={profileImageRef.current} />
+          <img src={profileImageRef.current} alt="Your Profile Icon" />
         </button>
         <ProfileDropdown hidden="true" key="profileDropdownHidden" />
       </div>
@@ -226,8 +239,8 @@ function NavbarDaily(props) {
   function profileDropdownVisibleHTML() {
     return (
       <div onMouseLeave={hideProfileDropdown}>
-        <button className="profile-btn clicked">
-          <img src={profileImageRef.current} />
+        <button className="profile-btn clicked" aria-label="Profile Dropdown">
+          <img src={profileImageRef.current} alt="Your Profile Icon" />
         </button>
         <ProfileDropdown key="profileDropdownVisisble" user={props.user} />
       </div>
@@ -269,11 +282,11 @@ function NavbarDaily(props) {
   }
 
   return (
-    <nav className="navigation-bar-container">
+    <div className="navigation-bar-container">
       {modal}
       <nav className="navigation-bar">
-        <div className="game-modes">
-          <ul className="game-modes-list">
+        <div className="game-modes" aria-label="Game Modes Container">
+          <ul className="game-modes-list" aria-label="Game Modes">
             <li>
               <a href="/digits2" className={currentDigitRef.current["digits2"]}>
                 2 Digits
@@ -305,55 +318,77 @@ function NavbarDaily(props) {
               </a>
             </li>
             <li>
-              <a href={swapButtonLink} className="random-mode-link">
-                <img src="/images/site/randomDice.png" />
+              <a
+                href={swapButtonLink}
+                className="random-mode-link"
+                aria-label="Swap to Random Mode"
+              >
+                <img
+                  src="/images/site/randomDice.png"
+                  alt="Random Mode Icon with a 6 sided dice"
+                />
               </a>
             </li>
           </ul>
         </div>
 
-        <div className="game-modes-container">
+        <div className="game-modes-container" aria-label="Game Modes Container">
           <div className="game-modes-mobile" onMouseLeave={hideGameModes}>
             {gameModesButton}
             {gameModesList}
           </div>
         </div>
 
-        <div className="logo">
+        <div className="logo" aria-label="Website Banner">
           <div className="logo-banner">
-            <img className="site-banner" src="/images/site/site-banner.png" />
+            <img
+              className="site-banner"
+              src="/images/site/site-banner.png"
+              alt="Website banner that says 'Numbler'"
+            />
           </div>
         </div>
 
-        <ul className="tools">
+        <ul className="tools" aria-label="Links">
           <li>
             <button
+              aria-label="Instructions"
               className={"instructions-btn" + invisibleInstructions}
               onClick={instructionsButton}
             >
-              <img src="/images/site/whiteQuestionMark.png" />
+              <img
+                src="/images/site/whiteQuestionMark.png"
+                alt="Question Mark Icon"
+              />
             </button>
           </li>
           <li className={"profile-btn-container" + invisibleLogin}>
             {profileButton}
           </li>
           <li>
-            <a href="/leaderboards">
+            <a href="/leaderboards" aria-label="Leaderboards">
               <button className="leaderboards-btn">
-                <img src="/images/site/trophy.png" />
+                <img src="/images/site/trophy.png" alt="Trophy Icon" />
               </button>
             </a>
           </li>
           <li>
-            <a href={swapButtonLink} className="swap-modes">
+            <a
+              href={swapButtonLink}
+              className="swap-modes"
+              aria-label="Swap to Random mode"
+            >
               <button className="randomMode-btn">
-                <img src="/images/site/randomDice.png" />
+                <img
+                  src="/images/site/randomDice.png"
+                  alt="Random Mode Icon with a 6 sided dice"
+                />
               </button>
             </a>
           </li>
         </ul>
       </nav>
-    </nav>
+    </div>
   );
 }
 

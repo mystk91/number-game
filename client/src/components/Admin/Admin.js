@@ -162,10 +162,6 @@ function Admin(props) {
       <main>
         <div className="leaderboards-container">
           <ul className="leaderboard-tabs">
-            <img
-              src="/images/site/swiping-left-icon.png"
-              className="swiping-left-icon"
-            />
             <li>
               <button
                 className={"leaderboard-tab" + activeLeaderboardTab[`tab2`]}

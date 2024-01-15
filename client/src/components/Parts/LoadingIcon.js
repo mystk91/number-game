@@ -31,7 +31,7 @@ function LoadingIcon(props) {
   });
 
   return (
-    <div className="loading-icon1-container" style={{width: boxWidth, height: boxHeight}}>
+    <div className="loading-icon1-container" style={{width: boxWidth, height: boxHeight}} aria-label="Loading Icon">
       <span className="loading-icon1" style={{width: iconHeight, height: iconHeight}}></span>
     </div>
   );

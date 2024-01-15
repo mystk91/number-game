@@ -8,10 +8,6 @@ import "../../custom.css";
 //Takes props.digits and props.attempts
 function Histogram(props) {
   const [histogram, setHistogram] = useState();
-  const histogramDataRef = useRef();
-  function setHistogramDataRef(point) {
-    histogramDataRef.current = point;
-  }
 
   const averageScoreRef = useRef();
   function setAverageScoreRef(point) {
@@ -79,8 +75,8 @@ function Histogram(props) {
           <div className="histogram-row" key={"histogram-row-" + i}>
             <div className="histogram-score">{i + 1}</div>
             <div
-              className={"histogram-bar" + " score-" + (i + 1)}
-              style={{ width: pixelData[i] + "px", clipPath: barStyle[i], }}
+              className={`histogram-bar score-${i + 1}`}
+              style={{ width: `${pixelData[i]}px`, clipPath: barStyle[i] }}
             ></div>
             <div className="histogram-frequency">{displayedFrequency[i]}</div>
           </div>

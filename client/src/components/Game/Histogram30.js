@@ -8,9 +8,6 @@ import "../../custom.css";
 function Histogram(props) {
   const [histogram, setHistogram] = useState();
   const histogramDataRef = useRef();
-  function setHistogramDataRef(point) {
-    histogramDataRef.current = point;
-  }
 
   const averageScoreRef = useRef();
   function setAverageScoreRef(point) {

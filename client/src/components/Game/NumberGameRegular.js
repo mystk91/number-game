@@ -1008,46 +1008,6 @@ function NumberGameRegular(props) {
     setKeyboardClassNameRef("");
   }
 
-  //Checks the number against the users guess, returns a string with the colors the blocks should become, ending with hint telling higher or lower
-  // ex. 5 digit number,  gyxxxl
-  // G - green
-  // Y - yellow
-  // X - dark grey
-  // L - lower, H - higher, E -equals
-  function checkNumber(number) {
-    let result = "";
-    //Compares the number with target number and applies worlde rules to it
-    let target = targetNumberRef.current;
-    let tempTarget = "";
-    for (let i = 0; i < props.digits; i++) {
-      if (number[i] === target[i]) {
-        tempTarget += "G";
-      } else {
-        tempTarget += target[i];
-      }
-    }
-    for (let i = 0; i < props.digits; i++) {
-      if (tempTarget[i] === "G") {
-        result += "G";
-      } else if (tempTarget.includes(number[i])) {
-        result += "Y";
-      } else {
-        result += "X";
-      }
-    }
-    //Compares the number with target number numerically and creates a hint
-    target = Number(target);
-    number = Number(number);
-    if (number > target) {
-      result += "L";
-    } else if (number < target) {
-      result += "H";
-    } else if (number === target) {
-      result += "E";
-    }
-    return result;
-  }
-
   //Helper function that adds a transition delay to the keys on the keyboard so they change as gameboard changes
   //Occurs after a guess is entered
   function addTransitionDelay() {
@@ -1248,14 +1208,14 @@ function NumberGameRegular(props) {
 
   //Used to create a shows scores button if the scores modal is closed
   let [showScoresButton, setShowScoresButton] = useState();
-  let scoresWindowRevealedRef = useRef(false);
+  let scoresWindowRevealRef = useRef(false);
   function setScoresWindowRevealRef(point) {
-    setScoresWindowRevealRef.current = point;
+    scoresWindowRevealRef.current = point;
   }
 
   //Adds a button to the bottom of the page the will reshow the scores after that window has been closed
   function addShowScoresButton() {
-    if (setScoresWindowRevealRef.current) {
+    if (scoresWindowRevealRef.current) {
       setShowScoresButton(
         <div className="show-scores-container">
         <button className={"show-scores"} onClick={scoresButtonClicked}>
@@ -1456,11 +1416,6 @@ function NumberGameRegular(props) {
 
   //Used for showing a popup ad before game starts
   const [adPopup, setAdPopup] = useState();
-
-  //Stops the game from being played when the ad modal is open
-  const stopOtherKeydowns = useCallback((e) => {
-    e.stopPropagation();
-  }, []);
 
   //Displays a popup ad for the random mode of the game after visitor has visited site a couple times
   //Starts displaying ordinary ads afterwards at random intervals

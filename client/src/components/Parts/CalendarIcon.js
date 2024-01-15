@@ -19,7 +19,7 @@ function CalendarIcon(props) {
   }, []);
 
   return (
-    <div className="calendar-icon">
+    <div className="calendar-icon" aria-label="Daily Mode Icon">
       <div className="calendar-top">
         <div className="calendar-hole"></div>
         <div className="calendar-hole"></div>

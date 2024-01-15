@@ -25,6 +25,7 @@
 .game-modes-container {
   display: none;
   justify-content: center;
+  position: relative;
 }
 
 .game-modes {
@@ -150,6 +151,7 @@
 
 .profile-btn-container {
   min-width: 50px;
+  position: relative;
 }
 
 .instructions-btn > img {
@@ -251,7 +253,7 @@
 
   .game-modes-list-mobile {
     position: absolute;
-    top: 55px;
+    top: calc(100% - 1px);
   }
 
   .game-modes-list-mobile.visible a {
@@ -379,7 +381,7 @@
 
   .game-modes-list-mobile {
     position: absolute;
-    top: 55px;
+    top: calc(100% - 1px);
   }
 
   .game-modes-list-mobile.visible a {
@@ -515,7 +517,7 @@
 
   .game-modes-list-mobile {
     position: absolute;
-    top: 55px;
+    top: calc(100% - 1px);
   }
 
   .game-modes-list-mobile.visible a {
@@ -675,7 +677,7 @@
 
   .game-modes-list-mobile {
     position: absolute;
-    top: 55px;
+    top: calc(100% - 1px);
   }
 
   .game-modes-list-mobile.visible a {

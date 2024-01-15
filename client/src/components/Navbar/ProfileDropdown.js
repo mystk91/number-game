@@ -2,8 +2,6 @@ import React, {
   useState,
   useEffect,
   useRef,
-  createContext,
-  useContext,
 } from "react";
 import "./ProfileDropdown.css";
 import "../../normalize.css"
@@ -38,7 +36,7 @@ function ProfileDropdown(props) {
       },
     };
     let res = await fetch(url, options);
-    if (res.status == 302) {
+    if (res.status === 302) {
       localStorage.removeItem("profile");
       localStorage.setItem("previouslyVisited", "5");
       sessionStorage.setItem("currentMode", "daily");
@@ -49,10 +47,10 @@ function ProfileDropdown(props) {
   let dropdownVisible = (
     <ul className="profile-dropdown visible">
       <li>
-        <a href="/profile">My Profile</a>
+        <a href="/profile" tabIndex={0}>My Profile</a>
       </li>
       <li>
-        <a onClick={logout} className="logout-link">
+        <a onClick={logout} className="logout-link" tabIndex={0}>
           Logout
         </a>
       </li>

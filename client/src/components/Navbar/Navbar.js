@@ -1,11 +1,10 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
-import uniqid from "uniqid";
 import "./Navbar.css";
 import "../../normalize.css";
 import "../../custom.css";
 import Instructions from "./Instructions";
 import InstructionsFive from "./InstructionsFive";
-import ProfileDropdown from "./ProfileDropdown";
+//import ProfileDropdown from "./ProfileDropdown";
 import AdRandomModal from "./AdRandomModal";
 import Login from "../LoginSystem/Login";
 
@@ -15,10 +14,12 @@ import Login from "../LoginSystem/Login";
 function Navbar(props) {
   //Used to set the profile button / image
   const [profileButton, setProfileButton] = useState();
+  /*
   const profileImageRef = useRef();
   function setProfileImageRef(point) {
     profileImageRef.current = point;
   }
+  */
 
   //componentDidMount, runs when component mounts, then componentDismount
   useEffect(() => {
@@ -34,7 +35,7 @@ function Navbar(props) {
     setGameModesButton(gameModesButtonHTML);
     setGameModesList();
     return () => {};
-  }, [profileImageRef.current]);
+  }, []);
 
   //Used to display and reveal the game modes
   const [gameModesButton, setGameModesButton] = useState();
@@ -50,17 +51,20 @@ function Navbar(props) {
       className="game-modes-button"
       onClick={displayGameModes}
       onMouseOver={displayGameModes}
+      aria-label="Game Modes"
     >
       Game Modes
     </button>
   );
 
   let gameModesButtonHTMLClicked = (
-    <button className="game-modes-button clicked">Game Modes</button>
+    <button className="game-modes-button clicked" aria-label="Game Modes">
+      Game Modes
+    </button>
   );
 
   let listVisible = (
-    <ul className="game-modes-list-mobile visible">
+    <ul className="game-modes-list-mobile visible" aria-label="Game Modes">
       <li>
         <a href="/digits2">2 Digits</a>
       </li>
@@ -147,7 +151,7 @@ function Navbar(props) {
           "Content-Type": "application/json",
         },
       };
-      let res = fetch("/api/add-visitor", options);
+      fetch("/api/add-visitor", options);
     }
   }
 
@@ -160,74 +164,26 @@ function Navbar(props) {
     }
   }
 
-  //Adds either the login form or the profile dropdown option
+  //Adds the login button
   async function addProfileButton() {
+    /*
     if (props.user.loggedIn) {
-      /*
       setProfileImageRef(props.user.imageUrl);
       setProfileButton(profileDropdownInitialHTML);
-      */
     } else {
-      let buttonHTML = (
-        <button className="login-btn" onClick={loginButton}>
-          <img src={props.user.imageUrl} />
-        </button>
-      );
-      setProfileButton(buttonHTML);
-    }
-  }
-  /*
-
-  let profileDropdownInitialHTML = (
-    <button
-      className="profile-btn"
-      onClick={showProfileDropdown}
-      onMouseOver={showProfileDropdown}
-    >
-      <img src={profileImageRef.current} />
-    </button>
-  );
-
-  let profileDropdownHiddenHTML = (
-    <div>
+      */
+    let buttonHTML = (
       <button
-        className="profile-btn"
-        onClick={showProfileDropdown}
-        onMouseOver={showProfileDropdown}
+        className="login-btn"
+        onClick={loginButton}
+        aria-label="Login or Sign up"
       >
-        <img src={profileImageRef.current} />
+        <img src={props.user.imageUrl} alt="Icon of a person" />
       </button>
-      <ProfileDropdown hidden="true" key="profileDropdownHidden" />
-    </div>
-  );
-
-  let profileDropdownVisibleHTML = (
-    <div onMouseLeave={hideProfileDropdown}>
-      <button className="profile-btn clicked">
-        <img src={profileImageRef.current} />
-      </button>
-      <ProfileDropdown key="profileDropdownVisisble" />
-    </div>
-  );
-
-
-  //Shows the profile Dropdown
-  function showProfileDropdown(e) {
-    setHoverDropUpRef(true);
-    setProfileButton(profileDropdownVisibleHTML);
-    e.stopPropagation();
-    document.addEventListener("click", hideProfileDropdown);
+    );
+    setProfileButton(buttonHTML);
+    //}
   }
-
-  //Hides the profile dropdown on click
-  function hideProfileDropdown(e) {
-    if (hoverDropUpRef.current) {
-      setHoverDropUpRef(false);
-      setProfileButton(profileDropdownHiddenHTML);
-      document.removeEventListener("click", hideProfileDropdown);
-    }
-  }
-  */
 
   //Displays the login modal
   function loginButton() {
@@ -264,11 +220,11 @@ function Navbar(props) {
   }
 
   return (
-    <nav className="navigation-bar-container">
+    <div className="navigation-bar-container">
       {modal}
       <nav className="navigation-bar">
-        <div className="game-modes">
-          <ul className="game-modes-list">
+        <div className="game-modes" aria-label="Game Modes Container">
+          <ul className="game-modes-list" aria-label="Game Modes">
             <li>
               <a href="/digits2" className={currentDigitRef.current["digits2"]}>
                 2 Digits
@@ -302,51 +258,63 @@ function Navbar(props) {
           </ul>
         </div>
 
-        <div className="game-modes-container">
+        <div className="game-modes-container" aria-label="Game Modes Container">
           <div className="game-modes-mobile" onMouseLeave={hideGameModes}>
             {gameModesButton}
             {gameModesList}
           </div>
         </div>
 
-        <div className="logo">
+        <div className="logo" aria-label="Website Banner">
           <div className="logo-banner">
-            <img className="site-banner" src="/images/site/site-banner.png" />
+            <img
+              className="site-banner"
+              src="/images/site/site-banner.png"
+              alt="Website banner that says 'Numbler'"
+            />
           </div>
         </div>
 
-        <ul className="tools">
+        <ul className="tools" aria-label="Links">
           <li>
             <button
+              aria-label="Instructions"
               className={"instructions-btn" + invisibleInstructions}
               onClick={instructionsButton}
             >
-              <img src="/images/site/whiteQuestionMark.png" />
+              <img
+                src="/images/site/whiteQuestionMark.png"
+                alt="Question Mark Icon"
+              />
             </button>
           </li>
           <li className={"profile-btn-container" + invisibleLogin}>
             {profileButton}
           </li>
           <li>
-            <a href="/leaderboards">
+            <a href="/leaderboards" aria-label="Leaderboards">
               <button className="leaderboards-btn">
-                <img src="/images/site/trophy.png" />
+                <img src="/images/site/trophy.png" alt="Trophy Icon" />
               </button>
             </a>
           </li>
           <li>
             <button
+              aria-label="Random Mode Info"
               className="randomMode-btn"
               onClick={() => {
                 setModal(<AdRandomModal key={new Date()} />);
               }}
             >
-              <img src="/images/site/randomDice.png" />
+              <img
+                src="/images/site/randomDice.png"
+                alt="Random Mode Icon showing a 6 sided dice"
+              />
             </button>
           </li>
         </ul>
       </nav>
-    </nav>
+    </div>
   );
 }
 

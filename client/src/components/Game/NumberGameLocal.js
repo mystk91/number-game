@@ -225,12 +225,6 @@ function NumberGameLocal(props) {
     }
   }
 
-  //Holds the scores displayed once the game ends
-  const scoresObjRef = useRef();
-  function setScoresObjRef(point) {
-    scoresObjRef.current = point;
-  }
-
   //componentDidMount, runs when component mounts, then componentDismount
   useEffect(() => {
     sessionStorage.setItem("currentMode", "daily");
@@ -266,7 +260,7 @@ function NumberGameLocal(props) {
 
       if (
         !storageObj.board[0] ||
-        (resObj.gameId !== storageObj.gameId && storageObj.status != `playing`)
+        (resObj.gameId !== storageObj.gameId && storageObj.status !== `playing`)
       ) {
         resetGame();
       } else {
@@ -1285,14 +1279,14 @@ function NumberGameLocal(props) {
 
   //Used to create a shows scores button if the scores modal is closed
   let [showScoresButton, setShowScoresButton] = useState();
-  let scoresWindowRevealedRef = useRef(false);
+  let scoresWindowRevealRef = useRef(false);
   function setScoresWindowRevealRef(point) {
-    setScoresWindowRevealRef.current = point;
+    scoresWindowRevealRef.current = point;
   }
 
   //Adds a button to the bottom of the page the will reshow the scores after that window has been closed
   function addShowScoresButton() {
-    if (setScoresWindowRevealRef.current) {
+    if (scoresWindowRevealRef.current) {
       setShowScoresButton(
         <div className="show-scores-container">
           <button className={"show-scores"} onClick={scoresButtonClicked}>
@@ -1454,11 +1448,6 @@ function NumberGameLocal(props) {
 
   //Used for showing a popup ad before game starts
   const [adPopup, setAdPopup] = useState();
-
-  //Stops the game from being played when the ad modal is open
-  const stopOtherKeydowns = useCallback((e) => {
-    e.stopPropagation();
-  }, []);
 
   //Displays a popup ad for the random mode of the game after visitor has visited site a couple times
   //Starts displaying ordinary ads afterwards at random intervals

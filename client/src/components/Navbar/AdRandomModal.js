@@ -1,12 +1,4 @@
-import React, {
-  useState,
-  useEffect,
-  useRef,
-  useCallback,
-  createContext,
-  useContext,
-} from "react";
-import uniqid from "uniqid";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import "./AdRandomModal.css";
 import "../../normalize.css";
 import "../../custom.css";
@@ -43,6 +35,7 @@ function AdRandomModal(props) {
           <button
             className="close-random-mode"
             onClick={(e) => hideInstructionsButton(e)}
+            aria-label="Close Random Mode Ad"
           >
             X
           </button>
@@ -67,17 +60,17 @@ function AdRandomModal(props) {
                   type="video/mp4"
                   id="random-mode-video"
                   rel="preload"
+                  alt="Numbler game is being reset after a game is completed. A new game begins."
                 ></video>
               </div>
             </div>
           </div>
 
-
           <div className="random-mode-features leaderboard-feature">
             <div className="random-info-text">Climb the Leaderboards!</div>
             <img
               src="./images/site/leaderboard-example3.png"
-              alt="A leaderboard filled with player names and scores"
+              alt="A leaderboard filled with player names and scores."
               className="leaderboard-img"
             />
           </div>
@@ -85,14 +78,14 @@ function AdRandomModal(props) {
           <div className="random-mode-features">
             <img
               src="./images/site/random-modes.png"
-              alt="Different Random Game Modes"
+              alt="Buttons showing the 6 different game modes. 2-7 random digits."
               className="random-modes-img"
             ></img>
             <div className="random-info-text product">
               6 Random Game Modes for $6
             </div>
           </div>
-          <a href="/products/random-mode" >
+          <a href="/products/random-mode">
             <button className="random-modal-btn sign-up">Sign me up!</button>
           </a>
 

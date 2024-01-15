@@ -1,12 +1,4 @@
-import React, {
-  useState,
-  useEffect,
-  useRef,
-  useCallback,
-  createContext,
-  useContext,
-} from "react";
-import uniqid from "uniqid";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import "./Instructions.css";
 import "../../normalize.css";
 import "../../custom.css";
@@ -161,6 +153,7 @@ function Instructions(props) {
       <div className="instructions">
         <span className="instructions-top">
           <button
+            aria-label="Close Instructions"
             className="close-instructions"
             onClick={(e) => hideInstructionsButton(e)}
           >
@@ -171,53 +164,86 @@ function Instructions(props) {
         <div className="instructions-text">
           Guess the correct number in six tries.
         </div>
-        <div className="game-example current-row">
-          <div className={"digit" + currentDigit[0]}>
+        <div className="game-example current-row" aria-label="Example Row 4618">
+          <div className={"digit" + currentDigit[0]} aria-label="Digit">
             {currentDigitNumber[0]}
           </div>
-          <div className={"digit" + currentDigit[1]}>
+          <div className={"digit" + currentDigit[1]} aria-label="Digit">
             {currentDigitNumber[1]}
           </div>
-          <div className={"digit" + currentDigit[2]}>
+          <div className={"digit" + currentDigit[2]} aria-label="Digit">
             {currentDigitNumber[2]}
           </div>
-          <div className={"digit" + currentDigit[3]}>
+          <div className={"digit" + currentDigit[3]} aria-label="Digit">
             {currentDigitNumber[3]}
           </div>
-          <div className="hint"></div>
+          <div className="hint" aria-label="Empty Hint"></div>
         </div>
         <div className="instructions-text">
           Arrows tell you to guess higher or lower.
         </div>
-        <div className="game-example previous-row">
-          <div className={"digit" + currentClassList[0] + currentClassList[4]}>
+        <div
+          className="game-example previous-row"
+          aria-label="Example Row 4618"
+        >
+          <div
+            className={"digit" + currentClassList[0] + currentClassList[4]}
+            aria-label="Green Digit"
+          >
             4
           </div>
-          <div className={"digit" + currentClassList[1] + currentClassList[4]}>
+          <div
+            className={"digit" + currentClassList[1] + currentClassList[4]}
+            aria-label="Yellow Digit"
+          >
             6
           </div>
-          <div className={"digit" + currentClassList[2] + currentClassList[4]}>
+          <div
+            className={"digit" + currentClassList[2] + currentClassList[4]}
+            aria-label="Grey Digit"
+          >
             1
           </div>
-          <div className={"digit" + currentClassList[3] + currentClassList[4]}>
+          <div
+            className={"digit" + currentClassList[3] + currentClassList[4]}
+            aria-label="Grey Digit"
+          >
             8
           </div>
-          <div className={"hint" + currentClassList[4]}></div>
+          <div
+            className={"hint" + currentClassList[4]}
+            aria-label="Guess Higher Arrow"
+          ></div>
         </div>
-        <div className="game-example previous-row">
-          <div className={"digit" + currentClassList[0] + currentClassList[5]}>
+        <div className="game-example previous-row" aria-label="example-number">
+          <div
+            className={"digit" + currentClassList[0] + currentClassList[5]}
+            aria-label="Green Digit"
+          >
             4
           </div>
-          <div className={"digit" + currentClassList[1] + currentClassList[5]}>
+          <div
+            className={"digit" + currentClassList[1] + currentClassList[5]}
+            aria-label="Yellow Digit"
+          >
             6
           </div>
-          <div className={"digit" + currentClassList[2] + currentClassList[5]}>
+          <div
+            className={"digit" + currentClassList[2] + currentClassList[5]}
+            aria-label="Grey Digit"
+          >
             1
           </div>
-          <div className={"digit" + currentClassList[3] + currentClassList[5]}>
+          <div
+            className={"digit" + currentClassList[3] + currentClassList[5]}
+            aria-label="Grey Digit"
+          >
             8
           </div>
-          <div className={"hint" + currentClassList[5]}></div>
+          <div
+            className={"hint" + currentClassList[5]}
+            aria-label="Guess Lower Arrow"
+          ></div>
         </div>
         <hr></hr>
         <div className="instructions-text">
@@ -227,30 +253,63 @@ function Instructions(props) {
         <div className="instructions-text">
           Green digits are in the correct spot.
         </div>
-        <div className="game-example colors-example">
-          <div className="digit green current-digit">4</div>
-          <div className="digit">6</div>
-          <div className="digit">1</div>
-          <div className="digit">8</div>
-          <div className="hint"></div>
+        <div
+          className="game-example colors-example"
+          aria-label="Example Row 4618"
+        >
+          <div className="digit green current-digit" aria-label="Green Digit">
+            4
+          </div>
+          <div className="digit" aria-label="Digit">
+            6
+          </div>
+          <div className="digit" aria-label="Digit">
+            1
+          </div>
+          <div className="digit" aria-label="Digit">
+            8
+          </div>
+          <div className="hint" aria-label="Empty Hint"></div>
         </div>
         <div className="instructions-text">
           Yellow digits are in wrong spot.
         </div>
-        <div className="game-example colors-example">
-          <div className="digit">4</div>
-          <div className="digit yellow current-digit">6</div>
-          <div className="digit">1</div>
-          <div className="digit">8</div>
-          <div className="hint"></div>
+        <div
+          className="game-example colors-example"
+          aria-label="Example Row 4618"
+        >
+          <div className="digit" aria-label="Digit">
+            4
+          </div>
+          <div className="digit yellow current-digit" aria-label="Yellow Digit">
+            6
+          </div>
+          <div className="digit" aria-label="Digit">
+            1
+          </div>
+          <div className="digit" aria-label="Digit">
+            8
+          </div>
+          <div className="hint" aria-label="Empty Hint"></div>
         </div>
         <div className="instructions-text">Grey digits are not used again.</div>
-        <div className="game-example colors-example">
-          <div className="digit">4</div>
-          <div className="digit">6</div>
-          <div className="digit grey current-digit">1</div>
-          <div className="digit grey current-digit">8</div>
-          <div className="hint"></div>
+        <div
+          className="game-example colors-example"
+          aria-label="Example Row 4618"
+        >
+          <div className="digit" aria-label="Digit">
+            4
+          </div>
+          <div className="digit" aria-label="Digit">
+            6
+          </div>
+          <div className="digit grey current-digit" aria-label="Grey Digit">
+            1
+          </div>
+          <div className="digit grey current-digit" aria-lable="Grey Digit">
+            8
+          </div>
+          <div className="hint" aria-label="Empty Hint"></div>
         </div>
       </div>
     </div>

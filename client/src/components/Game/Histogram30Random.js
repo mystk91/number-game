@@ -15,10 +15,6 @@ import "../../custom.css";
   */
 function Histogram30Random(props) {
   const [histogram, setHistogram] = useState();
-  const histogramDataRef = useRef();
-  function setHistogramDataRef(point) {
-    histogramDataRef.current = point;
-  }
 
   const averageScoreRef = useRef();
   function setAverageScoreRef(point) {
@@ -85,8 +81,8 @@ function Histogram30Random(props) {
           <div className="histogram-row" key={"histogram-row-" + i}>
             <div className="histogram-score">{i + 1}</div>
             <div
-              className={"histogram-bar" + " score-" + (i + 1)}
-              style={{ width: pixelData[i] + "px", clipPath: barStyle[i], }}
+              className={`histogram-bar score-${i + 1}`}
+              style={{ width: `${pixelData[i]}px`, clipPath: barStyle[i] }}
             ></div>
             <div className="histogram-frequency">{displayedFrequency[i]}</div>
           </div>
@@ -102,9 +98,7 @@ function Histogram30Random(props) {
 
   return (
     <div className="histogram-container">
-      <div className="average-score">
-        30 Average: {averageScoreRef.current}
-      </div>
+      <div className="average-score">30 Average: {averageScoreRef.current}</div>
       {histogram}
     </div>
   );
