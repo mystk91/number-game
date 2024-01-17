@@ -37,7 +37,7 @@ function Signup(props) {
       "^([a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,})$"
     );
     if (!emailRegExp.test(emailValue)) {
-      setErrEmail(<div className="error">Invalid email address</div>);
+      setErrEmail(<div className="error" aria-label="Error">Invalid email address</div>);
       return false;
     } else {
       setErrEmail();
@@ -52,7 +52,7 @@ function Signup(props) {
     );
     if (!passwordRegExp.test(passwordValue)) {
       setErrPassword(
-        <div className="error">
+        <div className="error" aria-label="Error">
           Passwords must have at least 10 characters, an upper and
           lowercase letter, and a number or special character.
         </div>
@@ -92,8 +92,8 @@ function Signup(props) {
         const errors = await res.json();
         setCurrentScreen();
         setHideModal("");
-        setErrEmail(<div className="error">{errors.email}</div>);
-        setErrPassword(<div className="error">{errors.password}</div>);
+        setErrEmail(<div className="error" aria-label="Error">{errors.email}</div>);
+        setErrPassword(<div className="error" aria-label="Error">{errors.password}</div>);
       }
     }
   }
@@ -115,7 +115,7 @@ function Signup(props) {
   }
 
   let successScreen = (
-    <div className="signup-regular">
+    <div className="signup-regular" aria-label="Success Container">
       <div className="signup-box">
         <div className="signup-success-message">
           An account verification link has been sent to your email.
@@ -133,16 +133,17 @@ function Signup(props) {
     <div className={hideComponent}>
       <div className="sub-modals">{currentScreen}</div>
       <div className={"signup-regular" + hideModal}>
-        <div className={"signup-box"}>
+        <div className={"signup-box"} aria-label="Sign up Container">
           <span className="signup-top-regular"></span>
           <div className="signup-label">Create an account</div>
           <form
             method="post"
             className="signup-form"
             onSubmit={(e) => createAccount(e)}
+            aria-label="Sign up form"
           >
             <div className="form-input">
-              <label htmlFor="email">Email</label>
+              <label htmlFor="email" aria-label="Email">Email</label>
               <input
                 id="email"
                 name="email"
@@ -156,7 +157,7 @@ function Signup(props) {
               {errEmail}
             </div>
             <div className="form-input">
-              <label htmlFor="current-password">Password</label>
+              <label htmlFor="current-password" aria-label="Password">Password</label>
               <input
                 id="current-password"
                 name="password"

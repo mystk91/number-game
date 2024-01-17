@@ -131,7 +131,7 @@ function ShareScore(props) {
   }
 
   return (
-    <button className="share" onClick={shareMyScore}>
+    <button className="share" onClick={shareMyScore} aria-label="Copy your game to clipboard">
       {shareButtonText}
     </button>
   );

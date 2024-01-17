@@ -2,8 +2,6 @@ import React, {
   useState,
   useEffect,
   useRef,
-  createContext,
-  useContext,
 } from "react";
 import "./LoginRegular.css";
 import "../../normalize.css";
@@ -40,10 +38,10 @@ function LoginRegular(props) {
       },
     };
     let res = await fetch(url, options);
-    if (res.status == 302) {
+    if (res.status === 302) {
       let loginURL = "/api/login";
       let resLogin = await fetch(loginURL, options);
-      if (resLogin.status == 302) {
+      if (resLogin.status === 302) {
         let profile = await fetch("/api/current_user");
         let profileObj = await profile.json();
         if (profileObj) {
@@ -61,28 +59,29 @@ function LoginRegular(props) {
       }
     } else {
       let errors = await res.json();
-      setErrEmail(<div className="error">{errors.email}</div>);
-      setErrPassword(<div className="error">{errors.password}</div>);
+      setErrEmail(<div className="error" aria-label="Error">{errors.email}</div>);
+      setErrPassword(<div className="error" aria-label="Error">{errors.password}</div>);
     }
   }
 
   return (
     <div className={"login-regular"}>
-      <div className={"login-box-regular"}>
+      <div className={"login-box-regular"} aria-label="Login Container">
         <span className="login-top-regular"></span>
         <form
           action="/api/login"
           method="POST"
           className="login-form"
           onSubmit={(e) => login(e)}
+          aria-label="Login Form"
         >
           <div>
-            <label htmlFor="email">Email</label>
+            <label htmlFor="email" aria-label="Email">Email</label>
             <input id="email" name="email" type="text" />
             {errEmail}
           </div>
           <div>
-            <label htmlFor="current-password">Password</label>
+            <label htmlFor="current-password" aria-label="Password">Password</label>
             <input id="current-password" name="password" type="password" />
             {errPassword}
             <a href="/reset-password" className="recover-password-link">
@@ -104,7 +103,7 @@ function LoginRegular(props) {
 
         <div className="login-options-simple">
           <hr></hr>
-          <div className="login-options-buttons">
+          <div className="login-options-buttons" aria-label="Login Options">
             <LoginOption
               href="/login/google"
               className="google"

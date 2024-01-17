@@ -40,7 +40,7 @@ function NewPassword(props) {
     );
     if (!passwordRegExp.test(passwordValue)) {
       setErrPassword(
-        <div className="error">
+        <div className="error" aria-label="Error">
           Passwords must have at least 10 characters, an upper and
           lowercase letter, and a number or special character.
         </div>
@@ -82,7 +82,7 @@ function NewPassword(props) {
         if (errors.errorFound) {
           setCurrentScreen();
           setHideForm("");
-          setErrPassword(<div className="error">{errors.password}</div>);
+          setErrPassword(<div className="error" aria-label="Error">{errors.password}</div>);
         } else {
           setCurrentScreen(failureScreen);
         }
@@ -95,7 +95,7 @@ function NewPassword(props) {
 
   //The screen that appears if the password change failed
   let failureScreen = (
-    <div className="reset-password-failure-container">
+    <div className="reset-password-failure-container" aria-label="Error Container">
       <div className="reset-failure-message">
         This password reset link has expired or does not exist.
       </div>
@@ -104,7 +104,7 @@ function NewPassword(props) {
 
   //The screen that appears if the password change was successfull
   let successScreen = (
-    <div className="reset-password-success-container">
+    <div className="reset-password-success-container" aria-label="Success Container">
       <div className="reset-success-message">Your password has been reset.</div>
       <a href="/login">
         <button className="submit-btn">Go to Login</button>
@@ -125,14 +125,15 @@ function NewPassword(props) {
   return (
     <div className="new-password">
       {currentScreen}
-      <div className={"reset-password-form-container" + hideForm}>
+      <div className={"reset-password-form-container" + hideForm} aria-label="New Password Container">
         <form
           method="POST"
           className="reset-password-form"
           onSubmit={(e) => resetPasswordSubmit(e)}
+          aria-label="New Password Form"
         >
           <div>
-            <label htmlFor="password" className="reset-password-label">
+            <label htmlFor="password" className="reset-password-label" aria-label="New Password">
               New Password
             </label>
             <input

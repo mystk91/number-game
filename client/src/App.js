@@ -10,7 +10,6 @@ import "./custom.css";
 import "./App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar/Navbar";
-import GamePage from "./components/Pages/GamePage";
 import SignupPage from "./components/Pages/SignupPage";
 import LoginPage from "./components/Pages/LoginPage";
 import GamePageRandom from "./components/Pages/GamePageRandom";
@@ -65,12 +64,6 @@ function App() {
             path="/local"
             element={<NumberGameLocal digits={5} attempts={6} />}
           />
-          <Route path="/old2" element={<GamePage digits={2} attempts={6} />} />
-          <Route path="/old3" element={<GamePage digits={3} attempts={6} />} />
-          <Route path="/old4" element={<GamePage digits={4} attempts={6} />} />
-          <Route path="/old5" element={<GamePage digits={5} attempts={6} />} />
-          <Route path="/old6" element={<GamePage digits={6} attempts={6} />} />
-          <Route path="/old7" element={<GamePage digits={7} attempts={6} />} />
 
           <Route
             path="/digits2"

@@ -3,8 +3,6 @@ import React, {
   useEffect,
   useCallback,
   useRef,
-  createContext,
-  useContext,
 } from "react";
 import "./Login.css";
 import "../../normalize.css";
@@ -86,11 +84,11 @@ function Login(props) {
       },
     };
     let res = await fetch(url, options);
-    if (res.status == 302) {
+    if (res.status === 302) {
       let loginURL = "/api/login";
       let resLogin = await fetch(loginURL, options);
 
-      if (resLogin.status == 302) {
+      if (resLogin.status === 302) {
         let profile = await fetch("/api/current_user");
         let profileObj = await profile.json();
         console.log(profileObj);
@@ -109,22 +107,22 @@ function Login(props) {
       }
     } else {
       let errors = await res.json();
-      setErrEmail(<div className="error">{errors.email}</div>);
-      setErrPassword(<div className="error">{errors.password}</div>);
+      setErrEmail(<div className="error" aria-label="Error">{errors.email}</div>);
+      setErrPassword(<div className="error" aria-label="Error">{errors.password}</div>);
     }
   }
 
   return (
     <div className={hideComponent}>
       <div className="sub-modals"> {currentScreen}</div>
-      <div className={"login-modal" + hideModal}>
+      <div className={"login-modal" + hideModal} aria-label="Login Modal">
         <div className={"login-box"}>
           <span className="login-top">
-            <button className="close-login" onClick={(e) => hideModalButton(e)}>
+            <button className="close-login" onClick={(e) => hideModalButton(e)} aria-label="Close Login Modal">
               X
             </button>
           </span>
-          <div className="site-banner-container"><img src="/images/site/site-banner.png" className="site-banner" /></div>
+          <div className="site-banner-container" aria-label="Number Banner"><img src="/images/site/site-banner.png" className="site-banner" alt="Website banner that says Numbler" /></div>
           <form
             action="/api/login"
             method="POST"
@@ -133,14 +131,15 @@ function Login(props) {
             onKeyDown={(e) => {
               e.stopPropagation();
             }}
+            aria-label="Login Form"
           >
             <div>
-              <label htmlFor="email">Email</label>
+              <label htmlFor="email" aria-label="Email">Email</label>
               <input id="email" name="email" type="text" />
               {errEmail}
             </div>
             <div>
-              <label htmlFor="current-password">Password</label>
+              <label htmlFor="current-password" aria-label="Password">Password</label>
               <input id="current-password" name="password" type="password" />
               {errPassword}
               <a
@@ -171,7 +170,7 @@ function Login(props) {
 
           <div className="login-options-simple">
             <hr></hr>
-            <div className="login-options-buttons">
+            <div className="login-options-buttons" aria-label="Login Options">
               <LoginOption
                 href="/login/google"
                 className="google"

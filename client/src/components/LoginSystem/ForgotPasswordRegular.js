@@ -2,8 +2,6 @@ import React, {
   useState,
   useEffect,
   useRef,
-  createContext,
-  useContext,
 } from "react";
 import "./ForgotPasswordRegular.css";
 import "../../normalize.css";
@@ -22,7 +20,7 @@ function ForgotPassword(props) {
   const inputReference = useRef(null);
 
   //Used to keep track of the inputed values
-  const [emailValue, setEmailValue] = useState();
+  const [emailValue, setEmailValue] = useState("");
 
   //Used to display Email input errors
   function displayEmailErrors() {
@@ -30,7 +28,7 @@ function ForgotPassword(props) {
       "^([a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,})$"
     );
     if (!emailRegExp.test(emailValue)) {
-      setErrEmail(<div className="error">Invalid email address</div>);
+      setErrEmail(<div className="error" aria-label="Error">Invalid email address</div>);
       return false;
     } else {
       setErrEmail();
@@ -82,12 +80,12 @@ function ForgotPassword(props) {
         },
       };
       let res = await fetch(url, options);
-      if (res.status == 200) {
+      if (res.status === 200) {
         setCurrentScreen(successScreen);
       } else {
         setCurrentScreen();
         let errors = await res.json();
-        setErrEmail(<div className="error">{errors.email}</div>);
+        setErrEmail(<div className="error" aria-label="Error">{errors.email}</div>);
         setHideModal("");
       }
     } else {
@@ -117,16 +115,17 @@ function ForgotPassword(props) {
     <div className={hideComponent}>
       <div className="sub-modals">{currentScreen}</div>
       <div className={"forgot-regular" + hideModal}>
-        <div className={"forgot-box-regular"}>
+        <div className={"forgot-box-regular"} aria-label="Reset Password Container">
           <span className="forgot-top-regular"></span>
           <div className="reset-label">Reset your password</div>
           <form
             method="POST"
             className="forgot-form"
             onSubmit={(e) => forgotPasswordSubmit(e)}
+            aria-label="Reset Password Form"
           >
             <div>
-              <label htmlFor="email">Email</label>
+              <label htmlFor="email" aria-label="Email">Email</label>
               <input
                 id="email"
                 name="email"

@@ -153,6 +153,7 @@ function InstructionsFive(props) {
     <div
       className={"instructions-modal" + displayInstructions}
       onClick={(e) => hideInstructionsModal(e)}
+      aria-label="Instructions Modal"
     >
       <div className="instructions">
         <span className="instructions-top">
@@ -170,21 +171,21 @@ function InstructionsFive(props) {
         </div>
         <div
           className="game-example current-row"
-          aria-label="Example Row 53812"
+          aria-label="Example Row"
         >
-          <div className={"digit" + currentDigit[0]} aria-label="Digit">
+          <div className={"digit" + currentDigit[0]} aria-label="1st Digit">
             {currentDigitNumber[0]}
           </div>
-          <div className={"digit" + currentDigit[1]} aria-label="Digit">
+          <div className={"digit" + currentDigit[1]} aria-label="2nd Digit">
             {currentDigitNumber[1]}
           </div>
-          <div className={"digit" + currentDigit[2]} aria-label="Digit">
+          <div className={"digit" + currentDigit[2]} aria-label="3rd Digit">
             {currentDigitNumber[2]}
           </div>
-          <div className={"digit" + currentDigit[3]} aria-label="Digit">
+          <div className={"digit" + currentDigit[3]} aria-label="4th Digit">
             {currentDigitNumber[3]}
           </div>
-          <div className={"digit" + currentDigit[4]} aria-label="Digit">
+          <div className={"digit" + currentDigit[4]} aria-label="5th Digit">
             {currentDigitNumber[4]}
           </div>
           <div className="hint" aria-label="Empty Hint"></div>
@@ -194,35 +195,35 @@ function InstructionsFive(props) {
         </div>
         <div
           className="game-example previous-row"
-          aria-label="Example Row 53812"
+          aria-label="Example Row"
         >
           <div
             className={"digit" + currentClassList[0] + currentClassList[5]}
-            aria-label="Yellow Digit"
+            aria-label="1st Digit, Yellow"
           >
             5
           </div>
           <div
             className={"digit" + currentClassList[1] + currentClassList[5]}
-            aria-label="Green Digit"
+            aria-label="2nd Digit, Green"
           >
             3
           </div>
           <div
             className={"digit" + currentClassList[2] + currentClassList[5]}
-            aria-label="Grey Digit"
+            aria-label="3rd Digit, Grey"
           >
             8
           </div>
           <div
             className={"digit" + currentClassList[3] + currentClassList[5]}
-            aria-label="Yellow Digit"
+            aria-label="4th Digit, Yellow"
           >
             1
           </div>
           <div
             className={"digit" + currentClassList[4] + currentClassList[5]}
-            aria-label="Grey Digit"
+            aria-label="5th Digit, Grey"
           >
             2
           </div>
@@ -233,35 +234,35 @@ function InstructionsFive(props) {
         </div>
         <div
           className="game-example previous-row"
-          aria-label="Example Row 53812"
+          aria-label="Example Row"
         >
           <div
             className={"digit" + currentClassList[0] + currentClassList[6]}
-            aria-label="Yellow Digit"
+            aria-label="1st Digit, Yellow"
           >
             5
           </div>
           <div
             className={"digit" + currentClassList[1] + currentClassList[6]}
-            aria-label="Green Digit"
+            aria-label="2nd Digit, Green"
           >
             3
           </div>
           <div
             className={"digit" + currentClassList[2] + currentClassList[6]}
-            aria-label="Grey Digit"
+            aria-label="3rd Digit, Grey"
           >
             8
           </div>
           <div
             className={"digit" + currentClassList[3] + currentClassList[6]}
-            aria-label="Yellow Digit"
+            aria-label="4th Digit, Yellow"
           >
             1
           </div>
           <div
             className={"digit" + currentClassList[4] + currentClassList[6]}
-            aria-label="Grey Digit"
+            aria-label="5th Digit, Grey"
           >
             2
           </div>
@@ -280,21 +281,21 @@ function InstructionsFive(props) {
         </div>
         <div
           className="game-example colors-example"
-          aria-label="Example Row 53812"
+          aria-label="Example Row"
         >
-          <div className="digit" aria-label="Digit">
+          <div className="digit" aria-label="1st Digit">
             5
           </div>
-          <div className="digit green current-digit" aria-label="Green Digit">
+          <div className="digit green current-digit" aria-label="2nd Digit, Green">
             3
           </div>
-          <div className="digit" aria-label="Digit">
+          <div className="digit" aria-label="3rd Digit">
             8
           </div>
-          <div className="digit" aria-label="Digit">
+          <div className="digit" aria-label="4th Digit">
             1
           </div>
-          <div className="digit" aria-label="Digit">
+          <div className="digit" aria-label="5th Digit">
             2
           </div>
           <div className="hint" aria-label="Empty Hint"></div>
@@ -304,21 +305,21 @@ function InstructionsFive(props) {
         </div>
         <div
           className="game-example colors-example"
-          aria-label="Example Row 53812"
+          aria-label="Example Row"
         >
-          <div className="digit yellow current-digit" aria-label="Yellow Digit">
+          <div className="digit yellow current-digit" aria-label="1st Digit, Yellow">
             5
           </div>
-          <div className="digit" aria-label="Digit">
+          <div className="digit" aria-label="2nd Digit">
             3
           </div>
-          <div className="digit" aria-label="Digit">
+          <div className="digit" aria-label="3rd Digit">
             8
           </div>
-          <div className="digit yellow current-digit" aria-label="Yellow Digit">
+          <div className="digit yellow current-digit" aria-label="4th Digit, Yellow">
             1
           </div>
-          <div className="digit" aria-label="Digit">
+          <div className="digit" aria-label="5th Digit">
             2
           </div>
           <div className="hint" aria-label="Empty Hint"></div>
@@ -326,21 +327,21 @@ function InstructionsFive(props) {
         <div className="instructions-text">Grey digits are not used again.</div>
         <div
           className="game-example colors-example"
-          aria-label="Example Row 53812"
+          aria-label="Example Row"
         >
-          <div className="digit" aria-label="Digit">
+          <div className="digit" aria-label="1st Digit">
             5
           </div>
-          <div className="digit" aria-label="Digit">
+          <div className="digit" aria-label="2nd Digit">
             3
           </div>
-          <div className="digit grey current-digit" aria-label="Grey Digit">
+          <div className="digit grey current-digit" aria-label="3rd Digit, Grey">
             8
           </div>
-          <div className="digit" aria-label="Digit">
+          <div className="digit" aria-label="4th Digit">
             1
           </div>
-          <div className="digit grey current-digit" aria-label="Grey Digit">
+          <div className="digit grey current-digit" aria-label="5th Digit, Grey">
             2
           </div>
           <div className="hint" aria-label="Empty Hint"></div>

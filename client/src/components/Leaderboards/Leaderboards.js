@@ -2,11 +2,7 @@ import React, {
   useState,
   useEffect,
   useRef,
-  createContext,
-  useContext,
 } from "react";
-import update from "immutability-helper";
-import uniqid from "uniqid";
 import "./Leaderboards.css";
 import "../../normalize.css";
 import "../../custom.css";
@@ -64,12 +60,13 @@ function Leaderboards(props) {
   function leaderboardInfo() {
     if (!modal) {
       setModal(
-        <div className="leaderboard-modal">
+        <div className="leaderboard-modal" aria-label="Leaderboard Info">
           <div className="leaderboard-modal-container">
             <span className="leaderboard-modal-top">
               <button
                 className="close-leaderboard-modal"
                 onClick={() => setModal()}
+                aria-label="Close Leaderboard Info"
               >
                 X
               </button>
@@ -151,10 +148,10 @@ function Leaderboards(props) {
     let newLeaderboard = [];
     for (let i = 0; i < leaderboardData.length; i++) {
       let row = (
-        <tr className="leaderboard-row" key={i}>
-          <td className="player-rank">{i + 1}</td>
-          <td className="player-username">{leaderboardData[i].username}</td>
-          <td className="player-average">
+        <tr className="leaderboard-row" key={i} aria-label={`Rank ${i+1}: ${leaderboardData[i].username}, Average: ${leaderboardData[i].average.toFixed(3)}`}>
+          <td className="player-rank" aria-label="Rank">{i + 1}</td>
+          <td className="player-username" aria-label="Name">{leaderboardData[i].username}</td>
+          <td className="player-average" aria-label="Average">
             {leaderboardData[i].average.toFixed(3)}
           </td>
         </tr>
@@ -184,18 +181,14 @@ function Leaderboards(props) {
         <div className="empty"></div>
         <div className="header-text">Leaderboards</div>
         <div className="leaderboard-info-container">
-          <button className="leaderboard-info" onClick={leaderboardInfo}>
-            <img src="/images/site/whiteQuestionMark.png" />
+          <button className="leaderboard-info" onClick={leaderboardInfo} aria-label="Leaderboard Info">
+            <img src="/images/site/whiteQuestionMark.png" alt="Question Mark Icon" />
           </button>
         </div>
       </header>
       <main>
         <div className="leaderboards-container">
-          <ul className="leaderboard-tabs">
-            <img
-              src="/images/site/swiping-left-icon.png"
-              className="swiping-left-icon"
-            />
+          <ul className="leaderboard-tabs" aria-label="Leaderboard Modes">
             <li>
               <button
                 className={"leaderboard-tab" + activeLeaderboardTab[`tab2`]}
@@ -263,7 +256,7 @@ function Leaderboards(props) {
               {numberOfDigits + " Digits - Random Mode"}
             </caption>
             <thead>
-              <tr className="leaderboard-labels">
+              <tr className="leaderboard-labels" aria-label="Leaderboard Labels">
                 <th className="player-rank-label">Rank</th>
                 <th className="player-username-label">Name</th>
                 <th className="player-average-label">Average</th>
@@ -273,7 +266,7 @@ function Leaderboards(props) {
           </table>
         </div>
       </main>
-      <button className="go-to-top" onClick={goToTop}>
+      <button className="go-to-top" onClick={goToTop} aria-label="Go to top of page">
         <img src="./images/game/upArrow.png" alt="Arrow pointing up"></img>
       </button>
     </div>

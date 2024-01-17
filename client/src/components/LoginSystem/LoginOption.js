@@ -36,8 +36,8 @@ function LoginOption(props) {
 
   
   return (
-    <button className={props.className + ' login-button'} onClick={()=>goLogin(props.href)} style={{justifyContent: justifyImage}}>
-      <img src={props.imageURL}/>
+    <button className={props.className + ' login-button'} onClick={()=>goLogin(props.href)} style={{justifyContent: justifyImage}} aria-label={`${props.className} login`}>
+      <img src={props.imageURL} alt={`${props.className} logo`}/>
       {buttonText}
     </button>
   );

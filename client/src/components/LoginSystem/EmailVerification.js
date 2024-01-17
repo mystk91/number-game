@@ -65,7 +65,7 @@ function EmailVerification(props) {
 
   let successScreen = (
     <div className="verify-success">
-      <div className="verify-success-container">
+      <div className="verify-success-container" aria-label="Success Container">
         <div className="verify-success-message">
           Your account has been created!
         </div>
@@ -78,7 +78,7 @@ function EmailVerification(props) {
 
   let failureScreen = (
     <div className="verify-failure">
-      <div className="verify-failure-container">
+      <div className="verify-failure-container" aria-lable="Error Container">
         <div className="verify-failure-message">
           This verification code does not exist or has expired.
         </div>

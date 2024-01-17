@@ -351,6 +351,7 @@ function NumberGameLocal(props) {
         let digit = (
           <div
             className={getDigitClassList(i, j)}
+            aria-label={getDigitAriaLabel(i, j)}
             style={{
               animationDelay: 0.05 + 0.2 * props.digits - 0.2 * j + "s",
               width: 76 / props.digits + "%",
@@ -362,9 +363,19 @@ function NumberGameLocal(props) {
         );
         digits.push(digit);
       }
-      let hint = <div className={getHintClassList(i)} key={"hint" + i}></div>;
+      let hint = (
+        <div
+          className={getHintClassList(i)}
+          key={"hint" + i}
+          aria-label={getHintsAriaLabel(i)}
+        ></div>
+      );
       let row = (
-        <span className={getRowClassList(i)} key={"row" + i}>
+        <span
+          className={getRowClassList(i)}
+          aria-label={getRowAriaLabel(i)}
+          key={"row" + i}
+        >
           {digits}
           {hint}
         </span>
@@ -391,6 +402,20 @@ function NumberGameLocal(props) {
     }
     classList += " digits-" + props.digits;
     return classList;
+  }
+
+  //Helper function that sets the aria-label for the spans containing the rows.
+  //Used to designate the current row.
+  function getRowAriaLabel(i) {
+    let ariaLabel = "";
+    if (i > currentRowRef.current) {
+      ariaLabel = `Row ${i + 1}, Empty Row`;
+    } else if (i < currentRowRef.current) {
+      ariaLabel = `Row ${i + 1}, Previous Row`;
+    } else {
+      ariaLabel = `Row ${i + 1}, Current Row`;
+    }
+    return ariaLabel;
   }
 
   //Helper function that sets the class list for the digits using the hints
@@ -452,6 +477,60 @@ function NumberGameLocal(props) {
     return classList;
   }
 
+  //Returns the appropriate aria-label for the digit
+  function getDigitAriaLabel(i, j) {
+    let ariaLabel = j + 1;
+    switch (ariaLabel % 10) {
+      case 1: {
+        ariaLabel += "st Digit";
+        break;
+      }
+      case 2: {
+        ariaLabel += "nd Digit";
+        break;
+      }
+      case 3: {
+        ariaLabel += "rd Digit";
+        break;
+      }
+      default: {
+        ariaLabel += "th Digit";
+      }
+    }
+    let colorAbbreviation = hintsRef.current[i].slice(j, j + 1);
+    if (colorAbbreviation) {
+      switch (colorAbbreviation) {
+        case "X": {
+          ariaLabel += ", Grey";
+          break;
+        }
+        case "G": {
+          ariaLabel += ", Green";
+          break;
+        }
+        case "Y": {
+          ariaLabel += ", Yellow";
+          break;
+        }
+        default: {
+        }
+      }
+    } else {
+      if (i === currentRowRef.current) {
+        if (boardStateRef.current[i].length < j) {
+          ariaLabel += ", Upcoming Digit";
+        } else if (boardStateRef.current[i].length > j) {
+          ariaLabel += ", Previous Digit";
+        } else {
+          ariaLabel += ", Current Digit";
+        }
+      } else {
+        ariaLabel += ", Empty";
+      }
+    }
+    return ariaLabel;
+  }
+
   //Helper function that sets the class list for the hint box to the right
   function getHintClassList(i) {
     let classList = "hint";
@@ -483,10 +562,37 @@ function NumberGameLocal(props) {
     return classList;
   }
 
+  //Returns the appropriate aria-label for the hint
+  function getHintsAriaLabel(i) {
+    let ariaLabel = "";
+    let hintAbbreviation = hintsRef.current[i];
+    if (hintAbbreviation) {
+      switch (hintAbbreviation[props.digits]) {
+        case "L": {
+          ariaLabel = "Guess Lower Arrow";
+          break;
+        }
+        case "H": {
+          ariaLabel = "Guess Higher Arrow";
+          break;
+        }
+        case "E": {
+          ariaLabel = "Correct Guess";
+          break;
+        }
+        default: {
+        }
+      }
+    } else {
+      ariaLabel = "Empty Hint";
+    }
+    return ariaLabel;
+  }
+
   //Used to set up the keyboard on each render
   function updateKeyboard() {
     let keyboardHTML = (
-      <div className="keyboard">
+      <div className="keyboard" aria-label="Keyboard">
         <div className={"number-inputs" + keyboardClassNameRef.current}>
           <button
             className={
@@ -504,6 +610,7 @@ function NumberGameLocal(props) {
             onKeyDown={(e) => {
               handleKeyboardKeyDown(e, 1);
             }}
+            aria-label={`${keyboardColorsRef.current["color1"]} 1`.trim()}
             tabIndex={1}
           >
             1
@@ -524,6 +631,7 @@ function NumberGameLocal(props) {
             onKeyDown={(e) => {
               handleKeyboardKeyDown(e, 2);
             }}
+            aria-label={`${keyboardColorsRef.current["color2"]} 2`.trim()}
             tabIndex={1}
           >
             2
@@ -544,6 +652,7 @@ function NumberGameLocal(props) {
             onKeyDown={(e) => {
               handleKeyboardKeyDown(e, 3);
             }}
+            aria-label={`${keyboardColorsRef.current["color3"]} 3`.trim()}
             tabIndex={1}
           >
             3
@@ -564,6 +673,7 @@ function NumberGameLocal(props) {
             onKeyDown={(e) => {
               handleKeyboardKeyDown(e, 4);
             }}
+            aria-label={`${keyboardColorsRef.current["color4"]} 4`.trim()}
             tabIndex={1}
           >
             4
@@ -584,6 +694,7 @@ function NumberGameLocal(props) {
             onKeyDown={(e) => {
               handleKeyboardKeyDown(e, 5);
             }}
+            aria-label={`${keyboardColorsRef.current["color5"]} 5`.trim()}
             tabIndex={1}
           >
             5
@@ -604,6 +715,7 @@ function NumberGameLocal(props) {
             onKeyDown={(e) => {
               handleKeyboardKeyDown(e, 6);
             }}
+            aria-label={`${keyboardColorsRef.current["color6"]} 6`.trim()}
             tabIndex={1}
           >
             6
@@ -624,6 +736,7 @@ function NumberGameLocal(props) {
             onKeyDown={(e) => {
               handleKeyboardKeyDown(e, 7);
             }}
+            aria-label={`${keyboardColorsRef.current["color7"]} 7`.trim()}
             tabIndex={1}
           >
             7
@@ -644,6 +757,7 @@ function NumberGameLocal(props) {
             onKeyDown={(e) => {
               handleKeyboardKeyDown(e, 8);
             }}
+            aria-label={`${keyboardColorsRef.current["color8"]} 8`.trim()}
             tabIndex={1}
           >
             8
@@ -664,6 +778,7 @@ function NumberGameLocal(props) {
             onKeyDown={(e) => {
               handleKeyboardKeyDown(e, 9);
             }}
+            aria-label={`${keyboardColorsRef.current["color9"]} 9`.trim()}
             tabIndex={1}
           >
             9
@@ -684,6 +799,7 @@ function NumberGameLocal(props) {
             onKeyDown={(e) => {
               handleKeyboardKeyDown(e, 0);
             }}
+            aria-label={`${keyboardColorsRef.current["color0"]} 0`.trim()}
             tabIndex={1}
           >
             0
@@ -710,6 +826,7 @@ function NumberGameLocal(props) {
           href={linkLeftRef.current}
           className={"arrow-left"}
           tabIndex={2}
+          aria-label={`Go to ${linkLeftRef.current[linkLeftRef.current.length - 1]} Digits`}
           style={{ backgroundImage: `url(/images/site/left-arrow.png)` }}
         >
           <div>-</div>
@@ -763,6 +880,7 @@ function NumberGameLocal(props) {
           href={linkRightRef.current}
           className={"arrow-right"}
           tabIndex={2}
+          aria-label={`Go to ${linkRightRef.current[linkRightRef.current.length - 1]} Digits`}
           style={{ backgroundImage: `url(/images/site/right-arrow.png)` }}
         >
           <div>+</div>
@@ -788,6 +906,7 @@ function NumberGameLocal(props) {
             handleBackspaceKeyDown(e);
           }}
           tabIndex={1}
+          aria-label={"Backspace Key"}
         ></button>
       );
     }
@@ -1196,17 +1315,18 @@ function NumberGameLocal(props) {
     rowsTemp.push(row);
 
     let victoryHTML = (
-      <div className="victory-modal">
+      <div className="victory-modal" aria-label="Victory Container">
         <span className="victory-modal-top">
           <button
             className="close-victory-modal"
             onClick={(e) => closeGameOverModal(e)}
+            aria-label="Close Victory Container"
           >
             X
           </button>
         </span>
         <div className="victory-label">Victory!</div>
-        <div className="correct-number">{rowsTemp}</div>
+        <div className="correct-number" aria-label={`You got the correct number ${targetNumberRef.current}`}>{rowsTemp}</div>
         <div className="share-score-container">
           <ShareScore hints={hintsRef.current} date={dateRef.current} />
         </div>
@@ -1244,17 +1364,18 @@ function NumberGameLocal(props) {
     rowsTemp.push(row);
 
     let defeatHTML = (
-      <div className="defeat-modal">
+      <div className="defeat-modal" aria-label="Defeat Container">
         <span className="defeat-modal-top">
           <button
             className="close-defeat-modal"
             onClick={(e) => closeGameOverModal(e)}
+            aria-label="Close Defeat Container"
           >
             X
           </button>
         </span>
         <div className="defeat-label">Defeat</div>
-        <div className="correct-number">{rowsTemp}</div>
+        <div className="correct-number" aria-label={`The correct number was ${targetNumberRef.current}`}>{rowsTemp}</div>
         <div className="share-score-container">
           <ShareScore hints={hintsRef.current} />
         </div>
@@ -1489,7 +1610,7 @@ function NumberGameLocal(props) {
         <div className={"gameboard"}>
           {errorMessagesDiv}
           {gameOverModalRef.current}
-          <div className="rows" ref={yPosition}>
+          <div className="rows" aria-label="Gameboard" ref={yPosition}>
             {board}
           </div>
           {keyboard}

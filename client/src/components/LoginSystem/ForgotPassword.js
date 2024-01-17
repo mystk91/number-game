@@ -1,11 +1,4 @@
-import React, {
-  useState,
-  useEffect,
-  useRef,
-  useCallback,
-  createContext,
-  useContext,
-} from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import "./ForgotPassword.css";
 import "../../normalize.css";
 import "../../custom.css";
@@ -31,7 +24,7 @@ function ForgotPassword(props) {
   const inputReference = useRef(null);
 
   //Used to keep track of the inputed values
-  const [emailValue, setEmailValue] = useState();
+  const [emailValue, setEmailValue] = useState("");
 
   //Used to display Email input errors
   function displayEmailErrors() {
@@ -39,7 +32,11 @@ function ForgotPassword(props) {
       "^([a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,})$"
     );
     if (!emailRegExp.test(emailValue)) {
-      setErrEmail(<div className="error">Invalid email address</div>);
+      setErrEmail(
+        <div className="error" aria-label="Error">
+          Invalid email address
+        </div>
+      );
       return false;
     } else {
       setErrEmail();
@@ -93,13 +90,17 @@ function ForgotPassword(props) {
         },
       };
       let res = await fetch(url, options);
-      if (res.status == 200) {
+      if (res.status === 200) {
         setCurrentScreen(successScreen);
         document.addEventListener("keydown", closeSuccessScreen, true);
       } else {
         setCurrentScreen();
         let errors = await res.json();
-        setErrEmail(<div className="error">{errors.email}</div>);
+        setErrEmail(
+          <div className="error" aria-label="Error">
+            {errors.email}
+          </div>
+        );
         setHideModal("");
       }
     } else {
@@ -109,7 +110,7 @@ function ForgotPassword(props) {
 
   //Creates a screen that pops up after a valid email is submitted
   let successScreen = (
-    <div className="forgot-modal">
+    <div className="forgot-modal" aria-label="Success Modal">
       <div className="forgot-box">
         <div className="forgot-success-message">
           A password reset link has been sent to your email.
@@ -135,7 +136,7 @@ function ForgotPassword(props) {
   //Closes the window when you hit Enter
   function closeSuccessScreen(e) {
     e.stopPropagation();
-    if (e.key == "Enter") {
+    if (e.key === "Enter") {
       setCurrentScreen();
       document.removeEventListener("keydown", closeSuccessScreen, true);
     }
@@ -150,12 +151,16 @@ function ForgotPassword(props) {
   return (
     <div className={hideComponent}>
       <div className="sub-modals">{currentScreen}</div>
-      <div className={"forgot-modal" + hideModal}>
+      <div
+        className={"forgot-modal" + hideModal}
+        aria-label="Reset Password Modal"
+      >
         <div className={"forgot-box"}>
           <span className="forgot-top">
             <button
               className="close-login"
               onClick={(e) => hideForgotButton(e)}
+              aria-label="Close Reset Password Modal"
             >
               X
             </button>
@@ -168,9 +173,12 @@ function ForgotPassword(props) {
             onKeyDown={(e) => {
               e.stopPropagation();
             }}
+            aria-label="Reset Password Form"
           >
             <div>
-              <label htmlFor="email">Email</label>
+              <label htmlFor="email" aria-label="Email">
+                Email
+              </label>
               <input
                 id="email"
                 name="email"

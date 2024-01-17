@@ -78,7 +78,7 @@ function Histogram30Random(props) {
 
       for (let i = 0; i < props.attempts + 1; i++) {
         let row = (
-          <div className="histogram-row" key={"histogram-row-" + i}>
+          <div className="histogram-row" key={"histogram-row-" + i} aria-label={`Score ${i + 1} frequency: ${histogramData[i]}`}>
             <div className="histogram-score">{i + 1}</div>
             <div
               className={`histogram-bar score-${i + 1}`}
@@ -97,7 +97,7 @@ function Histogram30Random(props) {
   }
 
   return (
-    <div className="histogram-container">
+    <div className="histogram-container" aria-label="Score Histogram">
       <div className="average-score">30 Average: {averageScoreRef.current}</div>
       {histogram}
     </div>

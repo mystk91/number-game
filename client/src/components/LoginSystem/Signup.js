@@ -58,7 +58,7 @@ function Signup(props) {
       "^([a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,})$"
     );
     if (!emailRegExp.test(emailValue)) {
-      setErrEmail(<div className="error">Invalid email address</div>);
+      setErrEmail(<div className="error" aria-label="Error">Invalid email address</div>);
       return false;
     } else {
       setErrEmail();
@@ -73,7 +73,7 @@ function Signup(props) {
     );
     if (!passwordRegExp.test(passwordValue)) {
       setErrPassword(
-        <div className="error">
+        <div className="error" aria-label="Error">
           Passwords must have at least 10 characters, an upper and
           lowercase letter, and a number or special character.
         </div>
@@ -113,8 +113,8 @@ function Signup(props) {
         const errors = await res.json();
         setCurrentScreen();
         setHideModal("");
-        setErrEmail(<div className="error">{errors.email}</div>);
-        setErrPassword(<div className="error">{errors.password}</div>);
+        setErrEmail(<div className="error" aria-label="Error">{errors.email}</div>);
+        setErrPassword(<div className="error" aria-label="Error">{errors.password}</div>);
       }
     }
   }
@@ -126,7 +126,7 @@ function Signup(props) {
   );
 
   let successScreen = (
-    <div className="signup-modal">
+    <div className="signup-modal" aria-label="Success Modal">
       <div className="signup-box">
         <div className="signup-success-message">
           An account verification link has been sent to your email.
@@ -156,12 +156,13 @@ function Signup(props) {
   return (
     <div className={hideComponent}>
       <div className="sub-modals">{currentScreen}</div>
-      <div className={"signup-modal" + hideModal}>
+      <div className={"signup-modal" + hideModal} aria-label="Sign up Modal">
         <div className={"signup-box"}>
           <span className="signup-top">
             <button
               className="close-signup"
               onClick={(e) => hideModalButton(e)}
+              aria-label="Close Sign up Modal"
             >
               X
             </button>
@@ -174,9 +175,10 @@ function Signup(props) {
             onKeyDown={(e) => {
               e.stopPropagation();
             }}
+            aria-label="Sign up Form"
           >
             <div className="form-input">
-              <label htmlFor="email">Email</label>
+              <label htmlFor="email" aria-label="Email">Email</label>
               <input
                 id="email"
                 name="email"
@@ -190,7 +192,7 @@ function Signup(props) {
               {errEmail}
             </div>
             <div className="form-input">
-              <label htmlFor="current-password">Password</label>
+              <label htmlFor="current-password" aria-label="Password">Password</label>
               <input
                 id="current-password"
                 name="password"
