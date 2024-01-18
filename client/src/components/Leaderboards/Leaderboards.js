@@ -60,8 +60,8 @@ function Leaderboards(props) {
   function leaderboardInfo() {
     if (!modal) {
       setModal(
-        <div className="leaderboard-modal" aria-label="Leaderboard Info">
-          <div className="leaderboard-modal-container">
+        <div className="leaderboard-modal" >
+          <div className="leaderboard-modal-container" aria-label="Leaderboard Info">
             <span className="leaderboard-modal-top">
               <button
                 className="close-leaderboard-modal"

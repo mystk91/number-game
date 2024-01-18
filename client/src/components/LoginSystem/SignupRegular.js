@@ -115,7 +115,7 @@ function Signup(props) {
   }
 
   let successScreen = (
-    <div className="signup-regular" aria-label="Success Container">
+    <div className="signup-regular">
       <div className="signup-box">
         <div className="signup-success-message">
           An account verification link has been sent to your email.

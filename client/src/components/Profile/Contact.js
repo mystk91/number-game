@@ -6,17 +6,20 @@ import LoadingIcon from "../Parts/LoadingIcon";
 
 //Displays contact information for questsions / bugs
 function Contact(props) {
+  /*
   const [currentScreen, setCurrentScreen] = useState();
   const [hideForm, setHideForm] = useState("");
 
   const [messageValue, setMessageValue] = useState("");
   const [errMessage, setErrMessage] = useState("");
+  */
   //componentDidMount, runs when component mounts, then componentDismount
   useEffect(() => {
-    setUp();
+    //setUp();
     return () => {};
   }, []);
 
+  /*
   function setUp() {
     setCurrentScreen();
   }
@@ -83,6 +86,7 @@ function Contact(props) {
       setErrMessage(<div>{errors.message}</div>);
     }
   }
+  */
   /*
         <div className="contact-text or">
         Or...
@@ -131,7 +135,7 @@ function Contact(props) {
   */
 
   return (
-    <div className="contact">
+    <div className="contact" aria-label="Contact Us Container">
       <h1>Contact Us</h1>
 
       <h2 className="contact-text">

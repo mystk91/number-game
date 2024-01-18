@@ -29,13 +29,13 @@ function AdRandomModal(props) {
   }
 
   return (
-    <div className={"random-mode-modal" + displayInstructions}>
-      <div className="random-mode-info">
+    <div className={"random-mode-modal" + displayInstructions} aria-label="Random Mode Info Modal">
+      <div className="random-mode-info" aria-label="Random Mode Info">
         <span className="random-mode-top">
           <button
             className="close-random-mode"
             onClick={(e) => hideInstructionsButton(e)}
-            aria-label="Close Random Mode Ad"
+            aria-label="Close Random Mode Info"
           >
             X
           </button>

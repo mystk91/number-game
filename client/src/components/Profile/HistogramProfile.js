@@ -96,10 +96,10 @@ function HistogramRegular(props) {
 
       for (let i = 0; i < props.attempts + 1; i++) {
         let row = (
-          <div className="histogram-row" key={"histogram-row-" + i}>
+          <div className="histogram-row" key={"histogram-row-" + i} aria-label={`Score ${i + 1} frequency: ${histogramData[i]}`}>
             <div className="histogram-score">{i + 1}</div>
             <div
-              className={"histogram-bar" + " score-" + (i + 1)}
+              className={"histogram-bar score-" + (i + 1)}
               style={{ width: pixelData[i] + "px", clipPath: barStyle[i] }}
             ></div>
             <div className="histogram-frequency">{displayedFrequency[i]}</div>
@@ -125,9 +125,9 @@ function HistogramRegular(props) {
   }
 
   return (
-    <div className="histogram-container profile">
+    <div className="histogram-container profile" aria-label="Score Histogram">
       <div className="average-score">
-        {averageLabel} {averageScoreRef.current}
+        {averageLabel}{averageScoreRef.current}
       </div>
       {histogram}
     </div>

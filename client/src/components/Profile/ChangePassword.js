@@ -35,7 +35,7 @@ function ChangePassword(props) {
     );
     if (!passwordRegExp.test(newPasswordValue)) {
       setNewPasswordErrs(
-        <div className="error">
+        <div className="error" aria-label="Error">
           Passwords must have at least 10 characters, an upper and lowercase
           letter, and a number or special character.
         </div>
@@ -74,10 +74,10 @@ function ChangePassword(props) {
         document.addEventListener("keydown", removeModalEnter);
       } else {
         setCurrentPasswordErrs(
-          <div className="error">{resObj.errors.currentPassword}</div>
+          <div className="error" aria-label="Error">{resObj.errors.currentPassword}</div>
         );
         setNewPasswordErrs(
-          <div className="error">{resObj.errors.newPassword}</div>
+          <div className="error" aria-label="Error">{resObj.errors.newPassword}</div>
         );
       }
     }
@@ -86,11 +86,12 @@ function ChangePassword(props) {
   //Displays if the password is successfully changed
   let successScreen = (
     <div className="settings-modal">
-      <div className="success-container">
+      <div className="success-container" aria-label="Success">
         <span className="modal-top">
           <button
             className="close-modal"
             onClick={removeModal}
+            aria-label="Close Modal"
           >
             X
           </button>
@@ -116,13 +117,14 @@ function ChangePassword(props) {
   }
 
   return (
-    <div className={"change-password settings-modal" + hideModal}>
+    <div className={"change-password settings-modal" + hideModal} aria-label="Change Password Modal">
       {currentScreen}
-      <div className={"new-password-container" + hideThis}>
+      <div className={"new-password-container" + hideThis} aria-label="Change Password Container">
         <span className="modal-top">
           <button
             className="close-modal"
             onClick={(e) => setHideModal(" hide")}
+            aria-label="Close Change Password Modal"
           >
             X
           </button>
@@ -131,6 +133,7 @@ function ChangePassword(props) {
           method="post"
           className="change-password-form"
           onSubmit={(e) => changePassword(e)}
+          aria-label="Change Password Form"
         >
           <div className="form-input">
             <label htmlFor="currentPassword">Current Password</label>

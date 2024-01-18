@@ -110,8 +110,8 @@ function ForgotPassword(props) {
 
   //Creates a screen that pops up after a valid email is submitted
   let successScreen = (
-    <div className="forgot-modal" aria-label="Success Modal">
-      <div className="forgot-box">
+    <div className="forgot-modal">
+      <div className="forgot-box" aria-label="Success Container">
         <div className="forgot-success-message">
           A password reset link has been sent to your email.
         </div>
@@ -153,7 +153,7 @@ function ForgotPassword(props) {
       <div className="sub-modals">{currentScreen}</div>
       <div
         className={"forgot-modal" + hideModal}
-        aria-label="Reset Password Modal"
+        aria-label="Reset Password Container"
       >
         <div className={"forgot-box"}>
           <span className="forgot-top">

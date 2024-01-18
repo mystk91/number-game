@@ -113,9 +113,9 @@ function Login(props) {
   }
 
   return (
-    <div className={hideComponent}>
+    <div className={hideComponent} aria-label="Modal">
       <div className="sub-modals"> {currentScreen}</div>
-      <div className={"login-modal" + hideModal} aria-label="Login Modal">
+      <div className={"login-modal" + hideModal} aria-label="Login Container">
         <div className={"login-box"}>
           <span className="login-top">
             <button className="close-login" onClick={(e) => hideModalButton(e)} aria-label="Close Login Modal">

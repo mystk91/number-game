@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./ChangeUsername.css";
 import "./SettingsModals.css";
 import "../../normalize.css";
@@ -58,14 +58,14 @@ function ChangeUsername(props) {
         }
       });
     } else {
-      setPasswordErrs(<div className="error">{resObj.errors.password}</div>);
+      setPasswordErrs(<div className="error" aria-label="Error">{resObj.errors.password}</div>);
     }
   }
 
   //Displays if the account is successfully deleted
   let successScreen = (
     <div className="settings-modal">
-      <div className="success-container">
+      <div className="success-container" aria-label="Success">
         <span className="modal-top">
           <button
             className="close-modal"
@@ -86,13 +86,14 @@ function ChangeUsername(props) {
   );
 
   return (
-    <div className={"delete-account settings-modal" + hideModal}>
+    <div className={"delete-account settings-modal" + hideModal} aria-label="Delete Account Modal">
       {currentScreen}
-      <div className={"delete-account-container" + hideThis}>
+      <div className={"delete-account-container" + hideThis} aria-label="Delete Account Container">
         <span className="modal-top">
           <button
             className="close-modal"
             onClick={(e) => setHideModal(" hide")}
+            aria-label="Close Delete Account Modal"
           >
             X
           </button>
@@ -107,6 +108,7 @@ function ChangeUsername(props) {
           method="post"
           className="delete-account-form"
           onSubmit={(e) => deleteAccount(e)}
+          aria-label="Delete Account Form"
         >
           <div className="form-input">
             <label htmlFor="password">Password</label>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./ChangeUsername.css";
 import "./SettingsModals.css";
 import "../../normalize.css";
@@ -53,24 +53,25 @@ function ChangeUsername(props) {
       setHideThis(" hide");
       setCurrentScreen(successScreen);
       document.addEventListener("keydown", (e) => {
-        if (e.key == "Enter") {
+        if (e.key === "Enter") {
           window.location = "/profile";
         }
       });
     } else {
-      setUsernameErrs(<div className="error">{resObj.errors.username}</div>);
-      setPasswordErrs(<div className="error">{resObj.errors.password}</div>);
+      setUsernameErrs(<div className="error" aria-label="Error">{resObj.errors.username}</div>);
+      setPasswordErrs(<div className="error" aria-label="Error">{resObj.errors.password}</div>);
     }
   }
 
   //Displays if the username is successfully changed
   let successScreen = (
     <div className="settings-modal">
-      <div className="success-container">
+      <div className="success-container" aria-label="Success">
         <span className="modal-top">
           <button
             className="close-modal"
             onClick={(e) => (window.location = "/profile")}
+            aria-label="Close Modal"
           >
             X
           </button>
@@ -87,13 +88,14 @@ function ChangeUsername(props) {
   );
 
   return (
-    <div className={"new-username settings-modal" + hideModal}>
+    <div className={"new-username settings-modal" + hideModal} aria-label="New Username Modal">
       {currentScreen}
-      <div className={"new-username-container" + hideThis}>
+      <div className={"new-username-container" + hideThis} aria-label="New Username Container">
         <span className="modal-top">
           <button
             className="close-modal"
             onClick={(e) => setHideModal(" hide")}
+            aria-label="Close New Username Modal"
           >
             X
           </button>
@@ -113,6 +115,7 @@ function ChangeUsername(props) {
           method="post"
           className="change-username-form"
           onSubmit={(e) => changeUsername(e)}
+          aria-label="New Username Form"
         >
           <div className="form-input">
             <label htmlFor="newUsername">New Username</label>

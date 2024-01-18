@@ -31,7 +31,7 @@ function Statistics(props) {
   useEffect(() => {
     if (props.premium) {
       setStatsTabs(
-        <div className="statistics-tabs">
+        <div className="statistics-tabs" aria-label="Game Mode Statistics Tabs">
           <button
             onClick={() => changeStatsTab("random")}
             className={"random-stats" + clickedRef.current[`random`]}
@@ -70,7 +70,7 @@ function Statistics(props) {
       createStats("daily");
     }
     setStatsTabs(
-      <div className="statistics-tabs">
+      <div className="statistics-tabs" aria-label="Game Mode Statistics Tabs">
         <button
           onClick={() => changeStatsTab("random")}
           className={"random-stats" + clickedRef.current[`random`]}
@@ -88,7 +88,7 @@ function Statistics(props) {
     );
   }
 
-  //Converts an inputted date to the format: Jan 03, 2023
+  //Converts an inputted date to the format: 01/26/2023
   function convertToDate(date) {
     date = new Date(date);
     let newDate = date.toLocaleString("default", {
@@ -105,11 +105,11 @@ function Statistics(props) {
   function createBest30(i) {
     if (props.stats[`${i}random-scores`].best30.average) {
       return (
-        <div className="averages">
+        <div className="averages" aria-label="Statistic">
           <div className="best-30">
             <div className="stat-name">Best 30 Average</div>
             <div className="stat-value">
-              {props.stats[`${i}random-scores`].best30.average.toFixed(3)}{" "}
+              {`${props.stats[`${i}random-scores`].best30.average.toFixed(3)} `}
             </div>
           </div>
 
@@ -156,25 +156,33 @@ function Statistics(props) {
   // gameModeType - "random" or "daily"
   function createStats(gameModeType) {
     let statsArr = [];
-
     if (gameModeType === "random") {
       for (let i = 2; i <= 7; i++) {
         if (props.stats[`${i}random-scores`]) {
           let statsHTML = (
-            <div className="stats-game-mode random" key={"random-stats-" + i}>
-              <span className="stats-game-name">
+            <div
+              className="stats-game-mode random"
+              key={"random-stats-" + i}
+              aria-label={`Stats: ${i} Random`}
+            >
+              <header className="stats-game-name" aria-label={`${i} Random`}>
                 <div>{i} Random</div>
-                <div className="stats-icon">
+                <div className="stats-icon" aria-label="Random Mode Icon">
                   {i}
-                  <img src="images/site/randomDice.png" />
+                  <img
+                    src="images/site/randomDice.png"
+                    alt="Random mode icon with a six sided dice"
+                  />
                 </div>
-              </span>
+              </header>
               <div className="averages-container random">
-                <div className="averages">
+                <div className="averages" aria-label="Statistic">
                   <div className="average-30">
                     <div className="stat-name">
-                      {props.stats[`${i}random-scores`].average30.numberOfGames}{" "}
-                      Game Average
+                      {`${
+                        props.stats[`${i}random-scores`].average30.numberOfGames
+                      } 
+                      Game Average`}
                     </div>
                     <div className="stat-value">
                       {props.stats[
@@ -192,7 +200,7 @@ function Statistics(props) {
                           `${
                             props.stats[`${i}random-scores`].average30
                               .numberOfGames
-                          } Game Average`,
+                          } Game Average: `,
                           "average30"
                         )
                       }
@@ -206,7 +214,7 @@ function Statistics(props) {
                 </div>
 
                 {createBest30(i)}
-                <div className="averages">
+                <div className="averages" aria-label="Statistic">
                   <div className="average-all">
                     <div className="stat-name">Lifetime Average</div>
                     <div className="stat-value">
@@ -226,7 +234,7 @@ function Statistics(props) {
                         showHistogramModal(
                           i,
                           "Random",
-                          `Lifetime Average`,
+                          `Lifetime Average: `,
                           "average"
                         )
                       }
@@ -256,15 +264,19 @@ function Statistics(props) {
       for (let i = 2; i <= 7; i++) {
         if (props.stats[`${i}digits-scores`]) {
           let statsHTML = (
-            <div className="stats-game-mode daily" key={"daily-stats-" + i}>
-              <span className="stats-game-name">
+            <div
+              className="stats-game-mode daily"
+              key={"daily-stats-" + i}
+              aria-label={`Stats: ${i} Digits`}
+            >
+              <header className="stats-game-name" aria-label={`${i} Random`}>
                 <div>{i} Digits</div>
                 <div className="daily-icon">
                   <CalendarIcon />
                 </div>
-              </span>
+              </header>
               <div className="averages-container daily">
-                <div className="averages">
+                <div className="averages" aria-label="Statistic">
                   <div className="average-30">
                     <div className="stat-name">Monthly Average</div>
                     <div className="stat-value">
@@ -298,7 +310,7 @@ function Statistics(props) {
                     {createHistogram(i, "Digits", "", "average30")}
                   </div>
                 </div>
-                <div className="averages">
+                <div className="averages" aria-label="Statistic">
                   <div className="average-all">
                     <div className="stat-name">Lifetime Average</div>
                     <div className="stat-value">
@@ -361,17 +373,19 @@ function Statistics(props) {
   function resetStatsConfirmation(digits, mode) {
     if (!modal) {
       setModal(
-        <div className="reset-modal">
+        <div className="reset-modal" aria-label="Reset Stats Modal">
           <div className="reset-modal-container">
             <span className="modal-top">
-              <button className="close-modal" onClick={() => setModal()}>
+              <button
+                className="close-modal"
+                onClick={() => setModal()}
+                aria-label="Close Reset Stats Modal"
+              >
                 X
               </button>
             </span>
             <span className="headline">
-              <h1 className="headline-text">
-                {digits} {mode}
-              </h1>
+              <h1 className="headline-text">{`${digits} ${mode}`}</h1>
             </span>
             <div className="reset-modal-body">
               <div className="reset-text">
@@ -403,20 +417,27 @@ function Statistics(props) {
   //Creates a modal that shows the histogram for the game model
   function showHistogramModal(digits, mode, averageLabel, scoreType) {
     setModal(
-      <div className="histogram-modal" onClick={() => setModal()}>
+      <div
+        className="histogram-modal"
+        onClick={() => setModal()}
+        aria-label="Histogram Modal"
+      >
         <div
           className="histogram-modal-container"
           onClick={(e) => e.stopPropagation()}
+          aria-label="Histogram Container"
         >
           <span className="modal-top">
-            <button className="close-modal" onClick={() => setModal()}>
+            <button
+              className="close-modal"
+              onClick={() => setModal()}
+              aria-label="Close Histogram Modal"
+            >
               X
             </button>
           </span>
           <span className="headline">
-            <h1 className="headline-text">
-              {digits} {mode}
-            </h1>
+            <h1 className="headline-text">{`${digits} ${mode}`}</h1>
           </span>
 
           <HistogramProfile
@@ -469,7 +490,7 @@ function Statistics(props) {
   }
 
   return (
-    <div className="statistics">
+    <div className="statistics" aria-label="Statistics Container">
       {modal}
       {statsTabs}
       <h1>Game Statistics</h1>

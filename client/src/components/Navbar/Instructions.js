@@ -151,7 +151,7 @@ function Instructions(props) {
       onClick={(e) => hideInstructionsModal(e)}
       aria-label="Instructions Modal"
     >
-      <div className="instructions">
+      <div className="instructions" aria-label="Instructions">
         <span className="instructions-top">
           <button
             aria-label="Close Instructions"

@@ -126,8 +126,8 @@ function Signup(props) {
   );
 
   let successScreen = (
-    <div className="signup-modal" aria-label="Success Modal">
-      <div className="signup-box">
+    <div className="signup-modal">
+      <div className="signup-box" aria-label="Success Container">
         <div className="signup-success-message">
           An account verification link has been sent to your email.
         </div>
@@ -156,7 +156,7 @@ function Signup(props) {
   return (
     <div className={hideComponent}>
       <div className="sub-modals">{currentScreen}</div>
-      <div className={"signup-modal" + hideModal} aria-label="Sign up Modal">
+      <div className={"signup-modal" + hideModal} aria-label="Sign up Container">
         <div className={"signup-box"}>
           <span className="signup-top">
             <button

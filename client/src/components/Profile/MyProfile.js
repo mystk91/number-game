@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./MyProfile.css";
 import "../../normalize.css";
 import "../../custom.css";
@@ -73,9 +73,9 @@ function MyProfile(props) {
   }
 
   return (
-    <div className="profile">
-      <div className="profile-tabs-container">
-        <div className="username-tab">
+    <div className="profile" aria-label="Your Profile">
+      <nav className="profile-tabs-container" aria-label="Side Tabs">
+        <div className="username-tab" aria-label="Username">
           <div className="username-container">{username}</div>
         </div>
         <ul className="profile-tabs">
@@ -85,6 +85,7 @@ function MyProfile(props) {
               onClick={() => {
                 switchTab("statistics");
               }}
+              aria-label={`Statistics Tab${activeButton[`statistics`]}`}
             >
               <img
                 src="./images/account/icons/stats-icon.svg"
@@ -100,6 +101,7 @@ function MyProfile(props) {
               onClick={() => {
                 switchTab("settings");
               }}
+              aria-label={`Settings Tab${activeButton[`statistics`]}`}
             >
               <img
                 src="./images/account/icons/settings-icon.svg"
@@ -115,6 +117,7 @@ function MyProfile(props) {
               onClick={() => {
                 switchTab("contact");
               }}
+              aria-label={`Contact Us Tab${activeButton[`statistics`]}`}
             >
               <img
                 src="./images/account/icons/contact-icon.svg"
@@ -125,9 +128,9 @@ function MyProfile(props) {
             </button>
           </li>
         </ul>
-      </div>
+      </nav>
 
-      <div className="active-tab">{activeTab}</div>
+      <div className="active-tab" aria-label="Active Tab Container">{activeTab}</div>
     </div>
   );
 }

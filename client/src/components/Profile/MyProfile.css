@@ -21,6 +21,10 @@
   flex-direction: column;
 }
 
+.profile-tabs li{
+  list-style: none;
+}
+
 .username-tab {
   display: flex;
   justify-content: center;
