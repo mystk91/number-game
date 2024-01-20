@@ -10,6 +10,7 @@ import "../../custom.css";
 import LoginOption from "./LoginOption";
 import ForgotPassword from "./ForgotPassword";
 import Signup from "./Signup";
+import PasswordInput from "../Parts/PasswordInput";
 
 //Creates a Login Modal
 function Login(props) {
@@ -140,7 +141,7 @@ function Login(props) {
             </div>
             <div>
               <label htmlFor="current-password" aria-label="Password">Password</label>
-              <input id="current-password" name="password" type="password" />
+              <PasswordInput />
               {errPassword}
               <a
                 href="/reset-password"

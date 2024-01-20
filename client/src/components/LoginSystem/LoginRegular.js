@@ -3,6 +3,7 @@ import "./LoginRegular.css";
 import "../../normalize.css";
 import "../../custom.css";
 import LoginOption from "./LoginOption";
+import PasswordInput from "../Parts/PasswordInput";
 
 //A non-modal version of the login screen. It links to the other screens instead of creating multiple modals
 function LoginRegular(props) {
@@ -90,7 +91,7 @@ function LoginRegular(props) {
             <label htmlFor="current-password" aria-label="Password">
               Password
             </label>
-            <input id="current-password" name="password" type="password" />
+            <PasswordInput />
             {errPassword}
             <a href="/reset-password" className="recover-password-link">
               Forgot password?

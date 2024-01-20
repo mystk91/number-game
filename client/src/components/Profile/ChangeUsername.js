@@ -3,6 +3,7 @@ import "./ChangeUsername.css";
 import "./SettingsModals.css";
 import "../../normalize.css";
 import "../../custom.css";
+import PasswordInput from "../Parts/PasswordInput";
 
 //Displays contact information for questsions / bugs
 function ChangeUsername(props) {
@@ -133,14 +134,7 @@ function ChangeUsername(props) {
 
           <div className="form-input">
             <label htmlFor="password">Password</label>
-            <input
-              id="password"
-              name="password"
-              type="password"
-              maxLength={32}
-              value={passwordValue}
-              onChange={(e) => setPasswordValue(e.target.value)}
-            />
+            <PasswordInput />
             {passwordErrs}
           </div>
 

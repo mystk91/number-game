@@ -91,6 +91,7 @@
   border-radius: 3px;
 }
 
+/*
 .signup-form .password-container{
   position: relative;
   display: flex;
@@ -118,6 +119,7 @@
   margin: auto 6px;
   user-select: none;
 }
+*/
 
 .password-requirements{
   font-size: 1.6rem;

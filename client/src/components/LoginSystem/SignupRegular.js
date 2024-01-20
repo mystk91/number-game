@@ -3,6 +3,7 @@ import "./SignupRegular.css";
 import "../../normalize.css"
 import "../../custom.css";
 import LoadingIcon from "../Parts/LoadingIcon";
+import PasswordInput from "../Parts/PasswordInput";
 
 //A non-modal version of the signup screen.
 function Signup(props) {
@@ -24,11 +25,17 @@ function Signup(props) {
 
   //Used to keep track of the inputed values
   const [emailValue, setEmailValue] = useState("");
-  const [passwordValue, setPasswordValue] = useState("");
+  const [usernameValue, setUsernameValue] = useState("");
 
   //Used to display errors on the form
   const [errEmail, setErrEmail] = useState();
-  const [errPassword, setErrPassword] = useState();
+  const [errUsername, setErrUsername] = useState();
+  const [errPassword, setErrPassword] = useState(
+    <div className="password-requirements" aria-label="Password Requirements">
+      Passwords must be at least 10 characters long, and have strong password
+      complexity.
+    </div>
+  );
 
   //Used to display Email input errors
   function displayEmailErrors() {
@@ -45,15 +52,15 @@ function Signup(props) {
   }
 
   //Used to display Password input errors
-  function displayPasswordErrors() {
+  function displayPasswordErrors(password) {
     let passwordRegExp = new RegExp(
       "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*[!@#$%^&*_0-9]).{10,32}$"
     );
-    if (!passwordRegExp.test(passwordValue)) {
+    if (!passwordRegExp.test(password)) {
       setErrPassword(
         <div className="error" aria-label="Error">
-          Passwords must have at least 10 characters, an upper and
-          lowercase letter, and a number or special character.
+          Passwords must be at least 10 characters long, have an upper and
+          lowercase letter, and have a number or special character.
         </div>
       );
       return false;
@@ -63,17 +70,35 @@ function Signup(props) {
     }
   }
 
+    //Used to display Username input errors
+    function displayUsernameErrors() {
+      let usernameRegExp = new RegExp("^(?=.*[a-zA-Z])[a-zA-Z0-9_]{3,16}$");
+      if (!usernameRegExp.test(usernameValue)) {
+        setErrUsername(
+          <div className="error" aria-label="Error">
+            Invalid username
+          </div>
+        );
+        return false;
+      } else {
+        setErrUsername();
+        return true;
+      }
+    }
+  
+
   //Attempts to create an account
   async function createAccount(e) {
     e.preventDefault();
-    let noPasswordErrors = displayPasswordErrors();
+    const formData = new FormData(e.target);
+    const formDataObj = Object.fromEntries(formData.entries());
     let noEmailErrors = displayEmailErrors();
-    if (noPasswordErrors && noEmailErrors) {
+    let noUsernameErrors = displayUsernameErrors();
+    let noPasswordErrors = displayPasswordErrors(formDataObj.password);
+    if (noPasswordErrors && noEmailErrors && noUsernameErrors) {
       setHideModal(" hide-modal");
       setCurrentScreen(loadingScreen);
       const url = "/api/create-account";
-      const formData = new FormData(e.target);
-      const formDataObj = Object.fromEntries(formData.entries());
       const formDataString = JSON.stringify(formDataObj);
       const options = {
         method: "POST",
@@ -92,6 +117,11 @@ function Signup(props) {
         setCurrentScreen();
         setHideModal("");
         setErrEmail(<div className="error" aria-label="Error">{errors.email}</div>);
+        setErrUsername(
+          <div className="error" aria-label="Error">
+            {errors.username}
+          </div>
+        );
         setErrPassword(<div className="error" aria-label="Error">{errors.password}</div>);
       }
     }
@@ -150,22 +180,27 @@ function Signup(props) {
                 maxLength={32}
                 value={emailValue}
                 onChange={(e) => setEmailValue(e.target.value)}
-                onBlur={displayEmailErrors}
                 ref={inputReference}
               />
               {errEmail}
             </div>
             <div className="form-input">
-              <label htmlFor="current-password" aria-label="Password">Password</label>
+              <label htmlFor="username" aria-label="Username">
+                Username
+              </label>
               <input
-                id="current-password"
-                name="password"
-                type="password"
-                maxLength={32}
-                value={passwordValue}
-                onInput={(e) => setPasswordValue(e.target.value)}
-                onBlur={displayPasswordErrors}
+                id="username"
+                name="username"
+                type="text"
+                maxLength={16}
+                value={usernameValue}
+                onChange={(e) => setUsernameValue(e.target.value)}
               />
+              {errUsername}
+            </div>
+            <div className="form-input">
+              <label htmlFor="current-password" aria-label="Password">Password</label>
+              <PasswordInput />
               {errPassword}
             </div>
             <div>

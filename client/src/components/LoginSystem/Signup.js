@@ -3,6 +3,7 @@ import "./Signup.css";
 import "../../normalize.css";
 import "../../custom.css";
 import LoadingIcon from "../Parts/LoadingIcon";
+import PasswordInput from "../Parts/PasswordInput";
 
 //A modal version of the signup screen.
 function Signup(props) {
@@ -30,22 +31,6 @@ function Signup(props) {
   //Used to change the screen when an account is created, display a message.
   const [currentScreen, setCurrentScreen] = useState();
 
-  //Used to toggle the password input from invisible to visible
-  const [inputType, setInputType] = useState("password");
-  const [eyeIcon, setEyeIcon] = useState("/images/site/hidden-password.png");
-
-  //Toggles the password from being invisible to visible
-  function toggleDisplayPassword(e) {
-    e.preventDefault();
-    if (inputType === "password") {
-      setInputType("text");
-      setEyeIcon("/images/site/shown-password.png");
-    } else {
-      setInputType("password");
-      setEyeIcon("/images/site/hidden-password.png");
-    }
-  }
-
   /* Hides the modal when you click outside the main box */
   function hideSignupModal(e) {
     if (e.target.classList[0] === "signup-modal") {
@@ -62,7 +47,6 @@ function Signup(props) {
 
   //Used to keep track of the inputed values
   const [emailValue, setEmailValue] = useState("");
-  const [passwordValue, setPasswordValue] = useState("");
   const [usernameValue, setUsernameValue] = useState("");
 
   //Used to display errors on the form
@@ -94,11 +78,11 @@ function Signup(props) {
   }
 
   //Used to display Password input errors
-  function displayPasswordErrors() {
+  function displayPasswordErrors(password) {
     let passwordRegExp = new RegExp(
       "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*[!@#$%^&*_0-9]).{10,32}$"
     );
-    if (!passwordRegExp.test(passwordValue)) {
+    if (!passwordRegExp.test(password)) {
       setErrPassword(
         <div className="error" aria-label="Error">
           Passwords must be at least 10 characters long, have an upper and
@@ -131,15 +115,15 @@ function Signup(props) {
   //Attempts to create an account
   async function createAccount(e) {
     e.preventDefault();
-    let noPasswordErrors = displayPasswordErrors();
+    const formData = new FormData(e.target);
+    const formDataObj = Object.fromEntries(formData.entries());
     let noEmailErrors = displayEmailErrors();
     let noUsernameErrors = displayUsernameErrors();
+    let noPasswordErrors = displayPasswordErrors(formDataObj.password);
     if (noPasswordErrors && noEmailErrors && noUsernameErrors) {
       setHideModal(" hide-modal");
       setCurrentScreen(loadingScreen);
       const url = "/api/create-account";
-      const formData = new FormData(e.target);
-      const formDataObj = Object.fromEntries(formData.entries());
       const formDataString = JSON.stringify(formDataObj);
       const options = {
         method: "POST",
@@ -267,27 +251,10 @@ function Signup(props) {
               {errUsername}
             </div>
             <div className="form-input">
-              <label htmlFor="current-password" aria-label="Password">
+              <label htmlFor="password" aria-label="Password">
                 Password
               </label>
-              <div className="password-container">
-                <input
-                  id="current-password"
-                  name="password"
-                  type={inputType}
-                  maxLength={32}
-                  value={passwordValue}
-                  onInput={(e) => setPasswordValue(e.target.value)}
-                />
-                <div
-                  className="toggle-password"
-                  aria-label="Toggle Password Visibility"
-                  role="button"
-                  onClick={(e) => toggleDisplayPassword(e)}
-                >
-                  <img src={eyeIcon} alt="Eye Icon" />
-                </div>
-              </div>
+              <PasswordInput />
               {errPassword}
             </div>
             <div>
