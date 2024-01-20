@@ -4,7 +4,7 @@ import "../../normalize.css";
 import "../../custom.css";
 import Instructions from "./Instructions";
 import InstructionsFive from "./InstructionsFive";
-//import ProfileDropdown from "./ProfileDropdown";
+import ProfileDropdown from "./ProfileDropdown";
 import AdRandomModal from "./AdRandomModal";
 import Login from "../LoginSystem/Login";
 
@@ -14,12 +14,10 @@ import Login from "../LoginSystem/Login";
 function Navbar(props) {
   //Used to set the profile button / image
   const [profileButton, setProfileButton] = useState();
-  /*
   const profileImageRef = useRef();
   function setProfileImageRef(point) {
     profileImageRef.current = point;
   }
-  */
 
   //componentDidMount, runs when component mounts, then componentDismount
   useEffect(() => {
@@ -164,25 +162,86 @@ function Navbar(props) {
     }
   }
 
-  //Adds the login button
+  //Adds the login button or the profile dropdown
   async function addProfileButton() {
-    /*
     if (props.user.loggedIn) {
       setProfileImageRef(props.user.imageUrl);
       setProfileButton(profileDropdownInitialHTML);
     } else {
-      */
-    let buttonHTML = (
+      let buttonHTML = (
+        <button
+          className="login-btn"
+          onClick={loginButton}
+          aria-label="Login or Sign up"
+        >
+          <img src={props.user.imageUrl} alt="Icon of a person" />
+        </button>
+      );
+      setProfileButton(buttonHTML);
+    }
+  }
+
+  //Used to control the profile dropdown
+  const profileHoverUpRef = useRef();
+  function setProfileHoverUpRef(point) {
+    profileHoverUpRef.current = point;
+  }
+
+  //Hides the profile dropdown on click
+  const hideProfileDropdown = useCallback((e) => {
+    if (profileHoverUpRef.current) {
+      setProfileHoverUpRef(false);
+      setProfileButton(profileDropdownHiddenHTML());
+      document.removeEventListener("click", hideProfileDropdown);
+    }
+  }, []);
+
+  //Shows the profile Dropdown
+  function showProfileDropdown(e) {
+    setProfileHoverUpRef(true);
+    setProfileButton(profileDropdownVisibleHTML());
+    e.stopPropagation();
+    document.addEventListener("click", hideProfileDropdown);
+  }
+
+  function profileDropdownInitialHTML() {
+    return (
       <button
-        className="login-btn"
-        onClick={loginButton}
-        aria-label="Login or Sign up"
+        className="profile-btn"
+        onClick={showProfileDropdown}
+        onMouseOver={showProfileDropdown}
+        aria-label="Profile Dropdown"
       >
-        <img src={props.user.imageUrl} alt="Icon of a person" />
+        <img src={profileImageRef.current} alt="Your Profile Icon" />
       </button>
     );
-    setProfileButton(buttonHTML);
-    //}
+  }
+
+  function profileDropdownHiddenHTML() {
+    return (
+      <div>
+        <button
+          className="profile-btn"
+          aria-label="Profile Dropdown"
+          onClick={showProfileDropdown}
+          onMouseOver={showProfileDropdown}
+        >
+          <img src={profileImageRef.current} alt="Your Profile Icon" />
+        </button>
+        <ProfileDropdown hidden="true" key="profileDropdownHidden" />
+      </div>
+    );
+  }
+
+  function profileDropdownVisibleHTML() {
+    return (
+      <div onMouseLeave={hideProfileDropdown}>
+        <button className="profile-btn clicked" aria-label="Profile Dropdown">
+          <img src={profileImageRef.current} alt="Your Profile Icon" />
+        </button>
+        <ProfileDropdown key="profileDropdownVisisble" user={props.user} />
+      </div>
+    );
   }
 
   //Displays the login modal
@@ -270,7 +329,7 @@ function Navbar(props) {
             <img
               className="site-banner"
               src="/images/site/site-banner.png"
-              alt="Website banner that says 'Numbler'"
+              alt="Banner that says 'Numbler'"
             />
           </div>
         </div>

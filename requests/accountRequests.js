@@ -40,6 +40,19 @@ function accountRequests(app) {
   const Twitter_Client_Id = process.env.twitterClientId;
   const Twitter_Client_Secret = process.env.twitterClientSecret;
 
+  //Profanity filter
+  const {
+    RegExpMatcher,
+    TextCensor,
+    englishDataset,
+    englishRecommendedTransformers,
+  } = require("obscenity");
+
+  const matcher = new RegExpMatcher({
+    ...englishDataset.build(),
+    ...englishRecommendedTransformers,
+  });
+
   /////////////////////
   /* Account Creation
   /* Creates a new unverified account and sends a verification email. */
@@ -74,8 +87,18 @@ function accountRequests(app) {
       "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*[!@#$%^&*_0-9]).{10,32}$"
     );
     if (!passwordRegExp.test(req.body.password)) {
-      errors.password = `Passwords must have at least 10 characters, an upper and
-      lowercase letter, and a number or special character.`;
+      errors.password = `Passwords must be at least 10 characters long, have an upper and
+      lowercase letter, and have a number or special character.`;
+    }
+    //Username validity and profanity filter
+    let usernameRegExp = new RegExp("^(?=.*[a-zA-Z])[a-zA-Z0-9_]{3,16}$");
+    console.log(req.body.username);
+    if (
+      matcher.hasMatch(req.body.username) ||
+      !usernameRegExp.test(req.body.username)
+    ) {
+      errors.username = "Invalid username";
+      errorFound = true;
     }
     if (errorFound) {
       res.status(400).send(errors);
@@ -89,6 +112,7 @@ function accountRequests(app) {
         try {
           const user = {
             email: req.body.email,
+            username: req.body.username,
             password: hashedPassword,
             verificationCode: verificationCode,
             createdAt: new Date(),
@@ -163,7 +187,7 @@ function accountRequests(app) {
         const verifiedUser = {
           email: unverifiedUser.email,
           password: unverifiedUser.password,
-          username: generateUsername(),
+          username: unverifiedUser.username,
           usernameDate: new Date("Wed Jan 01 2020 00:00:00 GMT-0500"),
           premium: false,
           session: newSession,
@@ -279,8 +303,8 @@ function accountRequests(app) {
       "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*[!@#$%^&*_0-9]).{10,32}$"
     );
     if (!passwordRegExp.test(newPassword)) {
-      errors.password = `Passwords must have at least 10 characters, an upper and
-      lowercase letter, and a number or special character.`;
+      errors.password = `Passwords must be at least 10 characters long, have an upper and
+      lowercase letter, and have a number or special character.`;
       errors.errorFound = true;
     }
 
@@ -921,6 +945,5 @@ function accountRequests(app) {
     );
   }
 }
-
 
 module.exports = { accountRequests };

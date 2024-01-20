@@ -370,13 +370,13 @@ function NavbarRandom(props) {
             <img
               className="site-banner"
               src="/images/site/site-banner.png"
-              alt="Website banner that says 'Numbler'"
+              alt="Banner that says 'Numbler'"
             />
           </div>
           <div className="logo-small">
             <img
               src="/images/site/logo.png"
-              alt="Website banner that says 'Numbler'"
+              alt="Banner that says 'Numbler'"
             />
           </div>
           <img

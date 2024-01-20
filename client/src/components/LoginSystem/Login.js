@@ -122,7 +122,7 @@ function Login(props) {
               X
             </button>
           </span>
-          <div className="site-banner-container" aria-label="Number Banner"><img src="/images/site/site-banner.png" className="site-banner" alt="Website banner that says Numbler" /></div>
+          <div className="site-banner-container" aria-label="Number Banner"><img src="/images/site/site-banner.png" className="site-banner" alt="Banner that says Numbler" /></div>
           <form
             action="/api/login"
             method="POST"

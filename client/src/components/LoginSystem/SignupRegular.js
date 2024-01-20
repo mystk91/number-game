@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from "react";
 import "./SignupRegular.css";
 import "../../normalize.css"
 import "../../custom.css";
-import { Link } from "react-router-dom";
 import LoadingIcon from "../Parts/LoadingIcon";
 
 //A non-modal version of the signup screen.

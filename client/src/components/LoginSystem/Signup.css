@@ -91,6 +91,42 @@
   border-radius: 3px;
 }
 
+.signup-form .password-container{
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.signup-form .password-container input{
+  width: 100%;
+  padding-right: 36px;
+}
+
+.signup-form .toggle-password{
+  position: absolute;
+  height: 34px;
+  right: 0px;
+  cursor: pointer;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  border-left: .5px solid black;
+}
+
+.signup-form .toggle-password img{
+  height: 20px;
+  margin: auto 6px;
+  user-select: none;
+}
+
+.password-requirements{
+  font-size: 1.6rem;
+  margin-top: 3px;
+  margin-left: 6px;
+  margin-bottom: -8px;
+  font-family: OpenSansCondensed, sans-serf;
+}
+
 .signup-form input:focus {
   border-radius: 6px;
   border: none;

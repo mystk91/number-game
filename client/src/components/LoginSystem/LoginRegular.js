@@ -1,8 +1,4 @@
-import React, {
-  useState,
-  useEffect,
-  useRef,
-} from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./LoginRegular.css";
 import "../../normalize.css";
 import "../../custom.css";
@@ -59,8 +55,16 @@ function LoginRegular(props) {
       }
     } else {
       let errors = await res.json();
-      setErrEmail(<div className="error" aria-label="Error">{errors.email}</div>);
-      setErrPassword(<div className="error" aria-label="Error">{errors.password}</div>);
+      setErrEmail(
+        <div className="error" aria-label="Error">
+          {errors.email}
+        </div>
+      );
+      setErrPassword(
+        <div className="error" aria-label="Error">
+          {errors.password}
+        </div>
+      );
     }
   }
 
@@ -76,12 +80,16 @@ function LoginRegular(props) {
           aria-label="Login Form"
         >
           <div>
-            <label htmlFor="email" aria-label="Email">Email</label>
+            <label htmlFor="email" aria-label="Email">
+              Email
+            </label>
             <input id="email" name="email" type="text" />
             {errEmail}
           </div>
           <div>
-            <label htmlFor="current-password" aria-label="Password">Password</label>
+            <label htmlFor="current-password" aria-label="Password">
+              Password
+            </label>
             <input id="current-password" name="password" type="password" />
             {errPassword}
             <a href="/reset-password" className="recover-password-link">

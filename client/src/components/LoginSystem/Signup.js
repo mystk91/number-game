@@ -30,6 +30,22 @@ function Signup(props) {
   //Used to change the screen when an account is created, display a message.
   const [currentScreen, setCurrentScreen] = useState();
 
+  //Used to toggle the password input from invisible to visible
+  const [inputType, setInputType] = useState("password");
+  const [eyeIcon, setEyeIcon] = useState("/images/site/hidden-password.png");
+
+  //Toggles the password from being invisible to visible
+  function toggleDisplayPassword(e) {
+    e.preventDefault();
+    if (inputType === "password") {
+      setInputType("text");
+      setEyeIcon("/images/site/shown-password.png");
+    } else {
+      setInputType("password");
+      setEyeIcon("/images/site/hidden-password.png");
+    }
+  }
+
   /* Hides the modal when you click outside the main box */
   function hideSignupModal(e) {
     if (e.target.classList[0] === "signup-modal") {
@@ -47,10 +63,17 @@ function Signup(props) {
   //Used to keep track of the inputed values
   const [emailValue, setEmailValue] = useState("");
   const [passwordValue, setPasswordValue] = useState("");
+  const [usernameValue, setUsernameValue] = useState("");
 
   //Used to display errors on the form
   const [errEmail, setErrEmail] = useState();
-  const [errPassword, setErrPassword] = useState();
+  const [errUsername, setErrUsername] = useState();
+  const [errPassword, setErrPassword] = useState(
+    <div className="password-requirements" aria-label="Password Requirements">
+      Passwords must be at least 10 characters long, and have strong password
+      complexity.
+    </div>
+  );
 
   //Used to display Email input errors
   function displayEmailErrors() {
@@ -58,7 +81,11 @@ function Signup(props) {
       "^([a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,})$"
     );
     if (!emailRegExp.test(emailValue)) {
-      setErrEmail(<div className="error" aria-label="Error">Invalid email address</div>);
+      setErrEmail(
+        <div className="error" aria-label="Error">
+          Invalid email address
+        </div>
+      );
       return false;
     } else {
       setErrEmail();
@@ -74,8 +101,8 @@ function Signup(props) {
     if (!passwordRegExp.test(passwordValue)) {
       setErrPassword(
         <div className="error" aria-label="Error">
-          Passwords must have at least 10 characters, an upper and
-          lowercase letter, and a number or special character.
+          Passwords must be at least 10 characters long, have an upper and
+          lowercase letter, and have a number or special character.
         </div>
       );
       return false;
@@ -85,12 +112,29 @@ function Signup(props) {
     }
   }
 
+  //Used to display Username input errors
+  function displayUsernameErrors() {
+    let usernameRegExp = new RegExp("^(?=.*[a-zA-Z])[a-zA-Z0-9_]{3,16}$");
+    if (!usernameRegExp.test(usernameValue)) {
+      setErrUsername(
+        <div className="error" aria-label="Error">
+          Invalid username
+        </div>
+      );
+      return false;
+    } else {
+      setErrUsername();
+      return true;
+    }
+  }
+
   //Attempts to create an account
   async function createAccount(e) {
     e.preventDefault();
     let noPasswordErrors = displayPasswordErrors();
     let noEmailErrors = displayEmailErrors();
-    if (noPasswordErrors && noEmailErrors) {
+    let noUsernameErrors = displayUsernameErrors();
+    if (noPasswordErrors && noEmailErrors && noUsernameErrors) {
       setHideModal(" hide-modal");
       setCurrentScreen(loadingScreen);
       const url = "/api/create-account";
@@ -113,8 +157,21 @@ function Signup(props) {
         const errors = await res.json();
         setCurrentScreen();
         setHideModal("");
-        setErrEmail(<div className="error" aria-label="Error">{errors.email}</div>);
-        setErrPassword(<div className="error" aria-label="Error">{errors.password}</div>);
+        setErrEmail(
+          <div className="error" aria-label="Error">
+            {errors.email}
+          </div>
+        );
+        setErrUsername(
+          <div className="error" aria-label="Error">
+            {errors.username}
+          </div>
+        );
+        setErrPassword(
+          <div className="error" aria-label="Error">
+            {errors.password}
+          </div>
+        );
       }
     }
   }
@@ -156,7 +213,10 @@ function Signup(props) {
   return (
     <div className={hideComponent}>
       <div className="sub-modals">{currentScreen}</div>
-      <div className={"signup-modal" + hideModal} aria-label="Sign up Container">
+      <div
+        className={"signup-modal" + hideModal}
+        aria-label="Sign up Container"
+      >
         <div className={"signup-box"}>
           <span className="signup-top">
             <button
@@ -178,7 +238,9 @@ function Signup(props) {
             aria-label="Sign up Form"
           >
             <div className="form-input">
-              <label htmlFor="email" aria-label="Email">Email</label>
+              <label htmlFor="email" aria-label="Email">
+                Email
+              </label>
               <input
                 id="email"
                 name="email"
@@ -186,22 +248,46 @@ function Signup(props) {
                 maxLength={32}
                 value={emailValue}
                 onChange={(e) => setEmailValue(e.target.value)}
-                onBlur={displayEmailErrors}
                 ref={inputReference}
               />
               {errEmail}
             </div>
             <div className="form-input">
-              <label htmlFor="current-password" aria-label="Password">Password</label>
+              <label htmlFor="username" aria-label="Username">
+                Username
+              </label>
               <input
-                id="current-password"
-                name="password"
-                type="password"
-                maxLength={32}
-                value={passwordValue}
-                onInput={(e) => setPasswordValue(e.target.value)}
-                onBlur={displayPasswordErrors}
+                id="username"
+                name="username"
+                type="text"
+                maxLength={16}
+                value={usernameValue}
+                onChange={(e) => setUsernameValue(e.target.value)}
               />
+              {errUsername}
+            </div>
+            <div className="form-input">
+              <label htmlFor="current-password" aria-label="Password">
+                Password
+              </label>
+              <div className="password-container">
+                <input
+                  id="current-password"
+                  name="password"
+                  type={inputType}
+                  maxLength={32}
+                  value={passwordValue}
+                  onInput={(e) => setPasswordValue(e.target.value)}
+                />
+                <div
+                  className="toggle-password"
+                  aria-label="Toggle Password Visibility"
+                  role="button"
+                  onClick={(e) => toggleDisplayPassword(e)}
+                >
+                  <img src={eyeIcon} alt="Eye Icon" />
+                </div>
+              </div>
               {errPassword}
             </div>
             <div>

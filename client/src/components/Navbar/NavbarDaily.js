@@ -344,7 +344,7 @@ function NavbarDaily(props) {
             <img
               className="site-banner"
               src="/images/site/site-banner.png"
-              alt="Website banner that says 'Numbler'"
+              alt="Banner that says 'Numbler'"
             />
           </div>
         </div>
