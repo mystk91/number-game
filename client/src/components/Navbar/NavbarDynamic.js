@@ -10,7 +10,11 @@ import NavbarRandom from "./NavbarRandom";
   props.user - takes a user resObj that was fetched from a higher order component
 */
 function NavbarDynamic(props) {
-  const [navbar, setNavbar] = useState();
+  const [navbar, setNavbar] = useState(
+    <div className="navigation-bar-container">
+      <nav className="navigation-bar"></nav>
+    </div>
+  );
 
   //componentDidMount, runs when component mounts, then componentDismount
   useEffect(() => {
@@ -31,7 +35,6 @@ function NavbarDynamic(props) {
         imageUrl: profileObj.profile_picture,
         loggedIn: true,
       };
-      console.log("using local object " + resObj);
     } else {
       let res = await fetch("/api/profile_picture");
       resObj = await res.json();
@@ -39,15 +42,43 @@ function NavbarDynamic(props) {
     if (resObj.session) {
       if (resObj.premium) {
         if (sessionStorage.getItem("currentMode") === "random") {
-          setNavbar(<NavbarRandom digits={props.digits} user={resObj} />);
+          setNavbar(
+            <NavbarRandom
+              digits={props.digits}
+              user={resObj}
+              instructions={props.instructions}
+              login={props.login}
+            />
+          );
         } else {
-          setNavbar(<NavbarDaily digits={props.digits} user={resObj} />);
+          setNavbar(
+            <NavbarDaily
+              digits={props.digits}
+              user={resObj}
+              instructions={props.instructions}
+              login={props.login}
+            />
+          );
         }
       } else {
-        setNavbar(<Navbar digits={props.digits} user={resObj} />);
+        setNavbar(
+          <Navbar
+            digits={props.digits}
+            user={resObj}
+            instructions={props.instructions}
+            login={props.login}
+          />
+        );
       }
     } else {
-      setNavbar(<Navbar digits={props.digits} user={resObj} />);
+      setNavbar(
+        <Navbar
+          digits={props.digits}
+          user={resObj}
+          instructions={props.instructions}
+          login={props.login}
+        />
+      );
     }
   }
 

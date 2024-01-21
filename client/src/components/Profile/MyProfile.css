@@ -19,10 +19,12 @@
 .profile-tabs {
   display: flex;
   flex-direction: column;
+  height: calc(100vh - 56px);
 }
 
 .profile-tabs li{
   list-style: none;
+  background-color: rgb(74, 77, 98);
 }
 
 .username-tab {
@@ -37,6 +39,10 @@
   width: 100%;
   backdrop-filter: brightness(0.9);
   transition: .4s opacity;
+}
+
+ul.profile-tabs{
+  height: 100vh;
 }
 
 .profile-tabs-container li {
@@ -72,6 +78,7 @@
 
 .tab-button-label{
   cursor: pointer;
+
 }
 
 .profile-tabs button:hover {
@@ -84,7 +91,7 @@
 }
 
 .profile-tabs img {
-  min-width: 56px;
+  max-width: 56px;
   filter: invert() brightness(0.95);
 }
 
@@ -105,6 +112,16 @@
   width: max-content;
   transition: 0.5s width, 0.3s opacity;
 }
+
+.profile .logout{
+  margin-top: auto;
+  margin-bottom: 20%;
+}
+
+.contact-tab img{
+  padding: 4px;
+}
+
 
 /* Mobile Styles */
 @media screen and (max-width: 490px) {
@@ -145,8 +162,6 @@
     opacity: 0;
     transition: .4s opacity;
   }
-
-
 
   .profile-tabs button > * {
     margin: 0;

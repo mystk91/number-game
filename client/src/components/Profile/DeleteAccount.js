@@ -5,14 +5,12 @@ import "../../normalize.css";
 import "../../custom.css";
 
 //Displays contact information for questsions / bugs
-function ChangeUsername(props) {
+function DeleteAccount(props) {
   //Used to keep track of the inputed values
-  const [usernameValue, setUsernameValue] = useState("");
-  const [passwordValue, setPasswordValue] = useState("");
+  const [emailValue, setEmailValue] = useState("");
 
   //Used to display errors on the form
-  let [usernameErrs, setUsernameErrs] = useState();
-  let [passwordErrs, setPasswordErrs] = useState();
+  let [emailErrs, setEmailErrs] = useState();
 
   //Used for displaying success screen
   const [currentScreen, setCurrentScreen] = useState();
@@ -58,7 +56,7 @@ function ChangeUsername(props) {
         }
       });
     } else {
-      setPasswordErrs(<div className="error" aria-label="Error">{resObj.errors.password}</div>);
+      setEmailErrs(<div className="error" aria-label="Error">{resObj.errors.email}</div>);
     }
   }
 
@@ -102,7 +100,7 @@ function ChangeUsername(props) {
           <h1>Delete Account</h1>
         </div>
         <div className="delete-account-info">
-          Enter your password to delete your account. This cannot be reversed.
+          Enter your email address to delete your account. This cannot be reversed.
         </div>
         <form
           method="post"
@@ -111,17 +109,16 @@ function ChangeUsername(props) {
           aria-label="Delete Account Form"
         >
           <div className="form-input">
-            <label htmlFor="password">Password</label>
+            <label htmlFor="email">Email</label>
             <input
-              id="password"
-              name="password"
-              type="password"
-              maxLength={32}
-              value={passwordValue}
+              id="email"
+              name="email"
+              type="email"
+              value={emailValue}
               ref={inputReference}
-              onChange={(e) => setPasswordValue(e.target.value)}
+              onChange={(e) => setEmailValue(e.target.value)}
             />
-            {passwordErrs}
+            {emailErrs}
           </div>
 
           <div>
@@ -139,4 +136,4 @@ function ChangeUsername(props) {
   );
 }
 
-export default ChangeUsername;
+export default DeleteAccount;

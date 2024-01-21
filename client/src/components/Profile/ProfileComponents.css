@@ -141,7 +141,7 @@ button.daily-stats.clicked {
 .averages > * {
   display: flex;
   justify-content: space-between;
-  width: 300px;
+  width: 292px;
   border-bottom: 1px solid black;
   background-color: rgb(250, 250, 250);
 }
@@ -306,7 +306,7 @@ button.reset-stats:hover {
   }
 }
 
-@media screen and (min-width: 490px) and (max-width: 540px) {
+@media screen and (min-width: 490px) and (max-width: 560px) {
   .stats-game-modes-container {
     padding-left: 0px;
     justify-content: center;

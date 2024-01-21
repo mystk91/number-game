@@ -177,7 +177,6 @@ function Signup(props) {
                 id="email"
                 name="email"
                 type="text"
-                maxLength={32}
                 value={emailValue}
                 onChange={(e) => setEmailValue(e.target.value)}
                 ref={inputReference}

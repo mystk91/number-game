@@ -57,7 +57,7 @@ function LoginPage(props) {
       localStorage.removeItem("profile");
       setLoginPage(
         <div className="login-page">
-          <Navbar digits={0} user={resObj} login={false} />
+          <Navbar digits={0} user={resObj} instructions={" invisible"} login={" invisible"} />
           <LoginRegular />
         </div>
       );

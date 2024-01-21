@@ -19,14 +19,21 @@ function Navbar(props) {
     profileImageRef.current = point;
   }
 
+  //Used to hide the instructions button on pages that don't have the game on them
+  const [invisibleInstructions, setInvisibleInstructions] = useState(props.instructions || "");
+  //Used to hide the login / profile button on the login page
+  const [invisibleLogin, setInvisibleLogin] = useState(props.login || "");
+
   //componentDidMount, runs when component mounts, then componentDismount
   useEffect(() => {
+    /*
     if (props.digits === 0) {
       setInvisibleInstructions(" invisible");
     }
     if (props.login === false) {
       setInvisibleLogin(" invisible");
     }
+    */
     addInstructions();
     addProfileButton();
     highlightDigitButton();
@@ -38,11 +45,6 @@ function Navbar(props) {
   //Used to display and reveal the game modes
   const [gameModesButton, setGameModesButton] = useState();
   const [gameModesList, setGameModesList] = useState();
-
-  //Used to hide the instructions button on pages that don't have the game on them
-  const [invisibleInstructions, setInvisibleInstructions] = useState("");
-  //Used to hide the login / profile button on the login page
-  const [invisibleLogin, setInvisibleLogin] = useState("");
 
   let gameModesButtonHTML = (
     <button

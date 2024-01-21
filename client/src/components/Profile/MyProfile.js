@@ -12,7 +12,14 @@ import Contact from "./Contact";
 //    props.username - their username, also part of props.user
 //    props.premium - true if they have purchased random mode
 function MyProfile(props) {
-  const statsTab = <Statistics user={props.user} stats={props.stats} premium={props.premium} key="statsTab"/>;
+  const statsTab = (
+    <Statistics
+      user={props.user}
+      stats={props.stats}
+      premium={props.premium}
+      key="statsTab"
+    />
+  );
   const [activeTab, setActiveTab] = useState(statsTab);
   const [username, setUsername] = useState(props.username);
 
@@ -35,7 +42,13 @@ function MyProfile(props) {
   function switchTab(tabName) {
     switch (tabName) {
       case "settings": {
-        setActiveTab(<Settings user={props.user}  premium={props.premium} username={props.username} />);
+        setActiveTab(
+          <Settings
+            user={props.user}
+            premium={props.premium}
+            username={props.username}
+          />
+        );
         setActiveButton({
           statistics: "",
           settings: " active",
@@ -69,6 +82,28 @@ function MyProfile(props) {
           contact: "",
         });
       }
+    }
+  }
+
+  //Logs the user out
+  async function logout() {
+    const url = "/api/logout";
+    const options = {
+      method: "POST",
+      body: JSON.stringify(props.user),
+      withCredentials: true,
+      credentials: "include",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+    };
+    let res = await fetch(url, options);
+    if (res.status === 302) {
+      localStorage.removeItem("profile");
+      localStorage.setItem("previouslyVisited", "5");
+      sessionStorage.setItem("currentMode", "daily");
+      window.location.assign("/login");
     }
   }
 
@@ -127,10 +162,22 @@ function MyProfile(props) {
               <label className="tab-button-label">Contact</label>
             </button>
           </li>
+          <li className="logout">
+            <button aria-label="Logout" onClick={logout}>
+              <img
+                src="./images/account/icons/logout-icon.svg"
+                alt="logout icon"
+                width="56px"
+              />
+               <label className="tab-button-label">Logout</label>
+            </button>
+          </li>
         </ul>
       </nav>
 
-      <div className="active-tab" aria-label="Active Tab Container">{activeTab}</div>
+      <div className="active-tab" aria-label="Active Tab Container">
+        {activeTab}
+      </div>
     </div>
   );
 }

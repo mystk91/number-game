@@ -9,11 +9,10 @@ import PasswordInput from "../Parts/PasswordInput";
 function ChangeUsername(props) {
   //Used to keep track of the inputed values
   const [usernameValue, setUsernameValue] = useState("");
-  const [passwordValue, setPasswordValue] = useState("");
 
   //Used to display errors on the form
   let [usernameErrs, setUsernameErrs] = useState();
-  let [passwordErrs, setPasswordErrs] = useState();
+  //let [passwordErrs, setPasswordErrs] = useState();
 
   //Used for displaying success screen
   const [currentScreen, setCurrentScreen] = useState();
@@ -60,7 +59,7 @@ function ChangeUsername(props) {
       });
     } else {
       setUsernameErrs(<div className="error" aria-label="Error">{resObj.errors.username}</div>);
-      setPasswordErrs(<div className="error" aria-label="Error">{resObj.errors.password}</div>);
+      //setPasswordErrs(<div className="error" aria-label="Error">{resObj.errors.password}</div>);
     }
   }
 
@@ -131,13 +130,7 @@ function ChangeUsername(props) {
             />
             {usernameErrs}
           </div>
-
-          <div className="form-input">
-            <label htmlFor="password">Password</label>
-            <PasswordInput />
-            {passwordErrs}
-          </div>
-
+          
           <div>
             <button
               type="submit"

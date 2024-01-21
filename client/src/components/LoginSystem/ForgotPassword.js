@@ -185,7 +185,6 @@ function ForgotPassword(props) {
                 type="text"
                 value={emailValue}
                 onChange={(e) => setEmailValue(e.target.value)}
-                onBlur={displayEmailErrors}
                 ref={inputReference}
               />
               {errEmail}

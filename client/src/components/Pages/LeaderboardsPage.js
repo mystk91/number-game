@@ -50,7 +50,7 @@ function LeaderboardsPage(props) {
     }
     setLeaderboardPage(
       <div className="leaderboards-page">
-        <NavbarDynamic digits={0} user={resObj} />
+        <NavbarDynamic digits={0} user={resObj} instructions={" invisible"} />
         <Leaderboards user={resObj} />
       </div>
     );

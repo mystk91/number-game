@@ -42,7 +42,6 @@ function profileRequests(app) {
     let accounts = db.collection("Accounts");
     let errors = {
       username: "",
-      password: "",
     };
     //Error Checking
     //Swear filter & character filter
@@ -59,29 +58,30 @@ function profileRequests(app) {
         let account = await accounts.findOne({
           session: req.body.user.session,
         });
-        if (await bcrypt.compare(req.body.password, account.password)) {
-          //Checks it name has been changed in past 30 days
-          let today = new Date();
-          if (today.getTime() - account.usernameDate.getTime() >= 2592000000) {
-            await accounts.updateOne(
-              { session: req.body.user.session },
-              { $set: { username: req.body.newUsername, usernameDate: today, shadowbanned: false } }
-            );
-            res.send({ success: true });
-          } else {
-            let numberOfDays = Math.floor(
-              (today.getTime() - account.usernameDate.getTime()) / 86400000
-            );
-            numberOfDays = 30 - numberOfDays;
-            let dayText = "day";
-            if (numberOfDays != 1) {
-              dayText += "s";
+        //Checks it name has been changed in past 30 days
+        let today = new Date();
+        if (today.getTime() - account.usernameDate.getTime() >= 2592000000) {
+          await accounts.updateOne(
+            { session: req.body.user.session },
+            {
+              $set: {
+                username: req.body.newUsername,
+                usernameDate: today,
+                shadowbanned: false,
+              },
             }
-            errors.username = `You can change your username in ${numberOfDays} ${dayText}`;
-            res.send({ errors });
-          }
+          );
+          res.send({ success: true });
         } else {
-          errors.password = "Incorrect password";
+          let numberOfDays = Math.floor(
+            (today.getTime() - account.usernameDate.getTime()) / 86400000
+          );
+          numberOfDays = 30 - numberOfDays;
+          let dayText = "day";
+          if (numberOfDays != 1) {
+            dayText += "s";
+          }
+          errors.username = `You can change your username in ${numberOfDays} ${dayText}`;
           res.send({ errors });
         }
       } catch {
@@ -150,15 +150,15 @@ function profileRequests(app) {
     const db = mongoClient.db("Accounts");
     let accounts = db.collection("Accounts");
     let errors = {
-      password: "",
+      email: "",
     };
     try {
       let account = await accounts.findOne({ session: req.body.user.session });
-      if (await bcrypt.compare(req.body.password, account.password)) {
+      if (account.email.toLowerCase() == req.body.email.toLowerCase()) {
         accounts.deleteOne(account);
         res.send({ success: true });
       } else {
-        errors.password = "Incorrect password";
+        errors.email = "Incorrect email";
         res.send({ errors });
       }
     } catch {
@@ -178,7 +178,7 @@ function profileRequests(app) {
       if (modeName == "random" || modeName == "digits") {
         await accounts.updateOne(
           { session: req.body.session },
-          { $unset: {[`${req.body.mode}-scores`] : ""} }
+          { $unset: { [`${req.body.mode}-scores`]: "" } }
         );
         res.send({ success: true });
       } else {
@@ -188,8 +188,6 @@ function profileRequests(app) {
       res.send({ error: true });
     }
   });
-
-  
 }
 
 module.exports = { profileRequests };

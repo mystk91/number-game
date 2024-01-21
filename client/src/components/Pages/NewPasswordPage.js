@@ -57,7 +57,7 @@ function NewPasswordPage(props) {
     }
     setPasswordPage(
       <div className="new-password-page">
-        <NavbarDynamic digits={0} user={resObj} />
+        <NavbarDynamic digits={0} user={resObj} instructions={" invisible"} />
         <NewPassword />
       </div>
     );

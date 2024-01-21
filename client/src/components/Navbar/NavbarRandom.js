@@ -20,21 +20,23 @@ function NavbarRandom(props) {
   }
 
   //Used to hide the instructions button on pages that don't have the game on them
-  const [invisibleInstructions, setInvisibleInstructions] = useState("");
+  const [invisibleInstructions, setInvisibleInstructions] = useState(props.instructions || "");
   //Used to hide the login / profile button on the login page
-  const [invisibleLogin, setInvisibleLogin] = useState("");
+  const [invisibleLogin, setInvisibleLogin] = useState(props.login || "");
 
   //Used to add the button that swaps from random mode to daily mode
   const [swapButtonLink, setSwapButtonLink] = useState(`digits${props.digits}`);
 
   //componentDidMount, runs when component mounts, then componentDismount
   useEffect(() => {
+    /*
     if (props.digits === 0) {
       setInvisibleInstructions(" invisible");
     }
     if (props.login === false) {
       setInvisibleLogin(" invisible");
     }
+    */
     addInstructions();
     addProfileButton();
     highlightDigitButton();

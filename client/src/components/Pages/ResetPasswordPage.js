@@ -57,7 +57,7 @@ function ResetPasswordPage(props) {
     }
     setPasswordPage(
       <div className="reset-password-page">
-        <NavbarDynamic digits={0} user={resObj} />
+        <NavbarDynamic digits={0} user={resObj} instructions={" invisible"} />
         <ResetPassword />
       </div>
     );

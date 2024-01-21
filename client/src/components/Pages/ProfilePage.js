@@ -111,7 +111,7 @@ function ProfilePage(props) {
     if (resObj.session) {
       setProfilePage(
         <div className="profile-page">
-          <NavbarDynamic digits={0} user={resObj} />
+          <NavbarDynamic digits={0} user={resObj} instructions={" invisible"} />
           <MyProfile
             user={resObj}
             username={username}

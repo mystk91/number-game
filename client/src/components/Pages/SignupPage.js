@@ -57,7 +57,7 @@ function SignupPage(props) {
     }
     setSignupPage(
       <div className="signup-page">
-        <NavbarDynamic digits={0} user={resObj} />
+        <NavbarDynamic digits={0} user={resObj} instructions={" invisible"} />
         <SignupRegular />
       </div>
     );

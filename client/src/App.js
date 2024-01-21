@@ -26,7 +26,6 @@ import LeaderboardsPage from "./components/Pages/LeaderboardsPage";
 import GamePageDaily from "./components/Pages/GamePageDaily";
 import CalendarIcon from "./components/Parts/CalendarIcon";
 import ProfilePage from "./components/Pages/ProfilePage";
-import ProfileCSS from "./components/Pages/ProfileCSS";
 import Admin from "./components/Admin/Admin";
 
 function App() {
@@ -116,7 +115,6 @@ function App() {
             element={<GamePageRandom digits={7} attempts={6} />}
           />
           <Route path="/profile" element={<ProfilePage />} />
-          <Route path="/profiletest" element={<ProfileCSS />} />
           <Route path="/admin/secretAdmins" element={<Admin />} />
         </Routes>
       </BrowserRouter> 
