@@ -18,6 +18,12 @@
     width: 1200px;
 }
 
+.admin-page .leaderboard-tabs{
+    width: max-content;
+    padding: 0 20px;
+    list-style: none;
+}
+
 .admin-page .leaderboard-labels .player-username-rank{
     width: 180px;
     display: flex;
@@ -106,4 +112,23 @@
     border: none;
     padding: 40px 0;
     height: 3px;
+}
+
+.fake-accounts{
+    display: flex;
+    width: 400px;
+    justify-content: space-around;
+}
+
+.admin-page button{
+    cursor: pointer;
+}
+
+
+.admin-page button:not(.give-strike-btn){
+    width: 200px;
+    height: 75px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }

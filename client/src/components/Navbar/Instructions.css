@@ -13,11 +13,10 @@
   height: 100%;
   display: flex;
   overflow-y: scroll;
-  padding-bottom: 60px;
+  padding-bottom: 140px;
 }
 
 .instructions {
-  margin: auto;
   position: relative;
   display: flex;
   flex-direction: column;

@@ -137,7 +137,7 @@ function Statistics(props) {
       );
     } else {
       return (
-        <div className="averages">
+        <div className="averages" aria-label="Statistic">
           <div className="best-30">
             <div className="stat-name">Best 30 Average</div>
             <div className="stat-value">----</div>
@@ -374,7 +374,7 @@ function Statistics(props) {
     if (!modal) {
       setModal(
         <div className="reset-modal" aria-label="Reset Stats Modal">
-          <div className="reset-modal-container">
+          <div className="reset-modal-container" aria-label="Reset Stats Container">
             <span className="modal-top">
               <button
                 className="close-modal"
@@ -396,10 +396,10 @@ function Statistics(props) {
                   className="cancel-btn confirmation-btn"
                   onClick={() => setModal()}
                 >
-                  Cancel
+                  Keep Stats
                 </button>
                 <button
-                  className="confirmation-btn"
+                  className="reset-btn confirmation-btn"
                   onClick={() => resetStats(digits, mode)}
                 >
                   Reset
@@ -445,6 +445,7 @@ function Statistics(props) {
             attempts={6}
             scoresObj={props.stats[`${digits}${mode.toLowerCase()}-scores`]}
             scoreType={scoreType}
+            modal={true}
           />
         </div>
       </div>

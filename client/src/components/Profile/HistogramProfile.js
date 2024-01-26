@@ -5,6 +5,7 @@ import "../../custom.css";
 
 /*
     Used to create a histogram for a game with different digits / different no. of attempts
+    props.modal - set to true to keep the wide width on the stats container
     props.averageLabel
     props.attempts - number of attempts allowed on the game, usually 6
     props.scoresObj - an object containing scores used in the histogram
@@ -66,7 +67,9 @@ function HistogramRegular(props) {
 
       let pixelData = new Array(props.attempts + 1);
       let histoLength = 248;
-      histoLength = 190;
+      if (!props.modal) {
+        histoLength = 190;
+      }
       for (let i = 0; i < pixelData.length; i++) {
         if (histogramData[i] > 0) {
           pixelData[i] = Math.max(
@@ -96,7 +99,11 @@ function HistogramRegular(props) {
 
       for (let i = 0; i < props.attempts + 1; i++) {
         let row = (
-          <div className="histogram-row" key={"histogram-row-" + i} aria-label={`Score ${i + 1} frequency: ${histogramData[i]}`}>
+          <div
+            className="histogram-row"
+            key={"histogram-row-" + i}
+            aria-label={`Score ${i + 1} frequency: ${histogramData[i]}`}
+          >
             <div className="histogram-score">{i + 1}</div>
             <div
               className={"histogram-bar score-" + (i + 1)}
@@ -127,7 +134,8 @@ function HistogramRegular(props) {
   return (
     <div className="histogram-container profile" aria-label="Score Histogram">
       <div className="average-score">
-        {averageLabel}{averageScoreRef.current}
+        {averageLabel}
+        {averageScoreRef.current}
       </div>
       {histogram}
     </div>

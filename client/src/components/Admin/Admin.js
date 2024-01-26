@@ -142,6 +142,29 @@ function Admin(props) {
     }
   }
 
+  //Adds fake accounts so they will be on the leaderboard, should only be used one time
+  //Function and route should be commented out if its been used
+  async function addFakeAccounts() {
+    fetch("/admin/add-fake-accounts", { method: "POST" });
+  }
+
+  //Removes all fake accounts from Accounts
+  //Function and route should be commented out if its been used
+  async function removeFakeAccounts() {
+    fetch("/admin/remove-fake-accounts", { method: "DELETE" });
+  }
+
+  //Updates the test account, used for seeing how large the account can get
+  async function updateTestAccount() {
+    fetch("/admin/update-test-account", { method: "POST" });
+  }
+
+  //Adds the first games to the database if they don't exist, Only use when we have an empty game database. Probably will only use this once
+  async function addFirstGames() {
+    fetch("/admin/add-first-games", { method: "POST" });
+  }
+
+
   return (
     <div className="admin-page">
       {modal}
@@ -245,12 +268,36 @@ function Admin(props) {
       <hr className="admin-hr"></hr>
 
       <h1>Messages</h1>
-      <div className="admin-messages">
+      <div className="admin-messages"></div>
 
-        
+      <hr className="admin-hr"></hr>
 
-
+      <h1>Fake Accounts</h1>
+      <div className="fake-accounts">
+        <button className="add-fake-accounts" onClick={addFakeAccounts}>
+          Add Fake Accounts
+        </button>
+        <button className="remove-fake-accounts" onClick={removeFakeAccounts}>
+          Remove Fake Accounts
+        </button>
       </div>
+
+      <hr className="admin-hr"></hr>
+      <h1>Test Account</h1>
+      <button className="update-test-account" onClick={updateTestAccount}>
+        Update Test Account
+      </button>
+
+      <hr className="admin-hr"></hr>
+      <h1>Add First Games</h1>
+      <button className="add-first-games" onClick={addFirstGames}>
+        Add First Games
+      </button>
+
+      <hr className="admin-hr"></hr>
+
+
+
     </div>
   );
 }

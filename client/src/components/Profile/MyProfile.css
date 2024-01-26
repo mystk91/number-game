@@ -1,25 +1,36 @@
+
+.profile-page{
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+}
+
 .profile {
   display: flex;
   background-color: rgba(250, 250, 250);
   overflow-y: hidden;
+  flex: 1;
+  max-height: 100%;
+  max-width: 100vw;
 }
 
 .profile-tabs-container {
-  height: calc(100vh - 56px);
-  width: 190px;
+  min-width: 190px;
   display: flex;
   border-right: 0.5x solid black;
   justify-content: flex-start;
   flex-direction: column;
   background-color: var(--navbar-background-color);
   filter: brightness(1.65);
-  transition: 0.5s width;
+  transition: 0.5s width, 0.7s min-width;
+  overflow-y: scroll;
+  overflow-x: hidden;
 }
 
 .profile-tabs {
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 56px);
+  height: 100%;
 }
 
 .profile-tabs li{
@@ -41,9 +52,7 @@
   transition: .4s opacity;
 }
 
-ul.profile-tabs{
-  height: 100vh;
-}
+
 
 .profile-tabs-container li {
   max-height: 90px;
@@ -91,6 +100,7 @@ ul.profile-tabs{
 }
 
 .profile-tabs img {
+  min-width: 56px;
   max-width: 56px;
   filter: invert() brightness(0.95);
 }
@@ -115,7 +125,7 @@ ul.profile-tabs{
 
 .profile .logout{
   margin-top: auto;
-  margin-bottom: 20%;
+  margin-bottom: 60px;
 }
 
 .contact-tab img{
@@ -127,13 +137,15 @@ ul.profile-tabs{
 @media screen and (max-width: 490px) {
   .profile-tabs-container {
     width: 60px;
-    transition: 0.5s width;
+    min-width: 60px;
+    transition: 0.5s width, 0.5s min-Width;
   }
 
   .profile-tabs button {
     width: 60px;
     transition: 0.5s width;
   }
+
 
   .username-container {
     opacity: 0;

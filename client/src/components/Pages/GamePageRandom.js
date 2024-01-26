@@ -32,7 +32,6 @@ function GamePageRandom(props) {
         imageUrl: profileObj.profile_picture,
         loggedIn: true,
       };
-      console.log("using local object " + resObj);
     } else {
       let res = await fetch("/api/profile_picture");
       resObj = await res.json();
@@ -51,8 +50,8 @@ function GamePageRandom(props) {
       let checkPremium = await fetch("/api/checkPremium", options);
       let checkPremiumObj = await checkPremium.json();
 
-      if (checkPremiumObj.premium) {
-        console.log("giving you the random game page");
+      if(true){
+      //if (checkPremiumObj.premium) {
         setGamePage(
           <div className="game-page">
             <NavbarRandom digits={props.digits} user={resObj} />

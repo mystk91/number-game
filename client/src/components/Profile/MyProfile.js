@@ -113,7 +113,7 @@ function MyProfile(props) {
         <div className="username-tab" aria-label="Username">
           <div className="username-container">{username}</div>
         </div>
-        <ul className="profile-tabs">
+        <ul className="profile-tabs" aria-label="Tabs">
           <li>
             <button
               className={"statistics-tab" + activeButton[`statistics`]}

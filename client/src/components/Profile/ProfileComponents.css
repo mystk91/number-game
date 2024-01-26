@@ -1,10 +1,11 @@
 .account-settings,
 .statistics,
 .contact {
-  width: calc(100vw - 60px);
+  flex: 1;
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 56px);
+  height: 100%;
+  width: 100%;
   overflow-y: scroll;
 }
 
@@ -56,11 +57,8 @@ button.daily-stats.clicked {
   flex-wrap: wrap;
   padding-left: 40px;
   padding-bottom: 180px;
-  width: calc(100vw - 210px);
-  max-width: 976px;
   column-gap: 8px;
   row-gap: 8px;
-  width: max-content;
 }
 
 .statistics h1 {
@@ -69,14 +67,10 @@ button.daily-stats.clicked {
 }
 
 .stats-game-mode {
-  width: 296px;
-  min-width: 296px;
-  max-width: 296px;
   height: max-content;
   border: 3px solid rgb(8, 8, 62);
   border-radius: 14px;
   margin: 2px 2px;
-
   max-width: max-content;
   width: max-content;
 }
@@ -264,7 +258,7 @@ button.reset-stats:hover {
   }
 
   .stats-game-modes-container {
-    width: calc(100vw - 210px);
+    width: 100%;
   }
 }
 
@@ -298,7 +292,7 @@ button.reset-stats:hover {
   }
 
   .stats-game-modes-container {
-    width: calc(100vw - 210px);
+    width: 100%;
   }
 
   .daily-icon{
@@ -310,7 +304,7 @@ button.reset-stats:hover {
   .stats-game-modes-container {
     padding-left: 0px;
     justify-content: center;
-    width: calc(100vw - 190px);
+    width: 100%;
   }
 }
 
@@ -318,7 +312,7 @@ button.reset-stats:hover {
   .stats-game-modes-container {
     padding-left: 0px;
     justify-content: center;
-    width: calc(100vw - 60px);
+    width: 100%;
   }
 }
 
@@ -402,7 +396,9 @@ button.reset-stats:hover {
 .reset-modal .reset-text {
   display: flex;
   font-size: 1.9rem;
-  padding: 10px 20px 0 20px;
+  padding: 10px 40px 0 40px;
+  text-align: center;
+
 }
 
 .reset-confirmation-btns {
@@ -415,7 +411,7 @@ button.reset-stats:hover {
   border: 0.8px solid black;
 }
 
-.cancel-btn.confirmation-btn {
+.reset-modal .reset-btn.confirmation-btn {
   background-color: var(--higherColor);
 }
 
@@ -439,7 +435,7 @@ button.reset-stats:hover {
   flex-direction: column;
   row-gap: 6px;
   width: max-content;
-  max-width: calc(100vw - 210px);
+  width: 100%;
 }
 
 .settings-option {
@@ -519,7 +515,7 @@ button.reset-stats:hover {
 
 @media screen and (max-width: 490px) {
   .settings-option-container {
-    max-width: calc(100vw - 80px);
+    width: 100%;
   }
 }
 
@@ -529,7 +525,7 @@ button.reset-stats:hover {
 }
 
 .contact > * {
-  max-width: calc(100vw - 210px);
+  width: 100%;
 }
 
 .contact h2.contact-text {
@@ -559,7 +555,7 @@ button.reset-stats:hover {
   }
 
   .contact > * {
-    max-width: calc(100vw - 60px);
+    width: 100%;
   }
 
   .contact .contact-text {

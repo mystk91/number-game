@@ -748,7 +748,7 @@ function NumberGameRandom(props) {
           aria-label={`Go to ${linkLeftRef.current[linkLeftRef.current.length - 1]} Random`}
           style={{ backgroundImage: `url(/images/site/left-arrow.png)` }}
         >
-          <div>-</div>
+          <div></div>
         </a>
       );
     }
@@ -793,7 +793,7 @@ function NumberGameRandom(props) {
           aria-label={`Go to ${linkRightRef.current[linkRightRef.current.length - 1]} Random`}
           style={{ backgroundImage: `url(/images/site/right-arrow.png)` }}
         >
-          <div>+</div>
+          <div></div>
         </a>
       );
     }

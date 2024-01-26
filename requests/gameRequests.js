@@ -46,35 +46,40 @@ function gameRequests(app) {
       let accounts = db.collection("Accounts");
       let account = await accounts.findOne({ session: req.body.session });
       let randomGameString = req.body.digits + "random";
-      if (!account[randomGameString]) {
-        resetGameRandom(req, res, next);
-      } else {
-        if (account[randomGameString].status == "playing") {
-          res.send({
-            gameObj: {
-              board: account[randomGameString].board,
-              currentRow: account[randomGameString].currentRow,
-              hints: account[randomGameString].hints,
-              status: account[randomGameString].status,
-            },
-          });
+      //Checks if user actually has random mode / premium
+      if (account.premium) {
+        if (!account[randomGameString]) {
+          resetGameRandom(req, res, next);
         } else {
-          res.send({
-            gameObj: {
-              board: account[randomGameString].board,
-              currentRow: account[randomGameString].currentRow,
-              hints: account[randomGameString].hints,
-              status: account[randomGameString].status,
-              targetNumber: account[randomGameString].targetNumber,
-            },
-            scoresObj: {
-              average: account[randomGameString + `-scores`].average,
-              average30: account[randomGameString + `-scores`].average30,
-              scores: account[randomGameString + `-scores`].scores,
-              scores30: account[randomGameString + `-scores`].scores30,
-            },
-          });
+          if (account[randomGameString].status == "playing") {
+            res.send({
+              gameObj: {
+                board: account[randomGameString].board,
+                currentRow: account[randomGameString].currentRow,
+                hints: account[randomGameString].hints,
+                status: account[randomGameString].status,
+              },
+            });
+          } else {
+            res.send({
+              gameObj: {
+                board: account[randomGameString].board,
+                currentRow: account[randomGameString].currentRow,
+                hints: account[randomGameString].hints,
+                status: account[randomGameString].status,
+                targetNumber: account[randomGameString].targetNumber,
+              },
+              scoresObj: {
+                average: account[randomGameString + `-scores`].average,
+                average30: account[randomGameString + `-scores`].average30,
+                scores: account[randomGameString + `-scores`].scores,
+                scores30: account[randomGameString + `-scores`].scores30,
+              },
+            });
+          }
         }
+      } else {
+        res.redirect("/login");
       }
     } catch {
       res.redirect("/login");
@@ -88,71 +93,76 @@ function gameRequests(app) {
       const db = mongoClient.db("Accounts");
       let accounts = db.collection("Accounts");
       let account = await accounts.findOne({ session: req.body.session });
-      let randomGameString = req.body.digits + "random";
-      let condition = false;
-      if (account[randomGameString]) {
-        if (account[randomGameString].status != "playing") {
+      //Checks if user actually has random mode / premium
+      if (account.premium) {
+        let randomGameString = req.body.digits + "random";
+        let condition = false;
+        if (account[randomGameString]) {
+          if (account[randomGameString].status != "playing") {
+            condition = true;
+          }
+        } else {
           condition = true;
         }
-      } else {
-        condition = true;
-      }
 
-      if (condition) {
-        let targetNumber = Math.floor(
-          Math.random() * Math.pow(10, req.body.digits)
-        ).toString();
-        while (targetNumber.length < req.body.digits) {
-          targetNumber = "0" + targetNumber;
-        }
-        //Sets up the board
-        let props = {
-          attempts: 6,
-        };
-        let board = new Array(6);
-        for (let i = 0; i < 6; i++) {
-          board[i] = "";
-        }
-        //Sets up the hints
-        let hintsArr = new Array(6);
-        for (let i = 0; i < 6; i++) {
-          hintsArr[i] = "";
-        }
-
-        let randomGameObj = {
-          board: board,
-          currentRow: 0,
-          hints: hintsArr,
-          status: "playing",
-          targetNumber: targetNumber,
-        };
-
-        console.log(randomGameObj);
-
-        let randomGameString = req.body.digits + "random";
-        await accounts.updateOne(
-          { session: req.body.session },
-          {
-            $set: {
-              [randomGameString]: randomGameObj,
-            },
+        if (condition) {
+          let targetNumber = Math.floor(
+            Math.random() * Math.pow(10, req.body.digits)
+          ).toString();
+          while (targetNumber.length < req.body.digits) {
+            targetNumber = "0" + targetNumber;
           }
-        );
+          //Sets up the board
+          let props = {
+            attempts: 6,
+          };
+          let board = new Array(6);
+          for (let i = 0; i < 6; i++) {
+            board[i] = "";
+          }
+          //Sets up the hints
+          let hintsArr = new Array(6);
+          for (let i = 0; i < 6; i++) {
+            hintsArr[i] = "";
+          }
 
-        let gameObj = {
-          board: board,
-          currentRow: 0,
-          hints: hintsArr,
-          status: "playing",
-        };
-        let resObj = {
-          gameObj: gameObj,
-        };
-        console.log("reseting the game");
+          let randomGameObj = {
+            board: board,
+            currentRow: 0,
+            hints: hintsArr,
+            status: "playing",
+            targetNumber: targetNumber,
+          };
 
-        res.send(resObj);
+          console.log(randomGameObj);
+
+          let randomGameString = req.body.digits + "random";
+          await accounts.updateOne(
+            { session: req.body.session },
+            {
+              $set: {
+                [randomGameString]: randomGameObj,
+              },
+            }
+          );
+
+          let gameObj = {
+            board: board,
+            currentRow: 0,
+            hints: hintsArr,
+            status: "playing",
+          };
+          let resObj = {
+            gameObj: gameObj,
+          };
+          console.log("reseting the game");
+
+          res.send(resObj);
+        } else {
+          getCurrentGameRandom(req, res, next);
+        }
       } else {
-        getCurrentGameRandom(req, res, next);
+        res.redirect("/login");
       }
     } catch {
       console.log(error);
@@ -166,245 +176,250 @@ function gameRequests(app) {
       const db = mongoClient.db("Accounts");
       let accounts = db.collection("Accounts");
       let account = await accounts.findOne({ session: req.body.session });
-      let validateNumber = false;
-      if (
-        isFinite(req.body.number) &&
-        req.body.number.length == req.body.digits &&
-        req.body.digits > 1
-      ) {
-        validateNumber = true;
-      }
-      let string = "/" + req.body.digits + "random";
-      if (validateNumber) {
-        let randomGameString = req.body.digits + "random";
-
-        function checkNumber(number) {
-          let result = "";
-          //Compares the number with target number and applies wordle rules to it
-          let target = account[randomGameString].targetNumber;
-          let tempTarget = "";
-          for (let i = 0; i < req.body.digits; i++) {
-            if (number[i] === target[i]) {
-              tempTarget += "G";
-            } else {
-              tempTarget += target[i];
-            }
-          }
-          for (let i = 0; i < req.body.digits; i++) {
-            if (tempTarget[i] === "G") {
-              result += "G";
-            } else if (tempTarget.includes(number[i])) {
-              result += "Y";
-            } else {
-              result += "X";
-            }
-          }
-          //Compares the number with target number numerically and creates a hint
-          target = Number(target);
-          number = Number(number);
-          if (number > target) {
-            result += "L";
-          } else if (number < target) {
-            result += "H";
-          } else if (number === target) {
-            result += "E";
-          }
-          return result;
+      //Checks if user actually has random mode / premium
+      if (account.premium) {
+        let validateNumber = false;
+        if (
+          isFinite(req.body.number) &&
+          req.body.number.length == req.body.digits &&
+          req.body.digits > 1
+        ) {
+          validateNumber = true;
         }
+        let string = "/" + req.body.digits + "random";
+        if (validateNumber) {
+          let randomGameString = req.body.digits + "random";
 
-        let boardCopy = [];
-        Object.values(account[randomGameString].board).forEach((x) => {
-          boardCopy.push(x);
-        });
-        boardCopy[account[randomGameString].currentRow] = req.body.number;
+          function checkNumber(number) {
+            let result = "";
+            //Compares the number with target number and applies wordle rules to it
+            let target = account[randomGameString].targetNumber;
+            let tempTarget = "";
+            for (let i = 0; i < req.body.digits; i++) {
+              if (number[i] === target[i]) {
+                tempTarget += "G";
+              } else {
+                tempTarget += target[i];
+              }
+            }
+            for (let i = 0; i < req.body.digits; i++) {
+              if (tempTarget[i] === "G") {
+                result += "G";
+              } else if (tempTarget.includes(number[i])) {
+                result += "Y";
+              } else {
+                result += "X";
+              }
+            }
+            //Compares the number with target number numerically and creates a hint
+            target = Number(target);
+            number = Number(number);
+            if (number > target) {
+              result += "L";
+            } else if (number < target) {
+              result += "H";
+            } else if (number === target) {
+              result += "E";
+            }
+            return result;
+          }
 
-        let result = checkNumber(req.body.number);
-        let hintsCopy = [];
-        Object.values(account[randomGameString].hints).forEach((x) => {
-          hintsCopy.push(x);
-        });
-        hintsCopy[account[randomGameString].currentRow] = result;
+          let boardCopy = [];
+          Object.values(account[randomGameString].board).forEach((x) => {
+            boardCopy.push(x);
+          });
+          boardCopy[account[randomGameString].currentRow] = req.body.number;
 
-        let currentRow = account[randomGameString].currentRow + 1;
+          let result = checkNumber(req.body.number);
+          let hintsCopy = [];
+          Object.values(account[randomGameString].hints).forEach((x) => {
+            hintsCopy.push(x);
+          });
+          hintsCopy[account[randomGameString].currentRow] = result;
 
-        let randomGameObj = {
-          board: boardCopy,
-          currentRow: currentRow,
-          hints: hintsCopy,
-          status: "playing",
-        };
+          let currentRow = account[randomGameString].currentRow + 1;
 
-        let randomGameTargetObj = {
-          board: boardCopy,
-          currentRow: currentRow,
-          hints: hintsCopy,
-          status: "playing",
-          targetNumber: account[randomGameString].targetNumber,
-        };
+          let randomGameObj = {
+            board: boardCopy,
+            currentRow: currentRow,
+            hints: hintsCopy,
+            status: "playing",
+          };
 
-        console.log(randomGameTargetObj);
+          let randomGameTargetObj = {
+            board: boardCopy,
+            currentRow: currentRow,
+            hints: hintsCopy,
+            status: "playing",
+            targetNumber: account[randomGameString].targetNumber,
+          };
 
-        //Adds a score to the users database entry. Keeps track past 30 scores and 1k scores
-        //Returns an object containing the scores/averages that need to be updated in the DB
-        // score - the score player recieved for that game
-        // account - the users account that was retrieved from the DB
-        async function updateScores(score, account) {
-          //This updates the games completed stat
-          try {
-            const webDb = mongoClient.db("Website");
-            let stats = webDb.collection("Stats");
-            await stats.updateOne(
-              { title: "gamesCompleted" },
+          console.log(randomGameTargetObj);
+
+          //Adds a score to the users database entry. Keeps track past 30 scores and 1k scores
+          //Returns an object containing the scores/averages that need to be updated in the DB
+          // score - the score player recieved for that game
+          // account - the users account that was retrieved from the DB
+          async function updateScores(score, account) {
+            //This updates the games completed stat
+            try {
+              const webDb = mongoClient.db("Website");
+              let stats = webDb.collection("Stats");
+              await stats.updateOne(
+                { title: "gamesCompleted" },
+                {
+                  $inc: { gamesCompleted: 1, randomGamesCompleted: 1 },
+                }
+              );
+            } catch {}
+
+            let currentDate = new Date();
+
+            let scoresObjDb = account[randomGameString + `-scores`];
+            let scores30;
+            let best30;
+            if (scoresObjDb) {
+              scores30 = scoresObjDb.scores30;
+              best30 = scoresObjDb.best30;
+              while (
+                currentDate.getTime() - scores30[0].date.getTime() >
+                2592000000
+              ) {
+                scores30.shift();
+              }
+              if (scores30.length >= 30) {
+                scores30.shift();
+              }
+            } else {
+              scores30 = [];
+              best30 = { average: 8, date: currentDate, scores: [] };
+            }
+
+            let scores30entry = {
+              score: score,
+              date: currentDate,
+            };
+            scores30.push(scores30entry);
+
+            let average30 =
+              scores30.reduce((total, x) => {
+                return total + x.score;
+              }, 0) / scores30.length;
+
+            if (scores30.length == 30) {
+              if (average30 < best30.average) {
+                best30.average = average30;
+                best30.date = currentDate;
+                best30.scores = scores30;
+              }
+            }
+
+            let average30obj = {
+              average: average30,
+              numberOfGames: scores30.length,
+              date: scores30[0].date,
+            };
+
+            let scores;
+            if (scoresObjDb) {
+              scores = scoresObjDb.scores;
+            }
+            if (!scores) {
+              scores = [];
+            }
+            if (scores.length > 9999) {
+              scores.shift();
+            }
+            scores.push(score);
+            let average =
+              scores.reduce((total, x) => {
+                return total + x;
+              }, 0) / scores.length;
+
+            let scoresObj = {
+              average: average,
+              average30: average30obj,
+              scores: scores,
+              scores30: scores30,
+              best30: best30,
+            };
+
+            return scoresObj;
+          }
+
+          let correctResult = "";
+          for (let i = 0; i < req.body.digits; i++) {
+            correctResult += "G";
+          }
+          correctResult += "E";
+
+          if (result == correctResult) {
+            randomGameTargetObj.status = "victory";
+            let scoresObj = await updateScores(
+              account[randomGameString].currentRow + 1,
+              account
+            );
+            console.log(scoresObj);
+
+            await accounts.updateOne(
+              { session: req.body.session },
               {
-                $inc: { gamesCompleted: 1, randomGamesCompleted: 1 },
+                $set: {
+                  [randomGameString]: randomGameTargetObj,
+                  [randomGameString + `-scores`]: {
+                    average: scoresObj.average,
+                    average30: scoresObj.average30,
+                    scores: scoresObj.scores,
+                    scores30: scoresObj.scores30,
+                    best30: scoresObj.best30,
+                  },
+                },
               }
             );
-          } catch {}
 
-          let currentDate = new Date();
+            res.send({
+              gameObj: randomGameTargetObj,
+              scoresObj: scoresObj,
+            });
+          } else if (currentRow == 6) {
+            randomGameTargetObj.status = "defeat";
+            let scoresObj = await updateScores(7, account);
+            console.log(scoresObj);
+            await accounts.updateOne(
+              { session: req.body.session },
+              {
+                $set: {
+                  [randomGameString]: randomGameTargetObj,
+                  [randomGameString + `-scores`]: {
+                    average: scoresObj.average,
+                    average30: scoresObj.average30,
+                    scores: scoresObj.scores,
+                    scores30: scoresObj.scores30,
+                    best30: scoresObj.best30,
+                  },
+                },
+              }
+            );
 
-          let scoresObjDb = account[randomGameString + `-scores`];
-          let scores30;
-          let best30;
-          if (scoresObjDb) {
-            scores30 = scoresObjDb.scores30;
-            best30 = scoresObjDb.best30;
-            while (
-              currentDate.getTime() - scores30[0].date.getTime() >
-              2592000000
-            ) {
-              scores30.shift();
-            }
-            if (scores30.length >= 30) {
-              scores30.shift();
-            }
+            res.send({
+              gameObj: randomGameTargetObj,
+              scoresObj: scoresObj,
+            });
           } else {
-            scores30 = [];
-            best30 = { average: 8, date: currentDate, scores: [] };
+            await accounts.updateOne(
+              { session: req.body.session },
+              { $set: { [randomGameString]: randomGameTargetObj } }
+            );
+
+            res.send({
+              gameObj: randomGameObj,
+            });
           }
-
-          let scores30entry = {
-            score: score,
-            date: currentDate,
-          };
-          scores30.push(scores30entry);
-
-          let average30 =
-            scores30.reduce((total, x) => {
-              return total + x.score;
-            }, 0) / scores30.length;
-
-          if (scores30.length == 30) {
-            if (average30 < best30.average) {
-              best30.average = average30;
-              best30.date = currentDate;
-              best30.scores = scores30;
-            }
-          }
-
-          let average30obj = {
-            average: average30,
-            numberOfGames: scores30.length,
-            date: scores30[0].date,
-          };
-
-          let scores;
-          if (scoresObjDb) {
-            scores = scoresObjDb.scores;
-          }
-          if (!scores) {
-            scores = [];
-          }
-          if (scores.length > 9999) {
-            scores.shift();
-          }
-          scores.push(score);
-          let average =
-            scores.reduce((total, x) => {
-              return total + x;
-            }, 0) / scores.length;
-
-          let scoresObj = {
-            average: average,
-            average30: average30obj,
-            scores: scores,
-            scores30: scores30,
-            best30: best30,
-          };
-
-          return scoresObj;
-        }
-
-        let correctResult = "";
-        for (let i = 0; i < req.body.digits; i++) {
-          correctResult += "G";
-        }
-        correctResult += "E";
-
-        if (result == correctResult) {
-          randomGameTargetObj.status = "victory";
-          let scoresObj = await updateScores(
-            account[randomGameString].currentRow + 1,
-            account
-          );
-          console.log(scoresObj);
-
-          await accounts.updateOne(
-            { session: req.body.session },
-            {
-              $set: {
-                [randomGameString]: randomGameTargetObj,
-                [randomGameString + `-scores`]: {
-                  average: scoresObj.average,
-                  average30: scoresObj.average30,
-                  scores: scoresObj.scores,
-                  scores30: scoresObj.scores30,
-                  best30: scoresObj.best30,
-                },
-              },
-            }
-          );
-
-          res.send({
-            gameObj: randomGameTargetObj,
-            scoresObj: scoresObj,
-          });
-        } else if (currentRow == 6) {
-          randomGameTargetObj.status = "defeat";
-          let scoresObj = await updateScores(7, account);
-          console.log(scoresObj);
-          await accounts.updateOne(
-            { session: req.body.session },
-            {
-              $set: {
-                [randomGameString]: randomGameTargetObj,
-                [randomGameString + `-scores`]: {
-                  average: scoresObj.average,
-                  average30: scoresObj.average30,
-                  scores: scoresObj.scores,
-                  scores30: scoresObj.scores30,
-                  best30: scoresObj.best30,
-                },
-              },
-            }
-          );
-
-          res.send({
-            gameObj: randomGameTargetObj,
-            scoresObj: scoresObj,
-          });
         } else {
-          await accounts.updateOne(
-            { session: req.body.session },
-            { $set: { [randomGameString]: randomGameTargetObj } }
-          );
-
-          res.send({
-            gameObj: randomGameObj,
-          });
+          throw new Error();
         }
       } else {
-        throw new Error();
+        res.redirect("/login");
       }
     } catch {
       res.redirect("/login");

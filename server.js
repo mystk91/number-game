@@ -124,11 +124,11 @@ gameRequests.gameRequests(app);
 let leaderboardRequests = require("./requests/leaderboardRequests.js");
 leaderboardRequests.leaderboardRequests(app);
 
+let visitorCounterRequests = require("./requests/visitorCounterRequests.js");
+visitorCounterRequests.visitorCounterRequests(app);
+
 let adminRequests = require("./requests/adminRequests.js");
 adminRequests.adminRequests(app);
-
-let testRequests = require("./requests/testRequests.js");
-testRequests.testRequests(app);
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

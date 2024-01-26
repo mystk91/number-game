@@ -14,7 +14,7 @@
   display: none;
 }
 
-.signup-box {
+.signup-regular .signup-box {
   width: 360px;
   padding: 6px 0 20px 0;
   background-color: var(--modal-panel-background-color);
