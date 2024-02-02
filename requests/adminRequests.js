@@ -384,6 +384,7 @@ function adminRequests(app) {
         accountObj.email = generateString(24) + "@fakemail";
         accountObj.password = generateString(24);
         accountObj.fakeAccount = true;
+        accountObj.session = generateString(48);
 
         accounts.insertOne(accountObj);
       }

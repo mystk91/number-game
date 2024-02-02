@@ -19,101 +19,109 @@ function ProfilePage(props) {
 
   //Checks if the user is logged in and retreives their information for the profile page
   async function fetchUser() {
-    let resObj;
     let profile = localStorage.getItem("profile");
-    if (props.user) {
-      resObj = props.user;
-    } else if (profile) {
-      let profileObj = JSON.parse(profile);
-      resObj = {
-        session: profileObj.session,
-        imageUrl: profileObj.profile_picture,
-        loggedIn: true,
-      };
-    } else {
-      let res = await fetch("/api/profile_picture");
-      resObj = await res.json();
-    }
+    let user;
     let username;
     let statsObj;
     let premium;
-    if (resObj.session) {
-      const options = {
-        method: "POST",
-        body: JSON.stringify(resObj),
-        withCredentials: true,
-        credentials: "include",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-      };
-      let getProfile = await fetch("/api/profile", options);
-      let profileObj = await getProfile.json();
-      username = profileObj.username;
-      statsObj = profileObj.statsObj;
-      premium = profileObj.premium;
-      if (profileObj.premium) {
-        resObj.premium = true;
+    if (profile) {
+      let profileObj = JSON.parse(profile);
+      if (profileObj.session) {
+        const options = {
+          method: "POST",
+          body: JSON.stringify(profileObj),
+          withCredentials: true,
+          credentials: "include",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+        };
+        let getProfile = await fetch("/api/profile", options);
+        let profileJson = await getProfile.json();
+        username = profileJson.username;
+        statsObj = profileJson.statsObj;
+        premium = profileJson.premium;
       }
+      if (username) {
+        user = {
+          loggedIn: true,
+          premium: premium,
+          imageUrl: profileObj.profile_picture,
+          session: profileObj.session,
+        };
+      } else {
+        user = {
+          loggedIn: false,
+          premium: false,
+          imageUrl: "/images/site/account2.png",
+        };
+      }
+    } else {
+      user = {
+        loggedIn: false,
+        premium: false,
+        imageUrl: "/images/site/account2.png",
+      };
+    }
 
-      let today = new Date();
-      //Removes old games from stats and updates the averages
-      for (let i = 2; i <= 7; i++) {
-        if (statsObj[`${i}random-scores`]) {
-          let shifted = false;
-          while (
-            today.getTime() -
-              new Date(statsObj[`${i}random-scores`].scores30[0].date).getTime() >
-            2592000000
-          ) {
-            statsObj[`${i}random-scores`].scores30.shift();
-            shifted = true;
-          }
-          if (shifted) {
-            let average30 =
-              statsObj[`${i}random-scores`].scores30.reduce((total, x) => {
-                return total + x.score;
-              }, 0) / statsObj[`${i}random-scores`].scores30.length;
+    let today = new Date();
+    //Removes old games from stats and updates the averages
+    for (let i = 2; i <= 7; i++) {
+      if (statsObj[`${i}random-scores`]) {
+        let shifted = false;
+        while (
+          today.getTime() -
+            new Date(statsObj[`${i}random-scores`].scores30[0].date).getTime() >
+          2592000000
+        ) {
+          statsObj[`${i}random-scores`].scores30.shift();
+          shifted = true;
+        }
+        if (shifted) {
+          let average30 =
+            statsObj[`${i}random-scores`].scores30.reduce((total, x) => {
+              return total + x.score;
+            }, 0) / statsObj[`${i}random-scores`].scores30.length;
 
-            statsObj[`${i}random-scores`].average30.average = average30;
-            statsObj[`${i}random-scores`].average30.numberOfGames =
-              statsObj[`${i}random-scores`].scores30.length;
-          }
-
-          if(statsObj[`${i}random-scores`].best30.average === 8){
-            statsObj[`${i}random-scores`].best30.average = "";
-            statsObj[`${i}random-scores`].best30.date = "";
-          }
+          statsObj[`${i}random-scores`].average30.average = average30;
+          statsObj[`${i}random-scores`].average30.numberOfGames =
+            statsObj[`${i}random-scores`].scores30.length;
         }
 
-        if (statsObj[`${i}digits-scores`]) {
-          let shifted = false;
-          while (
-            today.getTime() -
-              new Date(statsObj[`${i}digits-scores`].scores30[0].date).getTime() >
-            2592000000
-          ) {
-            statsObj[`${i}digits-scores`].scores30.shift();
-            shifted = true;
-          }
-          if (shifted) {
-            let average30 =
-              statsObj[`${i}digits-scores`].scores30.reduce((total, x) => {
-                return total + x.score;
-              }, 0) / statsObj[`${i}digits-scores`].scores30.length;
+        if (statsObj[`${i}random-scores`].best30.average === 8) {
+          statsObj[`${i}random-scores`].best30.average = "";
+          statsObj[`${i}random-scores`].best30.date = "";
+        }
+      }
 
-            statsObj[`${i}digits-scores`].average30.average = average30;
-          }
+      if (statsObj[`${i}digits-scores`]) {
+        let shifted = false;
+        while (
+          today.getTime() -
+            new Date(statsObj[`${i}digits-scores`].scores30[0].date).getTime() >
+          2592000000
+        ) {
+          statsObj[`${i}digits-scores`].scores30.shift();
+          shifted = true;
+        }
+        if (shifted) {
+          let average30 =
+            statsObj[`${i}digits-scores`].scores30.reduce((total, x) => {
+              return total + x.score;
+            }, 0) / statsObj[`${i}digits-scores`].scores30.length;
+
+          statsObj[`${i}digits-scores`].average30.average = average30;
         }
       }
     }
-    if (resObj.session) {
+
+    if (username) {
       setProfilePage(
         <div className="profile-page">
-          <NavbarDynamic digits={0} user={resObj} instructions={" invisible"} />
+          <NavbarDynamic digits={0} user={user} instructions={" invisible"} />
           <MyProfile
-            user={resObj}
+            user={user}
             username={username}
             stats={statsObj}
             premium={premium}
@@ -121,6 +129,8 @@ function ProfilePage(props) {
         </div>
       );
     } else {
+      localStorage.removeItem("profile");
+      sessionStorage.setItem("currentMode", "daily");
       window.location = "/login";
     }
   }

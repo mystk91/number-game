@@ -77,7 +77,9 @@ function accountRequests(app) {
       errorFound = true;
     }
     //Checks if email address already exists
-    let dupeAccount = await accounts.findOne({ email: req.body.email });
+    let dupeAccount = await accounts.findOne({
+      email: req.body.email.toLowerCase(),
+    });
     if (dupeAccount) {
       errors.email = "That email is already associated with an account";
       errorFound = true;
@@ -111,7 +113,7 @@ function accountRequests(app) {
       bcrypt.hash(req.body.password, 10, async (err, hashedPassword) => {
         try {
           const user = {
-            email: req.body.email,
+            email: req.body.email.toLowerCase(),
             username: req.body.username,
             password: hashedPassword,
             verificationCode: verificationCode,
@@ -167,7 +169,7 @@ function accountRequests(app) {
 
     if (unverifiedUser) {
       const newestUnverifiedAccount = unverifieds
-        .find({ email: unverifiedUser.email })
+        .find({ email: unverifiedUser.email.toLowerCase() })
         .sort({ createdAt: -1 })
         .limit(1);
 
@@ -175,7 +177,7 @@ function accountRequests(app) {
       let newestVerificationCode = arr[0].verificationCode;
 
       const previouslyCreatedAccount = await accounts.findOne({
-        email: unverifiedUser.email,
+        email: unverifiedUser.email.toLowerCase(),
       });
 
       let newSession = generateString(32);
@@ -185,7 +187,7 @@ function accountRequests(app) {
         !previouslyCreatedAccount
       ) {
         const verifiedUser = {
-          email: unverifiedUser.email,
+          email: unverifiedUser.email.toLowerCase(),
           password: unverifiedUser.password,
           username: unverifiedUser.username,
           usernameDate: new Date("Wed Jan 01 2020 00:00:00 GMT-0500"),
@@ -227,7 +229,9 @@ function accountRequests(app) {
       errorFound = true;
     } else {
       //Checks if email address exists
-      let accountExists = await accounts.findOne({ email: req.body.email });
+      let accountExists = await accounts.findOne({
+        email: req.body.email.toLowerCase(),
+      });
       if (!accountExists) {
         errors.email = "There is no account associated with that email";
         errorFound = true;
@@ -239,7 +243,7 @@ function accountRequests(app) {
     } else {
       try {
         await accounts.updateOne(
-          { email: req.body.email },
+          { email: req.body.email.toLowerCase() },
           { $set: { needsPasswordReset: true } }
         );
       } catch {
@@ -251,7 +255,7 @@ function accountRequests(app) {
       let verificationCode = generateString(32);
 
       const user = {
-        email: req.body.email,
+        email: req.body.email.toLowerCase(),
         verificationCode: verificationCode,
         createdAt: new Date(),
       };
@@ -267,7 +271,7 @@ function accountRequests(app) {
 
       const mailOptions = {
         from: `"Numblr" <${process.env.nodemailerUser}>`,
-        to: req.body.email,
+        to: req.body.email.toLowerCase(),
         subject: "Numblr Password Reset",
         html: `<p>Click here to reset your password. If you didn't request a password reset, you can ignore this. </p>
         <a href='${process.env.protocol}${process.env.domain}/new-password/${verificationCode}'>${process.env.protocol}${process.env.domain}/new-password/${verificationCode}</a>`,
@@ -321,11 +325,13 @@ function accountRequests(app) {
 
       if (needsResetUser) {
         try {
-          const user = await accounts.findOne({ email: needsResetUser.email });
+          const user = await accounts.findOne({
+            email: needsResetUser.email.toLowerCase(),
+          });
           if (user.needsPasswordReset) {
             bcrypt.hash(newPassword, 10, async (err, hashedPassword) => {
               await accounts.updateOne(
-                { email: needsResetUser.email },
+                { email: needsResetUser.email.toLowerCase() },
                 {
                   $set: {
                     password: hashedPassword,
@@ -370,7 +376,9 @@ function accountRequests(app) {
     };
     //Error Checking
     let errorExists = false;
-    const user = await accounts.findOne({ email: req.body.email });
+    const user = await accounts.findOne({
+      email: req.body.email.toLowerCase(),
+    });
     if (!user) {
       errors.email = "No account exists with that email";
       errors.errorFound = true;
@@ -403,7 +411,7 @@ function accountRequests(app) {
         };
         //Error Checking
         let errorExists = false;
-        const user = await accounts.findOne({ email: email });
+        const user = await accounts.findOne({ email: email.toLowerCase() });
         let newUser = {};
         if (!user) {
           errors.email = "No account exists with that email.";
@@ -483,7 +491,9 @@ function accountRequests(app) {
         let account = await accounts.findOne({ googleId: profile.id });
         console.log(profile.email);
         if (!account) {
-          account = await accounts.findOne({ email: profile.emails[0].value });
+          account = await accounts.findOne({
+            email: profile.emails[0].value.toLowerCase(),
+          });
         }
         if (!account) {
           let password = await bcrypt.hash(uniqid(), 10);
@@ -501,7 +511,7 @@ function accountRequests(app) {
         } else {
           if (!account.googleId) {
             await accounts.updateOne(
-              { email: profile.emails[0].value },
+              { email: profile.emails[0].value.toLowerCase() },
               {
                 $set: {
                   googleId: profile.id,
@@ -561,12 +571,12 @@ function accountRequests(app) {
         let account = await accounts.findOne({ facebookId: public_profile.id });
         console.log(public_profile.email);
         if (!account) {
-          account = await accounts.findOne({ email: public_proile.email });
+          account = await accounts.findOne({ email: public_proile.email.toLowerCase() });
         }
         if (!account) {
           let password = await bcrypt.hash(uniqid(), 10);
           let newAccount = {
-            email: public_profile.email,
+            email: public_profile.email.toLowerCase(),
             facebookId: public_profile.id,
             password: password,
             session: session,
@@ -576,7 +586,7 @@ function accountRequests(app) {
         } else {
           if (!account.facebookId) {
             await accounts.updateOne(
-              { email: public_profile.email },
+              { email: public_profile.email.toLowerCase() },
               {
                 $set: {
                   facebookId: public_profile.id,
@@ -637,12 +647,12 @@ function accountRequests(app) {
         let accounts = db.collection("Accounts");
         let account = await accounts.findOne({ twitterId: profile.id });
         if (!account) {
-          account = await accounts.findOne({ email: profile.email[0] });
+          account = await accounts.findOne({ email: profile.email[0].toLowerCase() });
         }
         if (!account) {
           let password = await bcrypt.hash(uniqid(), 10);
           let newAccount = {
-            email: profile.email,
+            email: profile.email.toLowerCase(),
             twitterId: profile.id,
             password: password,
             session: session,
@@ -652,7 +662,7 @@ function accountRequests(app) {
         } else {
           if (!account.twitterId) {
             await accounts.updateOne(
-              { email: profile.email },
+              { email: profile.email.toLowerCase() },
               {
                 $set: {
                   twitterId: profile.id,
@@ -710,6 +720,35 @@ function accountRequests(app) {
     res.send(req.user);
   });
 
+  //Returns the account info of the current user
+  //Returns if they are logged in, if they have premium, and their profile picture
+  app.post("/api/account-info", async (req, res) => {
+    try {
+      const db = mongoClient.db("Accounts");
+      let accounts = db.collection("Accounts");
+      let account = await accounts.findOne({ session: req.body.session });
+      if (account) {
+        res.send({
+          loggedIn: true,
+          premium: account.premium,
+          imageUrl: req.body.profile_picture,
+        });
+      } else {
+        res.send({
+          loggedIn: false,
+          premium: false,
+          imageUrl: "/images/site/account2.png",
+        });
+      }
+    } catch {
+      res.send({
+        loggedIn: false,
+        premium: false,
+        imageUrl: "/images/site/account2.png",
+      });
+    }
+  });
+
   //Checks if the user has an active login session, returns {loggedIn: true} if they do
   app.post("/api/checkSession", async (req, res) => {
     try {
@@ -737,12 +776,13 @@ function accountRequests(app) {
       if (account.premium == true) {
         res.send({
           premium: true,
+          loggedIn: true,
         });
       } else {
-        res.send({});
+        res.send({ premium: false, loggedIn: true });
       }
     } catch {
-      res.send({});
+      res.send({ loggedIn: false });
     }
   });
 

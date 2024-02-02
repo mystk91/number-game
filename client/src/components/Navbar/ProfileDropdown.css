@@ -1,6 +1,6 @@
 .profile-dropdown {
   position: absolute;
-  top: 55px;
+  top: calc(100% - 1px);
 }
 
 .profile-dropdown a:hover {
@@ -21,16 +21,23 @@
   color: var(--navbar-text-color);
   background-color: var(--navbar-background-color);
   border: 1px solid black;
-  animation: 0.3s showGameModes forwards;
+  animation: 0.3s showProfileTabs forwards;
   position: relative;
   z-index: 1;
   right: 45px;
 }
 
-@keyframes showGameModes {
+@keyframes showProfileTabs {
   0% {
     height: 0px;
     border: 0;
+    display: none;
+  }
+  5% {
+    display: none;
+  }
+  6% {
+    display: flex;
   }
   66.6% {
     border: 1px solid black;
@@ -75,6 +82,10 @@
   }
   66.6% {
     border: 0px;
+    display: flex;
+  }
+  80% {
+    display: none;
   }
   100% {
     border: 0;
@@ -87,14 +98,12 @@
   cursor: pointer;
 }
 
-@media screen and (max-width: 481px){
-    .profile-dropdown.visible a{
-        right: 50px;
+@media screen and (max-width: 481px) {
+  .profile-dropdown.visible a {
+    right: 50px;
+  }
 
-    }
-
-    .profile-dropdown.hidden a{
-        right: 50px;
-    }
-
+  .profile-dropdown.hidden a {
+    right: 50px;
+  }
 }

@@ -84,11 +84,11 @@ function LoginRegular(props) {
             <label htmlFor="email" aria-label="Email">
               Email
             </label>
-            <input id="email" name="email" type="text" />
+            <input id="email" name="email" type="text" autoComplete="email" />
             {errEmail}
           </div>
           <div>
-            <label htmlFor="current-password" aria-label="Password">
+            <label htmlFor="password" aria-label="Password">
               Password
             </label>
             <PasswordInput />

@@ -26,26 +26,13 @@ function GamePageDaily(props) {
 
   //Checks if the user is logged in and sets the corresponding game page
   async function fetchUser() {
-    let resObj;
+    let user;
     let profile = localStorage.getItem("profile");
-    if (props.user) {
-      resObj = props.user;
-    } else if (profile) {
+    if (profile) {
       let profileObj = JSON.parse(profile);
-      resObj = {
-        session: profileObj.session,
-        imageUrl: profileObj.profile_picture,
-        loggedIn: true,
-      };
-      console.log("using local object " + resObj);
-    } else {
-      let res = await fetch("/api/profile_picture");
-      resObj = await res.json();
-    }
-    if (resObj.session) {
       const options = {
         method: "POST",
-        body: JSON.stringify(resObj),
+        body: JSON.stringify(profileObj),
         withCredentials: true,
         credentials: "include",
         headers: {
@@ -53,33 +40,44 @@ function GamePageDaily(props) {
           "Content-Type": "application/json",
         },
       };
-      let checkPremium = await fetch("/api/checkPremium", options);
-      let checkPremiumObj = await checkPremium.json();
-      if (checkPremiumObj.premium) {
-        resObj.premium = true;
-      }
+      let res = await fetch("/api/account-info", options);
+      let accountInfo = await res.json();
+      user = {
+        loggedIn: accountInfo.loggedIn,
+        premium: accountInfo.premium,
+        imageUrl: accountInfo.imageUrl,
+        session: profileObj.session,
+      };
+    } else {
+      user = {
+        loggedIn: false,
+        premium: false,
+        imageUrl: "/images/site/account2.png",
+      };
     }
-    if (resObj.session) {
+
+    if (user.loggedIn) {
       console.log("giving you the daily dynamic game page");
       setGamePage(
         <div className="game-page">
-          <NavbarDynamic digits={props.digits} user={resObj} />
+          <NavbarDynamic digits={props.digits} user={user} />
           <NumberGameRegular
             digits={props.digits}
             attempts={props.attempts}
-            user={resObj}
+            user={user}
           />
         </div>
       );
     } else {
-      console.log("giving you the local storage page");
+      console.log("giving you the local storage game page");
+      localStorage.removeItem("profile");
       setGamePage(
         <div className="game-page">
-          <Navbar digits={props.digits} user={resObj} />
+          <Navbar digits={props.digits} user={user} />
           <NumberGameLocal
             digits={props.digits}
             attempts={props.attempts}
-            user={resObj}
+            user={user}
           />
         </div>
       );

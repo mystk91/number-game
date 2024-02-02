@@ -102,6 +102,25 @@ function NumberGameLocal(props) {
     transitionDelayRef.current = point;
   }
 
+  //Sets the formula used for digit / keyboard delays
+  //2 and 3 digits will be faster, use different formula than 4+ digits
+  const delayFormulaRef = useRef(
+    props.digits < 4
+      ? (j) => {
+          return 0.05 + 0.2 * props.digits - 0.2 * j;
+        }
+      : (j) => {
+          return (
+            0.8 +
+            (props.digits - 4) * 0.075 -
+            (j * (0.55 + (props.digits - 4) * 0.075)) / (props.digits - 1)
+          );
+        }
+  );
+  function setDelayFormulaRef(point) {
+    delayFormulaRef.current = point;
+  }
+
   //Used so animations will only occurs when a new row is moved to
   const newRowRef = useRef(false);
   function setNewRowRef(point) {
@@ -353,7 +372,7 @@ function NumberGameLocal(props) {
             className={getDigitClassList(i, j)}
             aria-label={getDigitAriaLabel(i, j)}
             style={{
-              animationDelay: 0.05 + 0.2 * props.digits - 0.2 * j + "s",
+              animationDelay: delayFormulaRef.current(j) + "s",
               width: 76 / props.digits + "%",
             }}
             key={"row" + i + "digit" + j}
@@ -826,7 +845,9 @@ function NumberGameLocal(props) {
           href={linkLeftRef.current}
           className={"arrow-left"}
           tabIndex={2}
-          aria-label={`Go to ${linkLeftRef.current[linkLeftRef.current.length - 1]} Digits`}
+          aria-label={`Go to ${
+            linkLeftRef.current[linkLeftRef.current.length - 1]
+          } Digits`}
           style={{ backgroundImage: `url(/images/site/left-arrow.png)` }}
         >
           <div></div>
@@ -880,7 +901,9 @@ function NumberGameLocal(props) {
           href={linkRightRef.current}
           className={"arrow-right"}
           tabIndex={2}
-          aria-label={`Go to ${linkRightRef.current[linkRightRef.current.length - 1]} Digits`}
+          aria-label={`Go to ${
+            linkRightRef.current[linkRightRef.current.length - 1]
+          } Digits`}
           style={{ backgroundImage: `url(/images/site/right-arrow.png)` }}
         >
           <div></div>
@@ -1145,7 +1168,7 @@ function NumberGameLocal(props) {
           setDateRef(resObj.gameObj.date);
           addTransitionDelay();
           changeKeyboardColors();
-          removeTransitionDelay();
+          //removeTransitionDelay();
           updateGameBoard();
           updateTimesVisited();
           updateLocalStorage();
@@ -1211,7 +1234,7 @@ function NumberGameLocal(props) {
     let number = boardStateRef.current[currentRowRef.current];
     for (let i = 0; i < props.digits; i++) {
       transitionDelayCopy[`key` + number[i]] =
-        0.4 + (props.digits - 1) * 0.2 - i * 0.2 + "s";
+        delayFormulaRef.current(i) + .3 + "s";
     }
     setTransitionDelayRef(transitionDelayCopy);
     setTimeout(removeTransitionDelay, 5000);
@@ -1326,7 +1349,12 @@ function NumberGameLocal(props) {
           </button>
         </span>
         <div className="victory-label">Victory!</div>
-        <div className="correct-number" aria-label={`You got the correct number ${targetNumberRef.current}`}>{rowsTemp}</div>
+        <div
+          className="correct-number"
+          aria-label={`You got the correct number ${targetNumberRef.current}`}
+        >
+          {rowsTemp}
+        </div>
         <div className="share-score-container">
           <ShareScore hints={hintsRef.current} date={dateRef.current} />
         </div>
@@ -1375,7 +1403,12 @@ function NumberGameLocal(props) {
           </button>
         </span>
         <div className="defeat-label">Defeat</div>
-        <div className="correct-number" aria-label={`The correct number was ${targetNumberRef.current}`}>{rowsTemp}</div>
+        <div
+          className="correct-number"
+          aria-label={`The correct number was ${targetNumberRef.current}`}
+        >
+          {rowsTemp}
+        </div>
         <div className="share-score-container">
           <ShareScore hints={hintsRef.current} />
         </div>
@@ -1459,7 +1492,7 @@ function NumberGameLocal(props) {
 
   //Disables the game after the player wins or loses
   function disableGame(delay = true) {
-    let delayTime = 1000 * (0.85 + 0.2 * (props.digits - 1));
+    let delayTime = 1000 * (0.7 + delayFormulaRef.current(0));
     if (!delay) {
       delayTime = 0;
     }

@@ -11,34 +11,6 @@ function gameRequests(app) {
   let ObjectId = require("mongodb").ObjectId;
   const mongoClient = new MongoClient(process.env.mongoDB);
 
-  /*
-  //Used to redirect user to buy premium page if they haven't bought it
-  async function redirectNonPremium(req, res, next) {
-    try {
-      const db = mongoClient.db("Accounts");
-      let accounts = db.collection("Accounts");
-      let account = await accounts.findOne({ session: req.user.session });
-      if (account.premium == true) {
-        next();
-      } else {
-        res.redirect("/random/info");
-      }
-    } catch {
-      res.redirect("/login");
-    }
-  }
-  */
-
-  //Used to redirect user to buy premium page if they haven't bought it
-  /*
-  app.get("/random2", redirectNonPremium);
-  app.get("/random3", redirectNonPremium);
-  app.get("/random4", redirectNonPremium);
-  app.get("/random5", redirectNonPremium);
-  app.get("/random6", redirectNonPremium);
-  app.get("/random7", redirectNonPremium);
-  */
-
   //Returns the gameboard saved to the user in the database. RANDOM
   async function getCurrentGameRandom(req, res, next) {
     try {
@@ -327,7 +299,7 @@ function gameRequests(app) {
             if (!scores) {
               scores = [];
             }
-            if (scores.length > 9999) {
+            if (scores.length > 999) {
               scores.shift();
             }
             scores.push(score);
@@ -715,7 +687,7 @@ function gameRequests(app) {
           if (!scores) {
             scores = [];
           }
-          if (scores.length > 9999) {
+          if (scores.length > 999) {
             scores.shift();
           }
           scores.push(score);
@@ -1019,7 +991,7 @@ function gameRequests(app) {
         throw new Error();
       }
     } catch {
-      console.log("there was an error, sending back empty hints");
+      //There was an error, sending back empty hints
       let hintsCopy = [];
       Object.values(req.body.hints).forEach((x) => {
         hintsCopy.push(x);

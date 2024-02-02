@@ -21,25 +21,13 @@ function GamePageRandom(props) {
   }, []);
 
   async function fetchUser() {
-    let resObj;
+    let user;
     let profile = localStorage.getItem("profile");
-    if (props.user) {
-      resObj = props.user;
-    } else if (profile) {
+    if (profile) {
       let profileObj = JSON.parse(profile);
-      resObj = {
-        session: profileObj.session,
-        imageUrl: profileObj.profile_picture,
-        loggedIn: true,
-      };
-    } else {
-      let res = await fetch("/api/profile_picture");
-      resObj = await res.json();
-    }
-    if (resObj.session) {
       const options = {
         method: "POST",
-        body: JSON.stringify(resObj),
+        body: JSON.stringify(profileObj),
         withCredentials: true,
         credentials: "include",
         headers: {
@@ -47,25 +35,37 @@ function GamePageRandom(props) {
           "Content-Type": "application/json",
         },
       };
-      let checkPremium = await fetch("/api/checkPremium", options);
-      let checkPremiumObj = await checkPremium.json();
-
-      if(true){
-      //if (checkPremiumObj.premium) {
-        setGamePage(
-          <div className="game-page">
-            <NavbarRandom digits={props.digits} user={resObj} />
-            <NumberGameRandom
-              digits={props.digits}
-              attempts={props.attempts}
-              user={resObj}
-            />
-          </div>
-        );
-      } else {
-        window.location = "/random/info";
-      }
+      let res = await fetch("/api/account-info", options);
+      let accountInfo = await res.json();
+      user = {
+        loggedIn: accountInfo.loggedIn,
+        premium: accountInfo.premium,
+        imageUrl: accountInfo.imageUrl,
+        session: profileObj.session,
+      };
     } else {
+      user = {
+        loggedIn: false,
+        premium: false,
+        imageUrl: "/images/site/account2.png",
+      };
+    }
+
+    if (user.premium) {
+      setGamePage(
+        <div className="game-page">
+          <NavbarRandom digits={props.digits} user={user} />
+          <NumberGameRandom
+            digits={props.digits}
+            attempts={props.attempts}
+            user={user}
+          />
+        </div>
+      );
+    } else if (user.loggedIn) {
+      window.location = "/random/info";
+    } else {
+      localStorage.removeItem("profile");
       window.location = "/login";
     }
   }

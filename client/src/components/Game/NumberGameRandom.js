@@ -100,6 +100,25 @@ function NumberGameRandom(props) {
     transitionDelayRef.current = point;
   }
 
+  //Sets the formula used for digit / keyboard delays
+  //2 and 3 digits will be faster, use different formula than 4+ digits
+  const delayFormulaRef = useRef(
+    props.digits < 4
+      ? (j) => {
+          return 0.05 + 0.2 * props.digits - 0.2 * j;
+        }
+      : (j) => {
+          return (
+            0.8 +
+            (props.digits - 4) * 0.075 -
+            (j * (0.55 + (props.digits - 4) * 0.075)) / (props.digits - 1)
+          );
+        }
+  );
+  function setDelayFormulaRef(point) {
+    delayFormulaRef.current = point;
+  }
+
   //Used so animations will only occurs when a new row is moved to
   const newRowRef = useRef(false);
   function setNewRowRef(point) {
@@ -236,7 +255,7 @@ function NumberGameRandom(props) {
             className={getDigitClassList(i, j)}
             aria-label={getDigitAriaLabel(i, j)}
             style={{
-              animationDelay: 0.05 + 0.2 * props.digits - 0.2 * j + "s",
+              animationDelay: delayFormulaRef.current(j) + "s",
               width: 76 / props.digits + "%",
             }}
             key={"row" + i + "digit" + j}
@@ -287,7 +306,7 @@ function NumberGameRandom(props) {
     return classList;
   }
 
-    //Helper function that sets the aria-label for the spans containing the rows.
+  //Helper function that sets the aria-label for the spans containing the rows.
   //Used to designate the current row.
   function getRowAriaLabel(i) {
     let ariaLabel = "";
@@ -360,8 +379,8 @@ function NumberGameRandom(props) {
     return classList;
   }
 
-   //Returns the appropriate aria-label for the digit
-   function getDigitAriaLabel(i, j) {
+  //Returns the appropriate aria-label for the digit
+  function getDigitAriaLabel(i, j) {
     let ariaLabel = j + 1;
     switch (ariaLabel % 10) {
       case 1: {
@@ -445,32 +464,32 @@ function NumberGameRandom(props) {
     return classList;
   }
 
-    //Returns the appropriate aria-label for the hint
-    function getHintsAriaLabel(i) {
-      let ariaLabel = "";
-      let hintAbbreviation = hintsRef.current[i];
-      if (hintAbbreviation) {
-        switch (hintAbbreviation[props.digits]) {
-          case "L": {
-            ariaLabel = "Guess Lower Arrow";
-            break;
-          }
-          case "H": {
-            ariaLabel = "Guess Higher Arrow";
-            break;
-          }
-          case "E": {
-            ariaLabel = "Correct Guess";
-            break;
-          }
-          default: {
-          }
+  //Returns the appropriate aria-label for the hint
+  function getHintsAriaLabel(i) {
+    let ariaLabel = "";
+    let hintAbbreviation = hintsRef.current[i];
+    if (hintAbbreviation) {
+      switch (hintAbbreviation[props.digits]) {
+        case "L": {
+          ariaLabel = "Guess Lower Arrow";
+          break;
         }
-      } else {
-        ariaLabel = "Empty Hint";
+        case "H": {
+          ariaLabel = "Guess Higher Arrow";
+          break;
+        }
+        case "E": {
+          ariaLabel = "Correct Guess";
+          break;
+        }
+        default: {
+        }
       }
-      return ariaLabel;
+    } else {
+      ariaLabel = "Empty Hint";
     }
+    return ariaLabel;
+  }
 
   //Retrieves the users game from backend so it game be displayed visually
   //You can set shouldFetch to false & use a gameObj as a parameter to skip server call
@@ -745,7 +764,9 @@ function NumberGameRandom(props) {
           href={linkLeftRef.current}
           className={"arrow-left"}
           tabIndex={2}
-          aria-label={`Go to ${linkLeftRef.current[linkLeftRef.current.length - 1]} Random`}
+          aria-label={`Go to ${
+            linkLeftRef.current[linkLeftRef.current.length - 1]
+          } Random`}
           style={{ backgroundImage: `url(/images/site/left-arrow.png)` }}
         >
           <div></div>
@@ -790,7 +811,9 @@ function NumberGameRandom(props) {
           href={linkRightRef.current}
           className={"arrow-right"}
           tabIndex={2}
-          aria-label={`Go to ${linkRightRef.current[linkRightRef.current.length - 1]} Random`}
+          aria-label={`Go to ${
+            linkRightRef.current[linkRightRef.current.length - 1]
+          } Random`}
           style={{ backgroundImage: `url(/images/site/right-arrow.png)` }}
         >
           <div></div>
@@ -1038,7 +1061,7 @@ function NumberGameRandom(props) {
           disableGame();
           addTransitionDelay();
           changeKeyboardColors();
-          removeTransitionDelay();
+          //removeTransitionDelay();
           updateGameBoard();
         }
       }
@@ -1076,7 +1099,7 @@ function NumberGameRandom(props) {
     let number = boardStateRef.current[currentRowRef.current];
     for (let i = 0; i < props.digits; i++) {
       transitionDelayCopy[`key` + number[i]] =
-        0.4 + (props.digits - 1) * 0.2 - i * 0.2 + "s";
+        delayFormulaRef.current(i) + 0.3 + "s";
     }
     setTransitionDelayRef(transitionDelayCopy);
     setTimeout(removeTransitionDelay, 5000);
@@ -1191,7 +1214,12 @@ function NumberGameRandom(props) {
           </button>
         </span>
         <div className="victory-label">Victory!</div>
-        <div className="correct-number" aria-label={`You got the correct number ${targetNumberRef.current}`}>{rowsTemp}</div>
+        <div
+          className="correct-number"
+          aria-label={`You got the correct number ${targetNumberRef.current}`}
+        >
+          {rowsTemp}
+        </div>
         <div className="share-score-container">
           <ShareScore hints={hintsRef.current} random={true} />
         </div>
@@ -1244,7 +1272,12 @@ function NumberGameRandom(props) {
           </button>
         </span>
         <div className="defeat-label">Defeat</div>
-        <div className="correct-number" aria-label={`The correct number was ${targetNumberRef.current}`}>{rowsTemp}</div>
+        <div
+          className="correct-number"
+          aria-label={`The correct number was ${targetNumberRef.current}`}
+        >
+          {rowsTemp}
+        </div>
         <div className="share-score-container">
           <ShareScore hints={hintsRef.current} />
         </div>
@@ -1277,20 +1310,20 @@ function NumberGameRandom(props) {
     if (scoresWindowRevealRef.current) {
       setShowScoresButton(
         <div className="show-scores-container">
-        <button className={"show-scores"} onClick={scoresButtonClicked}>
-          Show Scores
-        </button>
+          <button className={"show-scores"} onClick={scoresButtonClicked}>
+            Show Scores
+          </button>
         </div>
       );
     } else {
       setShowScoresButton(
         <div className="show-scores-container">
-        <button
-          className={"show-scores float-down"}
-          onClick={scoresButtonClicked}
-        >
-          Show Scores
-        </button>
+          <button
+            className={"show-scores float-down"}
+            onClick={scoresButtonClicked}
+          >
+            Show Scores
+          </button>
         </div>
       );
       setScoresWindowRevealRef(true);
@@ -1305,17 +1338,20 @@ function NumberGameRandom(props) {
     }
     setShowScoresButton(
       <div className="show-scores-container">
-      <button className={"show-scores"} onClick={scoresButtonClicked}>
-        Show Scores
-      </button>
+        <button className={"show-scores"} onClick={scoresButtonClicked}>
+          Show Scores
+        </button>
       </div>
     );
     setTimeout(() => {
       setShowScoresButton(
         <div className="show-scores-container">
-        <button className={"show-scores keydown"} onClick={scoresButtonClicked}>
-          Show Scores
-        </button>
+          <button
+            className={"show-scores keydown"}
+            onClick={scoresButtonClicked}
+          >
+            Show Scores
+          </button>
         </div>
       );
     }, 1);
@@ -1328,9 +1364,8 @@ function NumberGameRandom(props) {
   }
 
   //Disables the game after the player wins or loses
-
   function disableGame(delay = true) {
-    let delayTime = 1000 * (0.85 + 0.2 * (props.digits - 1));
+    let delayTime = 1000 * (0.7 + delayFormulaRef.current(0));
     if (!delay) {
       delayTime = 0;
     }

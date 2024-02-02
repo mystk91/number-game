@@ -14,7 +14,7 @@ import LoginRegular from "../LoginSystem/LoginRegular";
 function LoginPage(props) {
   let [loginPage, setLoginPage] = useState();
 
-  //Runs on mount. Gets users profile pic and starts game
+  //Runs on mount. Checks if user is logged in and redirects if they are
   useEffect(() => {
     fetchUser();
     return () => {};
@@ -57,7 +57,12 @@ function LoginPage(props) {
       localStorage.removeItem("profile");
       setLoginPage(
         <div className="login-page">
-          <Navbar digits={0} user={resObj} instructions={" invisible"} login={" invisible"} />
+          <Navbar
+            digits={0}
+            user={resObj}
+            instructions={" invisible"}
+            login={" invisible"}
+          />
           <LoginRegular />
         </div>
       );

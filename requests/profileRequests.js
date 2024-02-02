@@ -162,7 +162,7 @@ function profileRequests(app) {
         res.send({ errors });
       }
     } catch {
-      errors.password = "Error deleting account";
+      errors.email = "Error deleting account";
       res.send({ errors });
     }
   });

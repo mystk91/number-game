@@ -1,9 +1,4 @@
-import React, {
-  useState,
-  useEffect,
-  useCallback,
-  useRef,
-} from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import "./Login.css";
 import "../../normalize.css";
 import "../../custom.css";
@@ -108,8 +103,16 @@ function Login(props) {
       }
     } else {
       let errors = await res.json();
-      setErrEmail(<div className="error" aria-label="Error">{errors.email}</div>);
-      setErrPassword(<div className="error" aria-label="Error">{errors.password}</div>);
+      setErrEmail(
+        <div className="error" aria-label="Error">
+          {errors.email}
+        </div>
+      );
+      setErrPassword(
+        <div className="error" aria-label="Error">
+          {errors.password}
+        </div>
+      );
     }
   }
 
@@ -119,11 +122,21 @@ function Login(props) {
       <div className={"login-modal" + hideModal} aria-label="Login Container">
         <div className={"login-box"}>
           <span className="login-top">
-            <button className="close-login" onClick={(e) => hideModalButton(e)} aria-label="Close Login Modal">
+            <button
+              className="close-login"
+              onClick={(e) => hideModalButton(e)}
+              aria-label="Close Login Modal"
+            >
               X
             </button>
           </span>
-          <div className="site-banner-container" aria-label="Number Banner"><img src="/images/site/site-banner.png" className="site-banner" alt="Banner that says Numbler" /></div>
+          <div className="site-banner-container" aria-label="Number Banner">
+            <img
+              src="/images/site/site-banner.png"
+              className="site-banner"
+              alt="Banner that says Numbler"
+            />
+          </div>
           <form
             action="/api/login"
             method="POST"
@@ -135,12 +148,16 @@ function Login(props) {
             aria-label="Login Form"
           >
             <div>
-              <label htmlFor="email" aria-label="Email">Email</label>
-              <input id="email" name="email" type="text" />
+              <label htmlFor="email" aria-label="Email">
+                Email
+              </label>
+              <input id="email" name="email" type="text" autoComplete="email" />
               {errEmail}
             </div>
             <div>
-              <label htmlFor="current-password" aria-label="Password">Password</label>
+              <label htmlFor="password" aria-label="Password">
+                Password
+              </label>
               <PasswordInput />
               {errPassword}
               <a

@@ -113,7 +113,7 @@ function NavbarRandom(props) {
         <a href="/random6">6 Random</a>
       </li>
       <li>
-        <a href="/random7">7 Digits</a>
+        <a href="/random7">7 Random</a>
       </li>
       <li>
         <a href={swapButtonLink}>Daily Games</a>

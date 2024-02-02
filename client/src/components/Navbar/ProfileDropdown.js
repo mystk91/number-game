@@ -1,10 +1,6 @@
-import React, {
-  useState,
-  useEffect,
-  useRef,
-} from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./ProfileDropdown.css";
-import "../../normalize.css"
+import "../../normalize.css";
 import "../../custom.css";
 
 //A dropdown menu that will only appear if the user is logged in
@@ -47,7 +43,9 @@ function ProfileDropdown(props) {
   let dropdownVisible = (
     <ul className="profile-dropdown visible">
       <li>
-        <a href="/profile" tabIndex={0}>My Profile</a>
+        <a href="/profile" tabIndex={0}>
+          My Profile
+        </a>
       </li>
       <li>
         <a onClick={logout} className="logout-link" tabIndex={0}>
@@ -60,12 +58,10 @@ function ProfileDropdown(props) {
   let dropdownHidden = (
     <ul className="profile-dropdown hidden">
       <li>
-        <a href="/profile">My Profile</a>
+        <a>My Profile</a>
       </li>
       <li>
-        <a onClick={logout} className="logout-link">
-          Logout
-        </a>
+        <a className="logout-link">Logout</a>
       </li>
     </ul>
   );

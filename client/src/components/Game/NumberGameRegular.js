@@ -107,6 +107,25 @@ function NumberGameRegular(props) {
     newRowRef.current = point;
   }
 
+  //Sets the formula used for digit / keyboard delays
+  //2 and 3 digits will be faster, use different formula than 4+ digits
+  const delayFormulaRef = useRef(
+    props.digits < 4
+      ? (j) => {
+          return 0.05 + 0.2 * props.digits - 0.2 * j;
+        }
+      : (j) => {
+          return (
+            0.8 +
+            (props.digits - 4) * 0.075 -
+            (j * (0.55 + (props.digits - 4) * 0.075)) / (props.digits - 1)
+          );
+        }
+  );
+  function setDelayFormulaRef(point) {
+    delayFormulaRef.current = point;
+  }
+
   //Used to display error messages when user inputs an invalid number
   const errorMessagesRef = useRef([]);
   function setErrorMessagesRef(point) {
@@ -248,49 +267,49 @@ function NumberGameRegular(props) {
     updateKeyboard();
   }
 
-//Creates the game board for the app. Call it to rerender the board.
-function updateGameBoard() {
-  //Creates the rows used during the game
-  let rowsTemp = [];
-  for (let i = 0; i < props.attempts; i++) {
-    let digits = [];
-    for (let j = 0; j < props.digits; j++) {
-      let digit = (
+  //Creates the game board for the app. Call it to rerender the board.
+  function updateGameBoard() {
+    //Creates the rows used during the game
+    let rowsTemp = [];
+    for (let i = 0; i < props.attempts; i++) {
+      let digits = [];
+      for (let j = 0; j < props.digits; j++) {
+        let digit = (
+          <div
+            className={getDigitClassList(i, j)}
+            aria-label={getDigitAriaLabel(i, j)}
+            style={{
+              animationDelay: delayFormulaRef.current(j) + "s",
+              width: 76 / props.digits + "%",
+            }}
+            key={"row" + i + "digit" + j}
+          >
+            {boardStateRef.current[i].slice(j, j + 1)}
+          </div>
+        );
+        digits.push(digit);
+      }
+      let hint = (
         <div
-          className={getDigitClassList(i, j)}
-          aria-label={getDigitAriaLabel(i, j)}
-          style={{
-            animationDelay: 0.05 + 0.2 * props.digits - 0.2 * j + "s",
-            width: 76 / props.digits + "%",
-          }}
-          key={"row" + i + "digit" + j}
-        >
-          {boardStateRef.current[i].slice(j, j + 1)}
-        </div>
+          className={getHintClassList(i)}
+          key={"hint" + i}
+          aria-label={getHintsAriaLabel(i)}
+        ></div>
       );
-      digits.push(digit);
+      let row = (
+        <span
+          className={getRowClassList(i)}
+          aria-label={getRowAriaLabel(i)}
+          key={"row" + i}
+        >
+          {digits}
+          {hint}
+        </span>
+      );
+      rowsTemp.push(row);
     }
-    let hint = (
-      <div
-        className={getHintClassList(i)}
-        key={"hint" + i}
-        aria-label={getHintsAriaLabel(i)}
-      ></div>
-    );
-    let row = (
-      <span
-        className={getRowClassList(i)}
-        aria-label={getRowAriaLabel(i)}
-        key={"row" + i}
-      >
-        {digits}
-        {hint}
-      </span>
-    );
-    rowsTemp.push(row);
+    setBoard(rowsTemp);
   }
-  setBoard(rowsTemp);
-}
 
   //Helper function that sets the class list for the spans containing the rows.
   //Used to designate the current row.
@@ -311,7 +330,7 @@ function updateGameBoard() {
     return classList;
   }
 
-    //Helper function that sets the aria-label for the spans containing the rows.
+  //Helper function that sets the aria-label for the spans containing the rows.
   //Used to designate the current row.
   function getRowAriaLabel(i) {
     let ariaLabel = "";
@@ -469,32 +488,32 @@ function updateGameBoard() {
     return classList;
   }
 
-    //Returns the appropriate aria-label for the hint
-    function getHintsAriaLabel(i) {
-      let ariaLabel = "";
-      let hintAbbreviation = hintsRef.current[i];
-      if (hintAbbreviation) {
-        switch (hintAbbreviation[props.digits]) {
-          case "L": {
-            ariaLabel = "Guess Lower Arrow";
-            break;
-          }
-          case "H": {
-            ariaLabel = "Guess Higher Arrow";
-            break;
-          }
-          case "E": {
-            ariaLabel = "Correct Guess";
-            break;
-          }
-          default: {
-          }
+  //Returns the appropriate aria-label for the hint
+  function getHintsAriaLabel(i) {
+    let ariaLabel = "";
+    let hintAbbreviation = hintsRef.current[i];
+    if (hintAbbreviation) {
+      switch (hintAbbreviation[props.digits]) {
+        case "L": {
+          ariaLabel = "Guess Lower Arrow";
+          break;
         }
-      } else {
-        ariaLabel = "Empty Hint";
+        case "H": {
+          ariaLabel = "Guess Higher Arrow";
+          break;
+        }
+        case "E": {
+          ariaLabel = "Correct Guess";
+          break;
+        }
+        default: {
+        }
       }
-      return ariaLabel;
+    } else {
+      ariaLabel = "Empty Hint";
     }
+    return ariaLabel;
+  }
 
   //Retrieves the users game from backend so it game be displayed visually
   //You can set shouldFetch to false & use a gameObj as a parameter to skip server call
@@ -546,7 +565,6 @@ function updateGameBoard() {
     }
   }
 
- 
   //Used to set up the keyboard on each render
   function updateKeyboard() {
     let keyboardHTML = (
@@ -784,7 +802,9 @@ function updateGameBoard() {
           href={linkLeftRef.current}
           className={"arrow-left"}
           tabIndex={2}
-          aria-label={`Go to ${linkLeftRef.current[linkLeftRef.current.length - 1]} Digits`}
+          aria-label={`Go to ${
+            linkLeftRef.current[linkLeftRef.current.length - 1]
+          } Digits`}
           style={{ backgroundImage: `url(/images/site/left-arrow.png)` }}
         >
           <div></div>
@@ -838,7 +858,9 @@ function updateGameBoard() {
           href={linkRightRef.current}
           className={"arrow-right"}
           tabIndex={2}
-          aria-label={`Go to ${linkRightRef.current[linkRightRef.current.length - 1]} Digits`}
+          aria-label={`Go to ${
+            linkRightRef.current[linkRightRef.current.length - 1]
+          } Digits`}
           style={{ backgroundImage: `url(/images/site/right-arrow.png)` }}
         >
           <div></div>
@@ -1100,7 +1122,7 @@ function updateGameBoard() {
           disableGame();
           addTransitionDelay();
           changeKeyboardColors();
-          removeTransitionDelay();
+          //removeTransitionDelay();
           updateGameBoard();
           updateTimesVisited();
         }
@@ -1139,7 +1161,7 @@ function updateGameBoard() {
     let number = boardStateRef.current[currentRowRef.current];
     for (let i = 0; i < props.digits; i++) {
       transitionDelayCopy[`key` + number[i]] =
-        0.4 + (props.digits - 1) * 0.2 - i * 0.2 + "s";
+        delayFormulaRef.current(i) + 0.3 + "s";
     }
     setTransitionDelayRef(transitionDelayCopy);
     setTimeout(removeTransitionDelay, 5000);
@@ -1254,7 +1276,12 @@ function updateGameBoard() {
           </button>
         </span>
         <div className="victory-label">Victory!</div>
-        <div className="correct-number" aria-label={`You got the correct number ${targetNumberRef.current}`}>{rowsTemp}</div>
+        <div
+          className="correct-number"
+          aria-label={`You got the correct number ${targetNumberRef.current}`}
+        >
+          {rowsTemp}
+        </div>
         <div className="share-score-container">
           <ShareScore hints={hintsRef.current} date={dateRef.current} />
         </div>
@@ -1307,7 +1334,12 @@ function updateGameBoard() {
           </button>
         </span>
         <div className="defeat-label">Defeat</div>
-        <div className="correct-number" aria-label={`The correct number was ${targetNumberRef.current}`}>{rowsTemp}</div>
+        <div
+          className="correct-number"
+          aria-label={`The correct number was ${targetNumberRef.current}`}
+        >
+          {rowsTemp}
+        </div>
         <div className="share-score-container">
           <ShareScore hints={hintsRef.current} />
         </div>
@@ -1340,20 +1372,20 @@ function updateGameBoard() {
     if (scoresWindowRevealRef.current) {
       setShowScoresButton(
         <div className="show-scores-container">
-        <button className={"show-scores"} onClick={scoresButtonClicked}>
-          Show Scores
-        </button>
+          <button className={"show-scores"} onClick={scoresButtonClicked}>
+            Show Scores
+          </button>
         </div>
       );
     } else {
       setShowScoresButton(
         <div className="show-scores-container">
-        <button
-          className={"show-scores float-down"}
-          onClick={scoresButtonClicked}
-        >
-          Show Scores
-        </button>
+          <button
+            className={"show-scores float-down"}
+            onClick={scoresButtonClicked}
+          >
+            Show Scores
+          </button>
         </div>
       );
       setScoresWindowRevealRef(true);
@@ -1368,17 +1400,20 @@ function updateGameBoard() {
     }
     setShowScoresButton(
       <div className="show-scores-container">
-      <button className={"show-scores"} onClick={scoresButtonClicked}>
-        Show Scores
-      </button>
+        <button className={"show-scores"} onClick={scoresButtonClicked}>
+          Show Scores
+        </button>
       </div>
     );
     setTimeout(() => {
       setShowScoresButton(
         <div className="show-scores-container">
-        <button className={"show-scores keydown"} onClick={scoresButtonClicked}>
-          Show Scores
-        </button>
+          <button
+            className={"show-scores keydown"}
+            onClick={scoresButtonClicked}
+          >
+            Show Scores
+          </button>
         </div>
       );
     }, 1);
@@ -1392,7 +1427,7 @@ function updateGameBoard() {
 
   //Disables the game after the player wins or loses
   function disableGame(delay = true) {
-    let delayTime = 1000 * (0.85 + 0.2 * (props.digits - 1));
+    let delayTime = 1000 * (0.7 + delayFormulaRef.current(0));
     if (!delay) {
       delayTime = 0;
     }
@@ -1581,7 +1616,7 @@ function updateGameBoard() {
         <div className={"gameboard"}>
           {errorMessagesDiv}
           {gameOverModalRef.current}
-          <div className="rows" aria-label="Gameboard"  ref={yPosition}>
+          <div className="rows" aria-label="Gameboard" ref={yPosition}>
             {board}
           </div>
           {keyboard}
