@@ -32,20 +32,32 @@ function ShareScore(props) {
     const upArrow = `\u{2B06}`;
     const downArrow = `\u{2B07}`;
 
-    let headerSpacesLeft = [1, 3, 6, 8, 10, 13];
-    let labelSpacesLeft = [0, 0, 2, 5, 7, 10];
+    let headerSpacesLeft;
+    let bodySpacesLeft;
+    let labelSpacesLeft;
+
     if (props.random) {
-      labelSpacesLeft = [0, 0, 1, 3, 5, 8];
+      headerSpacesLeft = [1, 1, 2, 4, 7, 9];
+      bodySpacesLeft = [3, 1, 0, 0, 0, 0];
+      labelSpacesLeft = [0, 0, 1, 3, 6, 8];
+    } else {
+      headerSpacesLeft = [0, 1, 0, 5, 7, 9];
+      bodySpacesLeft = [2, 1, 0, 0, 0, 0];
+      labelSpacesLeft = [1, 0, 0, 5, 7, 10];
     }
 
     let copiedText = "";
     for (let i = 0; i < headerSpacesLeft[props.hints[0].length - 3]; i++) {
       copiedText += " ";
     }
-    copiedText += "Numblr\n";
+    copiedText += "Numbler.net\n";
 
     let attempts = 1;
     props.hints.forEach((x) => {
+      for (let i = 0; i < bodySpacesLeft[props.hints[0].length - 3]; i++) {
+        copiedText += " ";
+      }
+
       for (let i = 0; i < x.length - 1; i++) {
         switch (x[i]) {
           case "G": {
@@ -131,7 +143,11 @@ function ShareScore(props) {
   }
 
   return (
-    <button className="share" onClick={shareMyScore} aria-label="Copy your game to clipboard">
+    <button
+      className="share"
+      onClick={shareMyScore}
+      aria-label="Copy your game to clipboard"
+    >
       {shareButtonText}
     </button>
   );

@@ -749,67 +749,6 @@ function accountRequests(app) {
     }
   });
 
-  //Checks if the user has an active login session, returns {loggedIn: true} if they do
-  app.post("/api/checkSession", async (req, res) => {
-    try {
-      const db = mongoClient.db("Accounts");
-      let accounts = db.collection("Accounts");
-      let account = await accounts.findOne({ session: req.body.session });
-      if (account) {
-        res.send({
-          loggedIn: true,
-        });
-      } else {
-        res.send({});
-      }
-    } catch {
-      res.send({});
-    }
-  });
-
-  //Checks if user has premium, returns {premium: true} if they do
-  app.post("/api/checkPremium", async (req, res) => {
-    try {
-      const db = mongoClient.db("Accounts");
-      let accounts = db.collection("Accounts");
-      let account = await accounts.findOne({ session: req.body.session });
-      if (account.premium == true) {
-        res.send({
-          premium: true,
-          loggedIn: true,
-        });
-      } else {
-        res.send({ premium: false, loggedIn: true });
-      }
-    } catch {
-      res.send({ loggedIn: false });
-    }
-  });
-
-  //Returns the profile image link of the user and their session, generated when session begins
-  //Does almost the same thing as /api/current user, but I coded this into project first
-  app.get("/api/profile_picture", async (req, res) => {
-    try {
-      if (req.user) {
-        res.send({
-          loggedIn: true,
-          imageUrl: req.user.profile_picture,
-          session: req.user.session,
-        });
-      } else {
-        res.send({
-          loggedIn: false,
-          imageUrl: "/images/site/account2.png",
-        });
-      }
-    } catch {
-      res.send({
-        loggedIn: false,
-        imageUrl: "/images/site/account2.png",
-      });
-    }
-  });
-
   //Returns the username associated with the current session and a statistcs object with their game info, and if they have premium
   app.post("/api/profile", async (req, res) => {
     try {

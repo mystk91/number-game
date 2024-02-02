@@ -107,20 +107,11 @@ function Leaderboards(props) {
   //Checks if user has Random Mode already
   //This is called when page loads
   async function checkPremium() {
-    let resObj;
+    let premium = false;
     if (props.user) {
-      const options = {
-        method: "POST",
-        body: JSON.stringify(props.user),
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-      };
-      let res = await fetch("/api/checkPremium", options);
-      resObj = await res.json();
+      premium = props.user.premium;
     }
-    if (resObj.premium !== true) {
+    if (premium === false) {
       setShowBuyRandomRef(
         <button className="random-mode-info-btn" onClick={() => {setModal(); setAdModal(<AdRandomModal key={new Date()}/>)}}>
         Random Mode?

@@ -16,25 +16,13 @@ function LeaderboardsPage(props) {
   }, []);
 
   async function fetchUser() {
-    let resObj;
+    let user;
     let profile = localStorage.getItem("profile");
-    if (props.user) {
-      resObj = props.user;
-    } else if (profile) {
+    if (profile) {
       let profileObj = JSON.parse(profile);
-      resObj = {
-        session: profileObj.session,
-        imageUrl: profileObj.profile_picture,
-        loggedIn: true,
-      };
-    } else {
-      let res = await fetch("/api/profile_picture");
-      resObj = await res.json();
-    }
-    if (resObj.session) {
       const options = {
         method: "POST",
-        body: JSON.stringify(resObj),
+        body: JSON.stringify(profileObj),
         withCredentials: true,
         credentials: "include",
         headers: {
@@ -42,16 +30,25 @@ function LeaderboardsPage(props) {
           "Content-Type": "application/json",
         },
       };
-      let checkPremium = await fetch("/api/checkPremium", options);
-      let checkPremiumObj = await checkPremium.json();
-      if (checkPremiumObj.premium) {
-        resObj.premium = true;
-      }
+      let res = await fetch("/api/account-info", options);
+      let accountInfo = await res.json();
+      user = {
+        loggedIn: accountInfo.loggedIn,
+        premium: accountInfo.premium,
+        imageUrl: accountInfo.imageUrl,
+        session: profileObj.session,
+      };
+    } else {
+      user = {
+        loggedIn: false,
+        premium: false,
+        imageUrl: "/images/site/account2.png",
+      };
     }
     setLeaderboardPage(
       <div className="leaderboards-page">
-        <NavbarDynamic digits={0} user={resObj} instructions={" invisible"} />
-        <Leaderboards user={resObj} />
+        <NavbarDynamic digits={0} user={user} instructions={" invisible"} />
+        <Leaderboards user={user} />
       </div>
     );
   }

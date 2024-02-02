@@ -65,6 +65,8 @@ function Login(props) {
   //Handles to lhe login logic
   async function login(e) {
     e.preventDefault();
+    setErrEmail();
+    setErrPassword();
     const url = "/api/validate";
     const formData = new FormData(e.target);
     const formDataObj = Object.fromEntries(formData.entries());

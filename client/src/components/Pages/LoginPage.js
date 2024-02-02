@@ -21,27 +21,13 @@ function LoginPage(props) {
   }, []);
 
   async function fetchUser() {
-    let resObj;
+    let user;
     let profile = localStorage.getItem("profile");
-    if (props.user) {
-      resObj = props.user;
-    } else if (profile) {
+    if (profile) {
       let profileObj = JSON.parse(profile);
-      resObj = {
-        session: profileObj.session,
-        imageUrl: profileObj.profile_picture,
-        loggedIn: true,
-      };
-      console.log("using local object " + resObj);
-    } else {
-      let res = await fetch("/api/profile_picture");
-      resObj = await res.json();
-    }
-    let checkSessionObj;
-    if (resObj.session) {
       const options = {
         method: "POST",
-        body: JSON.stringify(resObj),
+        body: JSON.stringify(profileObj),
         withCredentials: true,
         credentials: "include",
         headers: {
@@ -49,17 +35,29 @@ function LoginPage(props) {
           "Content-Type": "application/json",
         },
       };
-      let checkSession = await fetch("/api/checkSession", options);
-      checkSessionObj = await checkSession.json();
+      let res = await fetch("/api/account-info", options);
+      let accountInfo = await res.json();
+      user = {
+        loggedIn: accountInfo.loggedIn,
+        premium: accountInfo.premium,
+        imageUrl: accountInfo.imageUrl,
+        session: profileObj.session,
+      };
+    } else {
+      user = {
+        loggedIn: false,
+        premium: false,
+        imageUrl: "/images/site/account2.png",
+      };
     }
 
-    if (!checkSessionObj) {
+    if (!user.loggedIn) {
       localStorage.removeItem("profile");
       setLoginPage(
         <div className="login-page">
           <Navbar
             digits={0}
-            user={resObj}
+            user={user}
             instructions={" invisible"}
             login={" invisible"}
           />

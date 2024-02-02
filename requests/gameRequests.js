@@ -299,7 +299,7 @@ function gameRequests(app) {
             if (!scores) {
               scores = [];
             }
-            if (scores.length > 999) {
+            while (scores.length > 999) {
               scores.shift();
             }
             scores.push(score);
@@ -687,7 +687,7 @@ function gameRequests(app) {
           if (!scores) {
             scores = [];
           }
-          if (scores.length > 999) {
+          while (scores.length > 999) {
             scores.shift();
           }
           scores.push(score);

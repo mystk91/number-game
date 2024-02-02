@@ -21,10 +21,14 @@ function Histogram30Random(props) {
     averageScoreRef.current = point;
   }
 
+  const numberOfGamesRef = useRef(props.scoresObj.scores30.length);
+  function setNumberOfGamesRef(point){
+    numberOfGamesRef.current = point;
+  }
+
   //componentDidMount, runs when component mounts, then componentDismount
   useEffect(() => {
     updateHistogram();
-
     return () => {};
   }, []);
 
@@ -98,7 +102,7 @@ function Histogram30Random(props) {
 
   return (
     <div className="histogram-container" aria-label="Score Histogram">
-      <div className="average-score">30 Average: {averageScoreRef.current}</div>
+      <div className="average-score">{numberOfGamesRef.current} Game Average: {averageScoreRef.current}</div>
       {histogram}
     </div>
   );
