@@ -80,10 +80,6 @@ function accountRequests(app) {
     let dupeAccount = await accounts.findOne({
       email: req.body.email.toLowerCase(),
     });
-    if (dupeAccount) {
-      errors.email = "That email is already associated with an account";
-      errorFound = true;
-    }
     //Checks if password is valid
     let passwordRegExp = new RegExp(
       "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*[!@#$%^&*_0-9]).{10,32}$"
@@ -102,9 +98,42 @@ function accountRequests(app) {
       errors.username = "Invalid username";
       errorFound = true;
     }
-    if (errorFound) {
+    if (dupeAccount) {
+      //Sends back a fake account completion if email already exists
+      res.sendStatus(200);
+      const transporter = nodemailer.createTransport({
+        service: "gmail",
+        auth: {
+          user: process.env.nodemailerUser,
+          pass: process.env.nodemailerPass,
+        },
+      });
+
+      const mailOptions = {
+        from: `"Numbler" <${process.env.nodemailerUser}>`,
+        to: req.body.email,
+        subject: "Numbler Email Verification",
+        html: `</p> You have already created a Numbler account. </p> 
+        <p>If you didn't just try to sign up to Numbler, someone else may have tried to sign up with your email. 
+        If so, your account information is hidden and you can ignore this. </p>
+        <p>If you need to reset your password, visit 
+        <a href='${process.env.protocol}${process.env.domain}/reset-password'>${process.env.protocol}${process.env.domain}/reset-password</a></p>
+        `,
+      };
+
+      transporter.sendMail(mailOptions, function (error, info) {
+        if (error) {
+          console.log(error);
+        } else {
+          console.log("Email sent: " + info.response);
+        }
+      });
+      //errors.email = "That email is already associated with an account";
+      //errorFound = true;
+    } else if (errorFound) {
       res.status(400).send(errors);
     } else {
+      res.sendStatus(200);
       //Creates the account if parameters are correct
       let random = Math.floor(Math.random() * 6) + 4;
 
@@ -133,12 +162,12 @@ function accountRequests(app) {
       });
 
       const mailOptions = {
-        from: `"Numblr" <${process.env.nodemailerUser}>`,
+        from: `"Numbler" <${process.env.nodemailerUser}>`,
         to: req.body.email,
-        subject: "Numblr Email Verification",
+        subject: "Numbler Email Verification",
         html: `</p> Click below to verify your email address. </p> <br>
         <a href='${process.env.protocol}${process.env.domain}/verify-email/${verificationCode}'>${process.env.protocol}${process.env.domain}/verify-email/${verificationCode}</a>
-        <p>If you did not just sign up to Numblr, please ignore this.</p>
+        <p>If you did not just sign up to Numbler, please ignore this.</p>
         `,
       };
 
@@ -147,7 +176,6 @@ function accountRequests(app) {
           console.log(error);
         } else {
           console.log("Email sent: " + info.response);
-          res.sendStatus(200);
         }
       });
     }
@@ -227,20 +255,50 @@ function accountRequests(app) {
     if (!emailRegExp.test(req.body.email)) {
       errors.email = "Invalid email address";
       errorFound = true;
-    } else {
-      //Checks if email address exists
-      let accountExists = await accounts.findOne({
-        email: req.body.email.toLowerCase(),
-      });
-      if (!accountExists) {
-        errors.email = "There is no account associated with that email";
-        errorFound = true;
-      }
     }
+
+    //Checks if email address exists
+    let accountExists = await accounts.findOne({
+      email: req.body.email.toLowerCase(),
+    });
 
     if (errorFound) {
       res.status(400).send(errors);
+    } else if (!accountExists) {
+      //Checks if account exists, sends email notifiying them that they can create an account
+      res.sendStatus(200);
+      const transporter = nodemailer.createTransport({
+        service: "gmail",
+        auth: {
+          user: process.env.nodemailerUser,
+          pass: process.env.nodemailerPass,
+        },
+      });
+
+      const mailOptions = {
+        from: `"Numbler" <${process.env.nodemailerUser}>`,
+        to: req.body.email,
+        subject: "Numbler Password Rest",
+        html: `</p> You have requsted a password reset, but you do not have a Numbler account associated with this email. </p> 
+        <p>If you want to create an account, visit 
+        <a href='${process.env.protocol}${process.env.domain}/signup'>${process.env.protocol}${process.env.domain}/signup</a></p>
+        <p>If you didn't just request a password reset, you can ignore this. </p>
+        `,
+      };
+
+      transporter.sendMail(mailOptions, function (error, info) {
+        if (error) {
+          console.log(error);
+        } else {
+          console.log("Email sent: " + info.response);
+        }
+      });
+      /*
+      errors.email = "There is no account associated with that email";
+      errorFound = true;
+      */
     } else {
+      res.sendStatus(200);
       try {
         await accounts.updateOne(
           { email: req.body.email.toLowerCase() },
@@ -270,9 +328,9 @@ function accountRequests(app) {
       });
 
       const mailOptions = {
-        from: `"Numblr" <${process.env.nodemailerUser}>`,
+        from: `"Numbler" <${process.env.nodemailerUser}>`,
         to: req.body.email.toLowerCase(),
-        subject: "Numblr Password Reset",
+        subject: "Numbler Password Reset",
         html: `<p>Click here to reset your password. If you didn't request a password reset, you can ignore this. </p>
         <a href='${process.env.protocol}${process.env.domain}/new-password/${verificationCode}'>${process.env.protocol}${process.env.domain}/new-password/${verificationCode}</a>`,
       };
@@ -281,7 +339,6 @@ function accountRequests(app) {
         if (error) {
           console.log(error);
         } else {
-          res.sendStatus(200);
           console.log("Email sent: " + info.response);
         }
       });
@@ -380,13 +437,13 @@ function accountRequests(app) {
       email: req.body.email.toLowerCase(),
     });
     if (!user) {
-      errors.email = "No account exists with that email";
+      errors.password = "Incorrect email or password";
       errors.errorFound = true;
     } else {
       if (await bcrypt.compare(req.body.password, user.password)) {
         res.sendStatus(302);
       } else {
-        errors.password = "Incorrect password";
+        errors.password = "Incorrect email or password";
         errors.errorFound = true;
       }
     }
