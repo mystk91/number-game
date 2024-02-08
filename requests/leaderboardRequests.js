@@ -17,7 +17,7 @@ function leaderboardRequests(app) {
           .collection("Leaderboard-" + digits)
           .find()
           .toArray();
-          leaderboard.forEach(x=>{
+          leaderboard.forEach(x=>{ 
             delete x._id;
             delete x.userId;
             delete x.strikes;

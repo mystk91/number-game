@@ -178,7 +178,14 @@ function profileRequests(app) {
       if (modeName == "random" || modeName == "digits") {
         await accounts.updateOne(
           { session: req.body.session },
-          { $unset: { [`${req.body.mode}-scores`]: "" } }
+          {
+            $unset: { [`${req.body.mode}-scores`]: "" },
+            $set: { lastStatReset: new Date() },
+            $inc: {
+              [`num-resetScores-${req.body.mode}`]:
+                account[`${req.body.mode}-scores`].scores.length,
+            },
+          }
         );
         res.send({ success: true });
       } else {

@@ -240,7 +240,12 @@ function gameRequests(app) {
               await stats.updateOne(
                 { title: "gamesCompleted" },
                 {
-                  $inc: { gamesCompleted: 1, randomGamesCompleted: 1 },
+                  $inc: {
+                    gamesCompleted: 1,
+                    randomGamesCompleted: 1,
+                    [`random${req.body.digits}-games`]: 1,
+                    [`random${req.body.digits}-scoresTotal`]: score,
+                  },
                 }
               );
             } catch {}
@@ -647,7 +652,11 @@ function gameRequests(app) {
             await stats.updateOne(
               { title: "gamesCompleted" },
               {
-                $inc: { gamesCompleted: 1, dailyGamesCompleted: 1 },
+                $inc: {
+                  gamesCompleted: 1,
+                  dailyGamesCompleted: 1,
+                  [`daily${req.body.digits}-games`]: 1,
+                },
               }
             );
           } catch {}
@@ -937,7 +946,11 @@ function gameRequests(app) {
             await stats.updateOne(
               { title: "gamesCompleted" },
               {
-                $inc: { gamesCompleted: 1, dailyGamesCompleted: 1 },
+                $inc: {
+                  gamesCompleted: 1,
+                  dailyGamesCompleted: 1,
+                  [`daily${req.body.digits}-games`]: 1,
+                },
               }
             );
           } catch {}
@@ -967,7 +980,11 @@ function gameRequests(app) {
             await stats.updateOne(
               { title: "gamesCompleted" },
               {
-                $inc: { gamesCompleted: 1, dailyGamesCompleted: 1 },
+                $inc: {
+                  gamesCompleted: 1,
+                  dailyGamesCompleted: 1,
+                  [`daily${req.body.digits}-games`]: 1,
+                },
               }
             );
           } catch {}

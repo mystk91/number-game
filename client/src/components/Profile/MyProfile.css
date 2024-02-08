@@ -52,8 +52,6 @@
   transition: .4s opacity;
 }
 
-
-
 .profile-tabs-container li {
   max-height: 90px;
 }
@@ -130,6 +128,10 @@
 
 .contact-tab img{
   padding: 4px;
+}
+
+.active-tab{
+  width: 100%;
 }
 
 
