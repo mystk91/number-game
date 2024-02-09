@@ -142,6 +142,25 @@ function gameRequests(app) {
     }
   }
 
+  //Checks to see if guess has a valid number of digits and characters
+  //Returns true in the number is valid, otherwise will refresh the page
+  function numberValidation(number, digits) {
+    try {
+      if (
+        isFinite(number) &&
+        number.length == digits &&
+        digits >= 2 &&
+        digits <= 7
+      ) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch {
+      return false;
+    }
+  }
+
   //Checks a guess for the random vesion of the game. RANDOM
   async function checkGuessRandom(req, res, next) {
     try {
@@ -150,18 +169,20 @@ function gameRequests(app) {
       let account = await accounts.findOne({ session: req.body.session });
       //Checks if user actually has random mode / premium
       if (account.premium) {
-        let validateNumber = false;
-        if (
-          isFinite(req.body.number) &&
-          req.body.number.length == req.body.digits &&
-          req.body.digits > 1
-        ) {
-          validateNumber = true;
+        let randomGameString = req.body.digits + "random";
+        let validateNumber = numberValidation(req.body.number, req.body.digits);
+        if (!validateNumber) {
+          res.send({
+            error: true,
+          });
         }
-        let string = "/" + req.body.digits + "random";
-        if (validateNumber) {
-          let randomGameString = req.body.digits + "random";
-
+        //Checks if user is still playing the game, this can be relevant with multiple windows open
+        else if (account[randomGameString].status !== "playing") {
+          res.send({
+            gameObj: account[randomGameString],
+            scoresObj: account[`${randomGameString}-scores`],
+          });
+        } else {
           function checkNumber(number) {
             let result = "";
             //Compares the number with target number and applies wordle rules to it
@@ -392,8 +413,6 @@ function gameRequests(app) {
               gameObj: randomGameObj,
             });
           }
-        } else {
-          throw new Error();
         }
       } else {
         res.redirect("/login");
@@ -553,24 +572,26 @@ function gameRequests(app) {
     }
   }
 
-  //Checks a guess for the random vesion of the game. REGULAR
+  //Checks a guess for the regular vesion of the game. REGULAR
   async function checkGuessRegular(req, res, next) {
     try {
       const db = mongoClient.db("Accounts");
       let accounts = db.collection("Accounts");
       let account = await accounts.findOne({ session: req.body.session });
-      let validateNumber = false;
-      if (
-        isFinite(req.body.number) &&
-        req.body.number.length == req.body.digits &&
-        req.body.digits > 1
-      ) {
-        validateNumber = true;
+      let regularGameString = req.body.digits + "digits";
+      let validateNumber = numberValidation(req.body.number, req.body.digits);
+      if (!validateNumber) {
+        res.send({
+          error: true,
+        });
       }
-      let string = "/" + req.body.digits + "digits";
-      if (validateNumber) {
-        let regularGameString = req.body.digits + "digits";
-
+      //Checks if user is still playing the game, this can be relevant with multiple windows open
+      else if (account[regularGameString].status !== "playing") {
+        res.send({
+          gameObj: account[regularGameString],
+          scoresObj: account[`${regularGameString}-scores`],
+        });
+      } else {
         function checkNumber(number) {
           let result = "";
           //Compares the number with target number and applies wordle rules to it
@@ -803,8 +824,6 @@ function gameRequests(app) {
             gameObj: regularGameObj,
           });
         }
-      } else {
-        throw new Error();
       }
     } catch {
       res.redirect("/login");
@@ -822,19 +841,15 @@ function gameRequests(app) {
     console.log("it is " + todaysGame.gameId);
   }
 
-  //Checks a guess for the random vesion of the game. Local
+  //Checks a guess for the local vesion of the game. Local
   async function checkGuessLocal(req, res, next) {
     try {
-      let validateNumber = false;
-      if (
-        isFinite(req.body.number) &&
-        req.body.number.length == req.body.digits &&
-        req.body.digits > 1
-      ) {
-        validateNumber = true;
-      }
-      let string = "/" + req.body.digits + "digits";
-      if (validateNumber) {
+      let validateNumber = numberValidation(req.body.number, req.body.digits);
+      if (!validateNumber) {
+        res.send({
+          error: true,
+        });
+      } else {
         let regularGameString = req.body.digits + "digits";
         async function checkNumber(number) {
           console.log("checkNumber starts");
@@ -1004,28 +1019,9 @@ function gameRequests(app) {
             gameObj: localGameObj,
           });
         }
-      } else {
-        throw new Error();
       }
     } catch {
-      //There was an error, sending back empty hints
-      let hintsCopy = [];
-      Object.values(req.body.hints).forEach((x) => {
-        hintsCopy.push(x);
-      });
-
-      let result = "";
-      for (let i = 0; i < req.body.digits; i++) {
-        result += `X`;
-      }
-      hintsCopy[req.body.currentRow] = result;
-
-      let localGameObj = {
-        hints: hintsCopy,
-        status: "defeat",
-        error: true,
-      };
-      res.send({ gameObj: localGameObj });
+      res.send({ error: true });
     }
   }
 

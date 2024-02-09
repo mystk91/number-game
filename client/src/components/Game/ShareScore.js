@@ -41,9 +41,9 @@ function ShareScore(props) {
       bodySpacesLeft = [3, 1, 0, 0, 0, 0];
       labelSpacesLeft = [0, 0, 1, 3, 6, 8];
     } else {
-      headerSpacesLeft = [0, 1, 0, 5, 7, 9];
+      headerSpacesLeft = [0, 1, 2, 5, 7, 9];
       bodySpacesLeft = [2, 1, 0, 0, 0, 0];
-      labelSpacesLeft = [1, 0, 0, 5, 7, 10];
+      labelSpacesLeft = [1, 1, 3, 5, 7, 10];
     }
 
     let copiedText = "";

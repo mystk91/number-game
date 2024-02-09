@@ -1101,6 +1101,7 @@ function NumberGameLocal(props) {
     keydownAnimation("keyEnter");
     if (boardStateRef.current[currentRowRef.current].length === props.digits) {
       disableInputs();
+      //updateGameStateFromLocalStorage()
       setCurrentRowRef(currentRowRef.current + 1);
       let reqObj = {
         digits: props.digits,
@@ -1123,6 +1124,9 @@ function NumberGameLocal(props) {
       };
       let res = await fetch(url, options);
       let resObj = await res.json();
+      if (resObj.error){
+        window.location.reload();
+      }
       //resObj.gameObj.currentRow -= 1;
       setCurrentRowRef(currentRowRef.current - 1);
       setHintsRef(resObj.gameObj.hints);

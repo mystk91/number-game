@@ -75,19 +75,19 @@
 
 .histogram-container.profile .histogram-bar.score-1,
 .histogram-container.profile .histogram-bar.score-2 {
-  background-color: rgba(0, 255, 0);
+  background-color: rgb(0, 255, 0);
   animation: -2s 3.2s expandBars, 6s 4s movingBackground linear infinite;
 }
 
 .histogram-container.profile .histogram-bar.score-3,
 .histogram-container.profile .histogram-bar.score-4 {
-  background-color: rgb(0, 201, 70);
+  background-color: rgb(0, 210, 75);
   animation: -2s 3.2s expandBars, 6s 6.5s movingBackground linear infinite;
 }
 
 .histogram-container.profile .histogram-bar.score-5,
 .histogram-container.profile .histogram-bar.score-6 {
-  background-color: rgb(225, 255, 0);
+  background-color: rgb(255, 255, 0);
   animation: -2s 3.2s expandBars, 6s 8s movingBackground linear infinite;
 }
 

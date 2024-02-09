@@ -482,10 +482,6 @@ button.reset-stats:hover {
   font-weight: 400;
 }
 
-.change-settings.delete-account {
-  align-items: center;
-}
-
 .inline {
   display: inline-block;
 }
