@@ -171,8 +171,8 @@ function NumberGameLocal(props) {
     nextGameAvailableRef.current = point;
   }
 
-  //A temporary random number used to test the game
-  const targetNumberRef = useRef("hidden");
+  //The random number user is trying to guess
+  const targetNumberRef = useRef();
   function setTargetNumberRef(point) {
     targetNumberRef.current = point;
   }
@@ -230,6 +230,7 @@ function NumberGameLocal(props) {
       setHideMessageButtonRef(" hide");
       removeArrows();
     } else {
+      isNextGameAvailable();
       if (nextGameAvailableRef.current) {
         setHideGuessButtonRef(" hide");
         setHideResetButtonRef("");
@@ -263,10 +264,14 @@ function NumberGameLocal(props) {
     if (storage) {
       let storageObj = JSON.parse(storage);
 
-      const url = "/api/gameId";
+      const url = "/api/getLocalGame";
       const options = {
         method: "PUT",
-        body: JSON.stringify({ digits: props.digits }),
+        body: JSON.stringify({
+          digits: props.digits,
+          gameId: storageObj.gameId,
+          gameStatus: storageObj.status,
+        }),
         withCredentials: true,
         credentials: "include",
         headers: {
@@ -277,12 +282,23 @@ function NumberGameLocal(props) {
       let res = await fetch(url, options);
       let resObj = await res.json();
 
+      console.log("our game id is " + storageObj.gameId);
+      console.log("the retrieved id is " + resObj.gameId);
+      console.log("the game status is " + storageObj.status);
+
       if (
         !storageObj.board[0] ||
-        (resObj.gameId !== storageObj.gameId && storageObj.status !== `playing`)
+        (resObj.gameId !== storageObj.gameId &&
+          storageObj.status !== `playing`) ||
+        resObj.error
       ) {
+        console.log("so we do reset the game");
         resetGame();
       } else {
+        console.log("so we don't reset the game");
+        setGameIdRef(resObj.gameId);
+        setTargetNumberRef(resObj.targetNumber);
+        setDateRef(resObj.date);
         updateGameStateFromLocalStorage();
         if (gameStatusRef.current !== "playing") {
           disableGame(false);
@@ -301,7 +317,7 @@ function NumberGameLocal(props) {
         hintsArr[i] = "";
       }
       setHintsRef(hintsArr);
-      const url = "/api/gameId";
+      const url = "/api/getLocalGame";
       const options = {
         method: "PUT",
         body: JSON.stringify({ digits: props.digits }),
@@ -315,6 +331,8 @@ function NumberGameLocal(props) {
       let res = await fetch(url, options);
       let resObj = await res.json();
       setGameIdRef(resObj.gameId);
+      setTargetNumberRef(resObj.targetNumber);
+      setDateRef(resObj.date);
       updateLocalStorage();
     }
 
@@ -340,7 +358,7 @@ function NumberGameLocal(props) {
       hints: hintsRef.current,
       status: gameStatusRef.current,
       gameId: gameIdRef.current,
-      targetNumber: targetNumberRef.current,
+      //targetNumber: targetNumberRef.current,
     };
     localStorage.setItem(`game` + props.digits, JSON.stringify(gameState));
   }
@@ -355,7 +373,7 @@ function NumberGameLocal(props) {
       setHintsRef(storageObj.hints);
       setGameStatusRef(storageObj.status);
       setGameIdRef(storageObj.gameId);
-      setTargetNumberRef(storageObj.targetNumber);
+      //setTargetNumberRef(storageObj.targetNumber);
       changeKeyboardColors();
     }
   }
@@ -1101,50 +1119,31 @@ function NumberGameLocal(props) {
     keydownAnimation("keyEnter");
     if (boardStateRef.current[currentRowRef.current].length === props.digits) {
       disableInputs();
-      //updateGameStateFromLocalStorage()
-      setCurrentRowRef(currentRowRef.current + 1);
-      let reqObj = {
-        digits: props.digits,
-        number: boardStateRef.current[currentRowRef.current - 1],
-        //number: boardStateRef.current[currentRowRef.current],
-        hints: hintsRef.current,
-        currentRow: currentRowRef.current - 1,
-        gameId: gameIdRef.current,
-      };
-      const url = "/api/checkGuessLocal";
-      const options = {
-        method: "PUT",
-        body: JSON.stringify(reqObj),
-        withCredentials: true,
-        credentials: "include",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-      };
-      let res = await fetch(url, options);
-      let resObj = await res.json();
-      if (resObj.error){
-        window.location.reload();
+
+      let result = checkNumber(boardStateRef.current[currentRowRef.current]);
+      let hintsCopy = [];
+      Object.values(hintsRef.current).forEach((x) => {
+        hintsCopy.push(x);
+      });
+      hintsCopy[currentRowRef.current] = result;
+      setHintsRef(hintsCopy);
+
+      if (result === correctResultRef.current) {
+        setGameStatusRef(`victory`);
+        await isNextGameAvailable();
+      } else if (currentRowRef.current === props.attempts - 1) {
+        setGameStatusRef(`defeat`);
+        await isNextGameAvailable();
       }
-      //resObj.gameObj.currentRow -= 1;
-      setCurrentRowRef(currentRowRef.current - 1);
-      setHintsRef(resObj.gameObj.hints);
 
       enableInputs();
 
-      if (resObj.gameObj.status === `victory`) {
-        setGameStatusRef(`victory`);
-        if (resObj.gameObj.nextGameAvailable) {
-          setNextGameAvailableRef(true);
-        } else {
-          setNextGameAvailableRef(false);
-        }
+      if (gameStatusRef.current === `victory`) {
         //setScoresObjRef(resObj.scoresObj);
         disableGame();
         updateScores();
-        setTargetNumberRef(resObj.gameObj.targetNumber);
-        setDateRef(resObj.gameObj.date);
+        //setTargetNumberRef(resObj.gameObj.targetNumber);
+        //setDateRef(resObj.gameObj.date);
         addTransitionDelay();
         changeKeyboardColors();
         //removeTransitionDelay();
@@ -1152,7 +1151,7 @@ function NumberGameLocal(props) {
         updateTimesVisited();
         updateLocalStorage();
       } else {
-        if (resObj.gameObj.status === `playing`) {
+        if (gameStatusRef.current === `playing`) {
           addTransitionDelay();
           changeKeyboardColors();
           setCurrentRowRef(currentRowRef.current + 1);
@@ -1160,16 +1159,10 @@ function NumberGameLocal(props) {
           updateGameBoard();
           updateLocalStorage();
         } else {
-          setGameStatusRef(`defeat`);
-          if (resObj.gameObj.nextGameAvailable) {
-            setNextGameAvailableRef(true);
-          } else {
-            setNextGameAvailableRef(false);
-          }
           disableGame();
           updateScores();
-          setTargetNumberRef(resObj.gameObj.targetNumber);
-          setDateRef(resObj.gameObj.date);
+          //setTargetNumberRef(resObj.gameObj.targetNumber);
+          //setDateRef(resObj.gameObj.date);
           addTransitionDelay();
           changeKeyboardColors();
           //removeTransitionDelay();
@@ -1201,6 +1194,62 @@ function NumberGameLocal(props) {
     setKeyboardClassNameRef("");
   }
 
+  //Checks the number against the users guess, returns a string with the colors the blocks should become, ending with hint telling higher or lower
+  // ex. 5 digit number,  gyxxxl
+  // G - green
+  // Y - yellow
+  // X - dark grey
+  // L - lower, H - higher, E -equals
+  function checkNumber(number) {
+    let result = "";
+    //Compares the number with target number and creates color hints for it
+    let target = targetNumberRef.current;
+    let tempTarget = "";
+    for (let i = 0; i < props.digits; i++) {
+      if (number[i] === target[i]) {
+        tempTarget += "G";
+      } else {
+        tempTarget += target[i];
+      }
+    }
+    for (let i = 0; i < props.digits; i++) {
+      if (tempTarget[i] === "G") {
+        result += "G";
+      } else if (tempTarget.includes(number[i])) {
+        result += "Y";
+      } else {
+        result += "X";
+      }
+    }
+    //Compares the number with target number numerically and creates a hint
+    target = Number(target);
+    number = Number(number);
+    if (number > target) {
+      result += "L";
+    } else if (number < target) {
+      result += "H";
+    } else if (number === target) {
+      result += "E";
+    }
+    console.log(result);
+    return result;
+  }
+
+  //Sets what the correct target should be using abbreviations like GGGGGE
+  //Used when determining if user has correct guesss
+  const correctResultRef = useRef(setUpCorrectResult());
+  function setUpCorrectResultRef(point) {
+    correctResultRef.current = point;
+  }
+  function setUpCorrectResult() {
+    let correctResult = "";
+    for (let i = 0; i < props.digits; i++) {
+      correctResult += "G";
+    }
+    correctResult += "E";
+    return correctResult;
+  }
+
   //Sets the score for this game next to any previous games and updates the average score among all games
   function updateScores() {
     let score;
@@ -1213,17 +1262,19 @@ function NumberGameLocal(props) {
     let scoresStorage = localStorage.getItem("scores" + props.digits);
     if (!scoresStorage) {
       scoresObj = {
-        scores: [],
+        scores: {},
         average: 0,
       };
     } else {
       scoresObj = JSON.parse(scoresStorage);
     }
-    scoresObj.scores.unshift(score);
+
+    scoresObj.scores[`${gameIdRef.current}`] = score;
+    let scoresArr = Object.values(scoresObj.scores);
     scoresObj.average =
-      scoresObj.scores.reduce((total, x) => {
+      scoresArr.reduce((total, x) => {
         return total + x;
-      }, 0) / scoresObj.scores.length;
+      }, 0) / scoresArr.length;
     localStorage.setItem("scores" + props.digits, JSON.stringify(scoresObj));
   }
 
@@ -1238,7 +1289,7 @@ function NumberGameLocal(props) {
     let number = boardStateRef.current[currentRowRef.current];
     for (let i = 0; i < props.digits; i++) {
       transitionDelayCopy[`key` + number[i]] =
-        delayFormulaRef.current(i) + .3 + "s";
+        delayFormulaRef.current(i) + 0.3 + "s";
     }
     setTransitionDelayRef(transitionDelayCopy);
     setTimeout(removeTransitionDelay, 5000);
@@ -1420,6 +1471,33 @@ function NumberGameLocal(props) {
       </div>
     );
     setGameOverModalRef(defeatHTML);
+  }
+
+  //Checks if the next game is available
+  //Updates the nextAvailable ref if it is
+  async function isNextGameAvailable() {
+    const url = "/api/nextGameAvailable";
+    const options = {
+      method: "PUT",
+      body: JSON.stringify({
+        digits: props.digits,
+        gameId: gameIdRef.current,
+      }),
+      withCredentials: true,
+      credentials: "include",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+    };
+    let res = await fetch(url, options);
+    let resObj = await res.json();
+    console.log("it is " +  resObj.nextGameAvailable + "that the next game is available");
+    if (resObj.nextGameAvailable) {
+      setNextGameAvailableRef(true);
+    } else {
+      setNextGameAvailableRef(false);
+    }
   }
 
   //Used to display a modal

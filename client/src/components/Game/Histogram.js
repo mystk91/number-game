@@ -24,6 +24,7 @@ function Histogram(props) {
   //Used to set the histogram for a game with different digits / different no. of attempts
   function updateHistogram() {
     let storageObj = JSON.parse(localStorage.getItem("scores" + props.digits));
+    storageObj.scores = Object.values(storageObj.scores);
     if (storageObj) {
       let histogramArr = [];
       let histogramData = new Array(props.attempts + 1);

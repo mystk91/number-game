@@ -185,7 +185,7 @@ function gameRequests(app) {
         } else {
           function checkNumber(number) {
             let result = "";
-            //Compares the number with target number and creates color hints for it
+            //Compares the number with target number and applies wordle rules to it
             let target = account[randomGameString].targetNumber;
             let tempTarget = "";
             for (let i = 0; i < req.body.digits; i++) {
@@ -602,7 +602,7 @@ function gameRequests(app) {
       } else {
         function checkNumber(number) {
           let result = "";
-          //Compares the number with target number and creates color hints for it
+          //Compares the number with target number and applies wordle rules to it
           let target = account[regularGameString].targetNumber;
           let tempTarget = "";
           for (let i = 0; i < req.body.digits; i++) {
@@ -838,7 +838,7 @@ function gameRequests(app) {
     }
   }
 
-  //Used by Local version of the game to see if its gameId matches the current one
+  //Used by Local version of the game to see if its gameId matches the current one.
   async function getGameId(req, res, next) {
     console.log("getting todays game ID");
     const dbDailyGames = mongoClient.db("DailyGames");
@@ -847,76 +847,6 @@ function gameRequests(app) {
       .findOne({ digits: req.body.digits });
     res.send({ gameId: todaysGame.gameId });
     console.log("it is " + todaysGame.gameId);
-  }
-
-  /*Used by Local version of the game to retreieve the gameId and its number,
-    Will send back either today's game info or their current game's info */
-  async function getLocalGame(req, res, next) {
-    const dbDailyGames = mongoClient.db("DailyGames");
-    let todaysGame = await dbDailyGames
-      .collection("DailyGames")
-      .findOne({ digits: req.body.digits });
-    if (todaysGame.gameId === req.body.gameId || !req.body.gameId || req.body.gameStatus != "playing") {
-      console.log("getting todays game ID");
-      console.log("it is " + todaysGame.gameId);
-      res.send({
-        gameId: todaysGame.gameId,
-        date: todaysGame.date,
-        targetNumber: todaysGame.targetNumber,
-      });
-    } else {
-      const dbDailyGames = mongoClient.db("DailyGames");
-      let oldGame = await dbDailyGames
-        .collection("OldGames-" + req.body.digits)
-        .findOne({ gameId: req.body.gameId });
-      if (oldGame) {
-        console.log("retreiving an old game");
-        console.log("it is " + oldGame.gameId);
-        res.send({
-          gameId: oldGame.gameId,
-          date: todaysGame.date,
-          targetNumber: oldGame.targetNumber,
-        });
-      } else {
-        res.send({ error: true });
-      }
-    }
-  }
-
-  //Checks if the next game is availabe and adds game score to total site statistics
-  async function gameOverLocal(req, res, next) {
-    let nextGameAvailable = false;
-    try {
-      if (
-        isFinite(req.body.digits) &&
-        req.body.digits >= 2 &&
-        req.body.digits <= 7
-      ) {
-        const webDb = mongoClient.db("Website");
-        let stats = webDb.collection("Stats");
-        await stats.updateOne(
-          { title: "gamesCompleted" },
-          {
-            $inc: {
-              gamesCompleted: 1,
-              dailyGamesCompleted: 1,
-              [`daily${req.body.digits}-games`]: 1,
-            },
-          }
-        );
-      }
-      const dbDailyGames = mongoClient.db("DailyGames");
-
-      let todaysGame = await dbDailyGames
-        .collection("DailyGames")
-        .findOne({ gameId: req.body.gameId });
-      if (!todaysGame) {
-        nextGameAvailable = true;
-      }
-      res.send({ nextGameAvailable: nextGameAvailable });
-    } catch {
-      res.send({ nextGameAvailable: nextGameAvailable });
-    }
   }
 
   //Checks a guess for the local vesion of the game. Local
@@ -930,6 +860,7 @@ function gameRequests(app) {
       } else {
         let regularGameString = req.body.digits + "digits";
         async function checkNumber(number) {
+          console.log("checkNumber starts");
           let result = "";
           //Retreiving the target number, first looks it DailyGames DB, then old games
           let target;
@@ -940,6 +871,7 @@ function gameRequests(app) {
             .collection("DailyGames")
             .findOne({ gameId: req.body.gameId });
           if (todaysGame) {
+            console.log("you have todays game");
             target = todaysGame.targetNumber;
             date = todaysGame.date;
           } else {
@@ -948,14 +880,17 @@ function gameRequests(app) {
               .collection("OldGames-" + req.body.digits)
               .findOne({ gameId: req.body.gameId });
             if (oldGame) {
+              console.log("You have an Old game");
               target = oldGame.targetNumber;
               date = oldGame.date;
               nextGameAvailable = true;
+              console.log(target);
             } else {
+              console.log("Cannot find that game ID.");
               throw new Error();
             }
           }
-          //Compares the number with target number and creates hints for it
+          //Compares the number with target number and applies wordle rules to it
           let tempTarget = "";
           for (let i = 0; i < req.body.digits; i++) {
             if (number[i] === target[i]) {
@@ -983,6 +918,7 @@ function gameRequests(app) {
           } else if (number === targetNum) {
             result += "E";
           }
+          console.log(result + " " + targetNum + " " + nextGameAvailable);
           return {
             result: result,
             targetNumber: target,
@@ -994,6 +930,8 @@ function gameRequests(app) {
         let { result, targetNumber, nextGameAvailable, date } =
           await checkNumber(req.body.number);
 
+        console.log(req.body.hints);
+        console.log(req.body.currentRow);
         let hintsCopy = [];
         Object.values(req.body.hints).forEach((x) => {
           hintsCopy.push(x);
@@ -1132,17 +1070,6 @@ function gameRequests(app) {
   //Gets the game id for the local game so it can be compared against the current one
   app.put("/api/gameId", async (req, res, next) => {
     getGameId(req, res, next);
-  });
-
-  /*Used by Local version of the game to retreieve the gameId and its number,
-    Will send back either today's game info or their current game's info */
-  app.put("/api/getLocalGame", async (req, res, next) => {
-    getLocalGame(req, res, next);
-  });
-
-  //Checks if the next game is availabe and adds game score to total site statistics
-  app.put("/api/nextGameAvailable", async (req, res, next) => {
-    gameOverLocal(req, res, next);
   });
 }
 

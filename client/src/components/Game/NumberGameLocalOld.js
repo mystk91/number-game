@@ -3,11 +3,12 @@ import uniqid from "uniqid";
 import "./NumberGame.css";
 import "../../normalize.css";
 import "../../custom.css";
-import HistogramRegular from "./HistogramRegular";
+import Histogram from "./Histogram";
 import ShareScore from "./ShareScore";
 import AdRandomModal from "../Navbar/AdRandomModal";
 
-function NumberGameRegular(props) {
+//Creates a game that stores data using local storage rather than the database
+function NumberGameLocal(props) {
   //Used to update the board state visually
   const [board, setBoard] = useState([]);
 
@@ -37,6 +38,12 @@ function NumberGameRegular(props) {
     gameStatusRef.current = point;
   }
 
+  //Stores the gameId, used to retrieve the correct number from the database
+  const gameIdRef = useRef("");
+  function setGameIdRef(point) {
+    gameIdRef.current = point;
+  }
+
   //Used to update the keyboard visually
   const [keyboard, setKeyboard] = useState([]);
 
@@ -55,12 +62,6 @@ function NumberGameRegular(props) {
   });
   function setKeyboardColorsRef(point) {
     keyboardColorsRef.current = point;
-  }
-
-  //A temporary random number used to test the game
-  const targetNumberRef = useRef("");
-  function setTargetNumberRef(point) {
-    targetNumberRef.current = point;
   }
 
   //Used to update the animation visually when user types/clicks the keyboard
@@ -101,12 +102,6 @@ function NumberGameRegular(props) {
     transitionDelayRef.current = point;
   }
 
-  //Used so animations will only occurs when a new row is moved to
-  const newRowRef = useRef(false);
-  function setNewRowRef(point) {
-    newRowRef.current = point;
-  }
-
   //Sets the formula used for digit / keyboard delays
   //2 and 3 digits will be faster, use different formula than 4+ digits
   const delayFormulaRef = useRef(
@@ -124,6 +119,12 @@ function NumberGameRegular(props) {
   );
   function setDelayFormulaRef(point) {
     delayFormulaRef.current = point;
+  }
+
+  //Used so animations will only occurs when a new row is moved to
+  const newRowRef = useRef(false);
+  function setNewRowRef(point) {
+    newRowRef.current = point;
   }
 
   //Used to display error messages when user inputs an invalid number
@@ -168,6 +169,12 @@ function NumberGameRegular(props) {
   let nextGameAvailableRef = useRef(false);
   function setNextGameAvailableRef(point) {
     nextGameAvailableRef.current = point;
+  }
+
+  //A temporary random number used to test the game
+  const targetNumberRef = useRef("hidden");
+  function setTargetNumberRef(point) {
+    targetNumberRef.current = point;
   }
 
   //The date for the game
@@ -215,6 +222,7 @@ function NumberGameRegular(props) {
 
   //These functions are used to display / hide the Enter Guess / Message buttons
   //The enter guess is shown until the game ends, then its replaced with the reset button.
+  //Also adds / removes arrows and the backspace key
   function changeCurrentInputButton() {
     if (gameStatusRef.current === "playing") {
       setHideGuessButtonRef("");
@@ -236,18 +244,12 @@ function NumberGameRegular(props) {
     }
   }
 
-  //Holds the scores displayed once the game ends
-  const scoresObjRef = useRef();
-  function setScoresObjRef(point) {
-    scoresObjRef.current = point;
-  }
-
   //componentDidMount, runs when component mounts, then componentDismount
   useEffect(() => {
     sessionStorage.setItem("currentMode", "daily");
     setupGame();
     document.addEventListener("keydown", handleKeydown);
-    completeLogin();
+    showAd();
 
     return () => {
       document.removeEventListener("keydown", handleKeydown);
@@ -256,15 +258,106 @@ function NumberGameRegular(props) {
 
   //Sets up the the game
   async function setupGame() {
+    let storage = localStorage.getItem("game" + props.digits);
+    //Setting the localStorage for the game or loading it
+    if (storage) {
+      let storageObj = JSON.parse(storage);
+
+      const url = "/api/gameId";
+      const options = {
+        method: "PUT",
+        body: JSON.stringify({ digits: props.digits }),
+        withCredentials: true,
+        credentials: "include",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+      };
+      let res = await fetch(url, options);
+      let resObj = await res.json();
+
+      if (
+        !storageObj.board[0] ||
+        (resObj.gameId !== storageObj.gameId && storageObj.status !== `playing`)
+      ) {
+        resetGame();
+      } else {
+        updateGameStateFromLocalStorage();
+        if (gameStatusRef.current !== "playing") {
+          disableGame(false);
+        }
+      }
+    } else {
+      //Sets up the board
+      let board = new Array(props.attempts);
+      for (let i = 0; i < props.attempts; i++) {
+        board[i] = "";
+      }
+      setBoardStateRef(board);
+      //Sets up the hints
+      let hintsArr = new Array(props.attempts);
+      for (let i = 0; i < props.attempts; i++) {
+        hintsArr[i] = "";
+      }
+      setHintsRef(hintsArr);
+      const url = "/api/gameId";
+      const options = {
+        method: "PUT",
+        body: JSON.stringify({ digits: props.digits }),
+        withCredentials: true,
+        credentials: "include",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+      };
+      let res = await fetch(url, options);
+      let resObj = await res.json();
+      setGameIdRef(resObj.gameId);
+      updateLocalStorage();
+    }
+
+    /*
     await updateGameStateFromBackend(true, null, true);
     if (gameStatusRef.current !== "playing") {
       setCurrentRowRef(currentRowRef.current - 1);
       disableGame(false);
     }
+    */
+
     changeCurrentInputButton();
     updateGameBoard();
     setUpArrowLinks();
     updateKeyboard();
+  }
+
+  //Helper function for setting the game state to the local storage
+  function updateLocalStorage() {
+    let gameState = {
+      board: boardStateRef.current,
+      currentRow: currentRowRef.current,
+      hints: hintsRef.current,
+      status: gameStatusRef.current,
+      gameId: gameIdRef.current,
+      targetNumber: targetNumberRef.current,
+    };
+    localStorage.setItem(`game` + props.digits, JSON.stringify(gameState));
+  }
+
+  //Helper function that loads the game state from localStorage when user revists the page
+  async function updateGameStateFromLocalStorage() {
+    let storage = localStorage.getItem("game" + props.digits);
+    if (storage) {
+      let storageObj = JSON.parse(storage);
+      setBoardStateRef(storageObj.board);
+      setCurrentRowRef(storageObj.currentRow);
+      setHintsRef(storageObj.hints);
+      setGameStatusRef(storageObj.status);
+      setGameIdRef(storageObj.gameId);
+      setTargetNumberRef(storageObj.targetNumber);
+      changeKeyboardColors();
+    }
   }
 
   //Creates the game board for the app. Call it to rerender the board.
@@ -513,56 +606,6 @@ function NumberGameRegular(props) {
       ariaLabel = "Empty Hint";
     }
     return ariaLabel;
-  }
-
-  //Retrieves the users game from backend so it game be displayed visually
-  //You can set shouldFetch to false & use a gameObj as a parameter to skip server call
-  async function updateGameStateFromBackend(
-    shouldFetch = true,
-    resObj = null,
-    firstCall = false
-  ) {
-    if (shouldFetch) {
-      //let userRes = await fetch("/api/current_user");
-      //let user = await userRes.json();
-      let user = props.user;
-      let reqObj = {
-        session: user.session,
-        digits: props.digits,
-        firstCall: firstCall,
-      };
-      const url = "/api/getCurrentGameRegular";
-      const options = {
-        method: "PUT",
-        body: JSON.stringify(reqObj),
-        withCredentials: true,
-        credentials: "include",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-      };
-      let res = await fetch(url, options);
-      resObj = await res.json();
-    }
-    if (resObj) {
-      setBoardStateRef(resObj.gameObj.board);
-      setHintsRef(resObj.gameObj.hints);
-      setCurrentRowRef(resObj.gameObj.currentRow);
-      setGameStatusRef(resObj.gameObj.status);
-      if (resObj.gameObj.status !== "playing") {
-        setTargetNumberRef(resObj.gameObj.targetNumber);
-        setScoresObjRef(resObj.scoresObj);
-        setDateRef(resObj.date);
-        console.log(resObj.gameObj.nextGameAvailable);
-        if (resObj.gameObj.nextGameAvailable) {
-          setNextGameAvailableRef(true);
-        } else {
-          setNextGameAvailableRef(false);
-        }
-      }
-      changeKeyboardColors();
-    }
   }
 
   //Used to set up the keyboard on each render
@@ -1058,16 +1101,17 @@ function NumberGameRegular(props) {
     keydownAnimation("keyEnter");
     if (boardStateRef.current[currentRowRef.current].length === props.digits) {
       disableInputs();
+
       setCurrentRowRef(currentRowRef.current + 1);
-      //let userRes = await fetch("/api/current_user");
-      //let user = await userRes.json();
-      let user = props.user;
       let reqObj = {
-        session: user.session,
         digits: props.digits,
         number: boardStateRef.current[currentRowRef.current - 1],
+        //number: boardStateRef.current[currentRowRef.current],
+        hints: hintsRef.current,
+        currentRow: currentRowRef.current - 1,
+        gameId: gameIdRef.current,
       };
-      const url = "/api/checkGuessRegular";
+      const url = "/api/checkGuessLocal";
       const options = {
         method: "PUT",
         body: JSON.stringify(reqObj),
@@ -1080,34 +1124,33 @@ function NumberGameRegular(props) {
       };
       let res = await fetch(url, options);
       let resObj = await res.json();
-      if (resObj.error){
+      if (resObj.error) {
         window.location.reload();
       }
-      resObj.gameObj.currentRow -= 1;
+      //resObj.gameObj.currentRow -= 1;
+      setCurrentRowRef(currentRowRef.current - 1);
+      setHintsRef(resObj.gameObj.hints);
 
-      await updateGameStateFromBackend(false, resObj);
       enableInputs();
-
-      console.log(resObj);
 
       if (resObj.gameObj.status === `victory`) {
         setGameStatusRef(`victory`);
-        setDateRef(resObj.gameObj.date);
         if (resObj.gameObj.nextGameAvailable) {
           setNextGameAvailableRef(true);
         } else {
           setNextGameAvailableRef(false);
         }
         //setScoresObjRef(resObj.scoresObj);
-        //updateScores();
-        //setTargetNumberRef(resObj.gameObj.targetNumber);
         disableGame();
+        updateScores();
+        setTargetNumberRef(resObj.gameObj.targetNumber);
+        setDateRef(resObj.gameObj.date);
         addTransitionDelay();
         changeKeyboardColors();
         //removeTransitionDelay();
         updateGameBoard();
-        //updateLocalStorage();
         updateTimesVisited();
+        updateLocalStorage();
       } else {
         if (resObj.gameObj.status === `playing`) {
           addTransitionDelay();
@@ -1115,21 +1158,24 @@ function NumberGameRegular(props) {
           setCurrentRowRef(currentRowRef.current + 1);
           setNewRowRef(true);
           updateGameBoard();
+          updateLocalStorage();
         } else {
           setGameStatusRef(`defeat`);
-          setDateRef(resObj.gameObj.date);
-          console.log(resObj.gameObj.nextGameAvailable);
           if (resObj.gameObj.nextGameAvailable) {
             setNextGameAvailableRef(true);
           } else {
             setNextGameAvailableRef(false);
           }
           disableGame();
+          updateScores();
+          setTargetNumberRef(resObj.gameObj.targetNumber);
+          setDateRef(resObj.gameObj.date);
           addTransitionDelay();
           changeKeyboardColors();
           //removeTransitionDelay();
           updateGameBoard();
           updateTimesVisited();
+          updateLocalStorage();
         }
       }
     } else {
@@ -1153,6 +1199,34 @@ function NumberGameRegular(props) {
   function enableInputs() {
     document.addEventListener("keydown", handleKeydown);
     setKeyboardClassNameRef("");
+  }
+
+  //Sets the score for this game next to any previous games and updates the average score among all games
+  function updateScores() {
+    let score;
+    if (gameStatusRef.current === "victory") {
+      score = currentRowRef.current + 1;
+    } else {
+      score = currentRowRef.current + 2;
+    }
+    let scoresObj;
+    let scoresStorage = localStorage.getItem("scores" + props.digits);
+    if (!scoresStorage) {
+      scoresObj = {
+        scores: {},
+        average: 0,
+      };
+    } else {
+      scoresObj = JSON.parse(scoresStorage);
+    }
+
+    scoresObj.scores[`${gameIdRef.current}`] = score;
+    let scoresArr = Object.values(scoresObj.scores);
+    scoresObj.average =
+      scoresArr.reduce((total, x) => {
+        return total + x;
+      }, 0) / scoresArr.length;
+    localStorage.setItem("scores" + props.digits, JSON.stringify(scoresObj));
   }
 
   //Helper function that adds a transition delay to the keys on the keyboard so they change as gameboard changes
@@ -1290,11 +1364,7 @@ function NumberGameRegular(props) {
         <div className="share-score-container">
           <ShareScore hints={hintsRef.current} date={dateRef.current} />
         </div>
-        <HistogramRegular
-          digits={props.digits}
-          attempts={props.attempts}
-          scoresObj={scoresObjRef.current}
-        />
+        <Histogram digits={props.digits} attempts={props.attempts} />
       </div>
     );
     setGameOverModalRef(victoryHTML);
@@ -1348,14 +1418,16 @@ function NumberGameRegular(props) {
         <div className="share-score-container">
           <ShareScore hints={hintsRef.current} />
         </div>
-        <HistogramRegular
-          digits={props.digits}
-          attempts={props.attempts}
-          scoresObj={scoresObjRef.current}
-        />
+        <Histogram digits={props.digits} attempts={props.attempts} />
       </div>
     );
     setGameOverModalRef(defeatHTML);
+  }
+
+  //Used to display a modal
+  const gameOverModalRef = useRef();
+  function setGameOverModalRef(point) {
+    gameOverModalRef.current = point;
   }
 
   //Closes the modal that pops up at the end of the game
@@ -1424,12 +1496,6 @@ function NumberGameRegular(props) {
     }, 1);
   }
 
-  //Used to display a modal
-  const gameOverModalRef = useRef();
-  function setGameOverModalRef(point) {
-    gameOverModalRef.current = point;
-  }
-
   //Disables the game after the player wins or loses
   function disableGame(delay = true) {
     let delayTime = 1000 * (0.7 + delayFormulaRef.current(0));
@@ -1494,35 +1560,16 @@ function NumberGameRegular(props) {
 
   //Resets the game.
   async function resetGame() {
-    //let userRes = await fetch("/api/current_user");
-    //let user = await userRes.json();
-    let user = props.user;
-    let reqObj = {
-      session: user.session,
-      digits: props.digits,
-    };
-    const url = "/api/resetGameRegular";
-    const options = {
-      method: "PUT",
-      body: JSON.stringify(reqObj),
-      withCredentials: true,
-      credentials: "include",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-    };
-    let res = await fetch(url, options);
-    let resObj = await res.json();
-
     document.removeEventListener("keydown", resetEnter);
+    localStorage.removeItem("game" + props.digits);
+    setCurrentRowRef(0);
     setKeyboardClassNameRef(``);
     if (gameStatusRef.current !== `playing`) {
       document.addEventListener("keydown", handleKeydown);
     }
+    setGameStatusRef(`playing`);
     setGameOverModalRef();
-    await updateGameStateFromBackend(false, resObj);
-
+    setupGame();
     changeKeyboardColors();
     changeCurrentInputButton();
     setTransitionDelayRef({
@@ -1559,23 +1606,6 @@ function NumberGameRegular(props) {
     showAd();
   }
 
-  //External logins like from google will redirect to this page. This will put the profile info into local storage
-  async function completeLogin() {
-    if (!localStorage.getItem("profile")) {
-      let profile = await fetch("/api/current_user");
-      let profileObj = await profile.json();
-      if (profileObj) {
-        localStorage.setItem(
-          "profile",
-          JSON.stringify({
-            session: profileObj.session,
-            profile_picture: profileObj.profile_picture,
-          })
-        );
-      }
-    }
-  }
-
   //Used for showing a popup ad before game starts
   const [adPopup, setAdPopup] = useState();
 
@@ -1603,14 +1633,12 @@ function NumberGameRegular(props) {
   }
 
   function updateTimesVisited() {
-    if (!props.user.premium) {
-      let previouslyVisited = Number.parseInt(
-        localStorage.getItem("previouslyVisited")
-      );
-      if (previouslyVisited < 4) {
-        previouslyVisited++;
-        localStorage.setItem("previouslyVisited", previouslyVisited);
-      }
+    let previouslyVisited = Number.parseInt(
+      localStorage.getItem("previouslyVisited")
+    );
+    if (previouslyVisited < 4) {
+      previouslyVisited++;
+      localStorage.setItem("previouslyVisited", previouslyVisited);
     }
   }
 
@@ -1632,4 +1660,4 @@ function NumberGameRegular(props) {
   );
 }
 
-export default NumberGameRegular;
+export default NumberGameLocal;
