@@ -89,7 +89,6 @@ function Login(props) {
       if (resLogin.status === 302) {
         let profile = await fetch("/api/current_user");
         let profileObj = await profile.json();
-        console.log(profileObj);
         if (profileObj) {
           localStorage.setItem(
             "profile",

@@ -7,6 +7,7 @@ import HistogramRegular from "./HistogramRegular";
 import ShareScore from "./ShareScore";
 import AdRandomModal from "../Navbar/AdRandomModal";
 
+//Used for the game for logged in users
 function NumberGameRegular(props) {
   //Used to update the board state visually
   const [board, setBoard] = useState([]);

@@ -415,10 +415,12 @@ function gameRequests(app) {
           }
         }
       } else {
-        res.redirect("/login");
+        res.send({error: true});
+        //res.redirect("/login");
       }
     } catch {
-      res.redirect("/login");
+      res.send({error: true});
+      //res.redirect("/login");
     }
   }
 
@@ -834,7 +836,8 @@ function gameRequests(app) {
         }
       }
     } catch {
-      res.redirect("/login");
+      //res.redirect("/login");
+      res.send({error: true});
     }
   }
 
@@ -920,6 +923,7 @@ function gameRequests(app) {
   }
 
   //Checks a guess for the local vesion of the game. Local
+  /*
   async function checkGuessLocal(req, res, next) {
     try {
       let validateNumber = numberValidation(req.body.number, req.body.digits);
@@ -1094,6 +1098,7 @@ function gameRequests(app) {
       res.send({ error: true });
     }
   }
+  */
 
   //Returns the random game the user has going if it exists, setting up the board
   app.put("/api/getCurrentGameRandom", async (req, res, next) => {

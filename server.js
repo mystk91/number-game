@@ -23,7 +23,7 @@ app.use(cookieParser());
 //Body Parser
 //app.use(bodyParser.json());
 app.use((req, res, next) => {
-  if (req.originalUrl === "/webhook") {
+  if (req.originalUrl === "/complete-premium-purchase") {
     next(); // Do nothing with the body because I need it in a raw state.
   } else {
     bodyParser.json()(req, res, next); // ONLY do express.json() if the received request is NOT a WebHook from Stripe.
@@ -129,6 +129,9 @@ visitorCounterRequests.visitorCounterRequests(app);
 
 let adminRequests = require("./requests/adminRequests.js");
 adminRequests.adminRequests(app);
+
+let paymentRequests = require("./requests/paymentRequests.js");
+paymentRequests.paymentRequests(app, bodyParser);
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

@@ -179,7 +179,7 @@ function profileRequests(app) {
         await accounts.updateOne(
           { session: req.body.session },
           {
-            $unset: { [`${req.body.mode}-scores`]: "" },
+            $unset: { [`${req.body.mode}-scores`]: "", [`${req.body.mode}`]: "" },
             $set: { lastStatReset: new Date() },
             $inc: {
               [`num-resetScores-${req.body.mode}`]:

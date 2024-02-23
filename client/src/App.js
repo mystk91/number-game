@@ -9,24 +9,18 @@ import "./normalize.css";
 import "./custom.css";
 import "./App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Navbar from "./components/Navbar/Navbar";
 import SignupPage from "./components/Pages/SignupPage";
 import LoginPage from "./components/Pages/LoginPage";
+import LoginComplete from "./components/Pages/LoginComplete";
 import GamePageRandom from "./components/Pages/GamePageRandom";
 import NumberGameLocal from "./components/Game/NumberGameLocal";
-import Instructions from "./components/Navbar/Instructions";
-import InstructionsFive from "./components/Navbar/InstructionsFive";
 import ResetPasswordPage from "./components/Pages/ResetPasswordPage";
 import NewPasswordPage from "./components/Pages/NewPasswordPage";
 import EmailVerification from "./components/LoginSystem/EmailVerification";
-import LoadingIcon from "./components/Parts/LoadingIcon";
-import Histogram from "./components/Game/Histogram";
-import ShareScore from "./components/Game/ShareScore";
 import LeaderboardsPage from "./components/Pages/LeaderboardsPage";
 import GamePageDaily from "./components/Pages/GamePageDaily";
-import CalendarIcon from "./components/Parts/CalendarIcon";
 import ProfilePage from "./components/Pages/ProfilePage";
-import Admin from "./components/Admin/Admin";
+import StorePage from "./components/Pages/StorePage";
 
 function App() {
   return (
@@ -34,25 +28,12 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route
-            path="/share"
-            element={
-              <ShareScore
-                hints={["XXYXH", "GXYXH", "GYYXL", "GGGGE", "", ""]}
-              />
-            }
-          />
-          <Route path="/hist" element={<Histogram digits={4} attempts={6} />} />
-          <Route
             path="/new-password/:verificationCode"
             element={<NewPasswordPage />}
           />
-          <Route path="/calendar" element={<CalendarIcon />} />
           <Route path="/leaderboards" element={<LeaderboardsPage />} />
-          <Route path="/icon" element={<LoadingIcon />} />
-          <Route path="/instructions" element={<Instructions />} />
-          <Route path="/five" element={<InstructionsFive />} />
-          <Route path="/navbar" element={<Navbar />} />
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/login/complete" element={<LoginComplete />} />
           <Route path="/signup" element={<SignupPage />} />
           <Route
             path="/verify-email/:verificationCode"
@@ -115,7 +96,7 @@ function App() {
             element={<GamePageRandom digits={7} attempts={6} />}
           />
           <Route path="/profile" element={<ProfilePage />} />
-          <Route path="/admin/secretAdmins" element={<Admin />} />
+          <Route path="/products/random-mode" element={<StorePage />} />
         </Routes>
       </BrowserRouter> 
     </div>

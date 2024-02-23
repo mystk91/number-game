@@ -218,7 +218,7 @@ function NavbarRandom(props) {
         onMouseOver={showProfileDropdown}
         aria-label="Profile Dropdown"
       >
-        <img src={profileImageRef.current} alt="Your Profile Icon" />
+        <img src={profileImageRef.current} alt="Profile Icon" />
       </button>
     );
   }
@@ -232,7 +232,7 @@ function NavbarRandom(props) {
           onClick={showProfileDropdown}
           onMouseOver={showProfileDropdown}
         >
-          <img src={profileImageRef.current} alt="Your Profile Icon" />
+          <img src={profileImageRef.current} alt="Profile Icon" />
         </button>
         <ProfileDropdown hidden="true" key="profileDropdownHidden" />
       </div>
@@ -243,7 +243,7 @@ function NavbarRandom(props) {
     return (
       <div onMouseLeave={hideProfileDropdown}>
         <button className="profile-btn clicked" aria-label="Profile Dropdown">
-          <img src={profileImageRef.current} alt="Your Profile Icon" />
+          <img src={profileImageRef.current} alt="Profile Icon" />
         </button>
         <ProfileDropdown key="profileDropdownVisisble" user={props.user} />
       </div>

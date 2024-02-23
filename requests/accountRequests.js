@@ -90,7 +90,6 @@ function accountRequests(app) {
     }
     //Username validity and profanity filter
     let usernameRegExp = new RegExp("^(?=.*[a-zA-Z])[a-zA-Z0-9_]{3,16}$");
-    console.log(req.body.username);
     if (
       matcher.hasMatch(req.body.username) ||
       !usernameRegExp.test(req.body.username)
@@ -123,9 +122,9 @@ function accountRequests(app) {
 
       transporter.sendMail(mailOptions, function (error, info) {
         if (error) {
-          console.log(error);
+          //console.log(error);
         } else {
-          console.log("Email sent: " + info.response);
+          //console.log("Email sent: " + info.response);
         }
       });
       //errors.email = "That email is already associated with an account";
@@ -173,9 +172,9 @@ function accountRequests(app) {
 
       transporter.sendMail(mailOptions, function (error, info) {
         if (error) {
-          console.log(error);
+          //console.log(error);
         } else {
-          console.log("Email sent: " + info.response);
+          //console.log("Email sent: " + info.response);
         }
       });
     }
@@ -288,9 +287,9 @@ function accountRequests(app) {
 
       transporter.sendMail(mailOptions, function (error, info) {
         if (error) {
-          console.log(error);
+          //console.log(error);
         } else {
-          console.log("Email sent: " + info.response);
+          //console.log("Email sent: " + info.response);
         }
       });
       /*
@@ -337,9 +336,9 @@ function accountRequests(app) {
 
       transporter.sendMail(mailOptions, function (error, info) {
         if (error) {
-          console.log(error);
+          //console.log(error);
         } else {
-          console.log("Email sent: " + info.response);
+          //console.log("Email sent: " + info.response);
         }
       });
     }
@@ -546,7 +545,7 @@ function accountRequests(app) {
         const db = mongoClient.db("Accounts");
         let accounts = db.collection("Accounts");
         let account = await accounts.findOne({ googleId: profile.id });
-        console.log(profile.email);
+        //console.log(profile.email);
         if (!account) {
           account = await accounts.findOne({
             email: profile.emails[0].value.toLowerCase(),
@@ -596,7 +595,7 @@ function accountRequests(app) {
     "/login/google/callback",
     passport.authenticate("google", { failureRedirect: "/login" }),
     async function (req, res) {
-      res.redirect(`${process.env.protocol}${process.env.domain}`);
+      res.redirect(`${process.env.protocol}${process.env.domain}/login/complete`);
     }
   );
 
@@ -773,7 +772,7 @@ function accountRequests(app) {
 
   //Returns the info of the current user
   app.get("/api/current_user", async (req, res) => {
-    console.log(req.user);
+    //console.log(req.user);
     res.send(req.user);
   });
 
@@ -824,7 +823,7 @@ function accountRequests(app) {
           }
         }
 
-        console.log(statsObj);
+        //console.log(statsObj);
 
         res.send({
           username: account.username,

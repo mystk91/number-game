@@ -63,7 +63,7 @@ function GamePageRandom(props) {
         </div>
       );
     } else if (user.loggedIn) {
-      window.location = "/random/info";
+      window.location = "/products/random-mode";
     } else {
       localStorage.removeItem("profile");
       window.location = "/login";
