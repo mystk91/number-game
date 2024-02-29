@@ -1,0 +1,61 @@
+.site-message {
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  margin-top: 15vh;
+}
+
+.success-message-container {
+  width: 360px;
+  border: 1px solid black;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  row-gap: 10px;
+  padding: 10px 10px 20px;
+}
+
+.confirmation-btn a {
+  color: rgb(250, 250, 250);
+  text-decoration: none;
+}
+
+.random-mode-success-message {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 6px 0;
+  text-align: center;
+  text-wrap: balance;
+  row-gap: 10px;
+}
+
+.random-mode-success-message h1 {
+  border-bottom: 1px solid black;
+  width: 80%;
+  padding: 0 0;
+  margin: 0 0 4px;
+}
+
+.random-mode-success-message .game-mode-icons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  column-gap: 20%;
+  height: 60px;
+  width: 60%;
+  background-color: var(--navbar-background-color);
+}
+
+.random-mode-success-message img {
+  height: 44px;
+  object-fit: scale-down;
+}
+
+.random-mode-success-message .confirmation-btn {
+    display: none;
+}
+
+

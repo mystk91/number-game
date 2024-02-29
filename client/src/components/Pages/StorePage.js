@@ -9,15 +9,27 @@ import "../../normalize.css";
 import "../../custom.css";
 import Navbar from "../Navbar/Navbar";
 import NavbarDaily from "../Navbar/NavbarDaily";
-import NumberGameRegular from "../Game/NumberGameRegular";
-import NumberGameLocal from "../Game/NumberGameLocal";
 import NavbarDynamic from "../Navbar/NavbarDynamic";
+import LoadingIcon from "../Parts/LoadingIcon";
+import SiteMessagePage from "./SiteMessagePage";
 
 //Creates a page for the website that takes a logged in user w/o random mode to the checkout
 function StorePage(props) {
-  let [storePage, setStorePage] = useState();
+  let [storePage, setStorePage] = useState(
+    <div
+      className="loading-container"
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        height: "100vh",
+      }}
+    >
+      <LoadingIcon />
+    </div>
+  );
 
-   //Checks if the user is logged in and sends them to checkout if they are
+  //Checks if the user is logged in and sends them to checkout if they are
   useEffect(() => {
     fetchUser();
     return () => {};
@@ -57,7 +69,13 @@ function StorePage(props) {
 
     if (user.loggedIn) {
       if (user.premium) {
-        setStorePage(<div>You have already purchased random mode.</div>);
+        setStorePage(
+          <SiteMessagePage
+            message="You have already purchased Random Mode."
+            buttonText="Okay!"
+            buttonUrl="/random5"
+          />
+        );
       } else {
         let profileObj = JSON.parse(profile);
         let res = await fetch("/create-checkout-session", {

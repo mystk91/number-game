@@ -8,19 +8,20 @@ import React, {
 import "../../normalize.css";
 import "../../custom.css";
 import NavbarRandom from "../Navbar/NavbarRandom";
-import NumberGameRandom from "../Game/NumberGameRandom";
 import SiteMessagePage from "./SiteMessagePage";
+import SuccessMessage from "../Store/SuccessMessage";
 
-//Creates a standard page for the website that displays the navbar and the game
-function GamePageRandom(props) {
-  let [gamePage, setGamePage] = useState();
+//Used as a landing page after user completes Random Mode purchase
+function StoreSuccessPage(props) {
+  let [page, setPage] = useState();
 
-  //Runs on mount. Gets users profile pic and starts game
+  //Runs on mount. Checks if the user is logged in and sets the corresponding game page
   useEffect(() => {
     fetchUser();
     return () => {};
   }, []);
 
+  //Checks if the user is logged in and sets the corresponding game page
   async function fetchUser() {
     let user;
     let profile = localStorage.getItem("profile");
@@ -53,25 +54,18 @@ function GamePageRandom(props) {
     }
 
     if (user.premium) {
-      setGamePage(
+      setPage(
         <div className="game-page">
           <NavbarRandom digits={props.digits} user={user} />
-          <NumberGameRandom
-            digits={props.digits}
-            attempts={props.attempts}
-            user={user}
-          />
+          <SuccessMessage />
         </div>
       );
-    } else if (user.loggedIn) {
-      setGamePage(<SiteMessagePage message="You do not have Random Mode" buttonText="Get Random Mode!" buttonUrl="/products/random-mode"/>)
     } else {
-      localStorage.removeItem("profile");
-      window.location = "/login";
+      setPage(<SiteMessagePage message="You do not have Random Mode" buttonText="Get Random Mode!" buttonUrl="/products/random-mode"/>)
     }
   }
 
-  return gamePage;
+  return page;
 }
 
-export default GamePageRandom;
+export default StoreSuccessPage;

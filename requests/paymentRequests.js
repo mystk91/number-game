@@ -128,7 +128,7 @@ function paymentRequests(app, bodyParser) {
                 subject: "Random Mode! ",
                 html: `</p> You have successfully signed up for Random Mode!</p>
                 <p>You can switch between Daily Mode and Random Mode by clicking the calendar/dice icons respectively. </p> 
-                <a href="${process.env.protocol}${process.env.domain}/random5">${process.env.protocol}${process.env.domain}/random5</a>
+                <a href="${process.env.protocol}${process.env.domain}/products/random-mode/success">${process.env.protocol}${process.env.domain}/random5</a>
               `,
               };
               transporter.sendMail(mailOptions, function (error, info) {

@@ -21,6 +21,7 @@ import LeaderboardsPage from "./components/Pages/LeaderboardsPage";
 import GamePageDaily from "./components/Pages/GamePageDaily";
 import ProfilePage from "./components/Pages/ProfilePage";
 import StorePage from "./components/Pages/StorePage";
+import StoreSuccessPage from "./components/Pages/StoreSuccessPage";
 
 function App() {
   return (
@@ -97,8 +98,13 @@ function App() {
           />
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/products/random-mode" element={<StorePage />} />
+
+          <Route
+            path="/products/random-mode/success"
+            element={<StoreSuccessPage />}
+          />
         </Routes>
-      </BrowserRouter> 
+      </BrowserRouter>
     </div>
   );
 }
