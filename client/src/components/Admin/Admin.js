@@ -94,7 +94,6 @@ function Admin(props) {
   async function setUp() {
     let res = await fetch("/api/admin-get-all-info");
     let resObj = await res.json();
-    console.log(resObj);
     if (!resObj.error) {
       setVisitors(resObj.siteStats.visitors);
       setPremiumUsers(resObj.siteStats.premiumUsers);

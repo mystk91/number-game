@@ -282,20 +282,14 @@ function NumberGameLocal(props) {
       let res = await fetch(url, options);
       let resObj = await res.json();
 
-      console.log("our game id is " + storageObj.gameId);
-      console.log("the retrieved id is " + resObj.gameId);
-      console.log("the game status is " + storageObj.status);
-
       if (
         !storageObj.board[0] ||
         (resObj.gameId !== storageObj.gameId &&
           storageObj.status !== `playing`) ||
         resObj.error
       ) {
-        console.log("so we do reset the game");
         resetGame();
       } else {
-        console.log("so we don't reset the game");
         setGameIdRef(resObj.gameId);
         setTargetNumberRef(resObj.targetNumber);
         setDateRef(resObj.date);
@@ -1231,7 +1225,6 @@ function NumberGameLocal(props) {
     } else if (number === target) {
       result += "E";
     }
-    console.log(result);
     return result;
   }
 
@@ -1492,7 +1485,6 @@ function NumberGameLocal(props) {
     };
     let res = await fetch(url, options);
     let resObj = await res.json();
-    console.log("it is " +  resObj.nextGameAvailable + "that the next game is available");
     if (resObj.nextGameAvailable) {
       setNextGameAvailableRef(true);
     } else {

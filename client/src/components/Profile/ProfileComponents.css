@@ -455,6 +455,7 @@ button.reset-stats:hover {
   row-gap: 6px;
   font-size: 1.8rem;
   padding: 6px 20px;
+  text-wrap: balance;
 }
 
 .change-settings button {

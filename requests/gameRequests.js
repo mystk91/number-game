@@ -61,7 +61,7 @@ function gameRequests(app) {
   //Resets the gameboard and starts a new one save to the user in the database. RANDOM
   async function resetGameRandom(req, res, next) {
     try {
-      console.log("starting to reset your game");
+      //console.log("starting to reset your game");
       const db = mongoClient.db("Accounts");
       let accounts = db.collection("Accounts");
       let account = await accounts.findOne({ session: req.body.session });
@@ -106,7 +106,7 @@ function gameRequests(app) {
             targetNumber: targetNumber,
           };
 
-          console.log(randomGameObj);
+          //console.log(randomGameObj);
 
           let randomGameString = req.body.digits + "random";
           await accounts.updateOne(
@@ -127,7 +127,7 @@ function gameRequests(app) {
           let resObj = {
             gameObj: gameObj,
           };
-          console.log("reseting the game");
+          //console.log("reseting the game");
 
           res.send(resObj);
         } else {
@@ -137,7 +137,7 @@ function gameRequests(app) {
         res.redirect("/login");
       }
     } catch {
-      console.log(error);
+      //console.log(error);
       res.redirect("/login");
     }
   }
@@ -247,7 +247,7 @@ function gameRequests(app) {
             targetNumber: account[randomGameString].targetNumber,
           };
 
-          console.log(randomGameTargetObj);
+          //console.log(randomGameTargetObj);
 
           //Adds a score to the users database entry. Keeps track past 30 scores and 1k scores
           //Returns an object containing the scores/averages that need to be updated in the DB
@@ -357,7 +357,7 @@ function gameRequests(app) {
               account[randomGameString].currentRow + 1,
               account
             );
-            console.log(scoresObj);
+            //console.log(scoresObj);
 
             await accounts.updateOne(
               { session: req.body.session },
@@ -382,7 +382,7 @@ function gameRequests(app) {
           } else if (currentRow == 6) {
             randomGameTargetObj.status = "defeat";
             let scoresObj = await updateScores(7, account);
-            console.log(scoresObj);
+            //console.log(scoresObj);
             await accounts.updateOne(
               { session: req.body.session },
               {
@@ -427,7 +427,6 @@ function gameRequests(app) {
   //Returns the gameboard saved to the user in the database. REGULAR
   async function getCurrentGameRegular(req, res, next) {
     try {
-      console.log("lets check out your game");
       const db = mongoClient.db("Accounts");
       let accounts = db.collection("Accounts");
       let account = await accounts.findOne({ session: req.body.session });
@@ -457,13 +456,15 @@ function gameRequests(app) {
           if (todaysGame.gameId != account[regularGameString].gameId) {
             nextGameAvailable = true;
           }
+          /*
           console.log(
             "it is " + nextGameAvailable + " that the next game is available"
           );
+          */
           if (req.body.firstCall && nextGameAvailable) {
             resetGameRegular(req, res, next);
           } else {
-            console.log(account[regularGameString].board);
+            //console.log(account[regularGameString].board);
             res.send({
               gameObj: {
                 board: account[regularGameString].board,
@@ -485,7 +486,7 @@ function gameRequests(app) {
         }
       }
     } catch {
-      console.log("error");
+      //console.log("error");
       res.redirect("/login");
     }
   }
@@ -493,7 +494,7 @@ function gameRequests(app) {
   //Resets the gameboard and starts a new one save to the user in the database. REGULAR
   async function resetGameRegular(req, res, next) {
     try {
-      console.log("starting to reset your game");
+      //console.log("starting to reset your game");
       const db = mongoClient.db("Accounts");
       let accounts = db.collection("Accounts");
       let account = await accounts.findOne({ session: req.body.session });
@@ -540,7 +541,7 @@ function gameRequests(app) {
           date: todaysGame.date,
         };
 
-        console.log(regularGameObj);
+        //console.log(regularGameObj);
 
         let gameString = req.body.digits + "digits";
         await accounts.updateOne(
@@ -562,14 +563,14 @@ function gameRequests(app) {
         let resObj = {
           gameObj: gameObj,
         };
-        console.log("reseting the game");
+        //console.log("reseting the game");
 
         res.send(resObj);
       } else {
         getCurrentGameRegular(req, res, next);
       }
     } catch {
-      console.log(error);
+      //console.log(error);
       res.redirect("/login");
     }
   }
@@ -669,7 +670,7 @@ function gameRequests(app) {
           date: account[regularGameString].date,
         };
 
-        console.log(regularGameOverObj);
+        //console.log(regularGameOverObj);
 
         //Adds a score to the users database entry. Keeps track past 30 scores and 1k scores
         //Returns an object containing the scores/averages that need to be updated in the DB
@@ -783,11 +784,13 @@ function gameRequests(app) {
             regularGameOverObj.nextGameAvailable = true;
           }
 
+          /*
           console.log(
             "it is " +
               regularGameOverObj.nextGameAvailable +
               " that the next game is available"
           );
+          */
 
           res.send({
             gameObj: regularGameOverObj,
@@ -843,13 +846,13 @@ function gameRequests(app) {
 
   //Used by Local version of the game to see if its gameId matches the current one
   async function getGameId(req, res, next) {
-    console.log("getting todays game ID");
+    //console.log("getting todays game ID");
     const dbDailyGames = mongoClient.db("DailyGames");
     let todaysGame = await dbDailyGames
       .collection("DailyGames")
       .findOne({ digits: req.body.digits });
     res.send({ gameId: todaysGame.gameId });
-    console.log("it is " + todaysGame.gameId);
+    //console.log("it is " + todaysGame.gameId);
   }
 
   /*Used by Local version of the game to retreieve the gameId and its number,
@@ -860,8 +863,8 @@ function gameRequests(app) {
       .collection("DailyGames")
       .findOne({ digits: req.body.digits });
     if (todaysGame.gameId === req.body.gameId || !req.body.gameId || req.body.gameStatus != "playing") {
-      console.log("getting todays game ID");
-      console.log("it is " + todaysGame.gameId);
+      //console.log("getting todays game ID");
+      //console.log("it is " + todaysGame.gameId);
       res.send({
         gameId: todaysGame.gameId,
         date: todaysGame.date,
@@ -873,8 +876,8 @@ function gameRequests(app) {
         .collection("OldGames-" + req.body.digits)
         .findOne({ gameId: req.body.gameId });
       if (oldGame) {
-        console.log("retreiving an old game");
-        console.log("it is " + oldGame.gameId);
+        //console.log("retreiving an old game");
+        //console.log("it is " + oldGame.gameId);
         res.send({
           gameId: oldGame.gameId,
           date: todaysGame.date,

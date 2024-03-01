@@ -57,7 +57,6 @@ function GamePageDaily(props) {
     }
 
     if (user.loggedIn) {
-      console.log("giving you the daily dynamic game page");
       setGamePage(
         <div className="game-page">
           <NavbarDynamic digits={props.digits} user={user} />
@@ -69,7 +68,6 @@ function GamePageDaily(props) {
         </div>
       );
     } else {
-      console.log("giving you the local storage game page");
       localStorage.removeItem("profile");
       setGamePage(
         <div className="game-page">

@@ -22,19 +22,13 @@ function Settings(props) {
     if (props.premium) {
       setRandomMode(
         <div className="change-settings">
-          <div>
-            <span className="inline">You have purchased</span>{" "}
-            <span className="inline">Random Mode</span>
-          </div>
+          <div>You have purchased Random Mode</div>
         </div>
       );
     } else {
       setRandomMode(
         <div className="change-settings no-random">
-          <div>
-            <span className="inline">You don't have</span>{" "}
-            <span className="inline">Random Mode</span>
-          </div>
+          <div>You don't have Random Mode</div>
           <a href="/products/random-mode">
             <button className="random-modal-btn sign-up">Sign me up!</button>
           </a>
@@ -60,9 +54,7 @@ function Settings(props) {
             <button
               className="change-username-btn"
               onClick={() => {
-                setModal(
-                  <ChangeUsername user={props.user} key={new Date()} />
-                );
+                setModal(<ChangeUsername user={props.user} key={new Date()} />);
               }}
             >
               Change Username
@@ -108,16 +100,11 @@ function Settings(props) {
             <div>Delete Your Account</div>
           </div>
           <div className="change-settings delete-account">
-            <div>
-              <span className="inline">Want to delete</span>{" "}
-              <span className="inline">your account?</span>
-            </div>
+            <div>Want to delete your account?</div>
             <button
               className="delete-account-btn"
               onClick={() => {
-                setModal(
-                  <DeleteAccount user={props.user} key={new Date()} />
-                );
+                setModal(<DeleteAccount user={props.user} key={new Date()} />);
               }}
             >
               Start Here

@@ -22,6 +22,7 @@ import GamePageDaily from "./components/Pages/GamePageDaily";
 import ProfilePage from "./components/Pages/ProfilePage";
 import StorePage from "./components/Pages/StorePage";
 import StoreSuccessPage from "./components/Pages/StoreSuccessPage";
+import Homepage from "./components/Pages/Homepage";
 
 function App() {
   return (
@@ -42,11 +43,6 @@ function App() {
           />
           <Route path="/reset-password" element={<ResetPasswordPage />} />
           <Route
-            path="/local"
-            element={<NumberGameLocal digits={5} attempts={6} />}
-          />
-
-          <Route
             path="/digits2"
             element={<GamePageDaily digits={2} attempts={6} />}
           />
@@ -58,7 +54,7 @@ function App() {
             path="/digits4"
             element={<GamePageDaily digits={4} attempts={6} />}
           />
-          <Route path="/" element={<GamePageDaily digits={5} attempts={6} />} />
+          <Route path="/" element={<Homepage />} />
           <Route
             path="/digits5"
             element={<GamePageDaily digits={5} attempts={6} />}

@@ -521,7 +521,6 @@ function NumberGameRegular(props) {
   async function updateGameStateFromBackend(
     shouldFetch = true,
     resObj = null,
-    firstCall = false
   ) {
     if (shouldFetch) {
       //let userRes = await fetch("/api/current_user");
@@ -530,7 +529,6 @@ function NumberGameRegular(props) {
       let reqObj = {
         session: user.session,
         digits: props.digits,
-        firstCall: firstCall,
       };
       const url = "/api/getCurrentGameRegular";
       const options = {
@@ -555,7 +553,6 @@ function NumberGameRegular(props) {
         setTargetNumberRef(resObj.gameObj.targetNumber);
         setScoresObjRef(resObj.scoresObj);
         setDateRef(resObj.date);
-        console.log(resObj.gameObj.nextGameAvailable);
         if (resObj.gameObj.nextGameAvailable) {
           setNextGameAvailableRef(true);
         } else {
@@ -1089,8 +1086,6 @@ function NumberGameRegular(props) {
       await updateGameStateFromBackend(false, resObj);
       enableInputs();
 
-      console.log(resObj);
-
       if (resObj.gameObj.status === `victory`) {
         setGameStatusRef(`victory`);
         setDateRef(resObj.gameObj.date);
@@ -1119,7 +1114,6 @@ function NumberGameRegular(props) {
         } else {
           setGameStatusRef(`defeat`);
           setDateRef(resObj.gameObj.date);
-          console.log(resObj.gameObj.nextGameAvailable);
           if (resObj.gameObj.nextGameAvailable) {
             setNextGameAvailableRef(true);
           } else {

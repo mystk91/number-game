@@ -60,7 +60,7 @@ function SiteMessagePage(props) {
     if (user.loggedIn) {
       setMessagePage(
         <div className="game-page">
-          <NavbarDynamic digits={props.digits} user={user} />
+          <NavbarDynamic digits={props.digits} user={user} instructions={" invisible"} />
           <SiteMessage message={props.message} buttonText={props.buttonText} buttonUrl={props.buttonUrl} />
         </div>
       );
@@ -68,7 +68,7 @@ function SiteMessagePage(props) {
       localStorage.removeItem("profile");
       setMessagePage(
         <div className="game-page">
-          <Navbar digits={props.digits} user={user} />
+          <Navbar digits={props.digits} user={user} instructions={" invisible"} />
           <SiteMessage message={props.message} buttonText={props.buttonText} buttonUrl={props.buttonUrl} />
         </div>
       );

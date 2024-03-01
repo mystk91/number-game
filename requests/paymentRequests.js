@@ -32,7 +32,7 @@ function paymentRequests(app, bodyParser) {
             },
           ],
           mode: "payment",
-          success_url: `${process.env.protocol}${process.env.domain}/random5`,
+          success_url: `${process.env.protocol}${process.env.domain}/products/random-mode/success`,
           cancel_url: `${process.env.protocol}${process.env.domain}`,
           metadata: { _id: account._id.toString() },
         });
@@ -155,6 +155,7 @@ function paymentRequests(app, bodyParser) {
               <p>Their user id was ${_id} </p>
               `,
               };
+              console.log(`Error finishing signup to random mode, their user id was ${_id}`)
               transporter.sendMail(mailOptions, function (error, info) {
                 if (error) {
                   //console.log(error);

@@ -51,7 +51,7 @@ function AdRandomModal(props) {
             <div>
               <div className="video-container">
                 <video
-                  src="./images/site/randomMode.mp4"
+                  src="/images/site/randomMode.mp4"
                   poster="./images/site/random-mode-video-poster.png"
                   className="random-mode-video"
                   autoPlay={true}
@@ -69,7 +69,7 @@ function AdRandomModal(props) {
           <div className="random-mode-features leaderboard-feature">
             <div className="random-info-text">Climb the Leaderboards!</div>
             <img
-              src="./images/site/leaderboard-example3.png"
+              src="/images/site/leaderboard-example3.png"
               alt="A leaderboard filled with player names and scores."
               className="leaderboard-img"
             />
@@ -77,7 +77,7 @@ function AdRandomModal(props) {
           <hr></hr>
           <div className="random-mode-features">
             <img
-              src="./images/site/random-modes.png"
+              src="/images/site/random-modes.png"
               alt="Buttons showing the 6 different game modes. 2-7 random digits."
               className="random-modes-img"
             ></img>
