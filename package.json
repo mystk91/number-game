@@ -8,8 +8,7 @@
     "start": "node server.js",
     "server": "nodemon server.js",
     "client": "npm start --prefix client",
-    "dev": "concurrently \"npm run server\" \"npm run client\"",
-    "sitemap": "node sitemap-generator.js"
+    "dev": "concurrently \"npm run server\" \"npm run client\""
   },
   "author": "Brad Traversy",
   "license": "MIT",
@@ -49,6 +48,7 @@
     "socket.io": "^4.7.2",
     "socket.io-client": "^4.7.2",
     "stripe": "^14.17.0",
-    "uniqid": "^5.4.0"
+    "uniqid": "^5.4.0",
+    "@babel/plugin-proposal-private-property-in-object": "^7.0.0"
   }
 }
