@@ -16,6 +16,7 @@ function LoginPage(props) {
 
   //Runs on mount. Checks if user is logged in and redirects if they are
   useEffect(() => {
+    document.title = "Numbler - Login";
     fetchUser();
     return () => {};
   }, []);

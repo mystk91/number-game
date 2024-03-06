@@ -1,3 +1,13 @@
-# https://www.robotstxt.org/robotstxt.html
 User-agent: *
-Disallow:
+Allow: /
+Disallow: /profile
+Disallow: /random2
+Disallow: /random3
+Disallow: /random4
+Disallow: /random5
+Disallow: /random6
+Disallow: /random7
+Disallow: /login/complete
+Disallow: /verify-email
+Disallow: /products/random-mode
+

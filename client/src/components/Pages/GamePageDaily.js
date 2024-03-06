@@ -20,6 +20,7 @@ function GamePageDaily(props) {
 
   //Runs on mount. Checks if the user is logged in and sets the corresponding game page
   useEffect(() => {
+    document.title=`Numbler - ${props.digits} Digits`
     fetchUser();
     return () => {};
   }, []);

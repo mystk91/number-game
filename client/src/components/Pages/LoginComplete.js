@@ -14,6 +14,7 @@ function LoginComplete(props) {
 
   //Runs on mount.
   useEffect(() => {
+    document.title = "Numbler";
     fetchUser();
     return () => {};
   }, []);

@@ -34,7 +34,7 @@ function paymentRequests(app, bodyParser) {
           mode: "payment",
           success_url: `${process.env.protocol}${process.env.domain}/products/random-mode/success`,
           cancel_url: `${process.env.protocol}${process.env.domain}`,
-          metadata: { _id: account._id.toString() },
+          metadata: { _id: account._id.toString(), email: account.email },
         });
         res.send({ url: session.url });
       } else {

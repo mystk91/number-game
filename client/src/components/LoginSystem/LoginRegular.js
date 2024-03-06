@@ -119,21 +119,7 @@ function LoginRegular(props) {
               href="/login/google"
               className="google"
               imageURL="/images/login-logos/google-logo.png"
-            />
-            <LoginOption
-              href="/login/apple"
-              className="apple"
-              imageURL="/images/login-logos/apple-logo.png"
-            />
-            <LoginOption
-              href="/login/facebook"
-              className="facebook"
-              imageURL="/images/login-logos/facebook-logo.png"
-            />
-            <LoginOption
-              href="/login/twitter"
-              className="twitter"
-              imageURL="/images/login-logos/twitter-logo.png"
+              buttonText="Login with Google"
             />
           </div>
         </div>

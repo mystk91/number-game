@@ -101,7 +101,7 @@ button.daily-stats.clicked {
   height: 28px;
 }
 
-.stats-game-name .daily-icon{
+.stats-game-name .daily-icon {
   margin-bottom: 5px;
 }
 
@@ -295,7 +295,7 @@ button.reset-stats:hover {
     width: 100%;
   }
 
-  .daily-icon{
+  .daily-icon {
     display: none;
   }
 }
@@ -319,7 +319,7 @@ button.reset-stats:hover {
 /* Stats modal */
 .reset-modal,
 .histogram-modal {
-  z-index: 1;
+  z-index: 3;
   display: flex;
   justify-content: center;
   position: fixed;
@@ -350,6 +350,59 @@ button.reset-stats:hover {
   flex-direction: column;
   row-gap: 6px;
   border-radius: 6px;
+  z-index: 3;
+}
+
+.privacy-modal, .refund-modal{
+  z-index: 3;
+  display: flex;
+  justify-content: center;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.2);
+  overflow-y: scroll;
+  padding: 5vh 0 10px;
+}
+
+.privacy-modal-container, .refund-modal-container{
+  z-index: 6;
+  width: 90vw;
+  background-color: white;
+  border: 1px solid black;
+  height: max-content;
+  padding-top: 24px;
+  display: flex;
+  flex-direction: column;
+  row-gap: 6px;
+  border-radius: 6px;
+}
+
+.privacy-modal-container .modal-top .close-modal, .refund-modal-container .modal-top .close-modal{
+  padding: 2px 4px;
+  margin: -16px 10px 0 0;
+}
+
+.privacy-modal .modal-top, .refund-modal .modal-top{
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: -30px;
+}
+
+.privacy-modal .modal-top button, .refund-modal .modal-top button{
+  all: unset;
+  width: 32px; 
+  height: 32px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  margin: -20px -3px -12px 0;
+  padding: 4px 0 0 0;
+  font-size: 2.0rem;
 }
 
 .reset-modal .modal-top,
@@ -398,7 +451,6 @@ button.reset-stats:hover {
   font-size: 1.9rem;
   padding: 10px 40px 0 40px;
   text-align: center;
-
 }
 
 .reset-confirmation-btns {
@@ -508,6 +560,16 @@ button.reset-stats:hover {
 
 .account-settings a {
   text-decoration: none;
+}
+
+.privacy-policy-btn, .refund-policy-btn{
+  all: unset;
+  padding-left: 8px;
+  color: rgb(75, 75, 255);
+  cursor: pointer;
+  width: max-content;
+  padding: 1px 6px;
+  margin: 1px 2px;
 }
 
 @media screen and (max-width: 490px) {

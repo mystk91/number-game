@@ -17,6 +17,7 @@ function SignupPage(props) {
 
   //Runs on mount. Gets users profile pic and starts game
   useEffect(() => {
+    document.title = "Numbler - Signup";
     fetchUser();
     return () => {};
   }, []);

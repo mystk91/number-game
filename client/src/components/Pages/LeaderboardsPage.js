@@ -11,6 +11,7 @@ function LeaderboardsPage(props) {
 
   //Runs on mount. Gets users profile pic and starts game
   useEffect(() => {
+    document.title = "Numbler - Leaderboards"
     fetchUser();
     return () => {};
   }, []);

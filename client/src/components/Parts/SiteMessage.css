@@ -21,7 +21,7 @@
 .site-message .message{
     padding: 0 5%;
     text-align: center;
-    text-wrap: balance;
+    text-wrap: pretty;
 }
 
 .confirmation-btn a{

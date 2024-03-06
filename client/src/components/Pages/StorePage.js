@@ -31,6 +31,7 @@ function StorePage(props) {
 
   //Checks if the user is logged in and sends them to checkout if they are
   useEffect(() => {
+    document.title = "Numbler - Store";
     fetchUser();
     return () => {};
   }, []);

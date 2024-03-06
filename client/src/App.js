@@ -23,6 +23,9 @@ import ProfilePage from "./components/Pages/ProfilePage";
 import StorePage from "./components/Pages/StorePage";
 import StoreSuccessPage from "./components/Pages/StoreSuccessPage";
 import Homepage from "./components/Pages/Homepage";
+import SiteMessagePage from "./components/Pages/SiteMessagePage";
+import Privacy from "./components/Policy/Privacy";
+import Refund from "./components/Policy/Refund";
 
 function App() {
   return (
@@ -98,6 +101,18 @@ function App() {
           <Route
             path="/products/random-mode/success"
             element={<StoreSuccessPage />}
+          />
+          <Route path="/privacy-policy" element={<Privacy />} />
+          <Route path="/refund-policy" element={<Refund />} />
+          <Route
+            path="*"
+            element={
+              <SiteMessagePage
+                message={"You went somewhere that doesn't exist."}
+                buttonText={"Oops!"}
+                buttonUrl="/"
+              />
+            }
           />
         </Routes>
       </BrowserRouter>

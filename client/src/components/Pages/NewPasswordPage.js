@@ -17,6 +17,7 @@ function NewPasswordPage(props) {
 
   //Runs on mount. Gets users profile pic and starts game
   useEffect(() => {
+    document.title = "Numbler - New Password";
     fetchUser();
     return () => {};
   }, []);

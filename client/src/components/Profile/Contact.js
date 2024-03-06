@@ -4,19 +4,17 @@ import "../../normalize.css";
 import "../../custom.css";
 import LoadingIcon from "../Parts/LoadingIcon";
 
-//Displays contact information for questsions / bugs
+//Displays contact information for questsions / bugs, also contains site policies
 function Contact(props) {
-
   //Adds higher priority email for users with random mode
   const [email, setEmail] = useState();
 
   //componentDidMount, runs when component mounts, then componentDismount
   useEffect(() => {
-    if (props.user.premium){
-      setEmail("random_mode@numbler.net")
-    }
-    else{
-      setEmail("bug_report@numbler.net")
+    if (props.user.premium) {
+      setEmail("random_mode@numbler.net");
+    } else {
+      setEmail("bug_report@numbler.net");
     }
     return () => {};
   }, []);
@@ -33,9 +31,7 @@ function Contact(props) {
 
       <div className="contact-text email">
         <div>Send us an email at:&nbsp;</div>
-        <a href={`mailto:${email}`}>
-          {email}
-        </a>
+        <a href={`mailto:${email}`}>{email}</a>
       </div>
     </div>
   );

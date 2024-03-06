@@ -9,11 +9,13 @@ const uniqid = require("uniqid");
 const crypto = require("crypto");
 const nodemailer = require("nodemailer");
 
-//Starting mongo    
-const { MongoClient, Timestamp } = require('mongodb');
-let ObjectId = require('mongodb').ObjectId; 
+//Starting mongo
+const { MongoClient, Timestamp } = require("mongodb");
+let ObjectId = require("mongodb").ObjectId;
 const mongoClient = new MongoClient(process.env.mongoDB);
-async function connectMongo(){await mongoClient.connect();}
+async function connectMongo() {
+  await mongoClient.connect();
+}
 connectMongo();
 
 //Cookies
@@ -88,8 +90,6 @@ let GoogleStrategy = require('passport-google-oauth20');
 let Google_Client_Id = process.env.googleClientId;
 let Google_Client_Secret = process.env.googleClientSecret;
 */
-
-
 
 //Launch the Server
 const port = process.env.PORT || 5000;

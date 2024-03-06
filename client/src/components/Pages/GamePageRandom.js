@@ -53,6 +53,7 @@ function GamePageRandom(props) {
     }
 
     if (user.premium) {
+      document.title=`Numbler - ${props.digits} Random`
       setGamePage(
         <div className="game-page">
           <NavbarRandom digits={props.digits} user={user} />
@@ -64,6 +65,7 @@ function GamePageRandom(props) {
         </div>
       );
     } else if (user.loggedIn) {
+      document.title=`Numbler - Error`
       setGamePage(<SiteMessagePage message="You do not have Random Mode" buttonText="Get Random Mode!" buttonUrl="/products/random-mode"/>)
     } else {
       localStorage.removeItem("profile");

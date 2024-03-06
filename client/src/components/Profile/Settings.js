@@ -5,6 +5,9 @@ import "../../custom.css";
 import ChangeUsername from "./ChangeUsername";
 import DeleteAccount from "./DeleteAccount";
 import ResetPassword from "../LoginSystem/ForgotPassword";
+import Privacy from "../Policy/Privacy";
+import Refund from "../Policy/Refund";
+import Contact from "./Contact";
 
 //Lets user change email, password, and username, premium status
 function Settings(props) {
@@ -110,6 +113,79 @@ function Settings(props) {
               Start Here
             </button>
           </div>
+        </div>
+
+        <div className="settings-option-container" aria-label="Policies">
+          <div className="settings-option">
+            <div>Our Policies</div>
+          </div>
+
+          <button
+            className="privacy-policy-btn"
+            onClick={() => {
+              setModal(
+                <div
+                  className={"privacy-modal"}
+                  aria-label="Privacy Policy Modal"
+                  onClick={(e) => setModal()}
+                >
+                  <div
+                    className={"privacy-modal-container"}
+                    aria-label="Privacy Policy Container"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <span className="modal-top">
+                      <button
+                        className="close-modal"
+                        onClick={(e) => setModal()}
+                        aria-label="Close Privacy Policy Modal"
+                      >
+                        X
+                      </button>
+                    </span>
+                    <Privacy />
+                  </div>
+                </div>
+              );
+            }}
+          >
+            Privacy Policy
+          </button>
+
+          <button
+            className="refund-policy-btn"
+            onClick={() => {
+              setModal(
+                <div
+                  className={"refund-modal"}
+                  aria-label="Refund Policy Modal"
+                  onClick={(e) => setModal()}
+                >
+                  <div
+                    className={"refund-modal-container"}
+                    aria-label="Refund Policy Container"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <span className="modal-top">
+                      <button
+                        className="close-modal"
+                        onClick={(e) => setModal()}
+                        aria-label="Close Refund Policy Modal"
+                      >
+                        X
+                      </button>
+                    </span>
+                    <Refund />
+                  </div>
+                </div>
+              );
+            }}
+          >
+            Refund Policy
+          </button>
+
+
+          
         </div>
       </main>
     </div>
