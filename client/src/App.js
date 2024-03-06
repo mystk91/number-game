@@ -28,6 +28,120 @@ import Privacy from "./components/Policy/Privacy";
 import Refund from "./components/Policy/Refund";
 
 function App() {
+  const [returned, setReturned] = useState();
+
+  //componentDidMount, runs when component mounts, then componentDismount
+  useEffect(() => {
+    let storage = localStorage.getItem("secret");
+    if (storage !== "5m2543eemfieoqmferkgajzi") {
+      setReturned(
+        <div className="Test">
+          <BrowserRouter>
+            <Routes>
+              <Route path="/loginPage" element={<LoginPage />} />
+            </Routes>
+          </BrowserRouter>
+        </div>
+      );
+    } else {
+      setReturned(
+        <div className="Numbler">
+          <BrowserRouter>
+            <Routes>
+              <Route
+                path="/new-password/:verificationCode"
+                element={<NewPasswordPage />}
+              />
+              <Route path="/leaderboards" element={<LeaderboardsPage />} />
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/login/complete" element={<LoginComplete />} />
+              <Route path="/signup" element={<SignupPage />} />
+              <Route
+                path="/verify-email/:verificationCode"
+                element={<EmailVerification />}
+              />
+              <Route path="/reset-password" element={<ResetPasswordPage />} />
+              <Route
+                path="/digits2"
+                element={<GamePageDaily digits={2} attempts={6} />}
+              />
+              <Route
+                path="/digits3"
+                element={<GamePageDaily digits={3} attempts={6} />}
+              />
+              <Route
+                path="/digits4"
+                element={<GamePageDaily digits={4} attempts={6} />}
+              />
+              <Route path="/" element={<Homepage />} />
+              <Route
+                path="/digits5"
+                element={<GamePageDaily digits={5} attempts={6} />}
+              />
+              <Route
+                path="/digits6"
+                element={<GamePageDaily digits={6} attempts={6} />}
+              />
+              <Route
+                path="/digits7"
+                element={<GamePageDaily digits={7} attempts={6} />}
+              />
+
+              <Route
+                path="/random2"
+                element={<GamePageRandom digits={2} attempts={6} />}
+              />
+              <Route
+                path="/random3"
+                element={<GamePageRandom digits={3} attempts={6} />}
+              />
+              <Route
+                path="/random4"
+                element={<GamePageRandom digits={4} attempts={6} />}
+              />
+              <Route
+                path="/random5"
+                element={<GamePageRandom digits={5} attempts={6} />}
+              />
+              <Route
+                path="/random6"
+                element={<GamePageRandom digits={6} attempts={6} />}
+              />
+              <Route
+                path="/random7"
+                element={<GamePageRandom digits={7} attempts={6} />}
+              />
+              <Route path="/profile" element={<ProfilePage />} />
+              <Route path="/products/random-mode" element={<StorePage />} />
+
+              <Route
+                path="/products/random-mode/success"
+                element={<StoreSuccessPage />}
+              />
+              <Route path="/privacy-policy" element={<Privacy />} />
+              <Route path="/refund-policy" element={<Refund />} />
+              <Route
+                path="*"
+                element={
+                  <SiteMessagePage
+                    message={"You went somewhere that doesn't exist."}
+                    buttonText={"Oops!"}
+                    buttonUrl="/"
+                  />
+                }
+              />
+            </Routes>
+          </BrowserRouter>
+        </div>
+      );
+    }
+
+    return () => {};
+  }, []);
+
+  return returned;
+
+  /*
   return (
     <div className="Numbler">
       <BrowserRouter>
@@ -118,6 +232,7 @@ function App() {
       </BrowserRouter>
     </div>
   );
+  */
 }
 
 export default App;
