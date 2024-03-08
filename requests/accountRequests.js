@@ -12,11 +12,18 @@ function accountRequests(app) {
   //Authentication Constants
   const passport = require("passport");
   const session = require("express-session");
+  const MemoryStore = require("memorystore")(session);
+
   app.use(
     session({
       name: "session",
       secret: process.env.sessionSecret,
-      maxAge: 365 * 24 * 60 * 60 * 1000,
+      //maxAge: 365 * 24 * 60 * 60 * 1000,
+      maxAge: 24 * 60 * 60 * 1000,
+      store: new MemoryStore({
+        checkPeriod: 86400000, // prune expired entries every 24h
+      }),
+      sameSite: "strict",
     })
   );
   app.use(passport.initialize());
@@ -595,7 +602,9 @@ function accountRequests(app) {
     "/login/google/callback",
     passport.authenticate("google", { failureRedirect: "/login" }),
     async function (req, res) {
-      res.redirect(`${process.env.protocol}${process.env.domain}/login/complete`);
+      res.redirect(
+        `${process.env.protocol}${process.env.domain}/login/complete`
+      );
     }
   );
 

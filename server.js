@@ -127,9 +127,6 @@ leaderboardRequests.leaderboardRequests(app);
 let visitorCounterRequests = require("./requests/visitorCounterRequests.js");
 visitorCounterRequests.visitorCounterRequests(app);
 
-let adminRequests = require("./requests/adminRequests.js");
-adminRequests.adminRequests(app);
-
 let paymentRequests = require("./requests/paymentRequests.js");
 paymentRequests.paymentRequests(app, bodyParser);
 
