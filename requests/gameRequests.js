@@ -1,5 +1,5 @@
 const { error } = require("console");
-const { nextTick } = require("process");
+const { inflateSync } = require("zlib");
 
 //Requests related to maintaining game state
 function gameRequests(app) {
@@ -10,6 +10,26 @@ function gameRequests(app) {
   const { MongoClient, Timestamp } = require("mongodb");
   let ObjectId = require("mongodb").ObjectId;
   const mongoClient = new MongoClient(process.env.mongoDB);
+
+  //Gets the users account
+  async function getAccount(req) {
+    const db = mongoClient.db("Accounts");
+    let accounts = db.collection("Accounts");
+    let account = await accounts.findOne({ session: req.body.session });
+    if (account) {
+      return account;
+    } else {
+      let inactives = db.collection("Inactive");
+      account = await inactives.findOne({ session: req.body.session });
+      if (account) {
+        await accounts.insertOne(account);
+        await inactives.removeOne({ session: req.body.session });
+        return account;
+      } else {
+        return null;
+      }
+    }
+  }
 
   //Returns the gameboard saved to the user in the database. RANDOM
   async function getCurrentGameRandom(req, res, next) {
@@ -415,11 +435,11 @@ function gameRequests(app) {
           }
         }
       } else {
-        res.send({error: true});
+        res.send({ error: true });
         //res.redirect("/login");
       }
     } catch {
-      res.send({error: true});
+      res.send({ error: true });
       //res.redirect("/login");
     }
   }
@@ -840,7 +860,7 @@ function gameRequests(app) {
       }
     } catch {
       //res.redirect("/login");
-      res.send({error: true});
+      res.send({ error: true });
     }
   }
 
@@ -862,7 +882,11 @@ function gameRequests(app) {
     let todaysGame = await dbDailyGames
       .collection("DailyGames")
       .findOne({ digits: req.body.digits });
-    if (todaysGame.gameId === req.body.gameId || !req.body.gameId || req.body.gameStatus != "playing") {
+    if (
+      todaysGame.gameId === req.body.gameId ||
+      !req.body.gameId ||
+      req.body.gameStatus != "playing"
+    ) {
       //console.log("getting todays game ID");
       //console.log("it is " + todaysGame.gameId);
       res.send({

@@ -9,7 +9,6 @@ const crypto = require("crypto");
 const nodeCron = require("node-cron");
 
 function scheduledTasks(app) {
-
   //Used to create the daily game every day at midnight EST
   let createDailyGames = nodeCron.schedule(
     `*/5 * * * *`,
@@ -107,7 +106,9 @@ function scheduledTasks(app) {
         let eligibleAccounts = [];
         premiumAccounts.forEach((x) => {
           try {
-            let oldestDate = new Date(x[digits + `random-scores`].average30.date);
+            let oldestDate = new Date(
+              x[digits + `random-scores`].average30.date
+            );
             if (
               x[digits + `random-scores`].average30.numberOfGames == 30 &&
               todaysTime - oldestDate.getTime() <= 1000 * 60 * 60 * 24 * 30
@@ -153,6 +154,27 @@ function scheduledTasks(app) {
   );
 
   updateLeaderboards.start();
+
+  //Add something to ensure the entire operation completes
+  //Add something to ensure the entire operation completes
+
+  //Removes all accounts that haven't been active in the past three days and moves them to Inactive so they don't dillute the session queries
+  let moveInactiveAccounts = nodeCron.schedule(`0 1 * * */3`, async () => {
+    const accountsDb = mongoClient.db("Accounts");
+    let accounts = accountsDb.collection(`Accounts`);
+    let inactives = accountsDb.collection(`Inactive`);
+    let allAccounts = await accounts.find().toArray();
+
+    allAccounts.forEach(async (x) => {
+      if (currentDate.getTime() - x.lastGameDate.getTime() > 259200000) {
+        //Add something to ensure the entire operation completes
+        await inactives.insertOne(x);
+        await allAccounts.deleteOne(x);
+      }
+    });
+  });
+
+  //moveInactiveAccounts.start();
 }
 
 module.exports = { scheduledTasks };
