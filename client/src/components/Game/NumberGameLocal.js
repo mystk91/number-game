@@ -151,22 +151,22 @@ function NumberGameLocal(props) {
   }
 
   //Used to display / hide the button at the bottom of the game
-  let hideGuessButtonRef = useRef("");
+  let hideGuessButtonRef = useRef(" hide");
   function setHideGuessButtonRef(point) {
     hideGuessButtonRef.current = point;
   }
 
-  let hideResetButtonRef = useRef("");
+  let hideResetButtonRef = useRef(" hide");
   function setHideResetButtonRef(point) {
     hideResetButtonRef.current = point;
   }
 
-  let hideMessageButtonRef = useRef("");
+  let hideMessageButtonRef = useRef(" hide");
   function setHideMessageButtonRef(point) {
     hideMessageButtonRef.current = point;
   }
 
-  let nextGameAvailableRef = useRef(false);
+  let nextGameAvailableRef = useRef("");
   function setNextGameAvailableRef(point) {
     nextGameAvailableRef.current = point;
   }
@@ -223,14 +223,16 @@ function NumberGameLocal(props) {
   //These functions are used to display / hide the Enter Guess / Message buttons
   //The enter guess is shown until the game ends, then its replaced with the reset button.
   //Also adds / removes arrows and the backspace key
-  function changeCurrentInputButton() {
+  async function changeCurrentInputButton() {
     if (gameStatusRef.current === "playing") {
       setHideGuessButtonRef("");
       setHideResetButtonRef(" hide");
       setHideMessageButtonRef(" hide");
       removeArrows();
     } else {
-      isNextGameAvailable();
+      if (nextGameAvailableRef.current !== "") {
+        await isNextGameAvailable();
+      }
       if (nextGameAvailableRef.current) {
         setHideGuessButtonRef(" hide");
         setHideResetButtonRef("");
@@ -338,7 +340,7 @@ function NumberGameLocal(props) {
     }
     */
 
-    changeCurrentInputButton();
+    await changeCurrentInputButton();
     updateGameBoard();
     setUpArrowLinks();
     updateKeyboard();
@@ -1124,10 +1126,10 @@ function NumberGameLocal(props) {
 
       if (result === correctResultRef.current) {
         setGameStatusRef(`victory`);
-        await isNextGameAvailable();
+        await isNextGameAvailable(true);
       } else if (currentRowRef.current === props.attempts - 1) {
         setGameStatusRef(`defeat`);
-        await isNextGameAvailable();
+        await isNextGameAvailable(true);
       }
 
       enableInputs();
@@ -1468,13 +1470,14 @@ function NumberGameLocal(props) {
 
   //Checks if the next game is available
   //Updates the nextAvailable ref if it is
-  async function isNextGameAvailable() {
+  async function isNextGameAvailable(gameOver = false) {
     const url = "/api/nextGameAvailable";
     const options = {
       method: "PUT",
       body: JSON.stringify({
         digits: props.digits,
         gameId: gameIdRef.current,
+        gameOver: gameOver,
       }),
       withCredentials: true,
       credentials: "include",
@@ -1573,8 +1576,8 @@ function NumberGameLocal(props) {
     document.removeEventListener("keydown", handleKeydown);
     setKeyboardClassNameRef(" disabled");
     updateKeyboard();
-    setTimeout(() => {
-      changeCurrentInputButton();
+    setTimeout(async () => {
+      await changeCurrentInputButton();
       updateKeyboard();
       if (gameStatusRef.current === "defeat") {
         defeat();
@@ -1639,7 +1642,7 @@ function NumberGameLocal(props) {
     setGameOverModalRef();
     setupGame();
     changeKeyboardColors();
-    changeCurrentInputButton();
+    await changeCurrentInputButton();
     setTransitionDelayRef({
       key1: "",
       key2: "",

@@ -15,19 +15,36 @@ function gameRequests(app) {
   async function getAccount(req) {
     const db = mongoClient.db("Accounts");
     let accounts = db.collection("Accounts");
-    let account = await accounts.findOne({ session: req.body.session });
-    if (account) {
-      return account;
-    } else {
-      let inactives = db.collection("Inactive");
-      account = await inactives.findOne({ session: req.body.session });
+    try {
+      let account = await accounts.findOne({ session: req.body.session });
       if (account) {
-        await accounts.insertOne(account);
-        await inactives.removeOne({ session: req.body.session });
         return account;
       } else {
-        return null;
+        let inactives = db.collection("Inactive");
+        account = await inactives.findOne({ session: req.body.session });
+        if (account) {
+          // Step 1: Start a Client Session
+          const session = mongoClient.startSession();
+          try {
+            //Step 2: Perform transactions
+            await session.withTransaction(async () => {
+              await accounts.insertOne(account, { session });
+              await inactives.deleteOne(
+                { session: req.body.session },
+                { session }
+              );
+            }, {});
+          } finally {
+            //Step 3: End the session
+            await session.endSession();
+          }
+          return account;
+        } else {
+          return null;
+        }
       }
+    } catch {
+      return null;
     }
   }
 
@@ -383,6 +400,7 @@ function gameRequests(app) {
               { session: req.body.session },
               {
                 $set: {
+                  lastGameDate: new Date(),
                   [randomGameString]: randomGameTargetObj,
                   [randomGameString + `-scores`]: {
                     average: scoresObj.average,
@@ -407,6 +425,7 @@ function gameRequests(app) {
               { session: req.body.session },
               {
                 $set: {
+                  lastGameDate: new Date(),
                   [randomGameString]: randomGameTargetObj,
                   [randomGameString + `-scores`]: {
                     average: scoresObj.average,
@@ -785,6 +804,7 @@ function gameRequests(app) {
             { session: req.body.session },
             {
               $set: {
+                lastGameDate: new Date(),
                 [regularGameString]: regularGameOverObj,
                 [regularGameString + `-scores`]: {
                   average: scoresObj.average,
@@ -824,6 +844,7 @@ function gameRequests(app) {
             { session: req.body.session },
             {
               $set: {
+                lastGameDate: new Date(),
                 [regularGameString]: regularGameOverObj,
                 [regularGameString + `-scores`]: {
                   average: scoresObj.average,
@@ -917,23 +938,25 @@ function gameRequests(app) {
   async function gameOverLocal(req, res, next) {
     let nextGameAvailable = false;
     try {
-      if (
-        isFinite(req.body.digits) &&
-        req.body.digits >= 2 &&
-        req.body.digits <= 7
-      ) {
-        const webDb = mongoClient.db("Website");
-        let stats = webDb.collection("Stats");
-        await stats.updateOne(
-          { title: "gamesCompleted" },
-          {
-            $inc: {
-              gamesCompleted: 1,
-              dailyGamesCompleted: 1,
-              [`daily${req.body.digits}-games`]: 1,
-            },
-          }
-        );
+      if (req.body.gameOver) {
+        if (
+          isFinite(req.body.digits) &&
+          req.body.digits >= 2 &&
+          req.body.digits <= 7
+        ) {
+          const webDb = mongoClient.db("Website");
+          let stats = webDb.collection("Stats");
+          await stats.updateOne(
+            { title: "gamesCompleted" },
+            {
+              $inc: {
+                gamesCompleted: 1,
+                dailyGamesCompleted: 1,
+                [`daily${req.body.digits}-games`]: 1,
+              },
+            }
+          );
+        }
       }
       const dbDailyGames = mongoClient.db("DailyGames");
 

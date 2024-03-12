@@ -176,6 +176,7 @@ function Signup(props) {
           type="submit"
           className="submit-btn success-btn"
           onClick={() => {
+            document.removeEventListener("keydown", stopOtherKeydowns, true);
             setCurrentScreen();
           }}
         >
@@ -189,6 +190,7 @@ function Signup(props) {
   function closeSuccessScreen(e) {
     e.stopPropagation();
     if (e.key == "Enter") {
+      document.removeEventListener("keydown", stopOtherKeydowns, true);
       setCurrentScreen();
       document.removeEventListener("keydown", closeSuccessScreen, true);
     }

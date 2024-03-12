@@ -228,6 +228,7 @@ function accountRequests(app) {
           premium: false,
           session: newSession,
           createdAt: new Date(),
+          lastGamePlayed: new Date(),
         };
         await accounts.insertOne(verifiedUser);
         res.sendStatus(200);
@@ -559,7 +560,7 @@ function accountRequests(app) {
           });
         }
         if (!account) {
-          let password = await bcrypt.hash(uniqid(), 10);
+          let password = await bcrypt.hash(uniqid(), 16);
           let newAccount = {
             googleId: profile.id,
             email: profile.emails[0].value,
@@ -568,6 +569,7 @@ function accountRequests(app) {
             username: generateUsername(),
             usernameDate: new Date("Wed Jan 01 2020 00:00:00 GMT-0500"),
             session: session,
+            lastGamePlayed: new Date(),
           };
           await accounts.insertOne(newAccount);
           done(null, returnedAccount);

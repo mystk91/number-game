@@ -155,23 +155,30 @@ function scheduledTasks(app) {
 
   updateLeaderboards.start();
 
-  //Add something to ensure the entire operation completes
-  //Add something to ensure the entire operation completes
-
-  //Removes all accounts that haven't been active in the past three days and moves them to Inactive so they don't dillute the session queries
-  let moveInactiveAccounts = nodeCron.schedule(`0 1 * * */3`, async () => {
+  //Removes all accounts that haven't been active in the past day and moves them to Inactive so they don't dillute the session queries
+  let moveInactiveAccounts = nodeCron.schedule(`0 1 * * *`, async () => {
     const accountsDb = mongoClient.db("Accounts");
     let accounts = accountsDb.collection(`Accounts`);
     let inactives = accountsDb.collection(`Inactive`);
     let allAccounts = await accounts.find().toArray();
-
-    allAccounts.forEach(async (x) => {
-      if (currentDate.getTime() - x.lastGameDate.getTime() > 259200000) {
-        //Add something to ensure the entire operation completes
-        await inactives.insertOne(x);
-        await allAccounts.deleteOne(x);
+    const currentDate = new Date();
+    const currentTime = currentDate.getTime();
+    for (const x of allAccounts) {
+      if (currentTime - x.lastGameDate.getTime() > 86400000) {
+        // Step 1: Start a Client Session
+        const session = mongoClient.startSession();
+        try {
+          //Step 2: Perform transactions
+          await session.withTransaction(async () => {
+            await inactives.insertOne(x, { session });
+            await accounts.deleteOne({ _id: x._id }, { session });
+          }, {});
+        } finally {
+          //Step 3: End the session
+          await session.endSession();
+        }
       }
-    });
+    }
   });
 
   //moveInactiveAccounts.start();
