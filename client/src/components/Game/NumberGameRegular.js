@@ -521,6 +521,7 @@ function NumberGameRegular(props) {
   async function updateGameStateFromBackend(
     shouldFetch = true,
     resObj = null,
+    firstCall = false,
   ) {
     if (shouldFetch) {
       //let userRes = await fetch("/api/current_user");
@@ -529,6 +530,7 @@ function NumberGameRegular(props) {
       let reqObj = {
         session: user.session,
         digits: props.digits,
+        firstCall: firstCall,
       };
       const url = "/api/getCurrentGameRegular";
       const options = {
