@@ -94,7 +94,11 @@ function scheduledTasks(app) {
     async () => {
       const accountsDb = mongoClient.db("Accounts");
       let accounts = accountsDb.collection(`Accounts`);
+      let inactives = accountsDb.collection(`Inactive`);
       let premiumAccounts = await accounts
+        .find({ $and: [{ premium: true }, { shadowbanned: false }] })
+        .toArray();
+      let premiumInactives = await inactives
         .find({ $and: [{ premium: true }, { shadowbanned: false }] })
         .toArray();
       const leaderboardsDb = mongoClient.db("Leaderboards");
@@ -118,7 +122,20 @@ function scheduledTasks(app) {
             }
           } catch {}
         });
-
+        premiumInactives.forEach((x) => {
+          try {
+            let oldestDate = new Date(
+              x[digits + `random-scores`].average30.date
+            );
+            if (
+              x[digits + `random-scores`].average30.numberOfGames == 30 &&
+              todaysTime - oldestDate.getTime() <= 1000 * 60 * 60 * 24 * 30
+            ) {
+              eligibleAccounts.push(x);
+            } else {
+            }
+          } catch {}
+        });
         //This is assuming there will always be at least 2 accounts
         eligibleAccounts = eligibleAccounts.sort(function (a, b) {
           return (
@@ -134,6 +151,7 @@ function scheduledTasks(app) {
         let numberOfEntries = Math.min(50, eligibleAccounts.length);
         let currentAccount = eligibleAccounts[0];
 
+        let leaderboardEntries = [];
         for (let i = 0; i < numberOfEntries; i++) {
           let currentAccount = eligibleAccounts[i];
           let leaderboardEntry = {
@@ -143,8 +161,10 @@ function scheduledTasks(app) {
             username: currentAccount.username,
             average: currentAccount[digits + `random-scores`].average30.average,
           };
-          await leaderboard.insertOne(leaderboardEntry);
+          leaderboardEntries.push(leaderboardEntry);
+          //await leaderboard.insertOne(leaderboardEntry);
         }
+        await leaderboard.insertMany(leaderboardEntries);
       }
     },
     {
@@ -156,32 +176,42 @@ function scheduledTasks(app) {
   updateLeaderboards.start();
 
   //Removes all accounts that haven't been active in the past day and moves them to Inactive so they don't dillute the session queries
-  let moveInactiveAccounts = nodeCron.schedule(`0 1 * * *`, async () => {
-    const accountsDb = mongoClient.db("Accounts");
-    let accounts = accountsDb.collection(`Accounts`);
-    let inactives = accountsDb.collection(`Inactive`);
-    let allAccounts = await accounts.find().toArray();
-    const currentDate = new Date();
-    const currentTime = currentDate.getTime();
-    for (const x of allAccounts) {
-      if (currentTime - x.lastGameDate.getTime() > 86400000) {
-        // Step 1: Start a Client Session
-        const session = mongoClient.startSession();
+  //let moveInactiveAccounts = nodeCron.schedule(`0 1 * * *`, async () => {
+  let moveInactiveAccounts = nodeCron.schedule(
+    `*/3 * * * *`,
+    async () => {
+      const accountsDb = mongoClient.db("Accounts");
+      let accounts = accountsDb.collection(`Accounts`);
+      let inactives = accountsDb.collection(`Inactive`);
+      let allAccounts = await accounts.find().toArray();
+      const currentDate = new Date();
+      const currentTime = currentDate.getTime();
+      for (const x of allAccounts) {
         try {
-          //Step 2: Perform transactions
-          await session.withTransaction(async () => {
-            await inactives.insertOne(x, { session });
-            await accounts.deleteOne({ _id: x._id }, { session });
-          }, {});
-        } finally {
-          //Step 3: End the session
-          await session.endSession();
-        }
+          if (currentTime - x.lastGameDate.getTime() > 86400000) {
+            // Step 1: Start a Client Session
+            const session = mongoClient.startSession();
+            try {
+              //Step 2: Perform transactions
+              await session.withTransaction(async () => {
+                await inactives.insertOne(x, { session });
+                await accounts.deleteOne({ _id: x._id }, { session });
+              }, {});
+            } finally {
+              //Step 3: End the session
+              await session.endSession();
+            }
+          }
+        } catch {}
       }
+    },
+    {
+      scheduled: true,
+      timezone: "America/New_York",
     }
-  });
+  );
 
-  //moveInactiveAccounts.start();
+  moveInactiveAccounts.start();
 }
 
 module.exports = { scheduledTasks };

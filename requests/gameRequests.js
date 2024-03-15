@@ -11,34 +11,45 @@ function gameRequests(app) {
   let ObjectId = require("mongodb").ObjectId;
   const mongoClient = new MongoClient(process.env.mongoDB);
 
-  //Gets the users account
-  async function getAccount(req) {
+  //Gets the users account, moves it from inactive to Accounts if they've been inactive
+  async function getAccount(field, value) {
     const db = mongoClient.db("Accounts");
     let accounts = db.collection("Accounts");
     try {
-      let account = await accounts.findOne({ session: req.body.session });
+      let account = await accounts.findOne({ [field]: value });
       if (account) {
         return account;
       } else {
         let inactives = db.collection("Inactive");
-        account = await inactives.findOne({ session: req.body.session });
+        account = await inactives.findOne({ [field]: value });
         if (account) {
+          account.lastGameDate = new Date();
+          let success = false;
           // Step 1: Start a Client Session
           const session = mongoClient.startSession();
           try {
             //Step 2: Perform transactions
             await session.withTransaction(async () => {
-              await accounts.insertOne(account, { session });
-              await inactives.deleteOne(
-                { session: req.body.session },
+              let insertOperation = await accounts.insertOne(account, {
+                session,
+              });
+              let deleteOperation = await inactives.deleteOne(
+                { [field]: value },
                 { session }
               );
+              if (insertOperation && deleteOperation) {
+                success = true;
+              }
             }, {});
           } finally {
             //Step 3: End the session
             await session.endSession();
           }
-          return account;
+          if (success) {
+            return account;
+          } else {
+            return null;
+          }
         } else {
           return null;
         }
@@ -51,9 +62,11 @@ function gameRequests(app) {
   //Returns the gameboard saved to the user in the database. RANDOM
   async function getCurrentGameRandom(req, res, next) {
     try {
-      const db = mongoClient.db("Accounts");
-      let accounts = db.collection("Accounts");
-      let account = await accounts.findOne({ session: req.body.session });
+      //const db = mongoClient.db("Accounts");
+      //let accounts = db.collection("Accounts");
+      //let account = await accounts.findOne({ session: req.body.session });
+      let account = await getAccount("session", req.body.session);
+
       let randomGameString = req.body.digits + "random";
       //Checks if user actually has random mode / premium
       if (account.premium) {
@@ -101,7 +114,9 @@ function gameRequests(app) {
       //console.log("starting to reset your game");
       const db = mongoClient.db("Accounts");
       let accounts = db.collection("Accounts");
-      let account = await accounts.findOne({ session: req.body.session });
+      //let account = await accounts.findOne({ session: req.body.session });
+      let account = await getAccount("session", req.body.session);
+
       //Checks if user actually has random mode / premium
       if (account.premium) {
         let randomGameString = req.body.digits + "random";
@@ -203,7 +218,10 @@ function gameRequests(app) {
     try {
       const db = mongoClient.db("Accounts");
       let accounts = db.collection("Accounts");
-      let account = await accounts.findOne({ session: req.body.session });
+      //let account = await accounts.findOne({ session: req.body.session });
+
+      let account = await getAccount("session", req.body.session);
+
       //Checks if user actually has random mode / premium
       if (account.premium) {
         let randomGameString = req.body.digits + "random";
@@ -466,9 +484,10 @@ function gameRequests(app) {
   //Returns the gameboard saved to the user in the database. REGULAR
   async function getCurrentGameRegular(req, res, next) {
     try {
-      const db = mongoClient.db("Accounts");
-      let accounts = db.collection("Accounts");
-      let account = await accounts.findOne({ session: req.body.session });
+      //const db = mongoClient.db("Accounts");
+      //let accounts = db.collection("Accounts");
+      //let account = await accounts.findOne({ session: req.body.session });
+      let account = await getAccount("session", req.body.session);
       let regularGameString = req.body.digits + "digits";
       if (!account[regularGameString]) {
         resetGameRegular(req, res, next);
@@ -536,7 +555,8 @@ function gameRequests(app) {
       //console.log("starting to reset your game");
       const db = mongoClient.db("Accounts");
       let accounts = db.collection("Accounts");
-      let account = await accounts.findOne({ session: req.body.session });
+      //let account = await accounts.findOne({ session: req.body.session });
+      let account = await getAccount("session", req.body.session);
       let gameString = req.body.digits + "digits";
       let condition = false;
       if (account[gameString]) {
@@ -619,7 +639,8 @@ function gameRequests(app) {
     try {
       const db = mongoClient.db("Accounts");
       let accounts = db.collection("Accounts");
-      let account = await accounts.findOne({ session: req.body.session });
+      //let account = await accounts.findOne({ session: req.body.session });
+      let account = await getAccount("session", req.body.session);
       let regularGameString = req.body.digits + "digits";
       let validateNumber = numberValidation(req.body.number, req.body.digits);
       if (!validateNumber) {

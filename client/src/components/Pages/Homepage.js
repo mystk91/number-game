@@ -24,8 +24,8 @@ function Homepage(props) {
         setHomepage(<GamePageDaily digits={5} attempts={6} />);
       }
     } else {
-      let n = Math.floor(Math.random() * 11);
-      if (n < 4) {
+      let n = Math.floor(Math.random() * 10);
+      if (n < 7) {
         sessionStorage.setItem("homepage", "4");
         setHomepage(<GamePageDaily digits={4} attempts={6} />);
       } else {

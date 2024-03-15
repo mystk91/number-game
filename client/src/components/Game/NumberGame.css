@@ -12,7 +12,7 @@
   --digitsHeight: 75px;
   --backgroundColor-hint: rgb(225, 225, 225);
   --arrow-color: rgb(120, 120, 120);
-  --dark-blue-text: rgb(7, 7, 45);
+  --dark-blue-text: rgb(10, 10, 47);
 }
 
 .game-container {
@@ -795,12 +795,11 @@
   height: 40px;
   width: 40px;
   cursor: pointer;
-  font-size: 2.0rem;
+  font-size: 2rem;
   background-size: cover;
   text-decoration: none;
   color: rgb(245, 245, 245);
 }
-
 
 .arrow-left:hover,
 .arrow-right:hover {
@@ -837,7 +836,7 @@
 
 /* Typical Phone Style */
 @media screen and (min-width: 380px) and (max-width: 419px) {
-  .number-inputs button{
+  .number-inputs button {
     width: 35.5px;
     margin: 0 1px;
   }

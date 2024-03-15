@@ -14,14 +14,64 @@ function paymentRequests(app, bodyParser) {
 
   const YOUR_DOMAIN = `${process.env.protocol}${process.env.domain}/products/random-mode`;
 
+  //Gets the users account, moves it from inactive to Accounts if they've been inactive
+  async function getAccount(field, value) {
+    const db = mongoClient.db("Accounts");
+    let accounts = db.collection("Accounts");
+    try {
+      let account = await accounts.findOne({ [field]: value });
+      if (account) {
+        return account;
+      } else {
+        let inactives = db.collection("Inactive");
+        account = await inactives.findOne({ [field]: value });
+        if (account) {
+          account.lastGameDate = new Date();
+          let success = false;
+          // Step 1: Start a Client Session
+          const session = mongoClient.startSession();
+          try {
+            //Step 2: Perform transactions
+            await session.withTransaction(async () => {
+              let insertOperation = await accounts.insertOne(account, {
+                session,
+              });
+              let deleteOperation = await inactives.deleteOne(
+                { [field]: value },
+                { session }
+              );
+              if (insertOperation && deleteOperation) {
+                success = true;
+              }
+            }, {});
+          } finally {
+            //Step 3: End the session
+            await session.endSession();
+          }
+          if (success) {
+            return account;
+          } else {
+            return null;
+          }
+        } else {
+          return null;
+        }
+      }
+    } catch {
+      return null;
+    }
+  }
+
   app.post("/create-checkout-session", async (req, res) => {
     try {
       const db = mongoClient.db("Accounts");
       let accounts = db.collection("Accounts");
+      /*
       let account = await accounts.findOne({
         session: req.body.session,
       });
-
+      */
+      let account = await getAccount("session", req.body.session);
       if (account._id) {
         const session = await stripe.checkout.sessions.create({
           line_items: [
@@ -113,7 +163,8 @@ function paymentRequests(app, bodyParser) {
             if (success) {
               const db = mongoClient.db("Accounts");
               let accounts = db.collection("Accounts");
-              let account = await accounts.findOne({ _id: _id });
+              //let account = await accounts.findOne({ _id: _id });
+              let account = await getAccount("_id", _id);
               //Sending an email confirmation that the purchase was successful
               const transporter = nodemailer.createTransport({
                 service: "gmail",
@@ -155,7 +206,9 @@ function paymentRequests(app, bodyParser) {
               <p>Their user id was ${_id} </p>
               `,
               };
-              console.log(`Error finishing signup to random mode, their user id was ${_id}`)
+              console.log(
+                `Error finishing signup to random mode, their user id was ${_id}`
+              );
               transporter.sendMail(mailOptions, function (error, info) {
                 if (error) {
                   //console.log(error);

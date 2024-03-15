@@ -60,6 +60,54 @@ function accountRequests(app) {
     ...englishRecommendedTransformers,
   });
 
+  //Gets the users account, moves it from inactive to Accounts if they've been inactive
+  async function getAccount(field, value) {
+    const db = mongoClient.db("Accounts");
+    let accounts = db.collection("Accounts");
+    try {
+      let account = await accounts.findOne({ [field]: value });
+      if (account) {
+        return account;
+      } else {
+        let inactives = db.collection("Inactive");
+        account = await inactives.findOne({ [field]: value });
+        if (account) {
+          account.lastGameDate = new Date();
+          let success = false;
+          // Step 1: Start a Client Session
+          const session = mongoClient.startSession();
+          try {
+            //Step 2: Perform transactions
+            await session.withTransaction(async () => {
+              let insertOperation = await accounts.insertOne(account, {
+                session,
+              });
+              let deleteOperation = await inactives.deleteOne(
+                { [field]: value },
+                { session }
+              );
+              if (insertOperation && deleteOperation) {
+                success = true;
+              }
+            }, {});
+          } finally {
+            //Step 3: End the session
+            await session.endSession();
+          }
+          if (success) {
+            return account;
+          } else {
+            return null;
+          }
+        } else {
+          return null;
+        }
+      }
+    } catch {
+      return null;
+    }
+  }
+
   /////////////////////
   /* Account Creation
   /* Creates a new unverified account and sends a verification email. */
@@ -84,9 +132,12 @@ function accountRequests(app) {
       errorFound = true;
     }
     //Checks if email address already exists
+    /*
     let dupeAccount = await accounts.findOne({
       email: req.body.email.toLowerCase(),
     });
+    */
+    let dupeAccount = await getAccount("email", req.body.email.toLowerCase());
     //Checks if password is valid
     let passwordRegExp = new RegExp(
       "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*[!@#$%^&*_0-9]).{10,32}$"
@@ -210,9 +261,15 @@ function accountRequests(app) {
       const arr = await newestUnverifiedAccount.toArray();
       let newestVerificationCode = arr[0].verificationCode;
 
+      /*
       const previouslyCreatedAccount = await accounts.findOne({
         email: unverifiedUser.email.toLowerCase(),
       });
+      */
+      let previouslyCreatedAccount = await getAccount(
+        "email",
+        unverifiedUser.email.toLowerCase()
+      );
 
       let newSession = generateString(32);
 
@@ -265,9 +322,12 @@ function accountRequests(app) {
     }
 
     //Checks if email address exists
+    /*
     let accountExists = await accounts.findOne({
       email: req.body.email.toLowerCase(),
     });
+    */
+    let accountExists = await getAccount("email", req.body.email.toLowerCase());
 
     if (errorFound) {
       res.status(400).send(errors);
@@ -389,9 +449,15 @@ function accountRequests(app) {
 
       if (needsResetUser) {
         try {
+          /*
           const user = await accounts.findOne({
             email: needsResetUser.email.toLowerCase(),
           });
+          */
+          const user = await getAccount(
+            "email",
+            needsResetUser.email.toLowerCase()
+          );
           if (user.needsPasswordReset) {
             bcrypt.hash(newPassword, 10, async (err, hashedPassword) => {
               await accounts.updateOne(
@@ -440,9 +506,12 @@ function accountRequests(app) {
     };
     //Error Checking
     let errorExists = false;
+    /*
     const user = await accounts.findOne({
       email: req.body.email.toLowerCase(),
     });
+    */
+    const user = await getAccount("email", req.body.email.toLowerCase());
     if (!user) {
       errors.password = "Incorrect email or password";
       errors.errorFound = true;
@@ -475,7 +544,8 @@ function accountRequests(app) {
         };
         //Error Checking
         let errorExists = false;
-        const user = await accounts.findOne({ email: email.toLowerCase() });
+        //const user = await accounts.findOne({ email: email.toLowerCase() });
+        const user = await getAccount("email", email.toLowerCase());
         let newUser = {};
         if (!user) {
           errors.email = "No account exists with that email.";
@@ -552,12 +622,17 @@ function accountRequests(app) {
         };
         const db = mongoClient.db("Accounts");
         let accounts = db.collection("Accounts");
-        let account = await accounts.findOne({ googleId: profile.id });
+        //let account = await accounts.findOne({ googleId: profile.id });
+        let account = await getAccount("googleId", profile.id);
         //console.log(profile.email);
         if (!account) {
           account = await accounts.findOne({
             email: profile.emails[0].value.toLowerCase(),
           });
+          account = await getAccount(
+            "email",
+            profile.emails[0].value.toLowerCase()
+          );
         }
         if (!account) {
           let password = await bcrypt.hash(uniqid(), 16);
@@ -770,7 +845,8 @@ function accountRequests(app) {
     if (user.session) {
       const db = mongoClient.db("Accounts");
       let accounts = db.collection("Accounts");
-      let sessionUser = await accounts.findOne({ session: user.session });
+      //let sessionUser = await accounts.findOne({ session: user.session });
+      let sessionUser = await getAccount("session", user.session);
       if (sessionUser) {
         done(null, user);
       } else {
@@ -793,7 +869,8 @@ function accountRequests(app) {
     try {
       const db = mongoClient.db("Accounts");
       let accounts = db.collection("Accounts");
-      let account = await accounts.findOne({ session: req.body.session });
+      //let account = await accounts.findOne({ session: req.body.session });
+      let account = await getAccount("session", req.body.session);
       if (account) {
         res.send({
           loggedIn: true,
@@ -822,7 +899,8 @@ function accountRequests(app) {
       if (req.body.session) {
         const db = mongoClient.db("Accounts");
         let accounts = db.collection("Accounts");
-        let account = await accounts.findOne({ session: req.body.session });
+        //let account = await accounts.findOne({ session: req.body.session });
+        let account = await getAccount("session", req.body.session);
         let statsObj = {};
 
         for (let i = 2; i <= 7; i++) {

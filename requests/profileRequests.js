@@ -36,6 +36,54 @@ function profileRequests(app) {
   });
   */
 
+  //Gets the users account, moves it from inactive to Accounts if they've been inactive
+  async function getAccount(field, value) {
+    const db = mongoClient.db("Accounts");
+    let accounts = db.collection("Accounts");
+    try {
+      let account = await accounts.findOne({ [field]: value });
+      if (account) {
+        return account;
+      } else {
+        let inactives = db.collection("Inactive");
+        account = await inactives.findOne({ [field]: value });
+        if (account) {
+          account.lastGameDate = new Date();
+          let success = false;
+          // Step 1: Start a Client Session
+          const session = mongoClient.startSession();
+          try {
+            //Step 2: Perform transactions
+            await session.withTransaction(async () => {
+              let insertOperation = await accounts.insertOne(account, {
+                session,
+              });
+              let deleteOperation = await inactives.deleteOne(
+                { [field]: value },
+                { session }
+              );
+              if (insertOperation && deleteOperation) {
+                success = true;
+              }
+            }, {});
+          } finally {
+            //Step 3: End the session
+            await session.endSession();
+          }
+          if (success) {
+            return account;
+          } else {
+            return null;
+          }
+        } else {
+          return null;
+        }
+      }
+    } catch {
+      return null;
+    }
+  }
+
   //Sets a new username for the user if its a valid username
   app.post("/api/change-username", async (req, res, next) => {
     const db = mongoClient.db("Accounts");
@@ -55,9 +103,12 @@ function profileRequests(app) {
     } else {
       //Password error check
       try {
+        /*
         let account = await accounts.findOne({
           session: req.body.user.session,
         });
+        */
+        let account = await getAccount("session", req.body.user.session);
         //Checks it name has been changed in past 30 days
         let today = new Date();
         if (today.getTime() - account.usernameDate.getTime() >= 2592000000) {
@@ -118,9 +169,12 @@ function profileRequests(app) {
       const db = mongoClient.db("Accounts");
       let accounts = db.collection("Accounts");
       try {
+        /*
         let account = await accounts.findOne({
           session: session,
         });
+        */
+        let account = await getAccount("session", session);
         if (await bcrypt.compare(currentPassword, account.password)) {
           bcrypt.hash(newPassword, 10, async (err, hashedPassword) => {
             try {
@@ -153,7 +207,8 @@ function profileRequests(app) {
       email: "",
     };
     try {
-      let account = await accounts.findOne({ session: req.body.user.session });
+      //let account = await accounts.findOne({ session: req.body.user.session });
+      let account = await getAccount("session", req.body.user.session);
       if (account.email.toLowerCase() == req.body.email.toLowerCase()) {
         accounts.deleteOne(account);
         const transporter = nodemailer.createTransport({
@@ -192,7 +247,8 @@ function profileRequests(app) {
   app.post("/api/reset-stats", async (req, res, next) => {
     const db = mongoClient.db("Accounts");
     let accounts = db.collection("Accounts");
-    let account = await accounts.findOne({ session: req.body.session });
+    //let account = await accounts.findOne({ session: req.body.session });
+    let account = await getAccount("session", req.body.session);
     try {
       let modeName = req.body.mode.slice(1, req.body.mode.length);
       //Done to avoid user to unset different field parameters in DB
