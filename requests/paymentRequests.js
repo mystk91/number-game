@@ -6,16 +6,18 @@ function paymentRequests(app, bodyParser) {
   //const setTimeout = require("timers/promises");
   const nodemailer = require("nodemailer");
   //Starting mongo
+  /*
   const { MongoClient, Timestamp } = require("mongodb");
   let ObjectId = require("mongodb").ObjectId;
   const mongoClient = new MongoClient(process.env.mongoDB);
+  */
 
   const stripe = require("stripe")(process.env.secretKey);
 
   const YOUR_DOMAIN = `${process.env.protocol}${process.env.domain}/products/random-mode`;
 
   //Gets the users account, moves it from inactive to Accounts if they've been inactive
-  async function getAccount(field, value) {
+  async function getAccount(field, value, mongoClient) {
     const db = mongoClient.db("Accounts");
     let accounts = db.collection("Accounts");
     try {

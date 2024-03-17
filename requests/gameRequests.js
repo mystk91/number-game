@@ -2,14 +2,16 @@ const { error } = require("console");
 const { inflateSync } = require("zlib");
 
 //Requests related to maintaining game state
-function gameRequests(app) {
+function gameRequests(app, mongoClient) {
   const bcrypt = require("bcryptjs");
   const uniqid = require("uniqid");
   const crypto = require("crypto");
   //Starting mongo
+  /*
   const { MongoClient, Timestamp } = require("mongodb");
   let ObjectId = require("mongodb").ObjectId;
   const mongoClient = new MongoClient(process.env.mongoDB);
+  */
 
   //Gets the users account, moves it from inactive to Accounts if they've been inactive
   async function getAccount(field, value) {
@@ -65,14 +67,19 @@ function gameRequests(app) {
       //const db = mongoClient.db("Accounts");
       //let accounts = db.collection("Accounts");
       //let account = await accounts.findOne({ session: req.body.session });
+      console.log("here we start");
       let account = await getAccount("session", req.body.session);
+
+      console.log(account.email);
 
       let randomGameString = req.body.digits + "random";
       //Checks if user actually has random mode / premium
       if (account.premium) {
         if (!account[randomGameString]) {
+          console.log("resetting");
           resetGameRandom(req, res, next);
         } else {
+          console.log("we got the game");
           if (account[randomGameString].status == "playing") {
             res.send({
               gameObj: {
@@ -104,6 +111,7 @@ function gameRequests(app) {
         res.redirect("/login");
       }
     } catch {
+      console.log("weird error");
       res.redirect("/login");
     }
   }

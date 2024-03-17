@@ -1,14 +1,16 @@
 //This will change the daily game to a new value every midnight EST
 //Starting mongo
+/*
 const { MongoClient, Timestamp } = require("mongodb");
 let ObjectId = require("mongodb").ObjectId;
 const mongoClient = new MongoClient(process.env.mongoDB);
+*/
 const bcrypt = require("bcryptjs");
 const uniqid = require("uniqid");
 const crypto = require("crypto");
 const nodeCron = require("node-cron");
 
-function scheduledTasks(app) {
+function scheduledTasks(app, mongoClient) {
   //Used to create the daily game every day at midnight EST
   let createDailyGames = nodeCron.schedule(
     `*/5 * * * *`,

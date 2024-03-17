@@ -12,7 +12,7 @@ const nodemailer = require("nodemailer");
 //Starting mongo
 const { MongoClient, Timestamp } = require("mongodb");
 let ObjectId = require("mongodb").ObjectId;
-const mongoClient = new MongoClient(process.env.mongoDB);
+const mongoClient = new MongoClient(process.env.mongoDB, {maxPoolSize: 50});
 async function connectMongo() {
   await mongoClient.connect();
 }
@@ -107,28 +107,28 @@ server.listen(port);
 
 //Scheduled Tasks
 let scheduledTasks = require("./scheduledTasks.js");
-scheduledTasks.scheduledTasks(app);
+scheduledTasks.scheduledTasks(app, mongoClient);
 
 //////////////////////////////////////////////////////////////////////////////////
 //Requests
 
 let accountRequests = require("./requests/accountRequests.js");
-accountRequests.accountRequests(app);
+accountRequests.accountRequests(app, mongoClient);
 
 let profileRequests = require("./requests/profileRequests.js");
-profileRequests.profileRequests(app);
+profileRequests.profileRequests(app, mongoClient);
 
 let gameRequests = require("./requests/gameRequests.js");
-gameRequests.gameRequests(app);
+gameRequests.gameRequests(app, mongoClient);
 
 let leaderboardRequests = require("./requests/leaderboardRequests.js");
-leaderboardRequests.leaderboardRequests(app);
+leaderboardRequests.leaderboardRequests(app, mongoClient);
 
 let visitorCounterRequests = require("./requests/visitorCounterRequests.js");
-visitorCounterRequests.visitorCounterRequests(app);
+visitorCounterRequests.visitorCounterRequests(app, mongoClient);
 
 let paymentRequests = require("./requests/paymentRequests.js");
-paymentRequests.paymentRequests(app, bodyParser);
+paymentRequests.paymentRequests(app, bodyParser, mongoClient);
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -145,3 +145,6 @@ app.use((err, req, res, next) => {
   if (!err) return next();
   res.redirect("/");
 });
+
+// Export the MongoClient instance
+module.exports = { mongoClient };

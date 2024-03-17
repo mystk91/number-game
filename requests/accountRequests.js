@@ -1,13 +1,15 @@
 //Requests that involve account creation, password resets and logins
-function accountRequests(app) {
+function accountRequests(app, mongoClient) {
   const bcrypt = require("bcryptjs");
   const uniqid = require("uniqid");
   const crypto = require("crypto");
   const nodemailer = require("nodemailer");
   //Starting mongo
+  /*
   const { MongoClient, Timestamp } = require("mongodb");
   let ObjectId = require("mongodb").ObjectId;
   const mongoClient = new MongoClient(process.env.mongoDB);
+  */
 
   //Authentication Constants
   const passport = require("passport");

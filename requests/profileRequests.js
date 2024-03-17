@@ -1,14 +1,16 @@
 //Requests that change things about your profile, like name, profile pic, password, account deletion
 //Also handles routing that occurs when user isn't logged in
-function profileRequests(app) {
+function profileRequests(app, mongoClient) {
   const bcrypt = require("bcryptjs");
   const uniqid = require("uniqid");
   const crypto = require("crypto");
   const nodemailer = require("nodemailer");
   //Starting mongo
+  /*
   const { MongoClient, Timestamp } = require("mongodb");
   let ObjectId = require("mongodb").ObjectId;
   const mongoClient = new MongoClient(process.env.mongoDB);
+  */
 
   //Profanity filter
   const {

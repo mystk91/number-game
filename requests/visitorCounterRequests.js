@@ -1,13 +1,15 @@
 //Requests that involve updating stats information about the site, such as visitor counts, game completes
 //Also has admin functions
-function visitorCounterRequests(app) {
+function visitorCounterRequests(app, mongoClient) {
   const bcrypt = require("bcryptjs");
   const uniqid = require("uniqid");
   const crypto = require("crypto");
   //Starting mongo
+  /*
   const { MongoClient, Timestamp } = require("mongodb");
   let ObjectId = require("mongodb").ObjectId;
   const mongoClient = new MongoClient(process.env.mongoDB);
+  */
 
   //Increments the visitor count when a new person visits the site without saved localstorage
   app.post("/api/add-visitor", async (req, res, next) => {

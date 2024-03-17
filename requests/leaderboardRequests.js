@@ -1,12 +1,14 @@
 //Requests related to displaying the leaderboard for the game
-function leaderboardRequests(app) {
+function leaderboardRequests(app, mongoClient) {
   const bcrypt = require("bcryptjs");
   const uniqid = require("uniqid");
   const crypto = require("crypto");
   //Starting mongo
+  /*
   const { MongoClient, Timestamp } = require("mongodb");
   let ObjectId = require("mongodb").ObjectId;
   const mongoClient = new MongoClient(process.env.mongoDB);
+  */
 
   app.get("/api/getLeaderboards", async (req, res, next) => {
     const db = mongoClient.db("Leaderboards");
