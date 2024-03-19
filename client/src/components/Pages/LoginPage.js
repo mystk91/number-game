@@ -9,6 +9,7 @@ import "../../normalize.css";
 import "../../custom.css";
 import Navbar from "../Navbar/Navbar";
 import LoginRegular from "../LoginSystem/LoginRegular";
+import { Helmet } from "react-helmet";
 
 //Creates the page used for password reset
 function LoginPage(props) {
@@ -56,6 +57,10 @@ function LoginPage(props) {
       localStorage.removeItem("profile");
       setLoginPage(
         <div className="login-page">
+          <Helmet>
+            <meta name="description" content={`Numbler Login`} />
+            <meta name="keywords" content="numbler login, login page" />
+          </Helmet>
           <Navbar
             digits={0}
             user={user}

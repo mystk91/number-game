@@ -67,19 +67,14 @@ function gameRequests(app, mongoClient) {
       //const db = mongoClient.db("Accounts");
       //let accounts = db.collection("Accounts");
       //let account = await accounts.findOne({ session: req.body.session });
-      console.log("here we start");
       let account = await getAccount("session", req.body.session);
-
-      console.log(account.email);
 
       let randomGameString = req.body.digits + "random";
       //Checks if user actually has random mode / premium
       if (account.premium) {
         if (!account[randomGameString]) {
-          console.log("resetting");
           resetGameRandom(req, res, next);
         } else {
-          console.log("we got the game");
           if (account[randomGameString].status == "playing") {
             res.send({
               gameObj: {
@@ -111,7 +106,6 @@ function gameRequests(app, mongoClient) {
         res.redirect("/login");
       }
     } catch {
-      console.log("weird error");
       res.redirect("/login");
     }
   }

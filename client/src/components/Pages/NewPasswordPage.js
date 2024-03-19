@@ -60,7 +60,6 @@ function NewPasswordPage(props) {
     );
   }
 
-
   return passwordPage;
 }
 

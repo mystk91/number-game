@@ -62,7 +62,7 @@ function StoreSuccessPage(props) {
         </div>
       );
     } else {
-      setPage(<SiteMessagePage message="You do not have Random Mode" buttonText="Get Random Mode!" buttonUrl="/products/random-mode"/>)
+      setPage(<SiteMessagePage message="There may have been an error completing your purchase. Please contact us if Random Mode is unavailable to you." buttonText="Go to Profile" buttonUrl="/profile"/>)
     }
   }
 

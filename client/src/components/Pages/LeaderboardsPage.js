@@ -4,6 +4,7 @@ import "../../custom.css";
 import Navbar from "../Navbar/Navbar";
 import NavbarDynamic from "../Navbar/NavbarDynamic";
 import Leaderboards from "../Leaderboards/Leaderboards";
+import { Helmet } from "react-helmet";
 
 //Creates a page for the leaderboards with a navbar
 function LeaderboardsPage(props) {
@@ -11,7 +12,7 @@ function LeaderboardsPage(props) {
 
   //Runs on mount. Gets users profile pic and starts game
   useEffect(() => {
-    document.title = "Numbler - Leaderboards"
+    document.title = "Numbler - Leaderboards";
     fetchUser();
     return () => {};
   }, []);
@@ -48,6 +49,16 @@ function LeaderboardsPage(props) {
     }
     setLeaderboardPage(
       <div className="leaderboards-page">
+        <Helmet>
+          <meta
+            name="description"
+            content={`Numbler Leaderboards for Random Mode.`}
+          />
+          <meta
+            name="keywords"
+            content="numbler, numbler leaderboards, numbler leaderboard, leaderboard, leaderboards, random mode"
+          />
+        </Helmet>
         <NavbarDynamic digits={0} user={user} instructions={" invisible"} />
         <Leaderboards user={user} />
       </div>

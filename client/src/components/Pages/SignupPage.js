@@ -10,6 +10,7 @@ import "../../custom.css";
 import Navbar from "../Navbar/Navbar";
 import NavbarDynamic from "../Navbar/NavbarDynamic";
 import SignupRegular from "../LoginSystem/SignupRegular";
+import { Helmet } from "react-helmet";
 
 //Creates the page used for password reset
 function SignupPage(props) {
@@ -54,6 +55,10 @@ function SignupPage(props) {
     }
     setSignupPage(
       <div className="signup-page">
+        <Helmet>
+          <meta name="description" content={`Create an account!`} />
+          <meta name="keywords" content="numbler signup, signup page" />
+        </Helmet>
         <NavbarDynamic digits={0} user={user} instructions={" invisible"} />
         <SignupRegular />
       </div>

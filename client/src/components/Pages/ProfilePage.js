@@ -5,6 +5,7 @@ import NumberGameRegular from "../Game/NumberGameRegular";
 import NumberGameLocal from "../Game/NumberGameLocal";
 import NavbarDynamic from "../Navbar/NavbarDynamic";
 import MyProfile from "../Profile/MyProfile";
+import { Helmet } from "react-helmet";
 
 //Creates a profile page for the website that displays the navbar and the users profile
 //The game page will either use localStorage or data from players account
@@ -128,6 +129,13 @@ function ProfilePage(props) {
     if (username) {
       setProfilePage(
         <div className="profile-page">
+          <Helmet>
+            <meta name="description" content={`Your Profile`} />
+            <meta
+              name="keywords"
+              content="numbler profile, numbler statistics, numbler account"
+            />
+          </Helmet>
           <NavbarDynamic digits={0} user={user} instructions={" invisible"} />
           <MyProfile
             user={user}

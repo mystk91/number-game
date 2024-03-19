@@ -6,9 +6,11 @@ function paymentRequests(app, bodyParser, mongoClient) {
   //const setTimeout = require("timers/promises");
   const nodemailer = require("nodemailer");
   //Starting mongo
-  //const { MongoClient, Timestamp } = require("mongodb");
+  /*
+  const { MongoClient, Timestamp } = require("mongodb");
   let ObjectId = require("mongodb").ObjectId;
-  //const mongoClient = new MongoClient(process.env.mongoDB);
+  const mongoClient = new MongoClient(process.env.mongoDB);
+  */
 
   const stripe = require("stripe")(process.env.secretKey);
 
@@ -98,9 +100,10 @@ function paymentRequests(app, bodyParser, mongoClient) {
   const endpointSecret = process.env.endpointSecret;
 
   app.post(
-    "/complete-premium-purchase",
+    "/api/complete-premium-purchase",
     bodyParser.raw({ type: "application/json" }),
     async (request, response) => {
+      console.log("we start the completion");
       const payload = request.body;
       const sig = request.headers["stripe-signature"];
       let event;
@@ -111,8 +114,9 @@ function paymentRequests(app, bodyParser, mongoClient) {
       }
       // Handle the checkout.session.completed event
       if (event.type === "checkout.session.completed") {
+        console.log("the event type is:")
+        console.log(event.type);
         // Retrieve the session. If you require line items in the response, you may include them by expanding line_items.
-        let _id;
         try {
           const session = await stripe.checkout.sessions.retrieve(
             event.data.object.id,
@@ -120,7 +124,9 @@ function paymentRequests(app, bodyParser, mongoClient) {
               expand: ["line_items"],
             }
           );
-          _id = new ObjectId(session.metadata._id);
+          console.log("the id is:")
+          let _id = new ObjectId(session.metadata._id);
+          console.log(_id);
 
           // Fulfill the purchase...
           const eventObj = event.data.object;
@@ -129,12 +135,13 @@ function paymentRequests(app, bodyParser, mongoClient) {
               try {
                 const db = mongoClient.db("Accounts");
                 let accounts = db.collection("Accounts");
-                //Makes sure account is in the right directory
+                console.log("we try to update an account to premium");
                 let account = getAccount("_id", _id);
                 await accounts.updateOne(
                   { _id: _id },
                   { $set: { premium: true } }
                 );
+                console.log("did we succeed?");
 
                 const webDb = mongoClient.db("Website");
                 let stats = db.collection("Stats");
@@ -168,7 +175,9 @@ function paymentRequests(app, bodyParser, mongoClient) {
               const db = mongoClient.db("Accounts");
               let accounts = db.collection("Accounts");
               //let account = await accounts.findOne({ _id: _id });
+              console.log("we do well until here");
               let account = await getAccount("_id", _id);
+              console.log(account.email);
               //Sending an email confirmation that the purchase was successful
               const transporter = nodemailer.createTransport({
                 service: "gmail",
@@ -240,9 +249,6 @@ function paymentRequests(app, bodyParser, mongoClient) {
             <p>Their user id was ${_id} </p>
             `,
           };
-          console.log(
-            `Error finishing signup to random mode, their user id was ${_id}`
-          );
           transporter.sendMail(mailOptions, function (error, info) {
             if (error) {
               //console.log(error);

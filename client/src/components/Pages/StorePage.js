@@ -79,7 +79,7 @@ function StorePage(props) {
         );
       } else {
         let profileObj = JSON.parse(profile);
-        let res = await fetch("/create-checkout-session", {
+        let res = await fetch("/api/create-checkout-session", {
           method: "POST",
           body: JSON.stringify(profileObj),
           withCredentials: true,

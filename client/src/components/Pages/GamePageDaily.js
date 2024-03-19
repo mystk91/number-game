@@ -12,6 +12,7 @@ import NavbarDaily from "../Navbar/NavbarDaily";
 import NumberGameRegular from "../Game/NumberGameRegular";
 import NumberGameLocal from "../Game/NumberGameLocal";
 import NavbarDynamic from "../Navbar/NavbarDynamic";
+import { Helmet } from "react-helmet";
 
 //Creates a page for the website that displays the navbar and the daily game
 //The game page will either use localStorage or data from players account
@@ -20,7 +21,7 @@ function GamePageDaily(props) {
 
   //Runs on mount. Checks if the user is logged in and sets the corresponding game page
   useEffect(() => {
-    document.title=`Numbler - ${props.digits} Digits`
+    document.title = `Numbler - ${props.digits} Digits`;
     fetchUser();
     return () => {};
   }, []);
@@ -60,6 +61,16 @@ function GamePageDaily(props) {
     if (user.loggedIn) {
       setGamePage(
         <div className="game-page">
+          <Helmet>
+            <meta
+              name="description"
+              content={`A ${props.digits}-digit number guessing game. Use hints to zero in on the correct number!`}
+            />
+            <meta
+              name="keywords"
+              content="numbler, game, number game, number games, guessing game, guessing games, number guessing game, logic game, logic games, math game, math games, strategy game, strategy games, guess the number,  guess a number, puzzle, math puzzle, puzzle game, puzzle games"
+            />
+          </Helmet>
           <NavbarDynamic digits={props.digits} user={user} />
           <NumberGameRegular
             digits={props.digits}
@@ -72,6 +83,16 @@ function GamePageDaily(props) {
       localStorage.removeItem("profile");
       setGamePage(
         <div className="game-page">
+          <Helmet>
+            <meta
+              name="description"
+              content={`A ${props.digits}-digit number guessing game. Use hints to zero in on the correct number!`}
+            />
+            <meta
+              name="keywords"
+              content="numbler, game, number game, number games, guessing game, guessing games, number guessing game, logic game, logic games, math game, math games, strategy game, strategy games, guess the number,  guess a number, puzzle, math puzzle, puzzle game, puzzle games"
+            />
+          </Helmet>
           <Navbar digits={props.digits} user={user} />
           <NumberGameLocal
             digits={props.digits}
