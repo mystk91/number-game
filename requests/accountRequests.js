@@ -605,7 +605,7 @@ function accountRequests(app, mongoClient) {
 
   //Google Authentication
   app.get(
-    "/login/google",
+    "/api/login/google",
     passport.authenticate("google", { scope: ["profile", "email"] })
   );
   passport.use(
@@ -613,7 +613,7 @@ function accountRequests(app, mongoClient) {
       {
         clientID: Google_Client_Id,
         clientSecret: Google_Client_Secret,
-        callbackURL: `${process.env.protocol}${process.env.domain}/login/google/callback`,
+        callbackURL: `${process.env.protocol}${process.env.domain}/api/login/google/callback`,
       },
       async function (accessToken, refreshToken, profile, done) {
         let session = generateString(48);
@@ -678,7 +678,7 @@ function accountRequests(app, mongoClient) {
   );
 
   app.get(
-    "/login/google/callback",
+    "/api/login/google/callback",
     passport.authenticate("google", { failureRedirect: "/login" }),
     async function (req, res) {
       res.redirect(

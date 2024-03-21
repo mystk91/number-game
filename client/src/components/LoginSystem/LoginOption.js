@@ -1,12 +1,18 @@
-import React, { useState, useEffect, useRef, createContext, useContext } from "react";
-import './LoginOption.css';
-import "../../normalize.css"
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  createContext,
+  useContext,
+} from "react";
+import "./LoginOption.css";
+import "../../normalize.css";
 import "../../custom.css";
 import { Link } from "react-router-dom";
 
 function LoginOption(props) {
-  const [property, setProperty] = useState('initialValue');
-  const propRef = useRef('initialValue');
+  const [property, setProperty] = useState("initialValue");
+  const propRef = useRef("initialValue");
   function setPropRef(point) {
     propRef.current = point;
   }
@@ -17,27 +23,32 @@ function LoginOption(props) {
 
   //componentDidMount, runs when component mounts, then componentDismount
   useEffect(() => {
-    if (props.buttonText){
+    if (props.buttonText) {
       setButtonText(<span>{props.buttonText}</span>);
-    }
-    else{
+    } else {
       setJustifyImage("center");
     }
-    return() => {};
+    return () => {};
   }, []);
   //componentDidUpdate, runs after render
   useEffect(() => {}, [property]);
   //componentDismount
-  useEffect(() => {return() => {}})
+  useEffect(() => {
+    return () => {};
+  });
 
-  function goLogin(site){
-    window.location.href=site;
+  async function goLogin(route) {
+    window.location.href=route;
   }
 
-  
   return (
-    <button className={props.className + ' login-button'} onClick={()=>goLogin(props.href)} style={{justifyContent: justifyImage}} aria-label={`${props.className} login`}>
-      <img src={props.imageURL} alt={`${props.className} logo`}/>
+    <button
+      className={props.className + " login-button"}
+      onClick={() => goLogin(props.route)}
+      style={{ justifyContent: justifyImage }}
+      aria-label={`${props.className} login`}
+    >
+      <img src={props.imageURL} alt={`${props.className} logo`} />
       {buttonText}
     </button>
   );

@@ -191,7 +191,7 @@ function Login(props) {
             <hr></hr>
             <div className="login-options-buttons" aria-label="Login Options">
               <LoginOption
-                href="/login/google"
+                route="/api/login/google"
                 className="google"
                 imageURL="/images/login-logos/google-logo.png"
                 buttonText="Login with Google"
