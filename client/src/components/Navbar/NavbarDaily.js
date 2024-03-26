@@ -123,6 +123,7 @@ function NavbarDaily(props) {
   //Hides the game list
   const hideGameModes = useCallback((e) => {
     if (hoverDropUpRef.current) {
+      setHoverDropUpRef(false);
       setGameModesList(listHidden);
       setGameModesButton(gameModesButtonHTML);
       document.removeEventListener("click", hideGameModes);

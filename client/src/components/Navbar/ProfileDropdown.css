@@ -1,6 +1,7 @@
 .profile-dropdown {
   position: absolute;
   top: calc(100% - 1px);
+  right: -45px;
 }
 
 .profile-dropdown a:hover {
@@ -24,7 +25,6 @@
   animation: 0.3s showProfileTabs forwards;
   position: relative;
   z-index: 1;
-  right: 45px;
 }
 
 @keyframes showProfileTabs {
@@ -68,7 +68,6 @@
   animation: 0.3s hideGameModes forwards;
   position: relative;
   z-index: 1;
-  right: 45px;
 }
 
 @keyframes hideGameModes {
@@ -99,11 +98,6 @@
 }
 
 @media screen and (max-width: 481px) {
-  .profile-dropdown.visible a {
-    right: 50px;
-  }
 
-  .profile-dropdown.hidden a {
-    right: 50px;
-  }
+
 }

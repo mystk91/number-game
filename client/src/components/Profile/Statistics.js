@@ -269,7 +269,7 @@ function Statistics(props) {
               key={"daily-stats-" + i}
               aria-label={`Stats: ${i} Digits`}
             >
-              <header className="stats-game-name" aria-label={`${i} Random`}>
+              <header className="stats-game-name" aria-label={`${i} Digits`}>
                 <div>{i} Digits</div>
                 <div className="daily-icon">
                   <CalendarIcon />

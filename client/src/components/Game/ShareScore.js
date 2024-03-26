@@ -110,7 +110,12 @@ function ShareScore(props) {
     } else {
       copiedText += getDate();
     }
-    await navigator.clipboard.writeText(copiedText);
+
+    const clipboardItem = new ClipboardItem({
+      'text/plain': copiedText
+    });
+    await navigator.clipboard.write(clipboardItem);
+    //await navigator.clipboard.writeText(clipboardItem); 
     e.target.style.cursor = "default";
     e.target.style.pointerEvents = "none";
     e.target.classList = "share clicked";

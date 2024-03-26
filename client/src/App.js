@@ -39,6 +39,10 @@ function App() {
           <BrowserRouter>
             <Routes>
               <Route path="/loginPage" element={<LoginPage />} />
+              <Route
+                path="/testGameForYou"
+                element={<GamePageDaily digits={4} attempts={6} />}
+              />
             </Routes>
           </BrowserRouter>
         </div>
@@ -141,6 +145,7 @@ function App() {
 
   return returned;
 
+
   /*
   return (
     <div className="Numbler">
@@ -233,6 +238,7 @@ function App() {
     </div>
   );
   */
+
 }
 
 export default App;

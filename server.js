@@ -12,7 +12,7 @@ const nodemailer = require("nodemailer");
 //Starting mongo
 const { MongoClient, Timestamp } = require("mongodb");
 let ObjectId = require("mongodb").ObjectId;
-const mongoClient = new MongoClient(process.env.mongoDB, {maxPoolSize: 50});
+const mongoClient = new MongoClient(process.env.mongoDB, {maxPoolSize: 500});
 async function connectMongo() {
   await mongoClient.connect();
 }
