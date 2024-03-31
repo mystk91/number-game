@@ -4,6 +4,7 @@ function accountRequests(app, mongoClient) {
   const uniqid = require("uniqid");
   const crypto = require("crypto");
   const nodemailer = require("nodemailer");
+  const aws = require("@aws-sdk/client-ses");
   //Starting mongo
   /*
   const { MongoClient, Timestamp } = require("mongodb");
@@ -212,6 +213,56 @@ function accountRequests(app, mongoClient) {
         } catch (err) {}
       });
 
+      console.log("lets send you a mail cowboy");
+
+
+      const ses = new aws.SES({
+        apiVersion: "2010-12-01",
+        region: "us-east-1",
+        credentials: {
+          accessKeyId: process.env.sesAccessKey,
+          secretAccessKey: process.env.sesSecret
+        }
+      });
+
+      console.log("we got the ses");
+      console.log(ses);
+      
+      // create Nodemailer SES transporter
+      let transporter = nodemailer.createTransport({
+        SES: { ses, aws },
+      });
+
+      console.log("we got the transporter");
+
+      const mailOptions = {
+        from: `"Numbler" <donotreply@numbler.net>`,
+        to: req.body.email,
+        subject: "Numbler Email Verification",
+        html: `</p> Click below to verify your email address. </p> <br>
+        <a href='${process.env.protocol}${process.env.domain}/verify-email/${verificationCode}'>${process.env.protocol}${process.env.domain}/verify-email/${verificationCode}</a>
+        <p>If you did not just sign up to Numbler, please ignore this.</p>
+        `,
+      };
+
+      transporter.sendMail(mailOptions, function (error, info) {
+        if (error) {
+          console.log(error);
+        } else {
+          //console.log("Email sent: " + info.response);
+        }
+      });
+
+
+
+
+
+
+
+
+
+
+      /*
       const transporter = nodemailer.createTransport({
         service: "gmail",
         auth: {
@@ -237,6 +288,11 @@ function accountRequests(app, mongoClient) {
           //console.log("Email sent: " + info.response);
         }
       });
+      */
+
+
+
+
     }
   });
 

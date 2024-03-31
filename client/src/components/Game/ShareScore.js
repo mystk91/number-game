@@ -111,11 +111,16 @@ function ShareScore(props) {
       copiedText += getDate();
     }
 
-    const clipboardItem = new ClipboardItem({
-      'text/plain': copiedText
-    });
-    await navigator.clipboard.write(clipboardItem);
-    //await navigator.clipboard.writeText(clipboardItem); 
+    async function writeClipboardItem(text) {
+      try {
+        const clipboardItem = new ClipboardItem({
+          "text/plain": new Blob([text], { type: "text/plain" }),
+        });
+        await navigator.clipboard.write([clipboardItem]);
+      } catch (err) {}
+    }
+    await writeClipboardItem(copiedText);
+    //await navigator.clipboard.writeText(copiedText);
     e.target.style.cursor = "default";
     e.target.style.pointerEvents = "none";
     e.target.classList = "share clicked";

@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/static/css/main.9184981c.css",
-    "main.js": "/static/js/main.6ef7d15f.js",
+    "main.css": "/static/css/main.c162beb2.css",
+    "main.js": "/static/js/main.2b6177f2.js",
     "static/media/Inter-slnt,wght.ttf": "/static/media/Inter-slnt,wght.aadb65ac45347ff46699.ttf",
     "static/media/OpenSans-Italic-wdth,wght.ttf": "/static/media/OpenSans-Italic-wdth,wght.f72efa639bb45d29e62f.ttf",
     "static/media/OpenSans-wdth,wght.ttf": "/static/media/OpenSans-wdth,wght.ceb05254cedfa895b512.ttf",
@@ -11,11 +11,11 @@
     "static/media/perpetua_light.ttf": "/static/media/perpetua_light.4b20a1c23d17066c0c35.ttf",
     "static/media/equals.png": "/static/media/equals.a3fe98a2a27a15cced3e.png",
     "index.html": "/index.html",
-    "main.9184981c.css.map": "/static/css/main.9184981c.css.map",
-    "main.6ef7d15f.js.map": "/static/js/main.6ef7d15f.js.map"
+    "main.c162beb2.css.map": "/static/css/main.c162beb2.css.map",
+    "main.2b6177f2.js.map": "/static/js/main.2b6177f2.js.map"
   },
   "entrypoints": [
-    "static/css/main.9184981c.css",
-    "static/js/main.6ef7d15f.js"
+    "static/css/main.c162beb2.css",
+    "static/js/main.2b6177f2.js"
   ]
 }

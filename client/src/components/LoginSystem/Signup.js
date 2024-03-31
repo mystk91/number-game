@@ -177,6 +177,7 @@ function Signup(props) {
           className="submit-btn success-btn"
           onClick={() => {
             document.removeEventListener("keydown", stopOtherKeydowns, true);
+            document.removeEventListener("keydown", closeSuccessScreen, true);
             setCurrentScreen();
           }}
         >
@@ -187,14 +188,14 @@ function Signup(props) {
   );
 
   //An event function that will allow you to close the window by pressing "Enter"
-  function closeSuccessScreen(e) {
+  const closeSuccessScreen = useCallback((e) => {
     e.stopPropagation();
     if (e.key == "Enter") {
       document.removeEventListener("keydown", stopOtherKeydowns, true);
       setCurrentScreen();
       document.removeEventListener("keydown", closeSuccessScreen, true);
     }
-  }
+  }, []);
 
   return (
     <div className={hideComponent}>
