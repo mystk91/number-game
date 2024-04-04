@@ -37,7 +37,7 @@ function NavbarRandom(props) {
       setInvisibleLogin(" invisible");
     }
     */
-    addInstructions();
+    //addInstructions();
     addProfileButton();
     highlightDigitButton();
     setGameModesButton(gameModesButtonHTML);
