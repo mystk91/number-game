@@ -113,7 +113,6 @@ function DeleteAccount(props) {
             <input
               id="email"
               name="email"
-              type="email"
               value={emailValue}
               ref={inputReference}
               onChange={(e) => setEmailValue(e.target.value)}

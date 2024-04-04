@@ -5,6 +5,15 @@ function profileRequests(app, mongoClient) {
   const uniqid = require("uniqid");
   const crypto = require("crypto");
   const nodemailer = require("nodemailer");
+  const aws = require("@aws-sdk/client-ses");
+  const ses = new aws.SES({
+    apiVersion: "2010-12-01",
+    region: "us-east-1",
+    credentials: {
+      accessKeyId: process.env.sesAccessKey,
+      secretAccessKey: process.env.sesSecret,
+    },
+  });
   //Starting mongo
   /*
   const { MongoClient, Timestamp } = require("mongodb");
@@ -213,15 +222,13 @@ function profileRequests(app, mongoClient) {
       let account = await getAccount("session", req.body.user.session);
       if (account.email.toLowerCase() == req.body.email.toLowerCase()) {
         accounts.deleteOne(account);
-        const transporter = nodemailer.createTransport({
-          service: "gmail",
-          auth: {
-            user: process.env.nodemailerUser,
-            pass: process.env.nodemailerPass,
-          },
+        // create Nodemailer SES transporter
+        let transporter = nodemailer.createTransport({
+          SES: { ses, aws },
         });
+
         const mailOptions = {
-          from: `"Numbler" <${process.env.nodemailerUser}>`,
+          from: `"Numbler" <noreply@numbler.net>`,
           to: account.email,
           subject: "Numbler Account Deletion",
           html: `</p> Your account has been deleted. You do not need to take any further action. </p> 

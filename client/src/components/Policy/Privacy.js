@@ -65,7 +65,7 @@ function Privacy(props) {
       <p>
         If you have any questions or concerns about this policy or your personal
         information, please email us at{" "}
-        <a href={`mailto:privacy@numbler.net`}>privacy@numbler.net</a>
+        <a href={`mailto:contact@numbler.net`}>privacy@numbler.net</a>
       </p>
       <br/>
       <p>Thank you for trusting us with your information!</p>

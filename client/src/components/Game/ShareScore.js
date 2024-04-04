@@ -120,7 +120,6 @@ function ShareScore(props) {
       } catch (err) {}
     }
     await writeClipboardItem(copiedText);
-    //await navigator.clipboard.writeText(copiedText);
     e.target.style.cursor = "default";
     e.target.style.pointerEvents = "none";
     e.target.classList = "share clicked";

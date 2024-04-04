@@ -13,7 +13,7 @@ const nodeCron = require("node-cron");
 function scheduledTasks(app, mongoClient) {
   //Used to create the daily game every day at midnight EST
   let createDailyGames = nodeCron.schedule(
-    `*/5 * * * *`,
+    `0 0 * * *`,
     async () => {
       const dbDailyGames = mongoClient.db("DailyGames");
       let dailyGames = dbDailyGames.collection(`DailyGames`);

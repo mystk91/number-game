@@ -5,6 +5,15 @@ function paymentRequests(app, bodyParser, mongoClient) {
   const crypto = require("crypto");
   //const setTimeout = require("timers/promises");
   const nodemailer = require("nodemailer");
+  const aws = require("@aws-sdk/client-ses");
+  const ses = new aws.SES({
+    apiVersion: "2010-12-01",
+    region: "us-east-1",
+    credentials: {
+      accessKeyId: process.env.sesAccessKey,
+      secretAccessKey: process.env.sesSecret,
+    },
+  });
   //Starting mongo
   //const { MongoClient, Timestamp } = require("mongodb");
   let ObjectId = require("mongodb").ObjectId;
@@ -169,18 +178,15 @@ function paymentRequests(app, bodyParser, mongoClient) {
               let accounts = db.collection("Accounts");
               //let account = await accounts.findOne({ _id: _id });
               let account = await getAccount("_id", _id);
-              //Sending an email confirmation that the purchase was successful
-              const transporter = nodemailer.createTransport({
-                service: "gmail",
-                auth: {
-                  user: process.env.nodemailerUser,
-                  pass: process.env.nodemailerPass,
-                },
+              // create Nodemailer SES transporter
+              let transporter = nodemailer.createTransport({
+                SES: { ses, aws },
               });
+
               const mailOptions = {
-                from: `"Numbler" <${process.env.nodemailerUser}>`,
+                from: `"Numbler" <noreply@numbler.net>`,
                 to: account.email,
-                subject: "Random Mode! ",
+                subject: "Random Mode!",
                 html: `</p> You have successfully signed up for Random Mode!</p>
                 <p>You can switch between Daily Mode and Random Mode by clicking the calendar/dice icons respectively. </p> 
                 <a href="${process.env.protocol}${process.env.domain}/products/random-mode/success">${process.env.protocol}${process.env.domain}/random5</a>
@@ -195,16 +201,14 @@ function paymentRequests(app, bodyParser, mongoClient) {
               });
             } else {
               //We will send an email to the admins account to notify them that something went wrong
-              const transporter = nodemailer.createTransport({
-                service: "gmail",
-                auth: {
-                  user: process.env.nodemailerUser,
-                  pass: process.env.nodemailerPass,
-                },
+              // create Nodemailer SES transporter
+              let transporter = nodemailer.createTransport({
+                SES: { ses, aws },
               });
+
               const mailOptions = {
-                from: `"Numbler" <${process.env.nodemailerUser}>`,
-                to: "someAdminEmail@numbler.net",
+                from: `"Numbler" <noreply@numbler.net>`,
+                to: "contact@numbler.net",
                 subject: "Random Mode Signup Error",
                 html: `</p> Something went wrong for someone signing up to random mode. </p> 
               <p>Their user id was ${_id} </p>
@@ -225,15 +229,13 @@ function paymentRequests(app, bodyParser, mongoClient) {
         } catch (error) {
           //console.log(error);
           //We will send an email to the admins account to notify them that something went wrong
-          const transporter = nodemailer.createTransport({
-            service: "gmail",
-            auth: {
-              user: process.env.nodemailerUser,
-              pass: process.env.nodemailerPass,
-            },
+          // create Nodemailer SES transporter
+          let transporter = nodemailer.createTransport({
+            SES: { ses, aws },
           });
+
           const mailOptions = {
-            from: `"Numbler" <${process.env.nodemailerUser}>`,
+            from: `"Numbler" <noreply@numbler.net>`,
             to: "someAdminEmail@numbler.net",
             subject: "Random Mode Signup Error",
             html: `</p> Something went wrong for someone signing up to random mode. </p> 

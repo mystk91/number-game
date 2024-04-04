@@ -12,9 +12,9 @@ function Contact(props) {
   //componentDidMount, runs when component mounts, then componentDismount
   useEffect(() => {
     if (props.user.premium) {
-      setEmail("random_mode@numbler.net");
+      setEmail("random@numbler.net");
     } else {
-      setEmail("bug_report@numbler.net");
+      setEmail("contact@numbler.net");
     }
     return () => {};
   }, []);

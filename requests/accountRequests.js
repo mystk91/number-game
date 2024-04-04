@@ -5,6 +5,14 @@ function accountRequests(app, mongoClient) {
   const crypto = require("crypto");
   const nodemailer = require("nodemailer");
   const aws = require("@aws-sdk/client-ses");
+  const ses = new aws.SES({
+    apiVersion: "2010-12-01",
+    region: "us-east-1",
+    credentials: {
+      accessKeyId: process.env.sesAccessKey,
+      secretAccessKey: process.env.sesSecret,
+    },
+  });
   //Starting mongo
   /*
   const { MongoClient, Timestamp } = require("mongodb");
@@ -161,16 +169,14 @@ function accountRequests(app, mongoClient) {
     if (dupeAccount) {
       //Sends back a fake account completion if email already exists
       res.sendStatus(200);
-      const transporter = nodemailer.createTransport({
-        service: "gmail",
-        auth: {
-          user: process.env.nodemailerUser,
-          pass: process.env.nodemailerPass,
-        },
+      /*
+      // create Nodemailer SES transporter
+      let transporter = nodemailer.createTransport({
+        SES: { ses, aws },
       });
 
       const mailOptions = {
-        from: `"Numbler" <${process.env.nodemailerUser}>`,
+        from: `"Numbler" <noreply@numbler.net>`,
         to: req.body.email,
         subject: "Numbler Email Verification",
         html: `</p> You have already created a Numbler account. </p> 
@@ -190,109 +196,59 @@ function accountRequests(app, mongoClient) {
       });
       //errors.email = "That email is already associated with an account";
       //errorFound = true;
+      */
     } else if (errorFound) {
       res.status(400).send(errors);
     } else {
       res.sendStatus(200);
-      //Creates the account if parameters are correct
-      let random = Math.floor(Math.random() * 6) + 4;
 
-      let verificationCode = generateString(32);
+      //Checks to see if user has attempted many account creations within one day
+      const accountDupes = await unverifieds
+        .find({ email: req.body.email.toLowerCase() })
+        .toArray();
+      if (accountDupes.length < 5) {
+        //Creates the account if parameters are correct
+        let random = Math.floor(Math.random() * 6) + 4;
 
-      bcrypt.hash(req.body.password, 10, async (err, hashedPassword) => {
-        try {
-          const user = {
-            email: req.body.email.toLowerCase(),
-            username: req.body.username,
-            password: hashedPassword,
-            verificationCode: verificationCode,
-            createdAt: new Date(),
-          };
-          await unverifieds.insertOne(user);
-          //res.send(302);
-        } catch (err) {}
-      });
+        let verificationCode = generateString(32);
 
-      console.log("lets send you a mail cowboy");
+        bcrypt.hash(req.body.password, 10, async (err, hashedPassword) => {
+          try {
+            const user = {
+              email: req.body.email.toLowerCase(),
+              username: req.body.username,
+              password: hashedPassword,
+              verificationCode: verificationCode,
+              createdAt: new Date(),
+            };
+            await unverifieds.insertOne(user);
+            //res.send(302);
+          } catch (err) {}
+        });
 
+        // create Nodemailer SES transporter
+        let transporter = nodemailer.createTransport({
+          SES: { ses, aws },
+        });
 
-      const ses = new aws.SES({
-        apiVersion: "2010-12-01",
-        region: "us-east-1",
-        credentials: {
-          accessKeyId: process.env.sesAccessKey,
-          secretAccessKey: process.env.sesSecret
-        }
-      });
-
-      console.log("we got the ses");
-      console.log(ses);
-      
-      // create Nodemailer SES transporter
-      let transporter = nodemailer.createTransport({
-        SES: { ses, aws },
-      });
-
-      console.log("we got the transporter");
-
-      const mailOptions = {
-        from: `"Numbler" <donotreply@numbler.net>`,
-        to: req.body.email,
-        subject: "Numbler Email Verification",
-        html: `</p> Click below to verify your email address. </p> <br>
+        const mailOptions = {
+          from: `"Numbler" <noreply@numbler.net>`,
+          to: req.body.email,
+          subject: "Numbler Email Verification",
+          html: `</p> Click below to verify your email address. </p> <br>
         <a href='${process.env.protocol}${process.env.domain}/verify-email/${verificationCode}'>${process.env.protocol}${process.env.domain}/verify-email/${verificationCode}</a>
         <p>If you did not just sign up to Numbler, please ignore this.</p>
         `,
-      };
+        };
 
-      transporter.sendMail(mailOptions, function (error, info) {
-        if (error) {
-          console.log(error);
-        } else {
-          //console.log("Email sent: " + info.response);
-        }
-      });
-
-
-
-
-
-
-
-
-
-
-      /*
-      const transporter = nodemailer.createTransport({
-        service: "gmail",
-        auth: {
-          user: process.env.nodemailerUser,
-          pass: process.env.nodemailerPass,
-        },
-      });
-
-      const mailOptions = {
-        from: `"Numbler" <${process.env.nodemailerUser}>`,
-        to: req.body.email,
-        subject: "Numbler Email Verification",
-        html: `</p> Click below to verify your email address. </p> <br>
-        <a href='${process.env.protocol}${process.env.domain}/verify-email/${verificationCode}'>${process.env.protocol}${process.env.domain}/verify-email/${verificationCode}</a>
-        <p>If you did not just sign up to Numbler, please ignore this.</p>
-        `,
-      };
-
-      transporter.sendMail(mailOptions, function (error, info) {
-        if (error) {
-          //console.log(error);
-        } else {
-          //console.log("Email sent: " + info.response);
-        }
-      });
-      */
-
-
-
-
+        transporter.sendMail(mailOptions, function (error, info) {
+          if (error) {
+            console.log(error);
+          } else {
+            //console.log("Email sent: " + info.response);
+          }
+        });
+      }
     }
   });
 
@@ -392,16 +348,14 @@ function accountRequests(app, mongoClient) {
     } else if (!accountExists) {
       //Checks if account exists, sends email notifiying them that they can create an account
       res.sendStatus(200);
-      const transporter = nodemailer.createTransport({
-        service: "gmail",
-        auth: {
-          user: process.env.nodemailerUser,
-          pass: process.env.nodemailerPass,
-        },
+      // create Nodemailer SES transporter
+      /*
+      let transporter = nodemailer.createTransport({
+        SES: { ses, aws },
       });
 
       const mailOptions = {
-        from: `"Numbler" <${process.env.nodemailerUser}>`,
+        from: `"Numbler - Password Reset" <noreply@numbler.net>`,
         to: req.body.email,
         subject: "Numbler Password Rest",
         html: `</p> You have requsted a password reset, but you do not have a Numbler account associated with this email. </p> 
@@ -424,49 +378,52 @@ function accountRequests(app, mongoClient) {
       */
     } else {
       res.sendStatus(200);
-      try {
-        await accounts.updateOne(
-          { email: req.body.email.toLowerCase() },
-          { $set: { needsPasswordReset: true } }
-        );
-      } catch {
-        res.sendStatus(400);
-      }
-      //Sends a password reset if the email address exists
-      let random = Math.floor(Math.random() * 6) + 4;
-
-      let verificationCode = generateString(32);
-
-      const user = {
-        email: req.body.email.toLowerCase(),
-        verificationCode: verificationCode,
-        createdAt: new Date(),
-      };
-      await needsReset.insertOne(user);
-
-      const transporter = nodemailer.createTransport({
-        service: "gmail",
-        auth: {
-          user: process.env.nodemailerUser,
-          pass: process.env.nodemailerPass,
-        },
-      });
-
-      const mailOptions = {
-        from: `"Numbler" <${process.env.nodemailerUser}>`,
-        to: req.body.email.toLowerCase(),
-        subject: "Numbler Password Reset",
-        html: `<p>Click here to reset your password. If you didn't request a password reset, you can ignore this. </p>
-        <a href='${process.env.protocol}${process.env.domain}/new-password/${verificationCode}'>${process.env.protocol}${process.env.domain}/new-password/${verificationCode}</a>`,
-      };
-
-      transporter.sendMail(mailOptions, function (error, info) {
-        if (error) {
-          //console.log(error);
-        } else {
-          //console.log("Email sent: " + info.response);
+      //Checks to see if user has attempted many password resets within one day
+      const accountDupes = await needsReset
+        .find({ email: req.body.email.toLowerCase() })
+        .toArray();
+      if (accountDupes.length < 5) {
+        try {
+          await accounts.updateOne(
+            { email: req.body.email.toLowerCase() },
+            { $set: { needsPasswordReset: true } }
+          );
+        } catch {
+          res.sendStatus(400);
         }
-      });
+        //Sends a password reset if the email address exists
+        let random = Math.floor(Math.random() * 6) + 4;
+
+        let verificationCode = generateString(32);
+
+        const user = {
+          email: req.body.email.toLowerCase(),
+          verificationCode: verificationCode,
+          createdAt: new Date(),
+        };
+        await needsReset.insertOne(user);
+
+        // create Nodemailer SES transporter
+        let transporter = nodemailer.createTransport({
+          SES: { ses, aws },
+        });
+
+        const mailOptions = {
+          from: `"Numbler - Reset Password" <noreply@numbler.net>`,
+          to: req.body.email.toLowerCase(),
+          subject: "Numbler Password Reset",
+          html: `<p>Click here to reset your password. If you didn't request a password reset, you can ignore this. </p>
+        <a href='${process.env.protocol}${process.env.domain}/new-password/${verificationCode}'>${process.env.protocol}${process.env.domain}/new-password/${verificationCode}</a>`,
+        };
+
+        transporter.sendMail(mailOptions, function (error, info) {
+          if (error) {
+            //console.log(error);
+          } else {
+            //console.log("Email sent: " + info.response);
+          }
+        });
+      }
     }
   });
 
